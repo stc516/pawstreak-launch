@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react'
 import type { AppState, TabId } from './data/demo'
 import { createActiveAdventure } from './data/demo'
+import {
+  createJourneyEntryFromPlace,
+  getPlaceById,
+} from './data/places'
 import { loadAppState, saveAppState } from './lib/storage'
 import { AppShell } from './components/AppShell'
 import { ActiveAdventureScreen } from './screens/app/ActiveAdventureScreen'
@@ -39,20 +43,36 @@ function App() {
     setState((current) => ({ ...current, selectedJourneyFilterId }))
   }
 
-  const startAdventure = (location: string) => {
+  const startAdventure = (placeId: string) => {
+    const place = getPlaceById(placeId)
+    if (!place) return
+
     setState((current) => ({
       ...current,
       activeTab: 'plan',
-      activeAdventure: createActiveAdventure(location),
+      activeAdventure: createActiveAdventure(place.id, place.name),
     }))
   }
 
   const finishAdventure = () => {
-    setState((current) => ({
-      ...current,
-      activeAdventure: null,
-      activeTab: 'journey',
-    }))
+    setState((current) => {
+      if (!current.activeAdventure) {
+        return { ...current, activeTab: 'journey' }
+      }
+
+      const place = getPlaceById(current.activeAdventure.placeId)
+      const journeyEntries = place
+        ? [createJourneyEntryFromPlace(place, current.dogs), ...current.journeyEntries]
+        : current.journeyEntries
+
+      return {
+        ...current,
+        activeAdventure: null,
+        activeTab: 'journey',
+        adventureCount: current.adventureCount + 1,
+        journeyEntries,
+      }
+    })
   }
 
   const completeOnboarding = () => {

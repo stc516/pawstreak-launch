@@ -1,11 +1,16 @@
 import type { AppState } from '../../data/demo'
 import { dogNamesLabel } from '../../data/demo'
+import {
+  formatPlaceMeta,
+  getPlaceEmoji,
+  getPlacesForPlanCategory,
+} from '../../data/places'
 
 interface PlanScreenProps {
   state: AppState
   onSelectCategory: (categoryId: string) => void
   onZipChange: (zipCode: string) => void
-  onStartAdventure: (location: string) => void
+  onStartAdventure: (placeId: string) => void
 }
 
 export function PlanScreen({
@@ -14,6 +19,8 @@ export function PlanScreen({
   onZipChange,
   onStartAdventure,
 }: PlanScreenProps) {
+  const places = getPlacesForPlanCategory(state.selectedPlanCategoryId)
+
   return (
     <>
       <div className="aheader">
@@ -58,17 +65,17 @@ export function PlanScreen({
         ))}
       </div>
 
-      {state.planPlaces.map((place) => (
+      {places.map((place) => (
         <div key={place.id} className="pcard">
-          <div className="pico">{place.emoji}</div>
+          <div className="pico">{getPlaceEmoji(place.category)}</div>
           <div className="pinfo">
             <div className="pname">{place.name}</div>
-            <div className="pmeta">{place.meta}</div>
+            <div className="pmeta">{formatPlaceMeta(place)}</div>
           </div>
           <button
             type="button"
             className="pgo"
-            onClick={() => onStartAdventure(place.name)}
+            onClick={() => onStartAdventure(place.id)}
           >
             Go
           </button>

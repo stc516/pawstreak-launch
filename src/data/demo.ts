@@ -26,13 +26,6 @@ export interface PlanCategory {
   label: string
 }
 
-export interface PlanPlace {
-  id: string
-  emoji: string
-  name: string
-  meta: string
-}
-
 export interface MonthlyPlanOption {
   id: string
   icon: string
@@ -41,6 +34,7 @@ export interface MonthlyPlanOption {
 }
 
 export interface ActiveAdventure {
+  placeId: string
   location: string
 }
 
@@ -121,11 +115,6 @@ export interface AppState {
   streak: number
   adventureCount: number
   placeCount: number
-  heroSpot: {
-    title: string
-    subtitle: string
-    badge: string
-  }
   durations: string[]
   activities: ActivityChip[]
   recentAdventures: RecentAdventure[]
@@ -134,7 +123,6 @@ export interface AppState {
     subtitle: string
   }
   planCategories: PlanCategory[]
-  planPlaces: PlanPlace[]
   monthlyPlanOptions: MonthlyPlanOption[]
   moodRecapOptions: RecapChip[]
   highlightRecapOptions: RecapChip[]
@@ -196,11 +184,6 @@ export const defaultAppState: AppState = {
   streak: 14,
   adventureCount: 47,
   placeCount: 22,
-  heroSpot: {
-    title: 'Dog Beach, OB',
-    subtitle: '1.4 mi · Off-leash · Both dogs welcome',
-    badge: '🔥 Popular now',
-  },
   durations: ['15 min', '30 min', 'Open end'],
   activities: [
     { id: 'beach', emoji: '🏖️', label: 'Beach' },
@@ -213,8 +196,8 @@ export const defaultAppState: AppState = {
     { id: 'brewery', emoji: '🍺', label: 'Brewery' },
   ],
   recentAdventures: [
-    { title: 'Torrey Pines', tag: 'Trail · Tue' },
-    { title: "Lestat's Coffee", tag: 'Coffee · Mon' },
+    { title: 'Torrey Pines State Reserve', tag: 'Trail · Tue' },
+    { title: "Lestat's Coffee House", tag: 'Coffee · Mon' },
     { title: 'Balboa Park', tag: 'Park · Sun' },
   ],
   mapRegion: {
@@ -229,32 +212,6 @@ export const defaultAppState: AppState = {
     { id: 'dog-park', label: 'Dog park' },
     { id: 'road-trip', label: 'Road trip' },
     { id: 'gardens', label: 'Gardens' },
-  ],
-  planPlaces: [
-    {
-      id: 'dog-beach-ob',
-      emoji: '🏖️',
-      name: 'Dog Beach, Ocean Beach',
-      meta: '1.4 mi · Off-leash · SD',
-    },
-    {
-      id: 'julian-day-trip',
-      emoji: '🚗',
-      name: 'Julian Dog-Friendly Day Trip',
-      meta: '62 mi · Apple picking + trail + cafe',
-    },
-    {
-      id: 'balboa-rose-garden',
-      emoji: '🌸',
-      name: 'Balboa Park Rose Garden',
-      meta: '3.2 mi · Dogs on-leash · SD',
-    },
-    {
-      id: 'nates-point',
-      emoji: '🐕',
-      name: "Nate's Point Dog Park",
-      meta: '3.4 mi · Off-leash enclosed · SD',
-    },
   ],
   monthlyPlanOptions: [
     {
@@ -447,8 +404,11 @@ export function dogNamesLabel(dogs: Dog[]): string {
   return dogs.map((dog) => dog.name).join(' + ')
 }
 
-export function createActiveAdventure(location: string): ActiveAdventure {
-  return { location }
+export function createActiveAdventure(
+  placeId: string,
+  location: string,
+): ActiveAdventure {
+  return { placeId, location }
 }
 
 export function formatTimer(seconds: number): string {

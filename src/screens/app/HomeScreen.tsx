@@ -1,10 +1,15 @@
 import type { AppState } from '../../data/demo'
 import { dogNamesLabel } from '../../data/demo'
+import {
+  formatHeroSubtitle,
+  getHeroBadge,
+  getHeroPlace,
+} from '../../data/places'
 
 interface HomeScreenProps {
   state: AppState
   onSelectActivity: (activityId: string) => void
-  onStartAdventure: (location: string) => void
+  onStartAdventure: (placeId: string) => void
   onOpenProfile: () => void
 }
 
@@ -14,6 +19,9 @@ export function HomeScreen({
   onStartAdventure,
   onOpenProfile,
 }: HomeScreenProps) {
+  const heroPlace = getHeroPlace(state.selectedActivityId)
+  const heroBadge = getHeroBadge(heroPlace)
+
   return (
     <>
       <div className="aheader">
@@ -57,10 +65,10 @@ export function HomeScreen({
       <div className="hero-card">
         <div className="hc-top">
           <div>
-            <div className="hc-title">{state.heroSpot.title}</div>
-            <div className="hc-sub">{state.heroSpot.subtitle}</div>
+            <div className="hc-title">{heroPlace.name}</div>
+            <div className="hc-sub">{formatHeroSubtitle(heroPlace)}</div>
           </div>
-          <div className="hc-badge">{state.heroSpot.badge}</div>
+          {heroBadge ? <div className="hc-badge">{heroBadge}</div> : null}
         </div>
         <div className="qbtns">
           {state.durations.map((duration) => (
@@ -68,7 +76,7 @@ export function HomeScreen({
               key={duration}
               type="button"
               className="qb"
-              onClick={() => onStartAdventure(state.heroSpot.title)}
+              onClick={() => onStartAdventure(heroPlace.id)}
             >
               {duration}
             </button>
