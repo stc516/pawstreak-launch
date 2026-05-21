@@ -1,10 +1,13 @@
-export type TabId = 'home' | 'plan' | 'journey' | 'community' | 'milestones'
+export type TabId = 'home' | 'plan' | 'journey' | 'community' | 'milestones' | 'profile'
 
 export interface Dog {
   id: string
   name: string
   initial: string
   avatarClass: 'da-b' | 'da-o'
+  profileEmoji: string
+  breed: string
+  circleClass: 'dc-b' | 'dc-o'
 }
 
 export interface ActivityChip {
@@ -99,6 +102,13 @@ export interface Achievement {
   badge: string
 }
 
+export interface FavoritePlace {
+  id: string
+  emoji: string
+  name: string
+  visits: string
+}
+
 export interface AppState {
   activeTab: TabId
   activeAdventure: ActiveAdventure | null
@@ -151,6 +161,7 @@ export interface AppState {
   }
   challenges: Challenge[]
   achievements: Achievement[]
+  favoritePlaces: FavoritePlace[]
 }
 
 export const defaultAppState: AppState = {
@@ -161,8 +172,24 @@ export const defaultAppState: AppState = {
   selectedJourneyFilterId: 'all',
   zipCode: '',
   dogs: [
-    { id: 'bailey', name: 'Bailey', initial: 'B', avatarClass: 'da-b' },
-    { id: 'omi', name: 'Omi', initial: 'O', avatarClass: 'da-o' },
+    {
+      id: 'bailey',
+      name: 'Bailey',
+      initial: 'B',
+      avatarClass: 'da-b',
+      profileEmoji: '🐕',
+      breed: 'Siberian Husky',
+      circleClass: 'dc-b',
+    },
+    {
+      id: 'omi',
+      name: 'Omi',
+      initial: 'O',
+      avatarClass: 'da-o',
+      profileEmoji: '🐾',
+      breed: 'Lab Mix · Senior',
+      circleClass: 'dc-o',
+    },
   ],
   streak: 14,
   adventureCount: 47,
@@ -390,6 +417,26 @@ export const defaultAppState: AppState = {
       subtitle: 'Take 3 day trips',
       status: 'locked',
       badge: 'Locked',
+    },
+  ],
+  favoritePlaces: [
+    {
+      id: 'fav-dog-beach',
+      emoji: '🏖️',
+      name: 'Dog Beach, Ocean Beach',
+      visits: '12 visits · photos · memories',
+    },
+    {
+      id: 'fav-torrey',
+      emoji: '🌲',
+      name: 'Torrey Pines Trail',
+      visits: '6 visits · photos · memories',
+    },
+    {
+      id: 'fav-julian',
+      emoji: '🚗',
+      name: 'Julian Day Trip',
+      visits: '2 visits · road trip · photos',
     },
   ],
 }

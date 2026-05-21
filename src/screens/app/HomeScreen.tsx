@@ -5,12 +5,14 @@ interface HomeScreenProps {
   state: AppState
   onSelectActivity: (activityId: string) => void
   onStartAdventure: (location: string) => void
+  onOpenProfile: () => void
 }
 
 export function HomeScreen({
   state,
   onSelectActivity,
   onStartAdventure,
+  onOpenProfile,
 }: HomeScreenProps) {
   return (
     <>
@@ -18,14 +20,14 @@ export function HomeScreen({
         <div className="alogo">
           Paw<span>Streak</span>
         </div>
-        <div className="two-dogs">
+        <button type="button" className="two-dogs" onClick={onOpenProfile}>
           {state.dogs.map((dog) => (
             <div key={dog.id} className={`dog-av ${dog.avatarClass}`}>
               {dog.initial}
             </div>
           ))}
           <span className="dog-names">{dogNamesLabel(state.dogs)}</span>
-        </div>
+        </button>
       </div>
 
       <div className="streak-bar">

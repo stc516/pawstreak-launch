@@ -8,6 +8,7 @@ import { HomeScreen } from './screens/app/HomeScreen'
 import { CommunityScreen } from './screens/app/CommunityScreen'
 import { JourneyScreen } from './screens/app/JourneyScreen'
 import { MilestonesScreen } from './screens/app/MilestonesScreen'
+import { ProfileScreen } from './screens/app/ProfileScreen'
 import { PlanScreen } from './screens/app/PlanScreen'
 
 function App() {
@@ -71,6 +72,7 @@ function App() {
             state={state}
             onSelectActivity={setSelectedActivity}
             onStartAdventure={startAdventure}
+            onOpenProfile={() => setActiveTab('profile')}
           />
         )
       case 'plan':
@@ -93,6 +95,8 @@ function App() {
         return <CommunityScreen state={state} />
       case 'milestones':
         return <MilestonesScreen state={state} />
+      case 'profile':
+        return <ProfileScreen state={state} />
       default:
         return (
           <div className="placeholder-screen">

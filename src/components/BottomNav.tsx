@@ -1,6 +1,6 @@
 import type { TabId } from '../data/demo'
 
-const tabs: { id: TabId; label: string; icon: string }[] = [
+const baseTabs: { id: TabId; label: string; icon: string }[] = [
   { id: 'home', label: 'Home', icon: 'ti-home' },
   { id: 'plan', label: 'Plan', icon: 'ti-compass' },
   { id: 'journey', label: 'Journey', icon: 'ti-map-2' },
@@ -17,17 +17,25 @@ interface BottomNavProps {
 export function BottomNav({ activeTab, onTabChange, className = 'bnav' }: BottomNavProps) {
   return (
     <nav className={className}>
-      {tabs.map((tab) => (
-        <button
-          key={tab.id}
-          type="button"
-          className={`ni${activeTab === tab.id ? ' on' : ''}`}
-          onClick={() => onTabChange(tab.id)}
-        >
-          <i className={`ti ${tab.icon}`} aria-hidden="true" />
-          <span>{tab.label}</span>
-        </button>
-      ))}
+      {baseTabs.map((tab) => {
+        const isProfileTab = tab.id === 'milestones'
+        const isActive =
+          activeTab === tab.id || (isProfileTab && activeTab === 'profile')
+        const label =
+          isProfileTab && activeTab === 'profile' ? 'Profile' : tab.label
+
+        return (
+          <button
+            key={tab.id}
+            type="button"
+            className={`ni${isActive ? ' on' : ''}`}
+            onClick={() => onTabChange(tab.id)}
+          >
+            <i className={`ti ${tab.icon}`} aria-hidden="true" />
+            <span>{label}</span>
+          </button>
+        )
+      })}
     </nav>
   )
 }
