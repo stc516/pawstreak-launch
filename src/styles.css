@@ -803,6 +803,155 @@ button {
   background: white;
 }
 
+/* Journey */
+
+.jfilters {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.jf {
+  background: var(--color-background-secondary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: 20px;
+  padding: 4px 9px;
+  font-size: 9px;
+  color: var(--color-text-secondary);
+}
+
+.jf.on {
+  background: var(--accent-light);
+  border-color: var(--accent-chip);
+  color: var(--accent-brown);
+  font-weight: 500;
+}
+
+.jmap {
+  background: #f0fdf4;
+  border: 0.5px solid #bbf7d0;
+  border-radius: 13px;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.jmap i {
+  font-size: 22px;
+  color: #16a34a;
+}
+
+.jmap-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: #15803d;
+}
+
+.jmap-sub {
+  font-size: 9px;
+  color: #16a34a;
+}
+
+.flash {
+  background: #fffbeb;
+  border: 0.5px solid #fde68a;
+  border-radius: 13px;
+  padding: 10px 12px;
+  display: flex;
+  gap: 9px;
+  align-items: center;
+}
+
+.flash-ico {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.flash-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: #92400e;
+}
+
+.flash-sub {
+  font-size: 9px;
+  color: #b45309;
+  margin-top: 2px;
+}
+
+.mcard {
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: 13px;
+  overflow: hidden;
+}
+
+.mcard-img {
+  background: var(--color-background-secondary);
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mcard-img i {
+  font-size: 22px;
+  color: var(--color-text-tertiary);
+}
+
+.mcard-body {
+  padding: 8px 11px;
+}
+
+.mcard-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.mcard-place {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.mcard-date {
+  font-size: 9px;
+  color: var(--color-text-tertiary);
+}
+
+.mcard-tags {
+  display: flex;
+  gap: 3px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.mt {
+  font-size: 8px;
+  padding: 2px 6px;
+  border-radius: 20px;
+  background: var(--color-background-secondary);
+  color: var(--color-text-secondary);
+  border: 0.5px solid var(--color-border-tertiary);
+}
+
+.mcard-share {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+  font-size: 10px;
+  color: var(--accent);
+}
+
+.mcard-share i {
+  font-size: 12px;
+}
+
 /* Placeholder for unbuilt tabs */
 
 .placeholder-screen {

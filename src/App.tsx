@@ -5,6 +5,7 @@ import { loadAppState, saveAppState } from './lib/storage'
 import { AppShell } from './components/AppShell'
 import { ActiveAdventureScreen } from './screens/app/ActiveAdventureScreen'
 import { HomeScreen } from './screens/app/HomeScreen'
+import { JourneyScreen } from './screens/app/JourneyScreen'
 import { PlanScreen } from './screens/app/PlanScreen'
 
 function App() {
@@ -28,6 +29,10 @@ function App() {
 
   const setZipCode = (zipCode: string) => {
     setState((current) => ({ ...current, zipCode }))
+  }
+
+  const setSelectedJourneyFilter = (selectedJourneyFilterId: string) => {
+    setState((current) => ({ ...current, selectedJourneyFilterId }))
   }
 
   const startAdventure = (location: string) => {
@@ -77,10 +82,10 @@ function App() {
         )
       case 'journey':
         return (
-          <div className="placeholder-screen">
-            <div className="sec">Coming soon</div>
-            <p className="placeholder-copy">This screen is not built yet.</p>
-          </div>
+          <JourneyScreen
+            state={state}
+            onSelectFilter={setSelectedJourneyFilter}
+          />
         )
       default:
         return (

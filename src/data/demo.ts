@@ -48,11 +48,29 @@ export interface RecapChip {
   label: string
 }
 
+export interface JourneyFilter {
+  id: string
+  label: string
+}
+
+export interface JourneyEntry {
+  id: string
+  place: string
+  date: string
+  tags: string[]
+}
+
+export interface Flashback {
+  title: string
+  subtitle: string
+}
+
 export interface AppState {
   activeTab: TabId
   activeAdventure: ActiveAdventure | null
   selectedActivityId: string
   selectedPlanCategoryId: string
+  selectedJourneyFilterId: string
   zipCode: string
   dogs: Dog[]
   streak: number
@@ -76,6 +94,14 @@ export interface AppState {
   moodRecapOptions: RecapChip[]
   highlightRecapOptions: RecapChip[]
   dogModeOptions: { id: DogMode; label: string }[]
+  journeyTitle: string
+  journeyMap: {
+    title: string
+    subtitle: string
+  }
+  journeyFilters: JourneyFilter[]
+  flashback: Flashback
+  journeyEntries: JourneyEntry[]
 }
 
 export const defaultAppState: AppState = {
@@ -83,6 +109,7 @@ export const defaultAppState: AppState = {
   activeAdventure: null,
   selectedActivityId: 'beach',
   selectedPlanCategoryId: 'all',
+  selectedJourneyFilterId: 'all',
   zipCode: '',
   dogs: [
     { id: 'bailey', name: 'Bailey', initial: 'B', avatarClass: 'da-b' },
@@ -188,6 +215,37 @@ export const defaultAppState: AppState = {
     { id: 'both', label: 'Both' },
     { id: 'bailey', label: 'Bailey only' },
     { id: 'omi', label: 'Omi only' },
+  ],
+  journeyTitle: "Bailey + Omi's Journey",
+  journeyMap: {
+    title: '47 adventures across SD + OC',
+    subtitle: '22 places · Tap any pin to see that day',
+  },
+  journeyFilters: [
+    { id: 'all', label: 'All' },
+    { id: 'beach', label: 'Beach' },
+    { id: 'trail', label: 'Trail' },
+    { id: 'road-trips', label: 'Road trips' },
+    { id: 'map-view', label: 'Map view' },
+  ],
+  flashback: {
+    title: '1 year ago today',
+    subtitle:
+      "Bailey's first visit to Torrey Pines. You've been back 6 times since.",
+  },
+  journeyEntries: [
+    {
+      id: 'dog-beach-today',
+      place: 'Dog Beach, OB',
+      date: 'Today',
+      tags: ['Beach', 'Off-leash', 'Bailey + Omi', 'Loved it'],
+    },
+    {
+      id: 'julian-saturday',
+      place: 'Julian Day Trip',
+      date: 'Saturday',
+      tags: ['Road trip', '62 mi', 'Both dogs', 'New place'],
+    },
   ],
 }
 
