@@ -17,6 +17,7 @@ export interface ActivityChip {
 }
 
 export interface RecentAdventure {
+  placeId: string
   title: string
   tag: string
 }
@@ -52,8 +53,10 @@ export interface JourneyFilter {
 
 export interface JourneyEntry {
   id: string
+  placeId?: string
   place: string
   date: string
+  magicLine?: string
   tags: string[]
 }
 
@@ -68,6 +71,7 @@ export interface LiveChip {
 
 export interface CommunityPost {
   id: string
+  placeId?: string
   avatarClass: 'cp-av1' | 'cp-av2'
   initial: string
   name: string
@@ -98,6 +102,7 @@ export interface Achievement {
 
 export interface FavoritePlace {
   id: string
+  placeId: string
   emoji: string
   name: string
   visits: string
@@ -196,9 +201,9 @@ export const defaultAppState: AppState = {
     { id: 'brewery', emoji: '🍺', label: 'Brewery' },
   ],
   recentAdventures: [
-    { title: 'Torrey Pines State Reserve', tag: 'Trail · Tue' },
-    { title: "Lestat's Coffee House", tag: 'Coffee · Mon' },
-    { title: 'Balboa Park', tag: 'Park · Sun' },
+    { placeId: 'torrey-pines', title: 'Torrey Pines State Reserve', tag: 'Trail · Tue' },
+    { placeId: 'lestats-coffee', title: "Lestat's Coffee House", tag: 'Coffee · Mon' },
+    { placeId: 'balboa-park', title: 'Balboa Park', tag: 'Park · Sun' },
   ],
   mapRegion: {
     title: 'San Diego + OC spots',
@@ -271,14 +276,18 @@ export const defaultAppState: AppState = {
   journeyEntries: [
     {
       id: 'dog-beach-today',
+      placeId: 'dog-beach-ocean-beach',
       place: 'Dog Beach, OB',
       date: 'Today',
+      magicLine: 'Popular with the pack right now.',
       tags: ['Beach', 'Off-leash', 'Bailey + Omi', 'Loved it'],
     },
     {
       id: 'julian-saturday',
+      placeId: 'julian-day-trip',
       place: 'Julian Day Trip',
       date: 'Saturday',
+      magicLine: 'Big adventure if they need to burn energy.',
       tags: ['Road trip', '62 mi', 'Both dogs', 'New place'],
     },
   ],
@@ -297,6 +306,7 @@ export const defaultAppState: AppState = {
   communityPosts: [
     {
       id: 'sophie-mango',
+      placeId: 'del-mar-dog-beach',
       avatarClass: 'cp-av1',
       initial: 'S',
       name: 'Sophie + Mango',
@@ -309,6 +319,7 @@ export const defaultAppState: AppState = {
     },
     {
       id: 'jake-luna-biscuit',
+      placeId: 'julian-day-trip',
       avatarClass: 'cp-av2',
       initial: 'J',
       name: 'Jake + Luna + Biscuit',
@@ -381,18 +392,21 @@ export const defaultAppState: AppState = {
   favoritePlaces: [
     {
       id: 'fav-dog-beach',
+      placeId: 'dog-beach-ocean-beach',
       emoji: '🏖️',
       name: 'Dog Beach, Ocean Beach',
       visits: '12 visits · photos · memories',
     },
     {
       id: 'fav-torrey',
+      placeId: 'torrey-pines',
       emoji: '🌲',
       name: 'Torrey Pines Trail',
       visits: '6 visits · photos · memories',
     },
     {
       id: 'fav-julian',
+      placeId: 'julian-day-trip',
       emoji: '🚗',
       name: 'Julian Day Trip',
       visits: '2 visits · road trip · photos',

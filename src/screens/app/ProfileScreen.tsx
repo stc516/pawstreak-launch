@@ -1,4 +1,6 @@
 import type { AppState } from '../../data/demo'
+import { CardImage } from '../../components/CardImage'
+import { getMagicLine, getPlaceById } from '../../data/places'
 
 interface ProfileScreenProps {
   state: AppState
@@ -42,16 +44,28 @@ export function ProfileScreen({ state }: ProfileScreenProps) {
 
       <div className="sec">Favorite places</div>
 
-      {state.favoritePlaces.map((place) => (
-        <div key={place.id} className="fav">
-          <div className="fav-ico">{place.emoji}</div>
-          <div className="fav-info">
-            <div className="fav-name">{place.name}</div>
-            <div className="fav-vis">{place.visits}</div>
+      {state.favoritePlaces.map((favorite) => {
+        const place = getPlaceById(favorite.placeId)
+
+        return (
+          <div key={favorite.id} className="fav">
+            <CardImage
+              className="fav-ico"
+              imageUrl={place?.imageUrl}
+              imageAlt={place?.imageAlt}
+              imageTone={place?.imageTone}
+            />
+            <div className="fav-info">
+              <div className="fav-name">{favorite.name}</div>
+              <div className="fav-vis">
+                {favorite.visits}
+                {place ? ` · ${getMagicLine(place)}` : ''}
+              </div>
+            </div>
+            <i className="ti ti-chevron-right fav-arr" aria-hidden="true" />
           </div>
-          <i className="ti ti-chevron-right fav-arr" aria-hidden="true" />
-        </div>
-      ))}
+        )
+      })}
     </>
   )
 }

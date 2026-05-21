@@ -1,9 +1,9 @@
 import type { AppState } from '../../data/demo'
 import { dogNamesLabel } from '../../data/demo'
 import {
-  formatPlaceMeta,
   getPlaceEmoji,
   getPlacesForPlanCategory,
+  getPlanMagicMeta,
 } from '../../data/places'
 
 interface PlanScreenProps {
@@ -70,7 +70,7 @@ export function PlanScreen({
           <div className="pico">{getPlaceEmoji(place.category)}</div>
           <div className="pinfo">
             <div className="pname">{place.name}</div>
-            <div className="pmeta">{formatPlaceMeta(place)}</div>
+            <div className="pmeta">{getPlanMagicMeta(place)}</div>
           </div>
           <button
             type="button"

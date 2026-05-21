@@ -1,8 +1,11 @@
 import type { Dog, JourneyEntry } from './demo'
 import { dogNamesLabel } from './demo'
-import type { Place, PlaceCategory } from '../types/place'
+import type { Place, PlaceCategory, PlaceImageTone } from '../types/place'
+import { getMagicLine, getHeroMagicSubtitle, getPlanMagicMeta } from '../lib/magicCopy'
 
-export const PLACES: Place[] = [
+export { getMagicLine, getHeroMagicSubtitle, getPlanMagicMeta }
+
+const RAW_PLACES: Place[] = [
   {
     id: 'dog-beach-ocean-beach',
     name: 'Dog Beach, Ocean Beach',
@@ -51,7 +54,7 @@ export const PLACES: Place[] = [
     leashInfo: 'Off-leash',
     dogFriendlyNotes: 'North of 29th Street in Del Mar — one of the best-known SD dog beaches.',
     whyDogsLoveIt: 'Soft sand, consistent surf, and post-walk patio stops nearby.',
-    bestTime: 'Late afternoon golden hour',
+    bestTime: 'Late afternoon · best window today',
     energyLevel: 'High',
     lat: 32.9645,
     lng: -117.2653,
@@ -394,7 +397,7 @@ export const PLACES: Place[] = [
     leashInfo: 'On-leash',
     dogFriendlyNotes: 'Grassy park on Mount Soledad with panoramic views.',
     whyDogsLoveIt: 'Open grass, sunset views, and a breezy hilltop walk.',
-    bestTime: 'Golden hour',
+    bestTime: 'Best window today',
     energyLevel: 'Moderate',
     lat: 32.8321,
     lng: -117.2412,
@@ -673,6 +676,32 @@ export const PLACES: Place[] = [
   },
 ]
 
+const CATEGORY_IMAGE_TONE: Record<PlaceCategory, PlaceImageTone> = {
+  Beach: 'coastal',
+  Trail: 'forest',
+  Coffee: 'urban',
+  'Dog park': 'park',
+  Park: 'park',
+  Brewery: 'urban',
+  Gardens: 'park',
+  'Road trip': 'mountain',
+  Neighborhood: 'warm',
+}
+
+function applyPlaceImages(place: Place): Place {
+  return {
+    ...place,
+    imageTone: place.imageTone ?? CATEGORY_IMAGE_TONE[place.category],
+    imageUrl:
+      place.imageUrl ??
+      `https://picsum.photos/seed/pawstreak-${place.id}/400/300`,
+    imageAlt:
+      place.imageAlt ?? `${place.name} — ${place.category.toLowerCase()} spot`,
+  }
+}
+
+export const PLACES: Place[] = RAW_PLACES.map(applyPlaceImages)
+
 const PLAN_CATEGORY_MAP: Record<string, PlaceCategory | null> = {
   all: null,
   beach: 'Beach',
@@ -725,7 +754,7 @@ export function formatPlaceMeta(place: Place): string {
 }
 
 export function formatHeroSubtitle(place: Place): string {
-  return `${place.distanceLabel} · ${place.leashInfo} · Both dogs welcome`
+  return getHeroMagicSubtitle(place)
 }
 
 export function getHeroBadge(place: Place): string {
@@ -774,8 +803,10 @@ export function getHeroPlace(activityId: string): Place {
 export function createJourneyEntryFromPlace(place: Place, dogs: Dog[]): JourneyEntry {
   return {
     id: `adventure-${place.id}-${Date.now()}`,
+    placeId: place.id,
     place: place.name,
     date: 'Today',
+    magicLine: getMagicLine(place),
     tags: [place.category, place.leashInfo, dogNamesLabel(dogs), 'Loved it'],
   }
 }

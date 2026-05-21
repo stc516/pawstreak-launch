@@ -1,4 +1,6 @@
 import type { AppState } from '../../data/demo'
+import { CardImage } from '../../components/CardImage'
+import { getPlaceById } from '../../data/places'
 
 interface JourneyScreenProps {
   state: AppState
@@ -41,30 +43,40 @@ export function JourneyScreen({ state, onSelectFilter }: JourneyScreenProps) {
 
       <div className="sec">This week</div>
 
-      {state.journeyEntries.map((entry) => (
-        <div key={entry.id} className="mcard">
-          <div className="mcard-img">
-            <i className="ti ti-photo" aria-hidden="true" />
+      {state.journeyEntries.map((entry) => {
+        const place = entry.placeId ? getPlaceById(entry.placeId) : undefined
+
+        return (
+          <div key={entry.id} className="mcard">
+            <CardImage
+              className="mcard-img"
+              imageUrl={place?.imageUrl}
+              imageAlt={place?.imageAlt}
+              imageTone={place?.imageTone}
+            />
+            <div className="mcard-body">
+              <div className="mcard-row">
+                <div className="mcard-place">{entry.place}</div>
+                <div className="mcard-date">{entry.date}</div>
+              </div>
+              {entry.magicLine ? (
+                <div className="mcard-magic">{entry.magicLine}</div>
+              ) : null}
+              <div className="mcard-tags">
+                {entry.tags.map((tag) => (
+                  <span key={tag} className="mt">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <div className="mcard-share">
+                <i className="ti ti-share" aria-hidden="true" />
+                Share · Post to community
+              </div>
+            </div>
           </div>
-          <div className="mcard-body">
-            <div className="mcard-row">
-              <div className="mcard-place">{entry.place}</div>
-              <div className="mcard-date">{entry.date}</div>
-            </div>
-            <div className="mcard-tags">
-              {entry.tags.map((tag) => (
-                <span key={tag} className="mt">
-                  {tag}
-                </span>
-              ))}
-            </div>
-            <div className="mcard-share">
-              <i className="ti ti-share" aria-hidden="true" />
-              Share · Post to community
-            </div>
-          </div>
-        </div>
-      ))}
+        )
+      })}
     </>
   )
 }

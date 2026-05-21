@@ -1,4 +1,6 @@
 import type { AppState } from '../../data/demo'
+import { CardImage } from '../../components/CardImage'
+import { getMagicLine, getPlaceById } from '../../data/places'
 
 interface CommunityScreenProps {
   state: AppState
@@ -29,41 +31,51 @@ export function CommunityScreen({ state }: CommunityScreenProps) {
 
       <div className="sec">From the pack</div>
 
-      {state.communityPosts.map((post) => (
-        <div key={post.id} className="comm-post">
-          <div className="cp-img">
-            <i className="ti ti-photo" aria-hidden="true" />
+      {state.communityPosts.map((post) => {
+        const place = post.placeId ? getPlaceById(post.placeId) : undefined
+
+        return (
+          <div key={post.id} className="comm-post">
+            <CardImage
+              className="cp-img"
+              imageUrl={place?.imageUrl}
+              imageAlt={place?.imageAlt}
+              imageTone={place?.imageTone}
+            />
+            <div className="cp-body">
+              <div className="cp-user">
+                <div className={`cp-av ${post.avatarClass}`}>{post.initial}</div>
+                <div>
+                  <div className="cp-name">{post.name}</div>
+                  <div className="cp-meta">
+                    {post.meta}
+                    {place ? ` · ${getMagicLine(place)}` : ''}
+                  </div>
+                </div>
+              </div>
+              <div className="cp-caption">{post.caption}</div>
+              <div className="cp-loc">
+                <i className="ti ti-map-pin" aria-hidden="true" />
+                {post.location}
+              </div>
+              <div className="cp-actions">
+                <div className="cpa">
+                  <i className="ti ti-heart" aria-hidden="true" />
+                  {post.likes}
+                </div>
+                <div className="cpa">
+                  <i className="ti ti-message-circle" aria-hidden="true" />
+                  {post.comments}
+                </div>
+                <div className="cpa">
+                  <i className="ti ti-share" aria-hidden="true" />
+                  Share
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="cp-body">
-            <div className="cp-user">
-              <div className={`cp-av ${post.avatarClass}`}>{post.initial}</div>
-              <div>
-                <div className="cp-name">{post.name}</div>
-                <div className="cp-meta">{post.meta}</div>
-              </div>
-            </div>
-            <div className="cp-caption">{post.caption}</div>
-            <div className="cp-loc">
-              <i className="ti ti-map-pin" aria-hidden="true" />
-              {post.location}
-            </div>
-            <div className="cp-actions">
-              <div className="cpa">
-                <i className="ti ti-heart" aria-hidden="true" />
-                {post.likes}
-              </div>
-              <div className="cpa">
-                <i className="ti ti-message-circle" aria-hidden="true" />
-                {post.comments}
-              </div>
-              <div className="cpa">
-                <i className="ti ti-share" aria-hidden="true" />
-                Share
-              </div>
-            </div>
-          </div>
-        </div>
-      ))}
+        )
+      })}
     </>
   )
 }

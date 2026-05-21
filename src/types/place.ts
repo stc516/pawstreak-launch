@@ -13,6 +13,15 @@ export type PlaceRegion = 'San Diego' | 'Orange County' | 'Julian / Mountain'
 
 export type PlaceEnergyLevel = 'Low' | 'Moderate' | 'High'
 
+export type PlaceImageTone =
+  | 'coastal'
+  | 'forest'
+  | 'urban'
+  | 'mountain'
+  | 'park'
+  | 'warm'
+  | 'desert'
+
 export interface Place {
   id: string
   name: string
@@ -31,4 +40,7 @@ export interface Place {
   lng?: number
   featured: boolean
   popularNow: boolean
+  imageUrl?: string
+  imageAlt?: string
+  imageTone?: PlaceImageTone
 }

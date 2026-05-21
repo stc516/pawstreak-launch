@@ -376,10 +376,25 @@ button {
 
 .mthumb {
   flex: 1;
-  background: var(--color-background-secondary);
+  position: relative;
   border: 0.5px solid var(--color-border-tertiary);
   border-radius: 9px;
   height: 54px;
+  overflow: hidden;
+  background: var(--color-background-secondary);
+}
+
+.mthumb .card-img {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  border-radius: 9px;
+}
+
+.mthumb-text {
+  position: relative;
+  z-index: 1;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -388,12 +403,14 @@ button {
 
 .mtlbl {
   font-size: 9px;
-  color: var(--color-text-secondary);
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
 }
 
 .mttag {
   font-size: 8px;
-  color: var(--color-text-tertiary);
+  color: rgba(255, 255, 255, 0.88);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
 /* Stats row */
@@ -951,16 +968,20 @@ button {
 }
 
 .mcard-img {
-  background: var(--color-background-secondary);
   height: 76px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  overflow: hidden;
 }
 
-.mcard-img i {
-  font-size: 22px;
-  color: var(--color-text-tertiary);
+.mcard-img.card-img {
+  width: 100%;
+  min-height: 76px;
+}
+
+.mcard-magic {
+  font-size: 9px;
+  color: var(--color-text-secondary);
+  margin-top: 3px;
+  line-height: 1.3;
 }
 
 .mcard-body {
@@ -1080,16 +1101,13 @@ button {
 }
 
 .cp-img {
-  background: var(--color-background-secondary);
   height: 90px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  overflow: hidden;
 }
 
-.cp-img i {
-  font-size: 26px;
-  color: var(--color-text-tertiary);
+.cp-img.card-img {
+  width: 100%;
+  min-height: 90px;
 }
 
 .cp-body {
@@ -1445,6 +1463,66 @@ button {
   justify-content: center;
   font-size: 14px;
   flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.fav-ico.card-img {
+  background-size: cover;
+  background-position: center;
+}
+
+.fav-ico-emoji {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.08));
+  font-size: 14px;
+}
+
+/* Card image tones */
+
+.card-img {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.card-img--coastal {
+  background-color: #38bdf8;
+  background-image: linear-gradient(135deg, #0284c7 0%, #7dd3fc 100%);
+}
+
+.card-img--forest {
+  background-color: #4ade80;
+  background-image: linear-gradient(135deg, #166534 0%, #86efac 100%);
+}
+
+.card-img--urban {
+  background-color: #fdba74;
+  background-image: linear-gradient(135deg, #9a3412 0%, #fed7aa 100%);
+}
+
+.card-img--mountain {
+  background-color: #a8a29e;
+  background-image: linear-gradient(135deg, #57534e 0%, #d6d3d1 100%);
+}
+
+.card-img--park {
+  background-color: #86efac;
+  background-image: linear-gradient(135deg, #15803d 0%, #bbf7d0 100%);
+}
+
+.card-img--warm {
+  background-color: #fb923c;
+  background-image: linear-gradient(135deg, #c2410c 0%, #ffedd5 100%);
+}
+
+.card-img--desert {
+  background-color: #fbbf24;
+  background-image: linear-gradient(135deg, #b45309 0%, #fde68a 100%);
 }
 
 .fav-info {

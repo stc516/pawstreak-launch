@@ -1,9 +1,12 @@
 import type { AppState } from '../../data/demo'
 import { dogNamesLabel } from '../../data/demo'
+import { CardImage } from '../../components/CardImage'
 import {
   formatHeroSubtitle,
   getHeroBadge,
   getHeroPlace,
+  getMagicLine,
+  getPlaceById,
 } from '../../data/places'
 
 interface HomeScreenProps {
@@ -87,12 +90,28 @@ export function HomeScreen({
       <div className="sec">Recent adventures</div>
 
       <div className="mstrip">
-        {state.recentAdventures.map((adventure) => (
-          <div key={adventure.title} className="mthumb">
-            <div className="mtlbl">{adventure.title}</div>
-            <div className="mttag">{adventure.tag}</div>
-          </div>
-        ))}
+        {state.recentAdventures.map((adventure) => {
+          const place = getPlaceById(adventure.placeId)
+
+          return (
+            <div key={adventure.title} className="mthumb">
+              {place ? (
+                <CardImage
+                  className="mthumb-img"
+                  imageUrl={place.imageUrl}
+                  imageAlt={place.imageAlt}
+                  imageTone={place.imageTone}
+                />
+              ) : null}
+              <div className="mthumb-text">
+                <div className="mtlbl">{adventure.title}</div>
+                <div className="mttag">
+                  {place ? getMagicLine(place) : adventure.tag}
+                </div>
+              </div>
+            </div>
+          )
+        })}
       </div>
 
       <div className="stats3">
