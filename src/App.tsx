@@ -9,6 +9,7 @@ import { CommunityScreen } from './screens/app/CommunityScreen'
 import { JourneyScreen } from './screens/app/JourneyScreen'
 import { MilestonesScreen } from './screens/app/MilestonesScreen'
 import { ProfileScreen } from './screens/app/ProfileScreen'
+import { OnboardingFlow } from './screens/onboarding/OnboardingFlow'
 import { PlanScreen } from './screens/app/PlanScreen'
 
 function App() {
@@ -52,6 +53,18 @@ function App() {
       activeAdventure: null,
       activeTab: 'journey',
     }))
+  }
+
+  const completeOnboarding = () => {
+    setState((current) => ({
+      ...current,
+      onboardingComplete: true,
+      activeTab: 'home',
+    }))
+  }
+
+  if (!state.onboardingComplete) {
+    return <OnboardingFlow onComplete={completeOnboarding} />
   }
 
   if (state.activeAdventure) {

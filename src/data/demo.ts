@@ -110,6 +110,7 @@ export interface FavoritePlace {
 }
 
 export interface AppState {
+  onboardingComplete: boolean
   activeTab: TabId
   activeAdventure: ActiveAdventure | null
   selectedActivityId: string
@@ -165,6 +166,7 @@ export interface AppState {
 }
 
 export const defaultAppState: AppState = {
+  onboardingComplete: false,
   activeTab: 'home',
   activeAdventure: null,
   selectedActivityId: 'beach',
@@ -454,3 +456,63 @@ export function formatTimer(seconds: number): string {
   const remainingSeconds = seconds % 60
   return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
 }
+
+export interface OnboardingVibe {
+  id: string
+  emoji: string
+  name: string
+  description: string
+}
+
+export interface OnboardingPlace {
+  id: string
+  emoji: string
+  name: string
+  meta: string
+}
+
+export const onboardingVibes: OnboardingVibe[] = [
+  { id: 'explorer', emoji: '🧭', name: 'Explorer', description: 'New trails, dense paths, untouched spots.' },
+  { id: 'social', emoji: '🐾', name: 'Social Pup', description: 'Busy parks, tail wags, meeting new friends.' },
+  { id: 'sunset', emoji: '🌅', name: 'Sunset Chaser', description: 'Quiet views and golden hour strolls.' },
+  { id: 'cozy', emoji: '🏠', name: 'Cozy Companion', description: 'Short loops, neighborhood walks, chill days.' },
+  { id: 'beach', emoji: '🏖️', name: 'Beach Dog', description: 'Sand, waves, off-leash freedom.' },
+  { id: 'road-trip', emoji: '🚗', name: 'Road Tripper', description: 'Day trips, new cities, big adventures.' },
+  { id: 'cafe', emoji: '☕', name: 'Cafe Pup', description: 'Dog patios, coffee runs, people watching.' },
+  { id: 'legend', emoji: '⭐', name: 'Local Legend', description: 'Knows every block, owns the neighborhood.' },
+]
+
+export const onboardingCatChips = [
+  { id: 'park', emoji: '🌲', label: 'Park' },
+  { id: 'beach', emoji: '🏖️', label: 'Beach' },
+  { id: 'trail', emoji: '🥾', label: 'Trail' },
+  { id: 'cafe', emoji: '☕', label: 'Cafe' },
+  { id: 'brewery', emoji: '🍺', label: 'Brewery' },
+  { id: 'dog-park', emoji: '🐕', label: 'Dog park' },
+  { id: 'gardens', emoji: '🌸', label: 'Gardens' },
+]
+
+export const onboardingPlaces: OnboardingPlace[] = [
+  { id: 'oak-ridge', emoji: '🌲', name: 'Oak Ridge Dog Trail', meta: '0.8 mi away · Off-leash · Park' },
+  { id: 'barking-bean', emoji: '☕', name: 'The Barking Bean', meta: '1.2 mi away · Dog treats · Cafe' },
+  { id: 'dog-beach-ob', emoji: '🏖️', name: 'Dog Beach, Ocean Beach', meta: '3.4 mi away · Off-leash · SD' },
+]
+
+export const dogBreeds = [
+  'Golden Retriever',
+  'Labrador',
+  'Husky',
+  'Doodle',
+  'Poodle',
+  'Bulldog',
+  'Beagle',
+  'Shepherd',
+  'Mixed / Other',
+]
+
+export const dogAges = [
+  'Puppy (under 1)',
+  '1–3 years',
+  '4–7 years',
+  '8+ years (senior)',
+]
