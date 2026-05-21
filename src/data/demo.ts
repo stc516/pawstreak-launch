@@ -115,6 +115,8 @@ export interface AppState {
   selectedActivityId: string
   selectedPlanCategoryId: string
   selectedJourneyFilterId: string
+  selectedMonthlyPlanId: string | null
+  adventurePhotos: string[]
   zipCode: string
   dogs: Dog[]
   streak: number
@@ -165,6 +167,8 @@ export const defaultAppState: AppState = {
   selectedActivityId: 'beach',
   selectedPlanCategoryId: 'all',
   selectedJourneyFilterId: 'all',
+  selectedMonthlyPlanId: null,
+  adventurePhotos: ['', '', ''],
   zipCode: '',
   dogs: [
     {

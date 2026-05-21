@@ -2,6 +2,7 @@ import type { Dog, JourneyEntry } from './demo'
 import { dogNamesLabel } from './demo'
 import type { Place, PlaceCategory, PlaceImageTone } from '../types/place'
 import { getMagicLine, getHeroMagicSubtitle, getPlanMagicMeta } from '../lib/magicCopy'
+import { getSampleImageForPlace } from './sampleImages'
 
 export { getMagicLine, getHeroMagicSubtitle, getPlanMagicMeta }
 
@@ -693,8 +694,7 @@ function applyPlaceImages(place: Place): Place {
     ...place,
     imageTone: place.imageTone ?? CATEGORY_IMAGE_TONE[place.category],
     imageUrl:
-      place.imageUrl ??
-      `https://picsum.photos/seed/pawstreak-${place.id}/400/300`,
+      place.imageUrl ?? getSampleImageForPlace(place.category, place.id),
     imageAlt:
       place.imageAlt ?? `${place.name} — ${place.category.toLowerCase()} spot`,
   }

@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { AppState, DogMode } from '../../data/demo'
 import { dogNamesLabel, formatTimer } from '../../data/demo'
+import { readImageFileAsDataUrl } from '../../lib/imageUtils'
 import { BottomNav } from '../../components/BottomNav'
 import { StatusBar } from '../../components/StatusBar'
 import type { TabId } from '../../data/demo'
@@ -11,13 +12,16 @@ interface ActiveAdventureScreenProps {
   state: AppState
   onFinish: () => void
   onTabChange: (tab: TabId) => void
+  onAddPhoto: (photoDataUrl: string) => void
 }
 
 export function ActiveAdventureScreen({
   state,
   onFinish,
   onTabChange,
+  onAddPhoto,
 }: ActiveAdventureScreenProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const [elapsedSeconds, setElapsedSeconds] = useState(INITIAL_SECONDS)
   const [isPaused, setIsPaused] = useState(false)
   const [dogMode, setDogMode] = useState<DogMode>('both')
@@ -35,6 +39,25 @@ export function ActiveAdventureScreen({
 
     return () => window.clearInterval(interval)
   }, [isPaused])
+
+  const handleCaptureClick = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handlePhotoSelected = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file) return
+
+    try {
+      const dataUrl = await readImageFileAsDataUrl(file)
+      onAddPhoto(dataUrl)
+    } catch {
+      // Ignore invalid selections for now.
+    }
+  }
 
   if (!state.activeAdventure) {
     return null
@@ -94,10 +117,19 @@ export function ActiveAdventureScreen({
             </div>
           </div>
 
-          <div className="cam-row">
+          <input
+            ref={fileInputRef}
+            className="cam-input"
+            type="file"
+            accept="image/*"
+            capture="environment"
+            onChange={handlePhotoSelected}
+          />
+
+          <button type="button" className="cam-row" onClick={handleCaptureClick}>
             <i className="ti ti-camera" aria-hidden="true" />
             <span>Capture a moment</span>
-          </div>
+          </button>
 
           <div className="clk-btns">
             <button
@@ -144,15 +176,15 @@ export function ActiveAdventureScreen({
 
           <div className="rq">Photos from today</div>
           <div className="rphotos">
-            <div className="rph">
-              <i className="ti ti-photo" aria-hidden="true" />
-            </div>
-            <div className="rph">
-              <i className="ti ti-photo" aria-hidden="true" />
-            </div>
-            <div className="rph">
-              <i className="ti ti-photo" aria-hidden="true" />
-            </div>
+            {state.adventurePhotos.map((photo, index) => (
+              <div key={index} className="rph">
+                {photo ? (
+                  <img src={photo} alt="" className="rph-img" />
+                ) : (
+                  <i className="ti ti-photo" aria-hidden="true" />
+                )}
+              </div>
+            ))}
           </div>
         </main>
 

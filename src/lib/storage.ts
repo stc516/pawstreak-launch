@@ -1,4 +1,5 @@
 import { defaultAppState, type ActiveAdventure, type AppState } from '../data/demo'
+import { normalizePhotoSlots } from '../lib/imageUtils'
 import { resolvePlaceFromAdventure } from '../data/places'
 
 const STORAGE_KEY = 'pawstreak:app'
@@ -21,6 +22,8 @@ function normalizeAppState(state: AppState): AppState {
 
   return {
     ...rest,
+    selectedMonthlyPlanId: rest.selectedMonthlyPlanId ?? null,
+    adventurePhotos: normalizePhotoSlots(rest.adventurePhotos),
     activeAdventure: normalizeActiveAdventure(rest.activeAdventure),
   }
 }

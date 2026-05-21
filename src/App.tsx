@@ -6,6 +6,7 @@ import {
   getPlaceById,
 } from './data/places'
 import { loadAppState, saveAppState } from './lib/storage'
+import { fillPhotoSlots } from './lib/imageUtils'
 import { AppShell } from './components/AppShell'
 import { ActiveAdventureScreen } from './screens/app/ActiveAdventureScreen'
 import { HomeScreen } from './screens/app/HomeScreen'
@@ -43,6 +44,17 @@ function App() {
     setState((current) => ({ ...current, selectedJourneyFilterId }))
   }
 
+  const setSelectedMonthlyPlan = (selectedMonthlyPlanId: string) => {
+    setState((current) => ({ ...current, selectedMonthlyPlanId }))
+  }
+
+  const addAdventurePhoto = (photoDataUrl: string) => {
+    setState((current) => ({
+      ...current,
+      adventurePhotos: fillPhotoSlots(current.adventurePhotos, photoDataUrl),
+    }))
+  }
+
   const startAdventure = (placeId: string) => {
     const place = getPlaceById(placeId)
     if (!place) return
@@ -51,13 +63,14 @@ function App() {
       ...current,
       activeTab: 'plan',
       activeAdventure: createActiveAdventure(place.id, place.name),
+      adventurePhotos: ['', '', ''],
     }))
   }
 
   const finishAdventure = () => {
     setState((current) => {
       if (!current.activeAdventure) {
-        return { ...current, activeTab: 'journey' }
+        return { ...current, activeTab: 'journey', adventurePhotos: ['', '', ''] }
       }
 
       const place = getPlaceById(current.activeAdventure.placeId)
@@ -71,6 +84,7 @@ function App() {
         activeTab: 'journey',
         adventureCount: current.adventureCount + 1,
         journeyEntries,
+        adventurePhotos: ['', '', ''],
       }
     })
   }
@@ -93,6 +107,7 @@ function App() {
         state={state}
         onFinish={finishAdventure}
         onTabChange={setActiveTab}
+        onAddPhoto={addAdventurePhoto}
       />
     )
   }
@@ -115,6 +130,7 @@ function App() {
             onSelectCategory={setSelectedPlanCategory}
             onZipChange={setZipCode}
             onStartAdventure={startAdventure}
+            onSelectMonthlyPlan={setSelectedMonthlyPlan}
           />
         )
       case 'journey':

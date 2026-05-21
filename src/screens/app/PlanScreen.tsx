@@ -1,5 +1,6 @@
 import type { AppState } from '../../data/demo'
 import { dogNamesLabel } from '../../data/demo'
+import { getMonthlyPlanConfirmation } from '../../lib/monthlyPlan'
 import {
   getPlaceEmoji,
   getPlacesForPlanCategory,
@@ -11,6 +12,7 @@ interface PlanScreenProps {
   onSelectCategory: (categoryId: string) => void
   onZipChange: (zipCode: string) => void
   onStartAdventure: (placeId: string) => void
+  onSelectMonthlyPlan: (planId: string) => void
 }
 
 export function PlanScreen({
@@ -18,8 +20,10 @@ export function PlanScreen({
   onSelectCategory,
   onZipChange,
   onStartAdventure,
+  onSelectMonthlyPlan,
 }: PlanScreenProps) {
   const places = getPlacesForPlanCategory(state.selectedPlanCategoryId)
+  const planConfirmation = getMonthlyPlanConfirmation(state.selectedMonthlyPlanId)
 
   return (
     <>
@@ -87,14 +91,22 @@ export function PlanScreen({
           Set up a monthly plan for {dogNamesLabel(state.dogs)}
         </div>
         {state.monthlyPlanOptions.map((option) => (
-          <div key={option.id} className="popt">
+          <button
+            key={option.id}
+            type="button"
+            className={`popt${state.selectedMonthlyPlanId === option.id ? ' on' : ''}`}
+            onClick={() => onSelectMonthlyPlan(option.id)}
+          >
             <i className={`ti ${option.icon}`} aria-hidden="true" />
             <div>
               <div>{option.title}</div>
               <div className="popt-sub">{option.subtitle}</div>
             </div>
-          </div>
+          </button>
         ))}
+        {planConfirmation ? (
+          <div className="plan-confirm">{planConfirmation}</div>
+        ) : null}
       </div>
     </>
   )
