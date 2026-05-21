@@ -81,6 +81,24 @@ export interface CommunityPost {
   comments: number
 }
 
+export interface Challenge {
+  id: string
+  name: string
+  progress: string
+  fillWidth: string
+  subtitle: string
+  prize: string
+}
+
+export interface Achievement {
+  id: string
+  emoji: string
+  title: string
+  subtitle: string
+  status: 'done' | 'active' | 'locked'
+  badge: string
+}
+
 export interface AppState {
   activeTab: TabId
   activeAdventure: ActiveAdventure | null
@@ -125,6 +143,14 @@ export interface AppState {
     chips: LiveChip[]
   }
   communityPosts: CommunityPost[]
+  bondLevel: {
+    label: string
+    rank: string
+    fillWidth: string
+    subtitle: string
+  }
+  challenges: Challenge[]
+  achievements: Achievement[]
 }
 
 export const defaultAppState: AppState = {
@@ -306,6 +332,64 @@ export const defaultAppState: AppState = {
       location: 'Julian, CA · Road trip',
       likes: 61,
       comments: 7,
+    },
+  ],
+  bondLevel: {
+    label: 'Bond level',
+    rank: 'Trail Scout',
+    fillWidth: '62%',
+    subtitle: '47 adventures · 22 places · Bailey + Omi',
+  },
+  challenges: [
+    {
+      id: 'socal-beach',
+      name: 'SoCal Beach Challenge',
+      progress: '4 of 6',
+      fillWidth: '66%',
+      subtitle: '6 different SoCal dog beaches this month',
+      prize: 'Win: PawStreak collar tag · Ends in 12 days',
+    },
+    {
+      id: 'morning-crew',
+      name: 'Morning Crew',
+      progress: '12 of 20',
+      fillWidth: '60%',
+      subtitle: '20 walks before 9am',
+      prize: 'Win: PawStreak bandana set',
+    },
+    {
+      id: 'road-tripper',
+      name: 'Road Tripper',
+      progress: '1 of 3',
+      fillWidth: '33%',
+      subtitle: '3 day trips outside your home city',
+      prize: 'Win: custom adventure patch',
+    },
+  ],
+  achievements: [
+    {
+      id: 'first-beach',
+      emoji: '🏖️',
+      title: 'First Beach Day',
+      subtitle: 'Dog Beach, OB · March 12',
+      status: 'done',
+      badge: 'Done',
+    },
+    {
+      id: 'trail-scout',
+      emoji: '🌲',
+      title: 'Trail Scout',
+      subtitle: '3 more trail walks',
+      status: 'active',
+      badge: 'In progress',
+    },
+    {
+      id: 'road-tripper-ach',
+      emoji: '🚗',
+      title: 'Road Tripper',
+      subtitle: 'Take 3 day trips',
+      status: 'locked',
+      badge: 'Locked',
     },
   ],
 }

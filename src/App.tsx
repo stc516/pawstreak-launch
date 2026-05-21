@@ -7,6 +7,7 @@ import { ActiveAdventureScreen } from './screens/app/ActiveAdventureScreen'
 import { HomeScreen } from './screens/app/HomeScreen'
 import { CommunityScreen } from './screens/app/CommunityScreen'
 import { JourneyScreen } from './screens/app/JourneyScreen'
+import { MilestonesScreen } from './screens/app/MilestonesScreen'
 import { PlanScreen } from './screens/app/PlanScreen'
 
 function App() {
@@ -90,6 +91,8 @@ function App() {
         )
       case 'community':
         return <CommunityScreen state={state} />
+      case 'milestones':
+        return <MilestonesScreen state={state} />
       default:
         return (
           <div className="placeholder-screen">

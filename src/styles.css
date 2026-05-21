@@ -1111,6 +1111,186 @@ button {
   font-size: 13px;
 }
 
+/* Milestones */
+
+.ms-bond {
+  background: var(--accent-light);
+  border: 0.5px solid var(--accent-border);
+  border-radius: 13px;
+  padding: 11px 13px;
+}
+
+.msb-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.msb-label {
+  font-size: 10px;
+  color: var(--accent-deep);
+}
+
+.msb-rank {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--accent-brown);
+  background: white;
+  border: 0.5px solid var(--accent-border);
+  padding: 2px 7px;
+  border-radius: 20px;
+}
+
+.msb-bar {
+  background: #ffe4ca;
+  border-radius: 10px;
+  height: 6px;
+}
+
+.msb-fill {
+  background: var(--accent);
+  border-radius: 10px;
+  height: 6px;
+}
+
+.msb-sub {
+  font-size: 9px;
+  color: var(--accent-deep);
+  margin-top: 5px;
+}
+
+.challenge {
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: 11px;
+  padding: 9px 11px;
+  margin-bottom: 5px;
+}
+
+.ch-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 6px;
+}
+
+.ch-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.ch-prog {
+  font-size: 9px;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.ch-bar {
+  background: var(--color-background-secondary);
+  border-radius: 10px;
+  height: 4px;
+}
+
+.ch-fill {
+  background: var(--accent);
+  border-radius: 10px;
+  height: 4px;
+}
+
+.ch-sub {
+  font-size: 9px;
+  color: var(--color-text-secondary);
+  margin-top: 4px;
+}
+
+.ch-prize {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 5px;
+  font-size: 9px;
+  color: var(--color-text-secondary);
+}
+
+.ch-prize i {
+  font-size: 12px;
+  color: var(--accent);
+}
+
+.ach-item {
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: 10px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.ach-item.done {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.ach-item.active {
+  background: var(--accent-light);
+  border-color: var(--accent-border);
+}
+
+.ach-ico {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--color-background-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.ach-item.done .ach-ico {
+  background: #dcfce7;
+}
+
+.ach-item.active .ach-ico {
+  background: var(--accent-pill);
+}
+
+.ach-title {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.ach-sub {
+  font-size: 9px;
+  color: var(--color-text-secondary);
+  margin-top: 1px;
+}
+
+.ach-badge {
+  font-size: 9px;
+  font-weight: 500;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.ach-badge.done {
+  color: #16a34a;
+}
+
+.ach-badge.active {
+  color: var(--accent-deep);
+}
+
+.ach-badge.locked {
+  color: var(--color-text-tertiary);
+}
+
 /* Placeholder for unbuilt tabs */
 
 .placeholder-screen {
