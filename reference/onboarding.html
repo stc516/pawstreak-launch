@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PawStreak — Let's get started</title>
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fbf8ff;--surface:#fff;--surface-low:#f4f2ff;--surface-mid:#edecff;
+  --primary:#436444;--primary-light:#c6edc4;--primary-dim:#abd0a9;
+  --secondary:#9a442d;--secondary-light:#ffdbd2;--secondary-mid:#fc9174;
+  --tertiary:#735726;--tertiary-light:#ffdeab;
+  --on-surface:#161a32;--on-surface-var:#424841;
+  --outline:#737970;--outline-var:#c2c8be;
+  --serif:'Literata',Georgia,serif;--sans:'Plus Jakarta Sans',system-ui,sans-serif;
+}
+html,body{height:100%;background:var(--bg);font-family:var(--sans);color:var(--on-surface);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+.screen{display:none;min-height:100dvh;flex-direction:column;position:relative;overflow:hidden}
+.screen.active{display:flex;animation:fadeUp .35s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+.blob{position:absolute;border-radius:50%;filter:blur(70px);pointer-events:none;z-index:0}
+.b1{background:#c6edc4;width:300px;height:300px;top:-80px;right:-60px;opacity:.4}
+.b2{background:#ffdbd2;width:260px;height:260px;bottom:40px;left:-80px;opacity:.35}
+.b3{background:#ffdeab;width:180px;height:180px;bottom:180px;right:-40px;opacity:.3}
+
+.steps{display:flex;gap:6px;justify-content:center;padding:18px 0 2px;position:relative;z-index:1}
+.dot{height:4px;border-radius:2px;background:var(--outline-var);transition:all .3s;width:24px}
+.dot.active{background:var(--primary);width:38px}
+.dot.done{background:var(--primary-dim);width:24px}
+
+.screen-body{flex:1;overflow-y:auto;padding:0 20px;position:relative;z-index:1;-webkit-overflow-scrolling:touch}
+.bottom-bar{padding:14px 20px 32px;position:relative;z-index:1;background:linear-gradient(to top,var(--bg) 65%,transparent)}
+
+.h1{font-family:var(--serif);font-size:clamp(26px,7vw,32px);font-weight:600;line-height:1.25;color:var(--on-surface)}
+.h2{font-family:var(--serif);font-size:clamp(22px,6vw,26px);font-weight:600;line-height:1.3;color:var(--on-surface)}
+.body{font-size:16px;line-height:1.65;color:var(--on-surface-var)}
+.label{font-size:14px;font-weight:600;letter-spacing:.01em}
+.caption{font-size:12px;font-weight:500;color:var(--on-surface-var)}
+
+.btn-primary{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--secondary);color:#fff;font-family:var(--sans);font-size:15px;font-weight:700;padding:16px 28px;border-radius:100px;border:none;cursor:pointer;transition:transform .15s,opacity .15s}
+.btn-primary:hover{opacity:.9}
+.btn-primary:active{transform:scale(.98)}
+.btn-primary:disabled{opacity:.36;cursor:not-allowed}
+.btn-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:var(--surface);border:1.5px solid var(--outline-var);color:var(--on-surface);font-family:var(--sans);font-size:15px;font-weight:600;padding:15px 28px;border-radius:100px;cursor:pointer;transition:border-color .2s,background .2s}
+.btn-google:hover{border-color:var(--primary);background:var(--surface-low)}
+.btn-back{background:none;border:none;font-family:var(--sans);font-size:15px;font-weight:600;color:var(--on-surface-var);cursor:pointer;padding:8px 0;transition:color .15s;white-space:nowrap}
+.btn-back:hover{color:var(--on-surface)}
+
+.field{position:relative;margin-bottom:12px}
+.field-label{position:absolute;top:-9px;left:14px;font-size:11px;font-weight:700;color:var(--primary);background:var(--surface);padding:0 5px;letter-spacing:.05em;text-transform:uppercase}
+.field-input{width:100%;background:var(--surface);border:1.5px solid var(--outline-var);border-radius:14px;padding:14px 16px;font-family:var(--sans);font-size:15px;color:var(--on-surface);outline:none;transition:border-color .2s,box-shadow .2s;appearance:none}
+.field-input::placeholder{color:var(--outline)}
+.field-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(67,100,68,.08)}
+select.field-input{background-image:url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%23737970' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:38px;cursor:pointer}
+
+.divider{display:flex;align-items:center;gap:12px;margin:12px 0}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--outline-var)}
+.divider span{font-size:13px;color:var(--outline);font-weight:500}
+
+/* WELCOME HERO — scenic, no orange block */
+.welcome-hero{position:relative;margin:20px 0 18px;border-radius:24px;overflow:hidden;height:230px;background:linear-gradient(180deg,#7db88a 0%,#5a9467 25%,#8fb87a 55%,#c8d98c 80%,#e8e5a8 100%)}
+.hero-scene{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:0}
+.hero-hills{position:absolute;bottom:0;left:0;right:0;height:120px}
+.hero-sun{position:absolute;top:28px;left:50%;transform:translateX(-50%);width:52px;height:52px;border-radius:50%;background:rgba(255,220,100,.85);box-shadow:0 0 0 12px rgba(255,220,100,.2),0 0 0 24px rgba(255,220,100,.1)}
+.hero-dog{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);font-size:36px}
+.hero-person{position:absolute;bottom:32px;left:calc(50% + 28px);transform:translateX(-50%);font-size:28px}
+.hero-name{position:absolute;top:18px;left:20px;font-family:var(--serif);font-size:28px;font-weight:700;color:rgba(255,255,255,.95);letter-spacing:-.01em;text-shadow:0 1px 8px rgba(0,0,0,.15)}
+.hero-chips{position:absolute;bottom:14px;left:12px;right:12px;display:flex;gap:6px;justify-content:space-between}
+.hero-chip{background:rgba(255,255,255,.22);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.35);border-radius:100px;padding:5px 11px;font-family:var(--sans);font-size:11px;font-weight:700;color:rgba(255,255,255,.95);display:flex;align-items:center;gap:4px;white-space:nowrap}
+.hero-chip .live-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;flex-shrink:0}
+
+/* PHOTO */
+.photo-wrap{position:relative;width:88px;height:88px;margin:0 auto 18px}
+.photo-circle{width:88px;height:88px;border-radius:50%;background:var(--surface-mid);border:2.5px dashed var(--outline-var);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;overflow:hidden}
+.photo-circle:hover{border-color:var(--primary);background:var(--primary-light)}
+.photo-edit{position:absolute;bottom:0;right:0;width:26px;height:26px;background:var(--secondary);border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid white;cursor:pointer}
+.photo-edit svg{width:12px;height:12px;stroke:white;fill:none}
+
+/* VIBE CARDS — multi select */
+.vibe-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:14px 0}
+.vibe-card{background:rgba(255,255,255,.5);backdrop-filter:blur(12px);border:1.5px solid rgba(255,255,255,.7);border-radius:18px;padding:16px 12px;display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;transition:all .22s ease;text-align:center;-webkit-tap-highlight-color:transparent;position:relative}
+.vibe-card:hover{transform:translateY(-2px);background:rgba(255,255,255,.75)}
+.vibe-card.selected{border-color:var(--primary);background:rgba(198,237,196,.28);box-shadow:0 5px 18px rgba(67,100,68,.1)}
+.vibe-check{position:absolute;top:9px;right:9px;width:18px;height:18px;border-radius:50%;background:var(--primary);display:none;align-items:center;justify-content:center}
+.vibe-check svg{width:10px;height:10px;stroke:white;fill:none;stroke-width:2.5}
+.vibe-card.selected .vibe-check{display:flex}
+.vibe-icon{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;background:var(--surface-low);transition:transform .2s}
+.vibe-card:hover .vibe-icon{transform:scale(1.08)}
+.vibe-card.selected .vibe-icon{background:var(--primary-light)}
+.vibe-name{font-size:13px;font-weight:700;color:var(--on-surface)}
+.vibe-desc{font-size:11px;color:var(--on-surface-var);line-height:1.4}
+.select-hint{font-size:12px;color:var(--outline);text-align:center;margin-top:2px}
+
+/* CAT CHIPS */
+.cat-chips{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}
+.cat-chip{display:flex;align-items:center;gap:5px;padding:8px 13px;background:rgba(255,255,255,.6);border:1.5px solid rgba(255,255,255,.75);border-radius:100px;font-size:13px;font-weight:600;color:var(--on-surface);cursor:pointer;transition:all .18s;backdrop-filter:blur(8px)}
+.cat-chip:hover{background:rgba(255,255,255,.9)}
+.cat-chip.selected{border-color:var(--primary);background:rgba(198,237,196,.3);color:var(--primary)}
+
+/* MAP */
+.map-mock{width:100%;height:150px;background:linear-gradient(135deg,#dff0e8 0%,#c8e6c9 40%,#b2dfdb 100%);border-radius:18px;position:relative;overflow:hidden;margin:10px 0}
+.map-pin{position:absolute;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.map-you{position:absolute;bottom:10px;left:10px;background:rgba(255,255,255,.88);backdrop-filter:blur(8px);border-radius:100px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--primary);display:flex;align-items:center;gap:4px}
+.map-count{position:absolute;top:10px;right:10px;background:rgba(255,255,255,.88);backdrop-filter:blur(8px);border-radius:100px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--on-surface)}
+
+/* PLACE ITEMS */
+.place-item{display:flex;align-items:center;gap:11px;padding:11px;background:rgba(255,255,255,.6);border-radius:13px;margin-bottom:7px;cursor:pointer;transition:background .15s;border:1px solid rgba(255,255,255,.8)}
+.place-item:hover{background:rgba(255,255,255,.88)}
+.place-thumb{width:44px;height:44px;border-radius:10px;background:var(--surface-mid);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.place-name{font-size:13px;font-weight:600;color:var(--on-surface)}
+.place-meta{font-size:11px;color:var(--on-surface-var);margin-top:2px}
+.place-arrow{margin-left:auto;color:var(--outline-var);font-size:18px;flex-shrink:0}
+
+/* ADD SPOT CARD */
+.add-spot-card{background:rgba(255,255,255,.45);border:1.5px dashed var(--outline-var);border-radius:16px;padding:16px;cursor:pointer;transition:all .2s;text-align:center;margin-top:4px}
+.add-spot-card:hover{border-color:var(--secondary);background:rgba(252,145,116,.06)}
+
+/* SEARCH */
+.search-wrap{position:relative;margin:8px 0}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--outline);pointer-events:none}
+.search-input{width:100%;background:rgba(255,255,255,.7);border:1.5px solid rgba(255,255,255,.85);border-radius:100px;padding:12px 16px 12px 42px;font-family:var(--sans);font-size:14px;color:var(--on-surface);outline:none;transition:all .2s;backdrop-filter:blur(8px)}
+.search-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(67,100,68,.08);background:rgba(255,255,255,.9)}
+.search-input::placeholder{color:var(--outline)}
+
+/* SECOND DOG TOGGLE */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.5);border:1.5px solid rgba(255,255,255,.7);border-radius:14px;padding:12px 14px;margin-top:6px;cursor:pointer;transition:all .2s}
+.toggle-row:hover{background:rgba(255,255,255,.8)}
+.tog{width:40px;height:22px;background:var(--outline-var);border-radius:100px;position:relative;transition:background .2s;flex-shrink:0}
+.tog.on{background:var(--primary)}
+.tog::after{content:'';position:absolute;width:16px;height:16px;background:white;border-radius:50%;top:3px;left:3px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.tog.on::after{transform:translateX(18px)}
+
+/* CONFIRM */
+.confirm-card{background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.8);border-radius:20px;padding:18px;margin:12px 0}
+.confirm-row{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid rgba(0,0,0,.05);gap:12px}
+.confirm-row:last-child{border-bottom:none}
+.confirm-key{font-size:13px;color:var(--on-surface-var);white-space:nowrap}
+.confirm-val{font-size:13px;font-weight:600;color:var(--on-surface);text-align:right}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(22,26,50,.45);backdrop-filter:blur(4px);z-index:100;align-items:flex-end;justify-content:center}
+.modal-overlay.open{display:flex;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-sheet{background:var(--bg);border-radius:24px 24px 0 0;padding:22px 20px 40px;width:100%;max-width:480px;animation:slideUp .28s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-handle{width:36px;height:4px;background:var(--outline-var);border-radius:2px;margin:0 auto 18px}
+
+@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-10px)}}
+.privacy-note{display:flex;align-items:center;gap:6px;justify-content:center;margin-top:12px}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ SCREEN 1: WELCOME ═══════════════════ -->
+<div class="screen active" id="s1">
+  <div class="blob b1"></div><div class="blob b2"></div>
+  <div class="screen-body" style="padding-top:12px">
+
+    <div class="welcome-hero">
+      <div class="hero-name">PawStreak</div>
+      <!-- Scenic illustration: sky, hills, sun, dog + person -->
+      <svg style="position:absolute;inset:0;width:100%;height:100%" viewBox="0 0 380 230" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <!-- Sky -->
+        <rect width="380" height="230" fill="url(#sky)"/>
+        <defs>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#87CEEB"/><stop offset="60%" stop-color="#98D4A3"/><stop offset="100%" stop-color="#7DB88A"/></linearGradient>
+          <linearGradient id="hill1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5a9467"/><stop offset="100%" stop-color="#436444"/></linearGradient>
+          <linearGradient id="hill2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6faa7a"/><stop offset="100%" stop-color="#5a9467"/></linearGradient>
+        </defs>
+        <!-- Sun glow -->
+        <circle cx="190" cy="72" r="34" fill="rgba(255,220,80,.18)"/>
+        <circle cx="190" cy="72" r="22" fill="rgba(255,220,80,.3)"/>
+        <circle cx="190" cy="72" r="14" fill="rgba(255,230,100,.9)"/>
+        <!-- Back hill -->
+        <ellipse cx="190" cy="200" rx="240" ry="80" fill="url(#hill2)"/>
+        <!-- Front hill -->
+        <ellipse cx="100" cy="220" rx="180" ry="70" fill="url(#hill1)"/>
+        <ellipse cx="300" cy="225" rx="160" ry="65" fill="url(#hill1)"/>
+        <!-- Path -->
+        <path d="M160 230 Q180 190 190 170 Q200 190 220 230" fill="rgba(255,255,255,.15)"/>
+        <!-- Trees -->
+        <g fill="#3d7a44" opacity=".7">
+          <polygon points="48,140 60,110 72,140"/><rect x="57" y="140" width="6" height="12" fill="#5a6a45"/>
+          <polygon points="300,135 315,100 330,135"/><rect x="311" y="135" width="8" height="14" fill="#5a6a45"/>
+          <polygon points="320,145 332,118 344,145"/><rect x="329" y="145" width="6" height="10" fill="#5a6a45"/>
+        </g>
+        <!-- Person silhouette -->
+        <g transform="translate(175,148)">
+          <circle cx="8" cy="-28" r="7" fill="#2d3748" opacity=".75"/>
+          <rect x="3" y="-20" width="10" height="20" rx="3" fill="#2d3748" opacity=".75"/>
+          <line x1="8" y1="-8" x2="2" y2="5" stroke="#2d3748" stroke-width="3.5" stroke-linecap="round" opacity=".75"/>
+          <line x1="8" y1="-8" x2="14" y2="5" stroke="#2d3748" stroke-width="3.5" stroke-linecap="round" opacity=".75"/>
+        </g>
+        <!-- Dog silhouette -->
+        <g transform="translate(198,154)">
+          <ellipse cx="12" cy="0" rx="13" ry="8" fill="#5a3e28" opacity=".8"/>
+          <circle cx="22" cy="-5" r="7" fill="#5a3e28" opacity=".8"/>
+          <!-- tail -->
+          <path d="M0 -2 Q-8 -12 -4 -16" stroke="#5a3e28" stroke-width="3" fill="none" stroke-linecap="round" opacity=".8"/>
+          <!-- legs -->
+          <line x1="5" y1="6" x2="3" y2="16" stroke="#5a3e28" stroke-width="3" stroke-linecap="round" opacity=".8"/>
+          <line x1="10" y1="7" x2="9" y2="17" stroke="#5a3e28" stroke-width="3" stroke-linecap="round" opacity=".8"/>
+          <line x1="17" y1="7" x2="18" y2="17" stroke="#5a3e28" stroke-width="3" stroke-linecap="round" opacity=".8"/>
+          <line x1="22" y1="6" x2="24" y2="16" stroke="#5a3e28" stroke-width="3" stroke-linecap="round" opacity=".8"/>
+          <!-- ear -->
+          <ellipse cx="26" cy="-9" rx="4" ry="6" fill="#4a3020" opacity=".8" transform="rotate(20,26,-9)"/>
+        </g>
+        <!-- Leash -->
+        <path d="M183 160 Q192 165 198 162" stroke="#2d3748" stroke-width="2" fill="none" stroke-linecap="round" opacity=".6"/>
+      </svg>
+      <div class="hero-chips">
+        <div class="hero-chip"><div class="live-dot"></div>247 dogs out right now</div>
+        <div class="hero-chip">🔥 14 day streak</div>
+      </div>
+    </div>
+
+    <h1 class="h1" style="margin-bottom:10px">Your dog gives you<br>everything. Give them<br>their best day.</h1>
+    <p class="body" style="font-size:15px">Adventures, memories, and the life your dog deserves — all in one place.</p>
+    <div style="height:20px"></div>
+  </div>
+  <div class="bottom-bar">
+    <button class="btn-primary" onclick="go(2)">
+      Get started
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3.75 9h10.5M9.75 4.5L14.25 9l-4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="divider" style="margin:13px 0 11px"><span>already have an account?</span></div>
+    <button class="btn-google" onclick="go(2)">Sign in</button>
+  </div>
+</div>
+
+<!-- ═══════════════════ SCREEN 2: SIGN UP ═══════════════════ -->
+<div class="screen" id="s2">
+  <div class="blob b1" style="opacity:.3"></div><div class="blob b2" style="opacity:.3"></div>
+  <div class="steps"><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+  <div class="screen-body" style="padding-top:20px">
+    <div style="text-align:center;margin-bottom:4px">
+      <span style="font-size:32px">🐾</span>
+    </div>
+    <h2 class="h2" style="text-align:center;margin:8px 0 6px">Create your account</h2>
+    <p class="body" style="text-align:center;font-size:14px;margin-bottom:24px">Free to start. Your dog's story starts here.</p>
+
+    <button class="btn-google" style="margin-bottom:10px" onclick="go(3)">
+      <svg width="18" height="18" viewBox="0 0 18 18"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+      Continue with Google
+    </button>
+    <button class="btn-google" style="margin-bottom:18px" onclick="go(3)">
+      <svg width="18" height="18" viewBox="0 0 814 1000" fill="currentColor"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-57.8-155.5-127.4C46 399.8 32 266.4 32 140.9 32 64.6 87.5 5.7 162.5 5.7c74.1 0 121.1 48 167.1 48 43.9 0 97.9-50.7 168.3-50.7 72 0 133.3 46.6 168.3 112.5zM587.2 26.7c32.3-38 54.8-89.8 54.8-141.6 0-7.1-.6-14.3-1.9-20.1-51.5 1.9-112.8 34.3-149.3 76.2-28.9 32.9-56.3 84.7-56.3 137.2 0 7.7 1.3 15.5 1.9 18 3.2.6 8.4 1.3 13.6 1.3 46.5 0 102.5-30.4 137.2-71z"/></svg>
+      Continue with Apple
+    </button>
+
+    <div class="divider"><span>or sign up with email</span></div>
+
+    <div class="field">
+      <span class="field-label">Your Name</span>
+      <input class="field-input" type="text" id="user-name" placeholder="First name" oninput="checkSignup()"/>
+    </div>
+    <div class="field">
+      <span class="field-label">Email</span>
+      <input class="field-input" type="email" id="user-email" placeholder="you@email.com" oninput="checkSignup()"/>
+    </div>
+    <div class="field">
+      <span class="field-label">Password</span>
+      <input class="field-input" type="password" id="user-pass" placeholder="Min. 8 characters" oninput="checkSignup()"/>
+    </div>
+    <div style="height:8px"></div>
+  </div>
+  <div class="bottom-bar">
+    <button class="btn-primary" id="btn-s2" onclick="go(3)" disabled>
+      Create account
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3.75 9h10.5M9.75 4.5L14.25 9l-4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <p class="caption" style="text-align:center;margin-top:11px">By joining you agree to our <a href="#" style="color:var(--primary);text-decoration:none;font-weight:600">Privacy Policy</a> and <a href="#" style="color:var(--primary);text-decoration:none;font-weight:600">Terms</a>.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════ SCREEN 3: MEET YOUR DOG ═══════════════════ -->
+<div class="screen" id="s3">
+  <div class="blob b1" style="opacity:.28"></div><div class="blob b3"></div>
+  <div class="steps"><div class="dot done"></div><div class="dot done"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+  <div class="screen-body" style="padding-top:16px">
+    <div style="text-align:center;margin-bottom:4px">
+      <span style="background:var(--primary-light);color:var(--primary);font-size:11px;font-weight:700;padding:4px 12px;border-radius:100px;letter-spacing:.05em">NEW JOURNEY</span>
+    </div>
+    <h2 class="h2" style="text-align:center;margin:10px 0 5px">Your dog's daily<br>adventure starts here.</h2>
+    <p class="body" style="text-align:center;margin-bottom:18px;font-size:14px">Tell us about your companion.</p>
+
+    <div class="photo-wrap">
+      <div class="photo-circle" onclick="document.getElementById('file-input').click()">
+        <div id="photo-placeholder" style="display:flex;flex-direction:column;align-items:center;gap:4px">
+          <svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="var(--outline)" stroke-width="1.5"><path d="M18 7.5H8a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2z"/><circle cx="13" cy="13" r="2.5"/><path d="M10.5 7.5V6a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v1.5"/></svg>
+          <span style="font-size:9px;font-weight:700;color:var(--outline);letter-spacing:.06em">UPLOAD</span>
+        </div>
+        <img id="photo-preview" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover"/>
+      </div>
+      <div class="photo-edit" onclick="document.getElementById('file-input').click()">
+        <svg viewBox="0 0 14 14" stroke="white" fill="none" stroke-width="1.5"><path d="M9.5 2.5l2 2-7 7H2.5v-2l7-7z"/></svg>
+      </div>
+    </div>
+    <input type="file" id="file-input" accept="image/*" style="display:none" onchange="previewPhoto(this)"/>
+
+    <div class="field">
+      <span class="field-label">Dog Name</span>
+      <input class="field-input" type="text" id="dog-name" placeholder="e.g. Bailey" oninput="updateDogName()"/>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div class="field" style="margin-bottom:0">
+        <span class="field-label">Breed</span>
+        <select class="field-input">
+          <option value="">Select</option>
+          <option>Golden Retriever</option><option>Labrador</option><option>Husky</option>
+          <option>Doodle</option><option>Poodle</option><option>Bulldog</option>
+          <option>Beagle</option><option>Shepherd</option><option>Mixed / Other</option>
+        </select>
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <span class="field-label">Age</span>
+        <select class="field-input">
+          <option>Puppy (under 1)</option><option>1–3 years</option><option>4–7 years</option>
+          <option>8+ years (senior)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="toggle-row" onclick="toggleSecondDog()">
+      <div>
+        <div class="label" style="font-size:13px">Got another dog? Add them too.</div>
+        <div class="caption" style="margin-top:2px">Both dogs show on every adventure card.</div>
+      </div>
+      <div class="tog" id="second-dog-toggle"></div>
+    </div>
+    <div id="second-dog-form" style="display:none;margin-top:10px;background:rgba(255,255,255,.5);border-radius:16px;padding:14px;border:1px solid rgba(255,255,255,.75)">
+      <div class="label" style="margin-bottom:10px;font-size:13px;color:var(--on-surface-var)">Second dog</div>
+      <div class="field">
+        <span class="field-label">Name</span>
+        <input class="field-input" type="text" placeholder="e.g. Omi"/>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="field" style="margin-bottom:0">
+          <span class="field-label">Breed</span>
+          <select class="field-input"><option value="">Select</option><option>Labrador</option><option>Husky</option><option>Mixed / Other</option></select>
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <span class="field-label">Age</span>
+          <select class="field-input"><option>Puppy</option><option>1–3 years</option><option>4–7 years</option><option>8+ years</option></select>
+        </div>
+      </div>
+    </div>
+    <div style="height:24px"></div>
+  </div>
+  <div class="bottom-bar">
+    <button class="btn-primary" id="btn-s3" onclick="go(4)" disabled>
+      Next
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3.75 9h10.5M9.75 4.5L14.25 9l-4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="privacy-note">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="var(--outline)" stroke-width="1.4"><rect x="2" y="5.5" width="9" height="6.5" rx="1.5"/><path d="M4 5.5V3.5a2.5 2.5 0 0 1 5 0v2"/></svg>
+      <span class="caption">Your dog's privacy is our top priority.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ SCREEN 4: ADVENTURE STYLE (multi-select) ═══════════════════ -->
+<div class="screen" id="s4">
+  <div class="blob b2" style="opacity:.25"></div><div class="blob b3" style="opacity:.28"></div>
+  <div class="steps"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+  <div class="screen-body" style="padding-top:16px">
+    <h2 class="h2" style="margin-bottom:6px">What does <span id="name-s4">your dog</span> love most?</h2>
+    <p class="body" style="font-size:14px;margin-bottom:4px">Pick everything that fits — dogs are into multiple things.</p>
+    <p class="select-hint">Tap all that apply</p>
+
+    <div class="vibe-grid">
+      <div class="vibe-card" onclick="toggleVibe(this)">
+        <div class="vibe-check"><svg viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
+        <div class="vibe-icon">🧭</div>
+        <div class="vibe-name">Explorer</div>
+        <div class="vibe-desc">New trails, dense paths, untouched spots.</div>
+      </div>
+      <div class="vibe-card" onclick="toggleVibe(this)">
+        <div class="vibe-check"><svg viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
+        <div class="vibe-icon">🐾</div>
+        <div class="vibe-name">Social Pup</div>
+        <div class="vibe-desc">Busy parks, tail wags, meeting new friends.</div>
+      </div>
+      <div class="vibe-card" onclick="toggleVibe(this)">
+        <div class="vibe-check"><svg viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
+        <div class="vibe-icon">🌅</div>
+        <div class="vibe-name">Sunset Chaser</div>
+        <div class="vibe-desc">Quiet views and golden hour strolls.</div>
+      </div>
+      <div class="vibe-card" onclick="toggleVibe(this)">
+        <div class="vibe-check"><svg viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
+        <div class="vibe-icon">🏠</div>
+        <div class="vibe-name">Cozy Companion</div>
+        <div class="vibe-desc">Short loops, neighborhood walks, chill days.</div>
+      </div>
+      <div class="vibe-card" onclick="toggleVibe(this)">
+        <div class="vibe-check"><svg viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
+        <div class="vibe-icon">🏖️</div>
+        <div class="vibe-name">Beach Dog</div>
+        <div class="vibe-desc">Sand, waves, off-leash freedom.</div>
+      </div>
+      <div class="vibe-card" onclick="toggleVibe(this)">
+        <div class="vibe-check"><svg viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
+        <div class="vibe-icon">🚗</div>
+        <div class="vibe-name">Road Tripper</div>
+        <div class="vibe-desc">Day trips, new cities, big adventures.</div>
+      </div>
+      <div class="vibe-card" onclick="toggleVibe(this)">
+        <div class="vibe-check"><svg viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
+        <div class="vibe-icon">☕</div>
+        <div class="vibe-name">Cafe Pup</div>
+        <div class="vibe-desc">Dog patios, coffee runs, people watching.</div>
+      </div>
+      <div class="vibe-card" onclick="toggleVibe(this)">
+        <div class="vibe-check"><svg viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2.5"/></svg></div>
+        <div class="vibe-icon">⭐</div>
+        <div class="vibe-name">Local Legend</div>
+        <div class="vibe-desc">Knows every block, owns the neighborhood.</div>
+      </div>
+    </div>
+    <div style="height:12px"></div>
+  </div>
+  <div class="bottom-bar" style="display:flex;gap:10px">
+    <button class="btn-back" onclick="go(3)">Back</button>
+    <button class="btn-primary" id="btn-s4" onclick="go(5)" disabled style="flex:1">
+      Next
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3.75 9h10.5M9.75 4.5L14.25 9l-4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════ SCREEN 5: YOUR LOCAL WORLD ═══════════════════ -->
+<div class="screen" id="s5">
+  <div class="blob b1" style="opacity:.3"></div><div class="blob b2" style="opacity:.22"></div>
+  <div class="steps"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot active"></div><div class="dot"></div></div>
+  <div class="screen-body" style="padding-top:16px">
+    <h2 class="h2" style="margin-bottom:6px">Where do you and <span id="name-s5">your dog</span> usually adventure?</h2>
+    <p class="body" style="font-size:14px;margin-bottom:12px">We'll map out spots you'll both love nearby.</p>
+
+    <div class="search-wrap">
+      <svg class="search-icon" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5"/><path d="M13 13l3 3"/></svg>
+      <input class="search-input" type="text" placeholder="Search for a park, trail, or city..."/>
+    </div>
+
+    <div class="map-mock">
+      <svg style="position:absolute;inset:0;width:100%;height:100%" viewBox="0 0 340 150" xmlns="http://www.w3.org/2000/svg">
+        <rect width="340" height="150" fill="#e8f5e9"/>
+        <rect x="0" y="60" width="340" height="3" fill="rgba(255,255,255,.5)"/>
+        <rect x="0" y="100" width="340" height="3" fill="rgba(255,255,255,.5)"/>
+        <rect x="80" y="0" width="3" height="150" fill="rgba(255,255,255,.5)"/>
+        <rect x="180" y="0" width="3" height="150" fill="rgba(255,255,255,.5)"/>
+        <rect x="260" y="0" width="3" height="150" fill="rgba(255,255,255,.5)"/>
+        <ellipse cx="100" cy="85" rx="28" ry="18" fill="rgba(67,100,68,.15)"/>
+        <ellipse cx="230" cy="50" rx="20" ry="14" fill="rgba(30,120,190,.1)"/>
+      </svg>
+      <div class="map-pin" style="background:var(--primary);color:white;top:38%;left:28%">🌲</div>
+      <div class="map-pin" style="background:var(--secondary);color:white;top:22%;left:62%">🏖️</div>
+      <div class="map-pin" style="background:var(--tertiary-light);top:58%;left:52%;width:24px;height:24px;font-size:12px">☕</div>
+      <div class="map-pin" style="background:white;border:2px solid var(--primary);top:48%;left:72%;width:24px;height:24px;font-size:12px">🐕</div>
+      <div class="map-you"><svg width="8" height="8" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="var(--primary)"/></svg>You're here</div>
+      <div class="map-count">200+ spots</div>
+    </div>
+
+    <div class="cat-chips">
+      <div class="cat-chip selected" onclick="toggleCat(this)">🌲 Park</div>
+      <div class="cat-chip" onclick="toggleCat(this)">🏖️ Beach</div>
+      <div class="cat-chip" onclick="toggleCat(this)">🥾 Trail</div>
+      <div class="cat-chip" onclick="toggleCat(this)">☕ Cafe</div>
+      <div class="cat-chip" onclick="toggleCat(this)">🍺 Brewery</div>
+      <div class="cat-chip" onclick="toggleCat(this)">🐕 Dog park</div>
+      <div class="cat-chip" onclick="toggleCat(this)">🌸 Gardens</div>
+    </div>
+
+    <div class="label" style="margin:12px 0 8px;display:flex;align-items:center;gap:6px">
+      <span style="color:var(--secondary)">✦</span> Nearby spots
+    </div>
+    <div class="place-item">
+      <div class="place-thumb">🌲</div>
+      <div><div class="place-name">Oak Ridge Dog Trail</div><div class="place-meta">0.8 mi away · Off-leash · Park</div></div>
+      <div class="place-arrow">›</div>
+    </div>
+    <div class="place-item">
+      <div class="place-thumb">☕</div>
+      <div><div class="place-name">The Barking Bean</div><div class="place-meta">1.2 mi away · Dog treats · Cafe</div></div>
+      <div class="place-arrow">›</div>
+    </div>
+    <div class="place-item">
+      <div class="place-thumb">🏖️</div>
+      <div><div class="place-name">Dog Beach, Ocean Beach</div><div class="place-meta">3.4 mi away · Off-leash · SD</div></div>
+      <div class="place-arrow">›</div>
+    </div>
+
+
+    <div style="height:24px"></div>
+  </div>
+  <div class="bottom-bar" style="display:flex;gap:10px">
+    <button class="btn-back" onclick="go(4)">Back</button>
+    <button class="btn-primary" onclick="go(6)" style="flex:1">
+      Create our world
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3.75 9h10.5M9.75 4.5L14.25 9l-4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════ SCREEN 6: ALL SET ═══════════════════ -->
+<div class="screen" id="s6">
+  <div class="blob b1" style="opacity:.4"></div><div class="blob b2" style="opacity:.35"></div><div class="blob b3" style="opacity:.3"></div>
+  <div class="steps"><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot done"></div><div class="dot active"></div></div>
+  <div class="screen-body center" style="padding-top:20px">
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:60px;margin-bottom:10px;animation:bounce .9s ease infinite alternate">🐾</div>
+      <h1 class="h1" style="margin-bottom:8px">You're all set,<br><span id="name-s6" style="color:var(--secondary)">friend</span>!</h1>
+      <p class="body" style="font-size:15px">Your adventure journal is ready.<br>Let's make every day count.</p>
+    </div>
+
+    <div class="confirm-card">
+      <div class="confirm-row">
+        <span class="confirm-key">Dog</span>
+        <span class="confirm-val" id="confirm-dog">—</span>
+      </div>
+      <div class="confirm-row">
+        <span class="confirm-key">Adventure styles</span>
+        <span class="confirm-val" id="confirm-styles">—</span>
+      </div>
+      <div class="confirm-row">
+        <span class="confirm-key">Area</span>
+        <span class="confirm-val">San Diego, CA</span>
+      </div>
+      <div class="confirm-row">
+        <span class="confirm-key">Spots ready</span>
+        <span class="confirm-val" style="color:var(--primary)">200+ nearby</span>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:7px;margin-top:4px">
+      <div class="place-item" style="background:rgba(255,255,255,.55)">
+        <div style="font-size:20px">🗓️</div>
+        <div><div class="label" style="font-size:13px">Monthly adventure plan</div><div class="caption">Curated for your dog · syncs to calendar</div></div>
+      </div>
+      <div class="place-item" style="background:rgba(255,255,255,.55)">
+        <div style="font-size:20px">✨</div>
+        <div><div class="label" style="font-size:13px">Flashbacks &amp; memories</div><div class="caption">Every adventure saved, forever</div></div>
+      </div>
+      <div class="place-item" style="background:rgba(255,255,255,.55)">
+        <div style="font-size:20px">🏅</div>
+        <div><div class="label" style="font-size:13px">SoCal Beach Challenge</div><div class="caption">6 beaches. 1 month. Starts now.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-bar">
+    <button class="btn-primary" onclick="alert('Launching PawStreak...')">
+      Start your first adventure
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3.75 9h10.5M9.75 4.5L14.25 9l-4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- ADD SPOT MODAL -->
+<div class="modal-overlay" id="add-modal" onclick="closeModal(event)">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <h2 class="h2" style="font-size:21px;margin-bottom:5px">Add a spot</h2>
+    <p class="body" style="font-size:14px;margin-bottom:16px">Know somewhere great we haven't mapped? Tell us and we'll add it for the whole community.</p>
+    <div class="field"><span class="field-label">Place Name</span><input class="field-input" type="text" placeholder="e.g. Secret Cove Trail"/></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div class="field" style="margin-bottom:0"><span class="field-label">Type</span>
+        <select class="field-input"><option>Beach</option><option>Trail</option><option>Park</option><option>Dog Park</option><option>Coffee Shop</option><option>Brewery</option><option>Gardens</option><option>Road Trip</option><option>Neighborhood Walk</option><option>Other</option></select>
+      </div>
+      <div class="field" style="margin-bottom:0"><span class="field-label">City / Area</span><input class="field-input" type="text" placeholder="e.g. San Diego"/></div>
+    </div>
+    <div class="field"><span class="field-label">Why dogs love it</span><input class="field-input" type="text" placeholder="Off-leash, great smells, water access..."/></div>
+    <button class="btn-primary" style="margin-top:4px" onclick="submitSpot()">Submit this spot</button>
+    <p class="caption" style="text-align:center;margin-top:10px">We review every submission before it goes live. Thanks for helping the pack! 🐾</p>
+  </div>
+</div>
+
+<script>
+let dogName='', selectedVibes=[], secondDogOn=false;
+
+function go(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  window.scrollTo(0,0);
+  if(n===4) document.getElementById('name-s4').textContent=dogName||'your dog';
+  if(n===5) document.getElementById('name-s5').textContent=dogName||'your dog';
+  if(n===6){
+    document.getElementById('name-s6').textContent=dogName||'friend';
+    document.getElementById('confirm-dog').textContent=dogName||'—';
+    document.getElementById('confirm-styles').textContent=selectedVibes.length?selectedVibes.join(', '):'—';
+  }
+}
+
+function checkSignup(){
+  const n=document.getElementById('user-name').value.trim();
+  const e=document.getElementById('user-email').value.trim();
+  const p=document.getElementById('user-pass').value.trim();
+  document.getElementById('btn-s2').disabled=!(n&&e.includes('@')&&p.length>=8);
+}
+
+function updateDogName(){
+  dogName=document.getElementById('dog-name').value.trim();
+  document.getElementById('btn-s3').disabled=dogName.length<1;
+}
+
+function toggleVibe(el){
+  el.classList.toggle('selected');
+  const name=el.querySelector('.vibe-name').textContent;
+  if(el.classList.contains('selected')){
+    if(!selectedVibes.includes(name)) selectedVibes.push(name);
+  } else {
+    selectedVibes=selectedVibes.filter(v=>v!==name);
+  }
+  document.getElementById('btn-s4').disabled=selectedVibes.length===0;
+  if(navigator.vibrate) navigator.vibrate(8);
+}
+
+function toggleSecondDog(){
+  secondDogOn=!secondDogOn;
+  document.getElementById('second-dog-toggle').classList.toggle('on',secondDogOn);
+  document.getElementById('second-dog-form').style.display=secondDogOn?'block':'none';
+}
+
+function toggleCat(el){ el.classList.toggle('selected'); }
+
+function openAddModal(){
+  document.getElementById('add-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(e){
+  if(e.target===document.getElementById('add-modal')){
+    document.getElementById('add-modal').classList.remove('open');
+    document.body.style.overflow='';
+  }
+}
+function submitSpot(){
+  document.getElementById('add-modal').classList.remove('open');
+  document.body.style.overflow='';
+  setTimeout(()=>alert("Thanks! We'll review your spot and add it to the map. 🐾"),200);
+}
+function previewPhoto(input){
+  if(input.files&&input.files[0]){
+    const r=new FileReader();
+    r.onload=e=>{
+      const img=document.getElementById('photo-preview');
+      const ph=document.getElementById('photo-placeholder');
+      img.src=e.target.result;
+      img.style.display='block';
+      ph.style.display='none';
+    };
+    r.readAsDataURL(input.files[0]);
+  }
+}
+</script>
+</body>
+</html>

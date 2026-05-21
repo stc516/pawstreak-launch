@@ -1,0 +1,664 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+.wrap { display: flex; flex-direction: column; gap: 36px; padding: 8px 0 20px; }
+.screen-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-tertiary); margin-bottom: 8px; }
+
+.phone {
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: 26px;
+  overflow: hidden;
+  width: 100%;
+  max-width: 340px;
+  margin: 0 auto;
+}
+
+.sbar { display: flex; justify-content: space-between; padding: 10px 16px 4px; font-size: 11px; font-weight: 500; color: var(--color-text-secondary); }
+
+.scroll { padding: 0 13px 12px; display: flex; flex-direction: column; gap: 9px; }
+
+.aheader { display: flex; align-items: center; justify-content: space-between; padding: 4px 0 2px; }
+.alogo { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
+.alogo span { color: #F97316; }
+
+.two-dogs { display: flex; align-items: center; gap: 6px; background: #FFF4EC; border: 0.5px solid #FDBA74; border-radius: 20px; padding: 4px 10px 4px 4px; }
+.dog-av { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; }
+.da-b { background: #FB923C; color: #7C2D12; }
+.da-o { background: #F59E0B; color: #78350F; margin-left: -8px; border: 2px solid #FFF4EC; }
+.dog-names { font-size: 11px; font-weight: 500; color: #9A3412; }
+
+.streak-bar { background: #FFF7ED; border: 0.5px solid #FED7AA; border-radius: 13px; padding: 11px 13px; display: flex; align-items: center; justify-content: space-between; }
+.snum { font-size: 26px; font-weight: 500; color: #F97316; line-height: 1; }
+.slabel { font-size: 10px; color: #C2410C; }
+.snudge { font-size: 10px; color: #9A3412; background: white; border-radius: 8px; padding: 4px 8px; border: 0.5px solid #FED7AA; }
+
+.sec { font-size: 12px; font-weight: 500; color: var(--color-text-primary); }
+
+.chips { display: flex; gap: 5px; flex-wrap: wrap; }
+.chip { display: flex; flex-direction: column; align-items: center; gap: 3px; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: 11px; padding: 7px 8px; flex: 1; min-width: 48px; }
+.chip.on { background: #FFF4EC; border-color: #FB923C; }
+.cico { font-size: 16px; }
+.clbl { font-size: 9px; color: var(--color-text-secondary); white-space: nowrap; }
+.chip.on .clbl { color: #C2410C; font-weight: 500; }
+
+.hero-card { background: #FFF4EC; border: 0.5px solid #FED7AA; border-radius: 13px; padding: 11px 13px; }
+.hc-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.hc-title { font-size: 14px; font-weight: 500; color: #9A3412; }
+.hc-sub { font-size: 10px; color: #C2410C; margin-top: 2px; }
+.hc-badge { background: #F97316; color: white; font-size: 9px; font-weight: 500; padding: 3px 7px; border-radius: 20px; }
+.qbtns { display: flex; gap: 5px; }
+.qb { flex: 1; background: white; border: 0.5px solid #FED7AA; border-radius: 7px; padding: 6px 0; font-size: 10px; font-weight: 500; color: #9A3412; text-align: center; }
+
+.mstrip { display: flex; gap: 5px; }
+.mthumb { flex: 1; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: 9px; height: 54px; display: flex; flex-direction: column; justify-content: flex-end; padding: 5px 6px; }
+.mtlbl { font-size: 9px; color: var(--color-text-secondary); }
+.mttag { font-size: 8px; color: var(--color-text-tertiary); }
+
+.stats3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 5px; }
+.sc { background: var(--color-background-secondary); border-radius: 9px; padding: 7px 9px; }
+.sn { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
+.sl { font-size: 9px; color: var(--color-text-tertiary); }
+
+.bnav { display: flex; border-top: 0.5px solid var(--color-border-tertiary); padding: 7px 0 9px; }
+.ni { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 8px; color: var(--color-text-tertiary); }
+.ni.on { color: #F97316; }
+.ni i { font-size: 17px; }
+
+.mapbox { background: #EFF6FF; border: 0.5px solid #BFDBFE; border-radius: 13px; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.mapbox i { font-size: 22px; color: #3B82F6; }
+.mapbox-title { font-size: 13px; font-weight: 500; color: #1E40AF; }
+.mapbox-sub { font-size: 10px; color: #3B82F6; text-align: center; }
+.mapbox-zip { display: flex; gap: 5px; margin-top: 4px; width: 100%; }
+.zip-input { flex: 1; background: white; border: 0.5px solid #BFDBFE; border-radius: 7px; padding: 5px 9px; font-size: 11px; color: #1E40AF; }
+.zip-btn { background: #3B82F6; color: white; font-size: 11px; font-weight: 500; border-radius: 7px; padding: 5px 10px; white-space: nowrap; }
+
+.coming-soon { background: var(--color-background-secondary); border: 0.5px dashed var(--color-border-secondary); border-radius: 10px; padding: 8px 11px; display: flex; align-items: center; justify-content: space-between; }
+.cs-left { font-size: 11px; color: var(--color-text-secondary); }
+.cs-badge { font-size: 9px; background: #FEF3C7; color: #92400E; border: 0.5px solid #FDE68A; padding: 2px 7px; border-radius: 20px; }
+.cs-req { font-size: 9px; color: #F97316; margin-top: 2px; cursor: pointer; }
+
+.pcard { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: 11px; padding: 9px 11px; display: flex; align-items: center; gap: 9px; }
+.pico { width: 36px; height: 36px; border-radius: 9px; background: #FFF4EC; border: 0.5px solid #FED7AA; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.pinfo { flex: 1; min-width: 0; }
+.pname { font-size: 12px; font-weight: 500; color: var(--color-text-primary); }
+.pmeta { font-size: 9px; color: var(--color-text-secondary); margin-top: 1px; }
+.pgo { background: #F97316; color: white; font-size: 10px; font-weight: 500; border-radius: 7px; padding: 5px 9px; flex-shrink: 0; }
+
+.plan-box { background: #FFF7ED; border: 0.5px solid #FED7AA; border-radius: 13px; padding: 11px 13px; }
+.plan-title { font-size: 12px; font-weight: 500; color: #9A3412; margin-bottom: 7px; }
+.popt { background: white; border: 0.5px solid #FED7AA; border-radius: 8px; padding: 7px 9px; display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--color-text-primary); margin-bottom: 4px; }
+.popt i { font-size: 14px; color: #F97316; flex-shrink: 0; }
+.popt-sub { font-size: 9px; color: var(--color-text-secondary); }
+
+.clock-bg { background: #FFF7ED; }
+.clk-top { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 20px 13px 12px; }
+.clk-time { font-size: 50px; font-weight: 500; color: #F97316; line-height: 1; letter-spacing: -2px; }
+.clk-sub { font-size: 11px; color: #C2410C; }
+.clk-where { display: flex; align-items: center; gap: 4px; background: white; border: 0.5px solid #FED7AA; border-radius: 20px; padding: 4px 10px; font-size: 10px; color: #9A3412; }
+.clk-where i { font-size: 12px; color: #F97316; }
+.clk-dogs { display: flex; align-items: center; gap: 5px; font-size: 10px; color: #C2410C; }
+
+.cam-row { display: flex; align-items: center; gap: 6px; background: white; border: 0.5px solid #FED7AA; border-radius: 10px; padding: 9px 12px; }
+.cam-row i { font-size: 18px; color: #F97316; }
+.cam-row span { font-size: 11px; font-weight: 500; color: #9A3412; }
+
+.clk-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+.cbtn { border-radius: 9px; padding: 9px; font-size: 11px; font-weight: 500; text-align: center; border: 0.5px solid var(--color-border-secondary); color: var(--color-text-secondary); background: white; }
+.cbtn.pri { background: #F97316; color: white; border-color: #F97316; }
+
+.recap-divider { border-top: 0.5px solid #FED7AA; padding-top: 9px; }
+.rq { font-size: 12px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 5px; }
+.rchips { display: flex; flex-wrap: wrap; gap: 4px; }
+.rc { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: 20px; padding: 4px 9px; font-size: 10px; color: var(--color-text-secondary); }
+.rc.on { background: #FFF4EC; border-color: #FB923C; color: #9A3412; }
+.rphotos { display: flex; gap: 5px; }
+.rph { flex: 1; height: 64px; border-radius: 9px; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; justify-content: center; }
+.rph i { font-size: 18px; color: var(--color-text-tertiary); }
+
+.two-dog-toggle { background: white; border: 0.5px solid #FED7AA; border-radius: 9px; padding: 7px 10px; display: flex; align-items: center; justify-content: space-between; }
+.tdt-left { display: flex; align-items: center; gap: 6px; }
+.tdt-label { font-size: 11px; color: #9A3412; }
+.tdt-right { display: flex; gap: 5px; }
+.tdt-btn { font-size: 9px; padding: 3px 7px; border-radius: 20px; border: 0.5px solid #FED7AA; color: #C2410C; background: #FFEDD5; }
+.tdt-btn.off { background: var(--color-background-secondary); color: var(--color-text-tertiary); border-color: var(--color-border-tertiary); }
+
+.jfilters { display: flex; gap: 5px; flex-wrap: wrap; }
+.jf { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: 20px; padding: 4px 9px; font-size: 9px; color: var(--color-text-secondary); }
+.jf.on { background: #FFF4EC; border-color: #FB923C; color: #9A3412; font-weight: 500; }
+
+.jmap { background: #F0FDF4; border: 0.5px solid #BBF7D0; border-radius: 13px; height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+.jmap i { font-size: 22px; color: #16A34A; }
+.jmap-title { font-size: 12px; font-weight: 500; color: #15803D; }
+.jmap-sub { font-size: 9px; color: #16A34A; }
+
+.flash { background: #FFFBEB; border: 0.5px solid #FDE68A; border-radius: 13px; padding: 10px 12px; display: flex; gap: 9px; align-items: center; }
+.flash-ico { font-size: 20px; flex-shrink: 0; }
+.flash-title { font-size: 12px; font-weight: 500; color: #92400E; }
+.flash-sub { font-size: 9px; color: #B45309; margin-top: 2px; }
+
+.mcard { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: 13px; overflow: hidden; }
+.mcard-img { background: var(--color-background-secondary); height: 76px; display: flex; align-items: center; justify-content: center; }
+.mcard-img i { font-size: 22px; color: var(--color-text-tertiary); }
+.mcard-body { padding: 8px 11px; }
+.mcard-row { display: flex; justify-content: space-between; align-items: flex-start; }
+.mcard-place { font-size: 12px; font-weight: 500; color: var(--color-text-primary); }
+.mcard-date { font-size: 9px; color: var(--color-text-tertiary); }
+.mcard-tags { display: flex; gap: 3px; margin-top: 4px; flex-wrap: wrap; }
+.mt { font-size: 8px; padding: 2px 6px; border-radius: 20px; background: var(--color-background-secondary); color: var(--color-text-secondary); border: 0.5px solid var(--color-border-tertiary); }
+.mcard-share { display: flex; align-items: center; gap: 4px; margin-top: 6px; font-size: 10px; color: #F97316; }
+.mcard-share i { font-size: 12px; }
+.mcard-dogs { display: flex; align-items: center; gap: -4px; margin-top: 4px; }
+
+.comm-live { background: #FFF4EC; border: 0.5px solid #FED7AA; border-radius: 13px; padding: 11px 13px; }
+.comm-live-top { display: flex; align-items: center; gap: 7px; margin-bottom: 8px; }
+.live-dot { width: 7px; height: 7px; border-radius: 50%; background: #22C55E; }
+.live-label { font-size: 12px; font-weight: 500; color: #9A3412; }
+.live-count { font-size: 18px; font-weight: 500; color: #F97316; }
+.live-sub { font-size: 10px; color: #C2410C; }
+.live-bar { display: flex; gap: 4px; flex-wrap: wrap; }
+.live-chip { background: white; border: 0.5px solid #FED7AA; border-radius: 20px; padding: 3px 8px; font-size: 9px; color: #C2410C; }
+
+.comm-post { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: 13px; overflow: hidden; }
+.cp-img { background: var(--color-background-secondary); height: 90px; display: flex; align-items: center; justify-content: center; }
+.cp-img i { font-size: 26px; color: var(--color-text-tertiary); }
+.cp-body { padding: 9px 11px; }
+.cp-user { display: flex; align-items: center; gap: 7px; margin-bottom: 6px; }
+.cp-av { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; }
+.cp-av1 { background: #BFDBFE; color: #1E40AF; }
+.cp-av2 { background: #D1FAE5; color: #065F46; }
+.cp-name { font-size: 11px; font-weight: 500; color: var(--color-text-primary); }
+.cp-meta { font-size: 9px; color: var(--color-text-secondary); }
+.cp-caption { font-size: 11px; color: var(--color-text-primary); line-height: 1.4; }
+.cp-loc { font-size: 9px; color: #F97316; margin-top: 4px; display: flex; align-items: center; gap: 3px; }
+.cp-loc i { font-size: 10px; }
+.cp-actions { display: flex; gap: 10px; margin-top: 7px; }
+.cpa { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--color-text-secondary); }
+.cpa i { font-size: 13px; }
+
+.ms-bond { background: #FFF4EC; border: 0.5px solid #FED7AA; border-radius: 13px; padding: 11px 13px; }
+.msb-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.msb-label { font-size: 10px; color: #C2410C; }
+.msb-rank { font-size: 10px; font-weight: 500; color: #9A3412; background: white; border: 0.5px solid #FED7AA; padding: 2px 7px; border-radius: 20px; }
+.msb-bar { background: #FFE4CA; border-radius: 10px; height: 6px; }
+.msb-fill { background: #F97316; border-radius: 10px; height: 6px; }
+.msb-sub { font-size: 9px; color: #C2410C; margin-top: 5px; }
+
+.challenge { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: 11px; padding: 9px 11px; margin-bottom: 5px; }
+.ch-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+.ch-name { font-size: 12px; font-weight: 500; color: var(--color-text-primary); }
+.ch-prog { font-size: 9px; color: #F97316; font-weight: 500; }
+.ch-bar { background: var(--color-background-secondary); border-radius: 10px; height: 4px; }
+.ch-fill { background: #F97316; border-radius: 10px; height: 4px; }
+.ch-sub { font-size: 9px; color: var(--color-text-secondary); margin-top: 4px; }
+.ch-prize { display: flex; align-items: center; gap: 4px; margin-top: 5px; font-size: 9px; color: var(--color-text-secondary); }
+.ch-prize i { font-size: 12px; color: #F97316; }
+
+.ach-item { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: 10px; padding: 8px 10px; display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.ach-item.done { background: #F0FDF4; border-color: #BBF7D0; }
+.ach-item.active { background: #FFF4EC; border-color: #FED7AA; }
+.ach-ico { width: 30px; height: 30px; border-radius: 50%; background: var(--color-background-secondary); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+.ach-item.done .ach-ico { background: #DCFCE7; }
+.ach-item.active .ach-ico { background: #FFEDD5; }
+.ach-title { font-size: 11px; font-weight: 500; color: var(--color-text-primary); }
+.ach-sub { font-size: 9px; color: var(--color-text-secondary); margin-top: 1px; }
+.ach-badge { font-size: 9px; font-weight: 500; margin-left: auto; white-space: nowrap; }
+.ach-badge.done { color: #16A34A; }
+.ach-badge.active { color: #C2410C; }
+.ach-badge.locked { color: var(--color-text-tertiary); }
+
+.prof-top { display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 12px 0 6px; }
+.dogs-row { display: flex; gap: 14px; justify-content: center; margin-bottom: 4px; }
+.dog-col { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.dog-circle { width: 52px; height: 52px; border-radius: 50%; border: 3px solid #F97316; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+.dc-b { background: #FFEDD5; }
+.dc-o { background: #FEF3C7; border-color: #F59E0B; }
+.dog-dname { font-size: 11px; font-weight: 500; color: var(--color-text-primary); }
+.dog-breed { font-size: 9px; color: var(--color-text-secondary); }
+.add-dog { display: flex; align-items: center; gap: 4px; background: var(--color-background-secondary); border: 0.5px dashed var(--color-border-secondary); border-radius: 20px; padding: 4px 11px; font-size: 10px; color: var(--color-text-secondary); }
+.add-dog i { font-size: 12px; }
+
+.fav { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: 10px; padding: 8px 10px; display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.fav-ico { width: 32px; height: 32px; border-radius: 8px; background: #FFF4EC; border: 0.5px solid #FED7AA; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.fav-info { flex: 1; }
+.fav-name { font-size: 11px; font-weight: 500; color: var(--color-text-primary); }
+.fav-vis { font-size: 9px; color: var(--color-text-secondary); margin-top: 1px; }
+.fav-arr { font-size: 13px; color: var(--color-text-tertiary); }
+</style>
+
+<h2 class="sr-only">PawStreak updated screen mockups v3 with community tab, two dogs, and expanded adventure types</h2>
+
+<div class="wrap">
+
+<div>
+  <div class="screen-label">Home — two dogs, more adventure types</div>
+  <div class="phone">
+    <div class="sbar"><span>9:41</span><span><i class="ti ti-wifi" aria-hidden="true"></i></span></div>
+    <div class="scroll">
+      <div class="aheader">
+        <div class="alogo">Paw<span>Streak</span></div>
+        <div class="two-dogs">
+          <div class="dog-av da-b">B</div>
+          <div class="dog-av da-o">O</div>
+          <span class="dog-names">Bailey + Omi</span>
+        </div>
+      </div>
+      <div class="streak-bar">
+        <div><div class="snum">14</div><div class="slabel">day streak</div></div>
+        <div class="snudge">Walk them today</div>
+      </div>
+      <div class="sec">What are we doing today?</div>
+      <div class="chips">
+        <div class="chip on"><span class="cico">🏖️</span><span class="clbl">Beach</span></div>
+        <div class="chip"><span class="cico">☕</span><span class="clbl">Coffee</span></div>
+        <div class="chip"><span class="cico">🌲</span><span class="clbl">Trail</span></div>
+        <div class="chip"><span class="cico">🚗</span><span class="clbl">Road trip</span></div>
+        <div class="chip"><span class="cico">🌸</span><span class="clbl">Gardens</span></div>
+        <div class="chip"><span class="cico">🏘️</span><span class="clbl">Neighborhood</span></div>
+        <div class="chip"><span class="cico">🐕</span><span class="clbl">Dog park</span></div>
+        <div class="chip"><span class="cico">🍺</span><span class="clbl">Brewery</span></div>
+      </div>
+      <div class="hero-card">
+        <div class="hc-top">
+          <div><div class="hc-title">Dog Beach, OB</div><div class="hc-sub">1.4 mi · Off-leash · Both dogs welcome</div></div>
+          <div class="hc-badge">🔥 Popular now</div>
+        </div>
+        <div class="qbtns">
+          <div class="qb">15 min</div>
+          <div class="qb">30 min</div>
+          <div class="qb">Open end</div>
+        </div>
+      </div>
+      <div class="sec">Recent adventures</div>
+      <div class="mstrip">
+        <div class="mthumb"><div class="mtlbl">Torrey Pines</div><div class="mttag">Trail · Tue</div></div>
+        <div class="mthumb"><div class="mtlbl">Lestat's Coffee</div><div class="mttag">Coffee · Mon</div></div>
+        <div class="mthumb"><div class="mtlbl">Balboa Park</div><div class="mttag">Park · Sun</div></div>
+      </div>
+      <div class="stats3">
+        <div class="sc"><div class="sn">14</div><div class="sl">day streak</div></div>
+        <div class="sc"><div class="sn">47</div><div class="sl">adventures</div></div>
+        <div class="sc"><div class="sn">22</div><div class="sl">places</div></div>
+      </div>
+    </div>
+    <div class="bnav">
+      <div class="ni on"><i class="ti ti-home" aria-hidden="true"></i><span>Home</span></div>
+      <div class="ni"><i class="ti ti-compass" aria-hidden="true"></i><span>Plan</span></div>
+      <div class="ni"><i class="ti ti-map-2" aria-hidden="true"></i><span>Journey</span></div>
+      <div class="ni"><i class="ti ti-users" aria-hidden="true"></i><span>Community</span></div>
+      <div class="ni"><i class="ti ti-trophy" aria-hidden="true"></i><span>Milestones</span></div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <div class="screen-label">Plan — map + localization + monthly planning</div>
+  <div class="phone">
+    <div class="sbar"><span>9:41</span><span><i class="ti ti-wifi" aria-hidden="true"></i></span></div>
+    <div class="scroll">
+      <div class="aheader"><div class="alogo">Plan an adventure</div></div>
+      <div class="mapbox">
+        <i class="ti ti-map-pin" aria-hidden="true"></i>
+        <div class="mapbox-title">San Diego + OC spots</div>
+        <div class="mapbox-sub">200+ dog-friendly places mapped · Tap a pin to explore</div>
+        <div class="mapbox-zip">
+          <div class="zip-input">Enter your zip code</div>
+          <div class="zip-btn">Find spots</div>
+        </div>
+      </div>
+      <div class="coming-soon">
+        <div>
+          <div class="cs-left">Not in SD or OC?</div>
+          <div class="cs-req">Request your area →</div>
+        </div>
+        <div class="cs-badge">Coming soon</div>
+      </div>
+      <div class="chips" style="margin-top:2px">
+        <div class="chip on"><span class="clbl">All</span></div>
+        <div class="chip"><span class="clbl">Beach</span></div>
+        <div class="chip"><span class="clbl">Trail</span></div>
+        <div class="chip"><span class="clbl">Coffee</span></div>
+        <div class="chip"><span class="clbl">Dog park</span></div>
+        <div class="chip"><span class="clbl">Road trip</span></div>
+        <div class="chip"><span class="clbl">Gardens</span></div>
+      </div>
+      <div class="pcard">
+        <div class="pico">🏖️</div>
+        <div class="pinfo"><div class="pname">Dog Beach, Ocean Beach</div><div class="pmeta">1.4 mi · Off-leash · SD</div></div>
+        <div class="pgo">Go</div>
+      </div>
+      <div class="pcard">
+        <div class="pico">🚗</div>
+        <div class="pinfo"><div class="pname">Julian Dog-Friendly Day Trip</div><div class="pmeta">62 mi · Apple picking + trail + cafe</div></div>
+        <div class="pgo">Go</div>
+      </div>
+      <div class="pcard">
+        <div class="pico">🌸</div>
+        <div class="pinfo"><div class="pname">Balboa Park Rose Garden</div><div class="pmeta">3.2 mi · Dogs on-leash · SD</div></div>
+        <div class="pgo">Go</div>
+      </div>
+      <div class="pcard">
+        <div class="pico">🐕</div>
+        <div class="pinfo"><div class="pname">Nate's Point Dog Park</div><div class="pmeta">3.4 mi · Off-leash enclosed · SD</div></div>
+        <div class="pgo">Go</div>
+      </div>
+      <div class="plan-box">
+        <div class="plan-title">Set up a monthly plan for Bailey + Omi</div>
+        <div class="popt"><i class="ti ti-sparkles" aria-hidden="true"></i><div><div>Curated for your dogs</div><div class="popt-sub">Based on what they love most</div></div></div>
+        <div class="popt"><i class="ti ti-dice" aria-hidden="true"></i><div><div>Random adventure plan</div><div class="popt-sub">Surprise them every time</div></div></div>
+        <div class="popt"><i class="ti ti-calendar-event" aria-hidden="true"></i><div><div>Preset plan → sync to calendar</div><div class="popt-sub">Get reminders so you never miss a day</div></div></div>
+      </div>
+    </div>
+    <div class="bnav">
+      <div class="ni"><i class="ti ti-home" aria-hidden="true"></i><span>Home</span></div>
+      <div class="ni on"><i class="ti ti-compass" aria-hidden="true"></i><span>Plan</span></div>
+      <div class="ni"><i class="ti ti-map-2" aria-hidden="true"></i><span>Journey</span></div>
+      <div class="ni"><i class="ti ti-users" aria-hidden="true"></i><span>Community</span></div>
+      <div class="ni"><i class="ti ti-trophy" aria-hidden="true"></i><span>Milestones</span></div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <div class="screen-label">Active adventure — both dogs, recap questions</div>
+  <div class="phone">
+    <div class="sbar"><span>9:41</span><span><i class="ti ti-wifi" aria-hidden="true"></i></span></div>
+    <div class="clock-bg">
+      <div class="clk-top">
+        <div class="clk-sub">Dog Beach, Ocean Beach</div>
+        <div class="clk-time">24:07</div>
+        <div class="clk-where"><i class="ti ti-map-pin" aria-hidden="true"></i>Active adventure</div>
+        <div class="clk-dogs">
+          <div class="dog-av da-b" style="width:18px;height:18px;font-size:9px">B</div>
+          <div class="dog-av da-o" style="width:18px;height:18px;font-size:9px;margin-left:-5px">O</div>
+          <span>Bailey + Omi are out</span>
+        </div>
+      </div>
+    </div>
+    <div class="scroll" style="padding-top:8px">
+      <div class="two-dog-toggle">
+        <div class="tdt-left">
+          <div class="dog-av da-b" style="width:20px;height:20px;font-size:10px">B</div>
+          <div class="dog-av da-o" style="width:20px;height:20px;font-size:10px;margin-left:-6px">O</div>
+          <span class="tdt-label">Both dogs today</span>
+        </div>
+        <div class="tdt-right">
+          <div class="tdt-btn">Both</div>
+          <div class="tdt-btn off">Bailey only</div>
+          <div class="tdt-btn off">Omi only</div>
+        </div>
+      </div>
+      <div class="cam-row"><i class="ti ti-camera" aria-hidden="true"></i><span>Capture a moment</span></div>
+      <div class="clk-btns">
+        <div class="cbtn">Pause</div>
+        <div class="cbtn pri">Finish</div>
+      </div>
+      <div class="recap-divider">
+        <div class="rq">How did they do today?</div>
+        <div class="rchips">
+          <div class="rc on">Loved every second</div>
+          <div class="rc">Needed a break</div>
+          <div class="rc">Met new friends</div>
+          <div class="rc">Found a new spot</div>
+          <div class="rc">Omi set the pace</div>
+        </div>
+      </div>
+      <div class="rq">What was the highlight?</div>
+      <div class="rchips">
+        <div class="rc on">Off-leash run</div>
+        <div class="rc">Playing in water</div>
+        <div class="rc">New smells everywhere</div>
+        <div class="rc">Just being together</div>
+      </div>
+      <div class="rq">Photos from today</div>
+      <div class="rphotos">
+        <div class="rph"><i class="ti ti-photo" aria-hidden="true"></i></div>
+        <div class="rph"><i class="ti ti-photo" aria-hidden="true"></i></div>
+        <div class="rph"><i class="ti ti-photo" aria-hidden="true"></i></div>
+      </div>
+    </div>
+    <div class="bnav" style="background:white">
+      <div class="ni"><i class="ti ti-home" aria-hidden="true"></i><span>Home</span></div>
+      <div class="ni on"><i class="ti ti-compass" aria-hidden="true"></i><span>Plan</span></div>
+      <div class="ni"><i class="ti ti-map-2" aria-hidden="true"></i><span>Journey</span></div>
+      <div class="ni"><i class="ti ti-users" aria-hidden="true"></i><span>Community</span></div>
+      <div class="ni"><i class="ti ti-trophy" aria-hidden="true"></i><span>Milestones</span></div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <div class="screen-label">Journey — map pins, flashbacks, social sharing</div>
+  <div class="phone">
+    <div class="sbar"><span>9:41</span><span><i class="ti ti-wifi" aria-hidden="true"></i></span></div>
+    <div class="scroll">
+      <div class="aheader"><div class="alogo">Bailey + Omi's Journey</div></div>
+      <div class="jfilters">
+        <div class="jf on">All</div>
+        <div class="jf">Beach</div>
+        <div class="jf">Trail</div>
+        <div class="jf">Road trips</div>
+        <div class="jf">Map view</div>
+      </div>
+      <div class="jmap">
+        <i class="ti ti-map-2" aria-hidden="true"></i>
+        <div class="jmap-title">47 adventures across SD + OC</div>
+        <div class="jmap-sub">22 places · Tap any pin to see that day</div>
+      </div>
+      <div class="flash">
+        <div class="flash-ico">✨</div>
+        <div>
+          <div class="flash-title">1 year ago today</div>
+          <div class="flash-sub">Bailey's first visit to Torrey Pines. You've been back 6 times since.</div>
+        </div>
+      </div>
+      <div class="sec">This week</div>
+      <div class="mcard">
+        <div class="mcard-img"><i class="ti ti-photo" aria-hidden="true"></i></div>
+        <div class="mcard-body">
+          <div class="mcard-row"><div class="mcard-place">Dog Beach, OB</div><div class="mcard-date">Today</div></div>
+          <div class="mcard-tags"><span class="mt">Beach</span><span class="mt">Off-leash</span><span class="mt">Bailey + Omi</span><span class="mt">Loved it</span></div>
+          <div class="mcard-share"><i class="ti ti-share" aria-hidden="true"></i>Share · Post to community</div>
+        </div>
+      </div>
+      <div class="mcard">
+        <div class="mcard-img"><i class="ti ti-photo" aria-hidden="true"></i></div>
+        <div class="mcard-body">
+          <div class="mcard-row"><div class="mcard-place">Julian Day Trip</div><div class="mcard-date">Saturday</div></div>
+          <div class="mcard-tags"><span class="mt">Road trip</span><span class="mt">62 mi</span><span class="mt">Both dogs</span><span class="mt">New place</span></div>
+          <div class="mcard-share"><i class="ti ti-share" aria-hidden="true"></i>Share · Post to community</div>
+        </div>
+      </div>
+    </div>
+    <div class="bnav">
+      <div class="ni"><i class="ti ti-home" aria-hidden="true"></i><span>Home</span></div>
+      <div class="ni"><i class="ti ti-compass" aria-hidden="true"></i><span>Plan</span></div>
+      <div class="ni on"><i class="ti ti-map-2" aria-hidden="true"></i><span>Journey</span></div>
+      <div class="ni"><i class="ti ti-users" aria-hidden="true"></i><span>Community</span></div>
+      <div class="ni"><i class="ti ti-trophy" aria-hidden="true"></i><span>Milestones</span></div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <div class="screen-label">Community — live dogs out, posts, FOMO</div>
+  <div class="phone">
+    <div class="sbar"><span>9:41</span><span><i class="ti ti-wifi" aria-hidden="true"></i></span></div>
+    <div class="scroll">
+      <div class="aheader"><div class="alogo">Community</div></div>
+      <div class="comm-live">
+        <div class="comm-live-top">
+          <div class="live-dot"></div>
+          <div class="live-label">Right now in San Diego</div>
+        </div>
+        <div class="live-count">247 dogs on adventure</div>
+        <div class="live-sub" style="margin-bottom:7px">Your city is out there. Are you?</div>
+        <div class="live-bar">
+          <div class="live-chip">🏖️ 89 at the beach</div>
+          <div class="live-chip">🌲 54 on trails</div>
+          <div class="live-chip">☕ 41 at cafes</div>
+          <div class="live-chip">🐕 38 at dog parks</div>
+          <div class="live-chip">🚗 25 on road trips</div>
+        </div>
+      </div>
+      <div class="sec">From the pack</div>
+      <div class="comm-post">
+        <div class="cp-img"><i class="ti ti-photo" aria-hidden="true"></i></div>
+        <div class="cp-body">
+          <div class="cp-user">
+            <div class="cp-av cp-av1">S</div>
+            <div>
+              <div class="cp-name">Sophie + Mango</div>
+              <div class="cp-meta">2h ago · Day 31 streak</div>
+            </div>
+          </div>
+          <div class="cp-caption">Mango absolutely lost his mind at the water today. Best $0 we've ever spent.</div>
+          <div class="cp-loc"><i class="ti ti-map-pin" aria-hidden="true"></i>Del Mar Dog Beach</div>
+          <div class="cp-actions">
+            <div class="cpa"><i class="ti ti-heart" aria-hidden="true"></i>84</div>
+            <div class="cpa"><i class="ti ti-message-circle" aria-hidden="true"></i>12</div>
+            <div class="cpa"><i class="ti ti-share" aria-hidden="true"></i>Share</div>
+          </div>
+        </div>
+      </div>
+      <div class="comm-post">
+        <div class="cp-img"><i class="ti ti-photo" aria-hidden="true"></i></div>
+        <div class="cp-body">
+          <div class="cp-user">
+            <div class="cp-av cp-av2">J</div>
+            <div>
+              <div class="cp-name">Jake + Luna + Biscuit</div>
+              <div class="cp-meta">4h ago · Day 8 streak</div>
+            </div>
+          </div>
+          <div class="cp-caption">First road trip with both dogs. Julian was worth every minute of the drive.</div>
+          <div class="cp-loc"><i class="ti ti-map-pin" aria-hidden="true"></i>Julian, CA · Road trip</div>
+          <div class="cp-actions">
+            <div class="cpa"><i class="ti ti-heart" aria-hidden="true"></i>61</div>
+            <div class="cpa"><i class="ti ti-message-circle" aria-hidden="true"></i>7</div>
+            <div class="cpa"><i class="ti ti-share" aria-hidden="true"></i>Share</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bnav">
+      <div class="ni"><i class="ti ti-home" aria-hidden="true"></i><span>Home</span></div>
+      <div class="ni"><i class="ti ti-compass" aria-hidden="true"></i><span>Plan</span></div>
+      <div class="ni"><i class="ti ti-map-2" aria-hidden="true"></i><span>Journey</span></div>
+      <div class="ni on"><i class="ti ti-users" aria-hidden="true"></i><span>Community</span></div>
+      <div class="ni"><i class="ti ti-trophy" aria-hidden="true"></i><span>Milestones</span></div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <div class="screen-label">Milestones — bond level, challenges, achievements</div>
+  <div class="phone">
+    <div class="sbar"><span>9:41</span><span><i class="ti ti-wifi" aria-hidden="true"></i></span></div>
+    <div class="scroll">
+      <div class="aheader"><div class="alogo">Milestones</div></div>
+      <div class="ms-bond">
+        <div class="msb-top"><div class="msb-label">Bond level</div><div class="msb-rank">Trail Scout</div></div>
+        <div class="msb-bar"><div class="msb-fill" style="width:62%"></div></div>
+        <div class="msb-sub">47 adventures · 22 places · Bailey + Omi</div>
+      </div>
+      <div class="sec">Active challenges</div>
+      <div class="challenge">
+        <div class="ch-top"><div class="ch-name">SoCal Beach Challenge</div><div class="ch-prog">4 of 6</div></div>
+        <div class="ch-bar"><div class="ch-fill" style="width:66%"></div></div>
+        <div class="ch-sub">6 different SoCal dog beaches this month</div>
+        <div class="ch-prize"><i class="ti ti-gift" aria-hidden="true"></i>Win: PawStreak collar tag · Ends in 12 days</div>
+      </div>
+      <div class="challenge">
+        <div class="ch-top"><div class="ch-name">Morning Crew</div><div class="ch-prog">12 of 20</div></div>
+        <div class="ch-bar"><div class="ch-fill" style="width:60%"></div></div>
+        <div class="ch-sub">20 walks before 9am</div>
+        <div class="ch-prize"><i class="ti ti-gift" aria-hidden="true"></i>Win: PawStreak bandana set</div>
+      </div>
+      <div class="challenge">
+        <div class="ch-top"><div class="ch-name">Road Tripper</div><div class="ch-prog">1 of 3</div></div>
+        <div class="ch-bar"><div class="ch-fill" style="width:33%"></div></div>
+        <div class="ch-sub">3 day trips outside your home city</div>
+        <div class="ch-prize"><i class="ti ti-gift" aria-hidden="true"></i>Win: custom adventure patch</div>
+      </div>
+      <div class="sec">Achievements</div>
+      <div class="ach-item done">
+        <div class="ach-ico">🏖️</div>
+        <div><div class="ach-title">First Beach Day</div><div class="ach-sub">Dog Beach, OB · March 12</div></div>
+        <div class="ach-badge done">Done</div>
+      </div>
+      <div class="ach-item active">
+        <div class="ach-ico">🌲</div>
+        <div><div class="ach-title">Trail Scout</div><div class="ach-sub">3 more trail walks</div></div>
+        <div class="ach-badge active">In progress</div>
+      </div>
+      <div class="ach-item">
+        <div class="ach-ico">🚗</div>
+        <div><div class="ach-title">Road Tripper</div><div class="ach-sub">Take 3 day trips</div></div>
+        <div class="ach-badge locked">Locked</div>
+      </div>
+    </div>
+    <div class="bnav">
+      <div class="ni"><i class="ti ti-home" aria-hidden="true"></i><span>Home</span></div>
+      <div class="ni"><i class="ti ti-compass" aria-hidden="true"></i><span>Plan</span></div>
+      <div class="ni"><i class="ti ti-map-2" aria-hidden="true"></i><span>Journey</span></div>
+      <div class="ni"><i class="ti ti-users" aria-hidden="true"></i><span>Community</span></div>
+      <div class="ni on"><i class="ti ti-trophy" aria-hidden="true"></i><span>Milestones</span></div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <div class="screen-label">Profile — two dogs, favorites, settings</div>
+  <div class="phone">
+    <div class="sbar"><span>9:41</span><span><i class="ti ti-wifi" aria-hidden="true"></i></span></div>
+    <div class="scroll">
+      <div class="prof-top">
+        <div class="dogs-row">
+          <div class="dog-col">
+            <div class="dog-circle dc-b">🐕</div>
+            <div class="dog-dname">Bailey</div>
+            <div class="dog-breed">Siberian Husky</div>
+          </div>
+          <div class="dog-col">
+            <div class="dog-circle dc-o">🐾</div>
+            <div class="dog-dname">Omi</div>
+            <div class="dog-breed">Lab Mix · Senior</div>
+          </div>
+        </div>
+        <div class="add-dog"><i class="ti ti-plus" aria-hidden="true"></i>Add another dog</div>
+      </div>
+      <div class="stats3">
+        <div class="sc"><div class="sn">14</div><div class="sl">streak</div></div>
+        <div class="sc"><div class="sn">47</div><div class="sl">adventures</div></div>
+        <div class="sc"><div class="sn">22</div><div class="sl">places</div></div>
+      </div>
+      <div class="sec">Favorite places</div>
+      <div class="fav">
+        <div class="fav-ico">🏖️</div>
+        <div class="fav-info"><div class="fav-name">Dog Beach, Ocean Beach</div><div class="fav-vis">12 visits · photos · memories</div></div>
+        <i class="ti ti-chevron-right fav-arr" aria-hidden="true"></i>
+      </div>
+      <div class="fav">
+        <div class="fav-ico">🌲</div>
+        <div class="fav-info"><div class="fav-name">Torrey Pines Trail</div><div class="fav-vis">6 visits · photos · memories</div></div>
+        <i class="ti ti-chevron-right fav-arr" aria-hidden="true"></i>
+      </div>
+      <div class="fav">
+        <div class="fav-ico">🚗</div>
+        <div class="fav-info"><div class="fav-name">Julian Day Trip</div><div class="fav-vis">2 visits · road trip · photos</div></div>
+        <i class="ti ti-chevron-right fav-arr" aria-hidden="true"></i>
+      </div>
+    </div>
+    <div class="bnav">
+      <div class="ni"><i class="ti ti-home" aria-hidden="true"></i><span>Home</span></div>
+      <div class="ni"><i class="ti ti-compass" aria-hidden="true"></i><span>Plan</span></div>
+      <div class="ni"><i class="ti ti-map-2" aria-hidden="true"></i><span>Journey</span></div>
+      <div class="ni"><i class="ti ti-users" aria-hidden="true"></i><span>Community</span></div>
+      <div class="ni on"><i class="ti ti-trophy" aria-hidden="true"></i><span>Profile</span></div>
+    </div>
+  </div>
+</div>
+
+</div>
