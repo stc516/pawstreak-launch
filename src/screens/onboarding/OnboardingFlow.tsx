@@ -78,7 +78,9 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   }
 
   return (
-    <div className="onboarding-root">
+    <div className="app-viewport">
+      <div className="app-shell app-shell--onboarding">
+        <div className="onboarding-root">
       {step === 1 && (
         <div className="screen active">
           <div className="blob b1" />
@@ -583,7 +585,6 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
       <div
         className={`modal-overlay${modalOpen ? ' open' : ''}`}
         aria-hidden={!modalOpen}
-        hidden={!modalOpen}
         onClick={() => setModalOpen(false)}
       >
         <div className="modal-sheet" onClick={(event) => event.stopPropagation()}>
@@ -604,6 +605,8 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
           <button type="button" className="btn-primary" onClick={() => setModalOpen(false)}>
             Submit this spot
           </button>
+        </div>
+      </div>
         </div>
       </div>
     </div>
