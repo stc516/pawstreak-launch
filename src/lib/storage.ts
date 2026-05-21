@@ -11,7 +11,14 @@ function normalizeActiveAdventure(
   if (!adventure) return null
 
   const place = resolvePlaceFromAdventure(adventure)
-  return { placeId: place.id, location: place.name }
+  return {
+    placeId: place.id,
+    location: place.name,
+    durationLabel:
+      'durationLabel' in adventure && adventure.durationLabel
+        ? adventure.durationLabel
+        : 'Open end',
+  }
 }
 
 function normalizeAppState(state: AppState): AppState {
@@ -29,6 +36,8 @@ function normalizeAppState(state: AppState): AppState {
     curatedPlanFlowStep: rest.curatedPlanFlowStep ?? 0,
     curatedPlanDraft: rest.curatedPlanDraft ?? EMPTY_CURATED_PLAN_DRAFT,
     curatedPlanResult: rest.curatedPlanResult ?? null,
+    randomPlanResult: rest.randomPlanResult ?? null,
+    showPresetPlanOverlay: rest.showPresetPlanOverlay ?? false,
     adventurePhotos: normalizePhotoSlots(rest.adventurePhotos),
     activeAdventure: normalizeActiveAdventure(rest.activeAdventure),
   }

@@ -28,7 +28,7 @@ export function BottomNav({ activeTab, onTabChange, className = 'bnav' }: Bottom
           <button
             key={tab.id}
             type="button"
-            className={`ni${isActive ? ' on' : ''}`}
+            className={`ni tap-target${isActive ? ' on' : ''}`}
             onClick={() => {
               if (isProfileTab && activeTab === 'profile') return
               onTabChange(tab.id)

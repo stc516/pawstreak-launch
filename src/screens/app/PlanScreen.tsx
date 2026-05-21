@@ -1,6 +1,5 @@
 import type { AppState } from '../../data/demo'
 import { dogNamesLabel } from '../../data/demo'
-import { getMonthlyPlanConfirmation } from '../../lib/monthlyPlan'
 import {
   getPlaceEmoji,
   getPlacesForPlanCategory,
@@ -11,9 +10,10 @@ interface PlanScreenProps {
   state: AppState
   onSelectCategory: (categoryId: string) => void
   onZipChange: (zipCode: string) => void
-  onStartAdventure: (placeId: string) => void
-  onSelectMonthlyPlan: (planId: string) => void
+  onStartAdventure: (placeId: string, durationLabel?: string) => void
   onOpenCuratedPlanFlow: () => void
+  onGenerateRandomPlan: () => void
+  onOpenPresetPlan: () => void
 }
 
 export function PlanScreen({
@@ -21,18 +21,25 @@ export function PlanScreen({
   onSelectCategory,
   onZipChange,
   onStartAdventure,
-  onSelectMonthlyPlan,
   onOpenCuratedPlanFlow,
+  onGenerateRandomPlan,
+  onOpenPresetPlan,
 }: PlanScreenProps) {
   const places = getPlacesForPlanCategory(state.selectedPlanCategoryId)
-  const planConfirmation = getMonthlyPlanConfirmation(state.selectedMonthlyPlanId)
 
   const handleMonthlyPlanClick = (planId: string) => {
     if (planId === 'curated') {
       onOpenCuratedPlanFlow()
       return
     }
-    onSelectMonthlyPlan(planId)
+    if (planId === 'random') {
+      onGenerateRandomPlan()
+      return
+    }
+    if (planId === 'preset') {
+      onOpenPresetPlan()
+      return
+    }
   }
 
   return (
@@ -71,7 +78,7 @@ export function PlanScreen({
           <button
             key={category.id}
             type="button"
-            className={`chip${state.selectedPlanCategoryId === category.id ? ' on' : ''}`}
+            className={`chip tap-target${state.selectedPlanCategoryId === category.id ? ' on' : ''}`}
             onClick={() => onSelectCategory(category.id)}
           >
             <span className="clbl">{category.label}</span>
@@ -88,7 +95,7 @@ export function PlanScreen({
           </div>
           <button
             type="button"
-            className="pgo"
+            className="pgo tap-target"
             onClick={() => onStartAdventure(place.id)}
           >
             Go
@@ -104,7 +111,7 @@ export function PlanScreen({
           <button
             key={option.id}
             type="button"
-            className={`popt${state.selectedMonthlyPlanId === option.id ? ' on' : ''}`}
+            className={`popt tap-target${state.selectedMonthlyPlanId === option.id ? ' on' : ''}`}
             onClick={() => handleMonthlyPlanClick(option.id)}
           >
             <i className={`ti ${option.icon}`} aria-hidden="true" />
@@ -114,15 +121,33 @@ export function PlanScreen({
             </div>
           </button>
         ))}
-        {state.curatedPlanResult ? (
-          <div className="curated-saved">
-            <div className="curated-saved-title">{state.curatedPlanResult.title}</div>
-            <div className="curated-saved-copy">{state.curatedPlanResult.emotionalCopy}</div>
-            <div className="curated-saved-cadence">{state.curatedPlanResult.weeklyCadence}</div>
+
+        {state.curatedPlanResult &&
+        state.selectedMonthlyPlanId === 'curated' ? (
+          <div className="plan-saved">
+            <div className="plan-saved-title">{state.curatedPlanResult.title}</div>
+            <div className="plan-saved-copy">{state.curatedPlanResult.emotionalCopy}</div>
+            <div className="plan-saved-cadence">
+              {state.curatedPlanResult.weeklyCadence}
+            </div>
           </div>
         ) : null}
-        {planConfirmation ? (
-          <div className="plan-confirm">{planConfirmation}</div>
+
+        {state.randomPlanResult && state.selectedMonthlyPlanId === 'random' ? (
+          <div className="plan-saved plan-saved--random">
+            <div className="plan-saved-title">{state.randomPlanResult.title}</div>
+            <div className="plan-saved-copy">{state.randomPlanResult.emotionalCopy}</div>
+            <div className="plan-saved-cadence">
+              {state.randomPlanResult.weeklyCadence}
+            </div>
+            <div className="plan-saved-tags">
+              {state.randomPlanResult.adventureTypes.map((type) => (
+                <span key={type} className="rc on plan-saved-tag">
+                  {type}
+                </span>
+              ))}
+            </div>
+          </div>
         ) : null}
       </div>
     </>

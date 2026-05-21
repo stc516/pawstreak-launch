@@ -18,11 +18,13 @@ import { OnboardingFlow } from './screens/onboarding/OnboardingFlow'
 import { JourneyMemoryView } from './screens/overlays/JourneyMemoryView'
 import { ChallengeDetailView } from './screens/overlays/ChallengeDetailView'
 import { CuratedPlanFlow } from './screens/overlays/CuratedPlanFlow'
+import { PresetPlanOverlay } from './screens/overlays/PresetPlanOverlay'
 import { PlanScreen } from './screens/app/PlanScreen'
 import {
   EMPTY_CURATED_PLAN_DRAFT,
   generateCuratedPlanResult,
 } from './lib/curatedPlan'
+import { generateRandomPlan } from './lib/randomPlan'
 
 function App() {
   const [state, setState] = useState<AppState>(() => loadAppState())
@@ -31,8 +33,49 @@ function App() {
     saveAppState(state)
   }, [state])
 
+  useEffect(() => {
+    setState((current) => {
+      const patch: Partial<AppState> = {}
+
+      if (
+        current.selectedJourneyEntryId &&
+        !current.journeyEntries.some(
+          (entry) => entry.id === current.selectedJourneyEntryId,
+        )
+      ) {
+        patch.selectedJourneyEntryId = null
+      }
+
+      if (
+        current.selectedChallengeId &&
+        !current.challenges.some(
+          (challenge) => challenge.id === current.selectedChallengeId,
+        )
+      ) {
+        patch.selectedChallengeId = null
+      }
+
+      if (Object.keys(patch).length === 0) {
+        return current
+      }
+
+      return { ...current, ...patch }
+    })
+  }, [
+    state.journeyEntries,
+    state.challenges,
+    state.selectedJourneyEntryId,
+    state.selectedChallengeId,
+  ])
+
   const setActiveTab = (activeTab: TabId) => {
-    setState((current) => ({ ...current, activeTab }))
+    setState((current) => ({
+      ...current,
+      activeTab,
+      selectedJourneyEntryId: null,
+      selectedChallengeId: null,
+      showPresetPlanOverlay: false,
+    }))
   }
 
   const setSelectedActivity = (selectedActivityId: string) => {
@@ -51,12 +94,13 @@ function App() {
     setState((current) => ({ ...current, selectedJourneyFilterId }))
   }
 
-  const setSelectedMonthlyPlan = (selectedMonthlyPlanId: string) => {
-    setState((current) => ({ ...current, selectedMonthlyPlanId }))
-  }
-
   const openJourneyMemory = (selectedJourneyEntryId: string) => {
-    setState((current) => ({ ...current, selectedJourneyEntryId }))
+    setState((current) => ({
+      ...current,
+      selectedJourneyEntryId,
+      selectedChallengeId: null,
+      showPresetPlanOverlay: false,
+    }))
   }
 
   const closeJourneyMemory = () => {
@@ -64,7 +108,12 @@ function App() {
   }
 
   const openChallengeDetail = (selectedChallengeId: string) => {
-    setState((current) => ({ ...current, selectedChallengeId }))
+    setState((current) => ({
+      ...current,
+      selectedChallengeId,
+      selectedJourneyEntryId: null,
+      showPresetPlanOverlay: false,
+    }))
   }
 
   const closeChallengeDetail = () => {
@@ -74,8 +123,12 @@ function App() {
   const openCuratedPlanFlow = () => {
     setState((current) => ({
       ...current,
+      activeTab: 'plan',
       curatedPlanFlowStep: 1,
       curatedPlanDraft: EMPTY_CURATED_PLAN_DRAFT,
+      selectedJourneyEntryId: null,
+      selectedChallengeId: null,
+      showPresetPlanOverlay: false,
     }))
   }
 
@@ -85,11 +138,12 @@ function App() {
         return {
           ...current,
           curatedPlanFlowStep: 0,
+          activeTab: 'plan',
           selectedMonthlyPlanId: 'curated',
         }
       }
       if (current.curatedPlanFlowStep <= 1) {
-        return { ...current, curatedPlanFlowStep: 0 }
+        return { ...current, curatedPlanFlowStep: 0, activeTab: 'plan' }
       }
       return {
         ...current,
@@ -134,6 +188,8 @@ function App() {
             current.dogs,
             current.curatedPlanDraft,
           ),
+          randomPlanResult: null,
+          selectedMonthlyPlanId: 'curated',
         }
       }
       return {
@@ -147,8 +203,35 @@ function App() {
     setState((current) => ({
       ...current,
       curatedPlanFlowStep: 0,
+      activeTab: 'plan',
       selectedMonthlyPlanId: 'curated',
     }))
+  }
+
+  const generateRandomPlanForDogs = () => {
+    setState((current) => ({
+      ...current,
+      activeTab: 'plan',
+      selectedMonthlyPlanId: 'random',
+      randomPlanResult: generateRandomPlan(current.dogs),
+      curatedPlanResult: null,
+      curatedPlanFlowStep: 0,
+    }))
+  }
+
+  const openPresetPlanOverlay = () => {
+    setState((current) => ({
+      ...current,
+      activeTab: 'plan',
+      selectedMonthlyPlanId: 'preset',
+      showPresetPlanOverlay: true,
+      selectedJourneyEntryId: null,
+      selectedChallengeId: null,
+    }))
+  }
+
+  const closePresetPlanOverlay = () => {
+    setState((current) => ({ ...current, showPresetPlanOverlay: false }))
   }
 
   const addAdventurePhoto = (photoDataUrl: string) => {
@@ -158,15 +241,22 @@ function App() {
     }))
   }
 
-  const startAdventure = (placeId: string) => {
+  const startAdventure = (placeId: string, durationLabel = 'Open end') => {
     const place = getPlaceById(placeId)
     if (!place) return
 
     setState((current) => ({
       ...current,
-      activeTab: 'plan',
-      activeAdventure: createActiveAdventure(place.id, place.name),
+      activeAdventure: createActiveAdventure(
+        place.id,
+        place.name,
+        durationLabel,
+      ),
       adventurePhotos: ['', '', ''],
+      selectedJourneyEntryId: null,
+      selectedChallengeId: null,
+      showPresetPlanOverlay: false,
+      curatedPlanFlowStep: 0,
     }))
   }
 
@@ -177,8 +267,12 @@ function App() {
       }
 
       const place = getPlaceById(current.activeAdventure.placeId)
+      const capturedPhotos = current.adventurePhotos.filter(Boolean)
       const journeyEntries = place
-        ? [createJourneyEntryFromPlace(place, current.dogs), ...current.journeyEntries]
+        ? [
+            createJourneyEntryFromPlace(place, current.dogs, capturedPhotos),
+            ...current.journeyEntries,
+          ]
         : current.journeyEntries
 
       return {
@@ -232,6 +326,10 @@ function App() {
     )
   }
 
+  if (state.showPresetPlanOverlay) {
+    return <PresetPlanOverlay onClose={closePresetPlanOverlay} />
+  }
+
   if (state.selectedChallengeId) {
     const challenge = state.challenges.find(
       (item) => item.id === state.selectedChallengeId,
@@ -253,7 +351,6 @@ function App() {
     if (entry) {
       return (
         <JourneyMemoryView
-          state={state}
           entry={entry}
           onBack={closeJourneyMemory}
         />
@@ -279,8 +376,9 @@ function App() {
             onSelectCategory={setSelectedPlanCategory}
             onZipChange={setZipCode}
             onStartAdventure={startAdventure}
-            onSelectMonthlyPlan={setSelectedMonthlyPlan}
             onOpenCuratedPlanFlow={openCuratedPlanFlow}
+            onGenerateRandomPlan={generateRandomPlanForDogs}
+            onOpenPresetPlan={openPresetPlanOverlay}
           />
         )
       case 'journey':

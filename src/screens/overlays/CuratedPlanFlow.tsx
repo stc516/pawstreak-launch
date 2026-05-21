@@ -197,7 +197,7 @@ export function CuratedPlanFlow({
                     <button
                       key={option.id}
                       type="button"
-                      className={`curated-option${selected ? ' on' : ''}`}
+                      className={`curated-option tap-target${selected ? ' on' : ''}`}
                       aria-pressed={selected}
                       onClick={() => {
                         if (step === 1) onSelectOptimize(option.id)
@@ -238,7 +238,7 @@ export function CuratedPlanFlow({
           <p className="curated-footer-hint">{footerHint}</p>
           <button
             type="button"
-            className="curated-next-btn"
+            className="curated-next-btn tap-target"
             disabled={!canContinue}
             onClick={handleCtaClick}
           >

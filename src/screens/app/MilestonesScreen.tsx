@@ -32,7 +32,7 @@ export function MilestonesScreen({ state, onOpenChallenge }: MilestonesScreenPro
         <button
           key={challenge.id}
           type="button"
-          className="challenge challenge--tap"
+          className="challenge challenge--tap tap-target"
           onClick={() => onOpenChallenge(challenge.id)}
         >
           <div className="ch-top">

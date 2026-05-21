@@ -800,7 +800,11 @@ export function getHeroPlace(activityId: string): Place {
   return PLACES[0]
 }
 
-export function createJourneyEntryFromPlace(place: Place, dogs: Dog[]): JourneyEntry {
+export function createJourneyEntryFromPlace(
+  place: Place,
+  dogs: Dog[],
+  photoUrls: string[] = [],
+): JourneyEntry {
   return {
     id: `adventure-${place.id}-${Date.now()}`,
     placeId: place.id,
@@ -808,6 +812,7 @@ export function createJourneyEntryFromPlace(place: Place, dogs: Dog[]): JourneyE
     date: 'Today',
     magicLine: getMagicLine(place),
     tags: [place.category, place.leashInfo, dogNamesLabel(dogs), 'Loved it'],
+    photoUrls: photoUrls.length > 0 ? photoUrls : undefined,
   }
 }
 

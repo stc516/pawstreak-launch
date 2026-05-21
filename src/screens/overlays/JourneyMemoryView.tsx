@@ -1,16 +1,15 @@
-import type { AppState, JourneyEntry } from '../../data/demo'
+import type { JourneyEntry } from '../../data/demo'
 import { CardImage } from '../../components/CardImage'
 import { getJourneyMemoryDetail } from '../../data/journeyMemories'
 import { getPlaceById } from '../../data/places'
 import { StatusBar } from '../../components/StatusBar'
 
 interface JourneyMemoryViewProps {
-  state: AppState
   entry: JourneyEntry
   onBack: () => void
 }
 
-export function JourneyMemoryView({ state, entry, onBack }: JourneyMemoryViewProps) {
+export function JourneyMemoryView({ entry, onBack }: JourneyMemoryViewProps) {
   const place = entry.placeId ? getPlaceById(entry.placeId) : undefined
   const memory = getJourneyMemoryDetail(entry.id)
   const heroUrl = place?.imageUrl ?? memory.photoUrls[0]
@@ -79,11 +78,11 @@ export function JourneyMemoryView({ state, entry, onBack }: JourneyMemoryViewPro
           <div className="memory-photos">
             {[
               ...memory.photoUrls,
-              ...state.adventurePhotos.filter(Boolean),
+              ...(entry.photoUrls ?? []),
             ]
               .slice(0, 6)
-              .map((url) => (
-                <div key={url} className="memory-photo">
+              .map((url, index) => (
+                <div key={`${url}-${index}`} className="memory-photo">
                   <img src={url} alt="" className="memory-photo-img" />
                 </div>
               ))}

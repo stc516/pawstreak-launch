@@ -2,6 +2,7 @@ export type TabId = 'home' | 'plan' | 'journey' | 'community' | 'milestones' | '
 
 import type { CuratedPlanDraft, CuratedPlanResult } from '../lib/curatedPlan'
 import { EMPTY_CURATED_PLAN_DRAFT } from '../lib/curatedPlan'
+import type { RandomPlanResult } from '../lib/randomPlan'
 
 export interface Dog {
   id: string
@@ -40,6 +41,7 @@ export interface MonthlyPlanOption {
 export interface ActiveAdventure {
   placeId: string
   location: string
+  durationLabel: string
 }
 
 export type DogMode = 'both' | 'bailey' | 'omi'
@@ -61,6 +63,7 @@ export interface JourneyEntry {
   date: string
   magicLine?: string
   tags: string[]
+  photoUrls?: string[]
 }
 
 export interface Flashback {
@@ -124,6 +127,8 @@ export interface AppState {
   curatedPlanFlowStep: number
   curatedPlanDraft: CuratedPlanDraft
   curatedPlanResult: CuratedPlanResult | null
+  randomPlanResult: RandomPlanResult | null
+  showPresetPlanOverlay: boolean
   adventurePhotos: string[]
   zipCode: string
   dogs: Dog[]
@@ -181,6 +186,8 @@ export const defaultAppState: AppState = {
   curatedPlanFlowStep: 0,
   curatedPlanDraft: EMPTY_CURATED_PLAN_DRAFT,
   curatedPlanResult: null,
+  randomPlanResult: null,
+  showPresetPlanOverlay: false,
   adventurePhotos: ['', '', ''],
   zipCode: '',
   dogs: [
@@ -438,8 +445,9 @@ export function dogNamesLabel(dogs: Dog[]): string {
 export function createActiveAdventure(
   placeId: string,
   location: string,
+  durationLabel = 'Open end',
 ): ActiveAdventure {
-  return { placeId, location }
+  return { placeId, location, durationLabel }
 }
 
 export function formatTimer(seconds: number): string {

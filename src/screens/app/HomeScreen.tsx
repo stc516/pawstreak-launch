@@ -12,7 +12,7 @@ import {
 interface HomeScreenProps {
   state: AppState
   onSelectActivity: (activityId: string) => void
-  onStartAdventure: (placeId: string) => void
+  onStartAdventure: (placeId: string, durationLabel: string) => void
   onOpenProfile: () => void
 }
 
@@ -31,7 +31,7 @@ export function HomeScreen({
         <div className="alogo">
           Paw<span>Streak</span>
         </div>
-        <button type="button" className="two-dogs" onClick={onOpenProfile}>
+        <button type="button" className="two-dogs tap-target" onClick={onOpenProfile}>
           {state.dogs.map((dog) => (
             <div key={dog.id} className={`dog-av ${dog.avatarClass}`}>
               {dog.initial}
@@ -56,7 +56,7 @@ export function HomeScreen({
           <button
             key={activity.id}
             type="button"
-            className={`chip${state.selectedActivityId === activity.id ? ' on' : ''}`}
+            className={`chip tap-target${state.selectedActivityId === activity.id ? ' on' : ''}`}
             onClick={() => onSelectActivity(activity.id)}
           >
             <span className="cico">{activity.emoji}</span>
@@ -65,7 +65,13 @@ export function HomeScreen({
         ))}
       </div>
 
-      <div className="hero-card">
+      <div key={heroPlace.id} className="hero-card hero-card--interactive">
+        <CardImage
+          className="hero-card-img"
+          imageUrl={heroPlace.imageUrl}
+          imageAlt={heroPlace.imageAlt}
+          imageTone={heroPlace.imageTone}
+        />
         <div className="hc-top">
           <div>
             <div className="hc-title">{heroPlace.name}</div>
@@ -78,8 +84,8 @@ export function HomeScreen({
             <button
               key={duration}
               type="button"
-              className="qb"
-              onClick={() => onStartAdventure(heroPlace.id)}
+              className="qb tap-target"
+              onClick={() => onStartAdventure(heroPlace.id, duration)}
             >
               {duration}
             </button>

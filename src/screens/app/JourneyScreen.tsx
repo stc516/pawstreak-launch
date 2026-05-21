@@ -24,7 +24,7 @@ export function JourneyScreen({
           <button
             key={filter.id}
             type="button"
-            className={`jf${state.selectedJourneyFilterId === filter.id ? ' on' : ''}`}
+            className={`jf tap-target${state.selectedJourneyFilterId === filter.id ? ' on' : ''}`}
             onClick={() => onSelectFilter(filter.id)}
           >
             {filter.label}
@@ -55,7 +55,7 @@ export function JourneyScreen({
           <button
             key={entry.id}
             type="button"
-            className="mcard mcard--tap"
+            className="mcard mcard--tap tap-target"
             onClick={() => onOpenMemory(entry.id)}
           >
             <CardImage

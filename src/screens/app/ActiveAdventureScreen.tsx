@@ -72,6 +72,7 @@ export function ActiveAdventureScreen({
           <div className="clk-top">
             <div className="clk-sub">{state.activeAdventure.location}</div>
             <div className="clk-time">{formatTimer(elapsedSeconds)}</div>
+            <div className="clk-duration">{state.activeAdventure.durationLabel}</div>
             <div className="clk-where">
               <i className="ti ti-map-pin" aria-hidden="true" />
               Active adventure
@@ -126,7 +127,7 @@ export function ActiveAdventureScreen({
             onChange={handlePhotoSelected}
           />
 
-          <button type="button" className="cam-row" onClick={handleCaptureClick}>
+          <button type="button" className="cam-row tap-target" onClick={handleCaptureClick}>
             <i className="ti ti-camera" aria-hidden="true" />
             <span>Capture a moment</span>
           </button>
@@ -134,12 +135,12 @@ export function ActiveAdventureScreen({
           <div className="clk-btns">
             <button
               type="button"
-              className="cbtn"
+              className="cbtn tap-target"
               onClick={() => setIsPaused((current) => !current)}
             >
               Pause
             </button>
-            <button type="button" className="cbtn pri" onClick={onFinish}>
+            <button type="button" className="cbtn pri tap-target" onClick={onFinish}>
               Finish
             </button>
           </div>
