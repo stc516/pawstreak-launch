@@ -24,8 +24,48 @@ interface CuratedPlanFlowProps {
 const STEP_TITLES = [
   'What are we optimizing for?',
   'How much time do you realistically have?',
-  `What does ${''}love most?`,
 ]
+
+function getStepSubtitle(step: number): string {
+  if (step === 1) {
+    return 'We will shape adventures around what matters most right now.'
+  }
+  if (step === 2) {
+    return 'Honest time beats perfect plans — we will meet you where you are.'
+  }
+  return 'Pick everything that makes their tails go.'
+}
+
+function getStepEncouragement(step: number): string {
+  if (step === 1) return 'Start with what matters most — there is no wrong answer.'
+  if (step === 2) return 'You are doing great. Almost there.'
+  return 'The more you pick, the more personal their plan feels.'
+}
+
+function getFooterHint(
+  step: number,
+  canContinue: boolean,
+  loveCount: number,
+): string {
+  if (step === 4) {
+    return 'Save this plan to keep it on your monthly setup.'
+  }
+  if (canContinue) {
+    if (step === 3) {
+      return `${loveCount} selected · ready to build their plan`
+    }
+    return 'Looks good — tap below to continue'
+  }
+  if (step === 1) return 'Choose one option above to continue'
+  if (step === 2) return 'Pick the time you can realistically give'
+  return 'Pick at least one thing they love'
+}
+
+function getCtaLabel(step: number, dogLabel: string): string {
+  if (step === 1 || step === 2) return 'Continue'
+  if (step === 3) return `Build ${dogLabel}'s plan`
+  return `Save ${dogLabel}'s plan`
+}
 
 export function CuratedPlanFlow({
   state,
@@ -41,15 +81,30 @@ export function CuratedPlanFlow({
 }: CuratedPlanFlowProps) {
   const dogLabel = dogNamesLabel(state.dogs)
   const canContinue =
-    (step === 1 && draft.optimizeId) ||
-    (step === 2 && draft.timeId) ||
-    (step === 3 && draft.loveIds.length > 0)
+    (step === 1 && Boolean(draft.optimizeId)) ||
+    (step === 2 && Boolean(draft.timeId)) ||
+    (step === 3 && draft.loveIds.length > 0) ||
+    step === 4
+
+  const progressPercent = step >= 4 ? 100 : Math.round((step / 3) * 100)
+  const footerHint = getFooterHint(step, canContinue, draft.loveIds.length)
+  const ctaLabel = getCtaLabel(step, dogLabel)
+
+  const handleCtaClick = () => {
+    if (step === 4) {
+      onFinish()
+      return
+    }
+    if (canContinue) {
+      onNext()
+    }
+  }
 
   return (
     <div className="app-viewport">
-      <div className="app-shell">
+      <div className="app-shell app-shell--curated">
         <StatusBar />
-        <main className="scroll scroll--overlay">
+        <main className="scroll scroll--overlay scroll--curated">
           <div className="overlay-topbar">
             <button type="button" className="overlay-back" onClick={onBack}>
               <i className="ti ti-arrow-left" aria-hidden="true" />
@@ -57,8 +112,26 @@ export function CuratedPlanFlow({
             </button>
             {step < 4 ? (
               <div className="curated-step">Step {step} of 3</div>
-            ) : null}
+            ) : (
+              <div className="curated-step curated-step--done">Plan ready</div>
+            )}
           </div>
+
+          {step < 4 ? (
+            <div
+              className="curated-progress-track"
+              role="progressbar"
+              aria-valuenow={progressPercent}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label={`Step ${step} of 3`}
+            >
+              <div
+                className="curated-progress-fill"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+          ) : null}
 
           {step === 4 && result ? (
             <>
@@ -94,10 +167,6 @@ export function CuratedPlanFlow({
                   <div className="curated-spot-reason">{spot.reason}</div>
                 </div>
               ))}
-
-              <button type="button" className="curated-finish-btn" onClick={onFinish}>
-                Save plan & return
-              </button>
             </>
           ) : (
             <>
@@ -107,13 +176,8 @@ export function CuratedPlanFlow({
                   ? `What does ${dogLabel} love most?`
                   : STEP_TITLES[step - 1]}
               </h1>
-              <p className="curated-step-sub">
-                {step === 1
-                  ? 'We will shape adventures around what matters most right now.'
-                  : step === 2
-                    ? 'Honest time beats perfect plans — we will meet you where you are.'
-                    : 'Pick everything that makes their tails go.'}
-              </p>
+              <p className="curated-step-sub">{getStepSubtitle(step)}</p>
+              <p className="curated-step-encourage">{getStepEncouragement(step)}</p>
 
               <div className="curated-options">
                 {(step === 1
@@ -134,6 +198,7 @@ export function CuratedPlanFlow({
                       key={option.id}
                       type="button"
                       className={`curated-option${selected ? ' on' : ''}`}
+                      aria-pressed={selected}
                       onClick={() => {
                         if (step === 1) onSelectOptimize(option.id)
                         else if (step === 2) onSelectTime(option.id)
@@ -141,23 +206,45 @@ export function CuratedPlanFlow({
                       }}
                     >
                       <span className="curated-option-emoji">{option.emoji}</span>
-                      <span>{option.label}</span>
+                      <span className="curated-option-label">{option.label}</span>
+                      {selected ? (
+                        <i
+                          className="ti ti-check curated-option-check"
+                          aria-hidden="true"
+                        />
+                      ) : null}
                     </button>
                   )
                 })}
               </div>
-
-              <button
-                type="button"
-                className="curated-next-btn"
-                disabled={!canContinue}
-                onClick={onNext}
-              >
-                {step === 3 ? 'Generate our plan' : 'Continue'}
-              </button>
             </>
           )}
         </main>
+
+        <div className="curated-footer">
+          {step < 4 ? (
+            <div className="curated-footer-progress">
+              <span>Step {step} of 3</span>
+              <span className="curated-footer-dots" aria-hidden="true">
+                {[1, 2, 3].map((dot) => (
+                  <span
+                    key={dot}
+                    className={`curated-footer-dot${dot <= step ? ' on' : ''}`}
+                  />
+                ))}
+              </span>
+            </div>
+          ) : null}
+          <p className="curated-footer-hint">{footerHint}</p>
+          <button
+            type="button"
+            className="curated-next-btn"
+            disabled={!canContinue}
+            onClick={handleCtaClick}
+          >
+            {ctaLabel}
+          </button>
+        </div>
       </div>
     </div>
   )

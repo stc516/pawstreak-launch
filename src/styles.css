@@ -2968,10 +2968,84 @@ select.field-input {
 
 /* Curated plan flow */
 
+.app-shell--curated {
+  display: flex;
+  flex-direction: column;
+}
+
+.scroll--curated {
+  padding-bottom: 12px;
+}
+
+.curated-footer {
+  flex-shrink: 0;
+  padding:
+    10px 16px
+    max(14px, env(safe-area-inset-bottom));
+  border-top: 0.5px solid var(--color-border-tertiary);
+  background: var(--color-background-primary);
+  box-shadow: 0 -8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.curated-footer-progress {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--color-text-tertiary);
+}
+
+.curated-footer-dots {
+  display: inline-flex;
+  gap: 5px;
+}
+
+.curated-footer-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-border-tertiary);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.curated-footer-dot.on {
+  background: var(--accent);
+  transform: scale(1.15);
+}
+
+.curated-footer-hint {
+  margin: 0 0 10px;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.curated-progress-track {
+  height: 4px;
+  background: var(--color-background-secondary);
+  border-radius: 99px;
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+
+.curated-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #fb923c);
+  border-radius: 99px;
+  transition: width 0.28s ease;
+}
+
 .curated-step {
   font-size: 10px;
   color: var(--color-text-tertiary);
   font-weight: 500;
+}
+
+.curated-step--done {
+  color: var(--accent);
 }
 
 .curated-intro {
@@ -2996,14 +3070,21 @@ select.field-input {
   font-size: 12px;
   color: var(--color-text-secondary);
   line-height: 1.45;
-  margin: 0 0 16px;
+  margin: 0 0 8px;
+}
+
+.curated-step-encourage {
+  font-size: 11px;
+  color: var(--accent);
+  line-height: 1.4;
+  margin: 0 0 14px;
+  font-weight: 500;
 }
 
 .curated-options {
   display: flex;
   flex-direction: column;
   gap: 7px;
-  margin-bottom: 18px;
 }
 
 .curated-option {
@@ -3013,30 +3094,51 @@ select.field-input {
   width: 100%;
   padding: 11px 12px;
   border-radius: 12px;
-  border: 0.5px solid var(--color-border-tertiary);
+  border: 1px solid var(--color-border-tertiary);
   background: var(--color-background-primary);
   font-size: 12px;
   color: var(--color-text-primary);
   text-align: left;
   cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease;
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.12s ease;
+}
+
+.curated-option:active {
+  transform: scale(0.985);
 }
 
 .curated-option.on {
-  border-color: var(--accent-border);
+  border-color: var(--accent);
   background: var(--accent-light);
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.12);
 }
 
 .curated-option-emoji {
   font-size: 16px;
   width: 22px;
   text-align: center;
+  flex-shrink: 0;
+}
+
+.curated-option-label {
+  flex: 1;
+  min-width: 0;
+}
+
+.curated-option-check {
+  font-size: 16px;
+  color: var(--accent);
+  flex-shrink: 0;
 }
 
 .curated-next-btn,
 .curated-finish-btn {
   width: 100%;
-  padding: 13px;
+  padding: 14px;
   border: none;
   border-radius: 12px;
   background: var(--accent);
@@ -3044,10 +3146,15 @@ select.field-input {
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.12s ease;
+}
+
+.curated-next-btn:active:not(:disabled) {
+  transform: scale(0.985);
 }
 
 .curated-next-btn:disabled {
-  opacity: 0.45;
+  opacity: 0.42;
   cursor: not-allowed;
 }
 

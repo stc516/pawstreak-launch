@@ -465,7 +465,7 @@ export interface OnboardingPlace {
 export const onboardingVibes: OnboardingVibe[] = [
   { id: 'explorer', emoji: '🧭', name: 'Explorer', description: 'New trails, dense paths, untouched spots.' },
   { id: 'social', emoji: '🐾', name: 'Social Pup', description: 'Busy parks, tail wags, meeting new friends.' },
-  { id: 'sunset', emoji: '🌅', name: 'Sunset Chaser', description: 'Quiet views and golden hour strolls.' },
+  { id: 'slow-sniffer', emoji: '👃', name: 'Slow Sniffer', description: 'Easy walks, neighborhood loops, taking in every smell.' },
   { id: 'cozy', emoji: '🏠', name: 'Cozy Companion', description: 'Short loops, neighborhood walks, chill days.' },
   { id: 'beach', emoji: '🏖️', name: 'Beach Dog', description: 'Sand, waves, off-leash freedom.' },
   { id: 'road-trip', emoji: '🚗', name: 'Road Tripper', description: 'Day trips, new cities, big adventures.' },
