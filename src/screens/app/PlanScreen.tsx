@@ -13,6 +13,7 @@ interface PlanScreenProps {
   onZipChange: (zipCode: string) => void
   onStartAdventure: (placeId: string) => void
   onSelectMonthlyPlan: (planId: string) => void
+  onOpenCuratedPlanFlow: () => void
 }
 
 export function PlanScreen({
@@ -21,9 +22,18 @@ export function PlanScreen({
   onZipChange,
   onStartAdventure,
   onSelectMonthlyPlan,
+  onOpenCuratedPlanFlow,
 }: PlanScreenProps) {
   const places = getPlacesForPlanCategory(state.selectedPlanCategoryId)
   const planConfirmation = getMonthlyPlanConfirmation(state.selectedMonthlyPlanId)
+
+  const handleMonthlyPlanClick = (planId: string) => {
+    if (planId === 'curated') {
+      onOpenCuratedPlanFlow()
+      return
+    }
+    onSelectMonthlyPlan(planId)
+  }
 
   return (
     <>
@@ -95,7 +105,7 @@ export function PlanScreen({
             key={option.id}
             type="button"
             className={`popt${state.selectedMonthlyPlanId === option.id ? ' on' : ''}`}
-            onClick={() => onSelectMonthlyPlan(option.id)}
+            onClick={() => handleMonthlyPlanClick(option.id)}
           >
             <i className={`ti ${option.icon}`} aria-hidden="true" />
             <div>
@@ -104,6 +114,13 @@ export function PlanScreen({
             </div>
           </button>
         ))}
+        {state.curatedPlanResult ? (
+          <div className="curated-saved">
+            <div className="curated-saved-title">{state.curatedPlanResult.title}</div>
+            <div className="curated-saved-copy">{state.curatedPlanResult.emotionalCopy}</div>
+            <div className="curated-saved-cadence">{state.curatedPlanResult.weeklyCadence}</div>
+          </div>
+        ) : null}
         {planConfirmation ? (
           <div className="plan-confirm">{planConfirmation}</div>
         ) : null}

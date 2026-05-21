@@ -17,7 +17,12 @@ import { ProfileScreen } from './screens/app/ProfileScreen'
 import { OnboardingFlow } from './screens/onboarding/OnboardingFlow'
 import { JourneyMemoryView } from './screens/overlays/JourneyMemoryView'
 import { ChallengeDetailView } from './screens/overlays/ChallengeDetailView'
+import { CuratedPlanFlow } from './screens/overlays/CuratedPlanFlow'
 import { PlanScreen } from './screens/app/PlanScreen'
+import {
+  EMPTY_CURATED_PLAN_DRAFT,
+  generateCuratedPlanResult,
+} from './lib/curatedPlan'
 
 function App() {
   const [state, setState] = useState<AppState>(() => loadAppState())
@@ -64,6 +69,86 @@ function App() {
 
   const closeChallengeDetail = () => {
     setState((current) => ({ ...current, selectedChallengeId: null }))
+  }
+
+  const openCuratedPlanFlow = () => {
+    setState((current) => ({
+      ...current,
+      curatedPlanFlowStep: 1,
+      curatedPlanDraft: EMPTY_CURATED_PLAN_DRAFT,
+    }))
+  }
+
+  const handleCuratedPlanBack = () => {
+    setState((current) => {
+      if (current.curatedPlanFlowStep === 4) {
+        return {
+          ...current,
+          curatedPlanFlowStep: 0,
+          selectedMonthlyPlanId: 'curated',
+        }
+      }
+      if (current.curatedPlanFlowStep <= 1) {
+        return { ...current, curatedPlanFlowStep: 0 }
+      }
+      return {
+        ...current,
+        curatedPlanFlowStep: current.curatedPlanFlowStep - 1,
+      }
+    })
+  }
+
+  const setCuratedOptimize = (optimizeId: string) => {
+    setState((current) => ({
+      ...current,
+      curatedPlanDraft: { ...current.curatedPlanDraft, optimizeId },
+    }))
+  }
+
+  const setCuratedTime = (timeId: string) => {
+    setState((current) => ({
+      ...current,
+      curatedPlanDraft: { ...current.curatedPlanDraft, timeId },
+    }))
+  }
+
+  const toggleCuratedLove = (loveId: string) => {
+    setState((current) => {
+      const loveIds = current.curatedPlanDraft.loveIds.includes(loveId)
+        ? current.curatedPlanDraft.loveIds.filter((id) => id !== loveId)
+        : [...current.curatedPlanDraft.loveIds, loveId]
+      return {
+        ...current,
+        curatedPlanDraft: { ...current.curatedPlanDraft, loveIds },
+      }
+    })
+  }
+
+  const advanceCuratedPlanFlow = () => {
+    setState((current) => {
+      if (current.curatedPlanFlowStep === 3) {
+        return {
+          ...current,
+          curatedPlanFlowStep: 4,
+          curatedPlanResult: generateCuratedPlanResult(
+            current.dogs,
+            current.curatedPlanDraft,
+          ),
+        }
+      }
+      return {
+        ...current,
+        curatedPlanFlowStep: current.curatedPlanFlowStep + 1,
+      }
+    })
+  }
+
+  const finishCuratedPlanFlow = () => {
+    setState((current) => ({
+      ...current,
+      curatedPlanFlowStep: 0,
+      selectedMonthlyPlanId: 'curated',
+    }))
   }
 
   const addAdventurePhoto = (photoDataUrl: string) => {
@@ -119,6 +204,34 @@ function App() {
     return <OnboardingFlow onComplete={completeOnboarding} />
   }
 
+  if (state.activeAdventure) {
+    return (
+      <ActiveAdventureScreen
+        state={state}
+        onFinish={finishAdventure}
+        onTabChange={setActiveTab}
+        onAddPhoto={addAdventurePhoto}
+      />
+    )
+  }
+
+  if (state.curatedPlanFlowStep > 0) {
+    return (
+      <CuratedPlanFlow
+        state={state}
+        step={state.curatedPlanFlowStep}
+        draft={state.curatedPlanDraft}
+        result={state.curatedPlanResult}
+        onBack={handleCuratedPlanBack}
+        onSelectOptimize={setCuratedOptimize}
+        onSelectTime={setCuratedTime}
+        onToggleLove={toggleCuratedLove}
+        onNext={advanceCuratedPlanFlow}
+        onFinish={finishCuratedPlanFlow}
+      />
+    )
+  }
+
   if (state.selectedChallengeId) {
     const challenge = state.challenges.find(
       (item) => item.id === state.selectedChallengeId,
@@ -148,17 +261,6 @@ function App() {
     }
   }
 
-  if (state.activeAdventure) {
-    return (
-      <ActiveAdventureScreen
-        state={state}
-        onFinish={finishAdventure}
-        onTabChange={setActiveTab}
-        onAddPhoto={addAdventurePhoto}
-      />
-    )
-  }
-
   const renderScreen = () => {
     switch (state.activeTab) {
       case 'home':
@@ -178,6 +280,7 @@ function App() {
             onZipChange={setZipCode}
             onStartAdventure={startAdventure}
             onSelectMonthlyPlan={setSelectedMonthlyPlan}
+            onOpenCuratedPlanFlow={openCuratedPlanFlow}
           />
         )
       case 'journey':

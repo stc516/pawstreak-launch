@@ -1,5 +1,8 @@
 export type TabId = 'home' | 'plan' | 'journey' | 'community' | 'milestones' | 'profile'
 
+import type { CuratedPlanDraft, CuratedPlanResult } from '../lib/curatedPlan'
+import { EMPTY_CURATED_PLAN_DRAFT } from '../lib/curatedPlan'
+
 export interface Dog {
   id: string
   name: string
@@ -118,6 +121,9 @@ export interface AppState {
   selectedMonthlyPlanId: string | null
   selectedJourneyEntryId: string | null
   selectedChallengeId: string | null
+  curatedPlanFlowStep: number
+  curatedPlanDraft: CuratedPlanDraft
+  curatedPlanResult: CuratedPlanResult | null
   adventurePhotos: string[]
   zipCode: string
   dogs: Dog[]
@@ -172,6 +178,9 @@ export const defaultAppState: AppState = {
   selectedMonthlyPlanId: null,
   selectedJourneyEntryId: null,
   selectedChallengeId: null,
+  curatedPlanFlowStep: 0,
+  curatedPlanDraft: EMPTY_CURATED_PLAN_DRAFT,
+  curatedPlanResult: null,
   adventurePhotos: ['', '', ''],
   zipCode: '',
   dogs: [

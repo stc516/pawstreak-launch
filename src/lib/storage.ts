@@ -1,6 +1,7 @@
 import { defaultAppState, type ActiveAdventure, type AppState } from '../data/demo'
 import { normalizePhotoSlots } from '../lib/imageUtils'
 import { resolvePlaceFromAdventure } from '../data/places'
+import { EMPTY_CURATED_PLAN_DRAFT } from '../lib/curatedPlan'
 
 const STORAGE_KEY = 'pawstreak:app'
 
@@ -25,6 +26,9 @@ function normalizeAppState(state: AppState): AppState {
     selectedMonthlyPlanId: rest.selectedMonthlyPlanId ?? null,
     selectedJourneyEntryId: rest.selectedJourneyEntryId ?? null,
     selectedChallengeId: rest.selectedChallengeId ?? null,
+    curatedPlanFlowStep: rest.curatedPlanFlowStep ?? 0,
+    curatedPlanDraft: rest.curatedPlanDraft ?? EMPTY_CURATED_PLAN_DRAFT,
+    curatedPlanResult: rest.curatedPlanResult ?? null,
     adventurePhotos: normalizePhotoSlots(rest.adventurePhotos),
     activeAdventure: normalizeActiveAdventure(rest.activeAdventure),
   }
