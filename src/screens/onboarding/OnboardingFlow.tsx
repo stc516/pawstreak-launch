@@ -510,9 +510,8 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                 You're all set,
                 <br />
                 <span className="onboarding-done-name">
-                  {dogName.trim() || 'friend'}
+                  {dogName.trim() || 'friend'}!
                 </span>
-                !
               </h1>
               <p className="body onboarding-done-copy">
                 Your adventure journal is ready.
@@ -583,6 +582,8 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
 
       <div
         className={`modal-overlay${modalOpen ? ' open' : ''}`}
+        aria-hidden={!modalOpen}
+        hidden={!modalOpen}
         onClick={() => setModalOpen(false)}
       >
         <div className="modal-sheet" onClick={(event) => event.stopPropagation()}>

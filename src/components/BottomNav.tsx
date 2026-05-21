@@ -29,7 +29,10 @@ export function BottomNav({ activeTab, onTabChange, className = 'bnav' }: Bottom
             key={tab.id}
             type="button"
             className={`ni${isActive ? ' on' : ''}`}
-            onClick={() => onTabChange(tab.id)}
+            onClick={() => {
+              if (isProfileTab && activeTab === 'profile') return
+              onTabChange(tab.id)
+            }}
           >
             <i className={`ti ${tab.icon}`} aria-hidden="true" />
             <span>{label}</span>
