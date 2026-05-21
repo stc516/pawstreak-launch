@@ -16,6 +16,7 @@ import { MilestonesScreen } from './screens/app/MilestonesScreen'
 import { ProfileScreen } from './screens/app/ProfileScreen'
 import { OnboardingFlow } from './screens/onboarding/OnboardingFlow'
 import { JourneyMemoryView } from './screens/overlays/JourneyMemoryView'
+import { ChallengeDetailView } from './screens/overlays/ChallengeDetailView'
 import { PlanScreen } from './screens/app/PlanScreen'
 
 function App() {
@@ -55,6 +56,14 @@ function App() {
 
   const closeJourneyMemory = () => {
     setState((current) => ({ ...current, selectedJourneyEntryId: null }))
+  }
+
+  const openChallengeDetail = (selectedChallengeId: string) => {
+    setState((current) => ({ ...current, selectedChallengeId }))
+  }
+
+  const closeChallengeDetail = () => {
+    setState((current) => ({ ...current, selectedChallengeId: null }))
   }
 
   const addAdventurePhoto = (photoDataUrl: string) => {
@@ -108,6 +117,20 @@ function App() {
 
   if (!state.onboardingComplete) {
     return <OnboardingFlow onComplete={completeOnboarding} />
+  }
+
+  if (state.selectedChallengeId) {
+    const challenge = state.challenges.find(
+      (item) => item.id === state.selectedChallengeId,
+    )
+    if (challenge) {
+      return (
+        <ChallengeDetailView
+          challenge={challenge}
+          onBack={closeChallengeDetail}
+        />
+      )
+    }
   }
 
   if (state.selectedJourneyEntryId) {
@@ -168,7 +191,12 @@ function App() {
       case 'community':
         return <CommunityScreen state={state} />
       case 'milestones':
-        return <MilestonesScreen state={state} />
+        return (
+          <MilestonesScreen
+            state={state}
+            onOpenChallenge={openChallengeDetail}
+          />
+        )
       case 'profile':
         return <ProfileScreen state={state} />
       default:

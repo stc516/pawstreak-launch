@@ -24,6 +24,7 @@ function normalizeAppState(state: AppState): AppState {
     ...rest,
     selectedMonthlyPlanId: rest.selectedMonthlyPlanId ?? null,
     selectedJourneyEntryId: rest.selectedJourneyEntryId ?? null,
+    selectedChallengeId: rest.selectedChallengeId ?? null,
     adventurePhotos: normalizePhotoSlots(rest.adventurePhotos),
     activeAdventure: normalizeActiveAdventure(rest.activeAdventure),
   }

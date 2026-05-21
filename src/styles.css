@@ -1572,6 +1572,244 @@ textarea {
   color: var(--accent);
 }
 
+.challenge--tap {
+  display: block;
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 11px 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.challenge--tap:active {
+  transform: scale(0.985);
+}
+
+/* Challenge detail view */
+
+.chdetail-header {
+  margin-bottom: 10px;
+}
+
+.chdetail-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+}
+
+.chdetail-progress-label {
+  font-size: 11px;
+  color: var(--accent);
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+.chdetail-bar {
+  height: 8px;
+  background: var(--color-background-secondary);
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+.chdetail-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #f59e0b);
+  border-radius: 20px;
+}
+
+.chdetail-motivation {
+  background: var(--color-background-secondary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 14px;
+}
+
+.chdetail-motivation-line {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--color-text-primary);
+  margin: 0 0 8px;
+}
+
+.chdetail-motivation-line:last-child {
+  margin-bottom: 0;
+}
+
+.chdetail-reward {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 13px;
+  background: var(--accent-light);
+  border: 0.5px solid var(--accent-border);
+  margin-bottom: 6px;
+}
+
+.chdetail-reward-emoji {
+  font-size: 28px;
+}
+
+.chdetail-reward-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.chdetail-reward-sub {
+  font-size: 10px;
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+  line-height: 1.35;
+}
+
+.chdetail-places {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.chdetail-place {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+}
+
+.chdetail-place--done {
+  color: var(--color-text-primary);
+}
+
+.chdetail-place--done i {
+  color: var(--accent);
+}
+
+.chdetail-place i {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.chdetail-next-card {
+  display: flex;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 12px;
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+}
+
+.chdetail-next-img {
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.chdetail-next-img.card-img {
+  min-height: 72px;
+}
+
+.chdetail-next-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.chdetail-next-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.chdetail-next-reason {
+  font-size: 10px;
+  color: var(--color-text-secondary);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.chdetail-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.chdetail-stat {
+  text-align: center;
+  padding: 10px 6px;
+  border-radius: 11px;
+  background: var(--color-background-secondary);
+  border: 0.5px solid var(--color-border-tertiary);
+}
+
+.chdetail-stat-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.chdetail-stat-label {
+  font-size: 8px;
+  color: var(--color-text-tertiary);
+  margin-top: 3px;
+}
+
+.chdetail-memories {
+  margin-bottom: 4px;
+}
+
+.chdetail-pack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chdetail-pack-dog {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 11px;
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+}
+
+.chdetail-pack-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--accent-light);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.chdetail-pack-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.chdetail-pack-progress {
+  font-size: 9px;
+  color: var(--color-text-tertiary);
+  margin-top: 1px;
+}
+
 .ach-item {
   background: var(--color-background-primary);
   border: 0.5px solid var(--color-border-tertiary);

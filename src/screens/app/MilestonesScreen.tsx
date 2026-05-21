@@ -2,9 +2,10 @@ import type { AppState } from '../../data/demo'
 
 interface MilestonesScreenProps {
   state: AppState
+  onOpenChallenge: (challengeId: string) => void
 }
 
-export function MilestonesScreen({ state }: MilestonesScreenProps) {
+export function MilestonesScreen({ state, onOpenChallenge }: MilestonesScreenProps) {
   return (
     <>
       <div className="aheader">
@@ -28,7 +29,12 @@ export function MilestonesScreen({ state }: MilestonesScreenProps) {
       <div className="sec">Active challenges</div>
 
       {state.challenges.map((challenge) => (
-        <div key={challenge.id} className="challenge">
+        <button
+          key={challenge.id}
+          type="button"
+          className="challenge challenge--tap"
+          onClick={() => onOpenChallenge(challenge.id)}
+        >
           <div className="ch-top">
             <div className="ch-name">{challenge.name}</div>
             <div className="ch-prog">{challenge.progress}</div>
@@ -44,7 +50,7 @@ export function MilestonesScreen({ state }: MilestonesScreenProps) {
             <i className="ti ti-gift" aria-hidden="true" />
             {challenge.prize}
           </div>
-        </div>
+        </button>
       ))}
 
       <div className="sec">Achievements</div>

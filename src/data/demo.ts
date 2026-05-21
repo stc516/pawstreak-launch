@@ -117,6 +117,7 @@ export interface AppState {
   selectedJourneyFilterId: string
   selectedMonthlyPlanId: string | null
   selectedJourneyEntryId: string | null
+  selectedChallengeId: string | null
   adventurePhotos: string[]
   zipCode: string
   dogs: Dog[]
@@ -170,6 +171,7 @@ export const defaultAppState: AppState = {
   selectedJourneyFilterId: 'all',
   selectedMonthlyPlanId: null,
   selectedJourneyEntryId: null,
+  selectedChallengeId: null,
   adventurePhotos: ['', '', ''],
   zipCode: '',
   dogs: [
