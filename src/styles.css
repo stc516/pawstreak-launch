@@ -952,6 +952,165 @@ button {
   font-size: 12px;
 }
 
+/* Community */
+
+.comm-live {
+  background: var(--accent-light);
+  border: 0.5px solid var(--accent-border);
+  border-radius: 13px;
+  padding: 11px 13px;
+}
+
+.comm-live-top {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 8px;
+}
+
+.live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+}
+
+.live-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--accent-brown);
+}
+
+.live-count {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.live-sub {
+  font-size: 10px;
+  color: var(--accent-deep);
+}
+
+.live-sub--spaced {
+  margin-bottom: 7px;
+}
+
+.live-bar {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.live-chip {
+  background: white;
+  border: 0.5px solid var(--accent-border);
+  border-radius: 20px;
+  padding: 3px 8px;
+  font-size: 9px;
+  color: var(--accent-deep);
+}
+
+.comm-post {
+  background: var(--color-background-primary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: 13px;
+  overflow: hidden;
+}
+
+.cp-img {
+  background: var(--color-background-secondary);
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cp-img i {
+  font-size: 26px;
+  color: var(--color-text-tertiary);
+}
+
+.cp-body {
+  padding: 9px 11px;
+}
+
+.cp-user {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 6px;
+}
+
+.cp-av {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.cp-av1 {
+  background: #bfdbfe;
+  color: #1e40af;
+}
+
+.cp-av2 {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.cp-name {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.cp-meta {
+  font-size: 9px;
+  color: var(--color-text-secondary);
+}
+
+.cp-caption {
+  font-size: 11px;
+  color: var(--color-text-primary);
+  line-height: 1.4;
+}
+
+.cp-loc {
+  font-size: 9px;
+  color: var(--accent);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.cp-loc i {
+  font-size: 10px;
+}
+
+.cp-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 7px;
+}
+
+.cpa {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: var(--color-text-secondary);
+}
+
+.cpa i {
+  font-size: 13px;
+}
+
 /* Placeholder for unbuilt tabs */
 
 .placeholder-screen {

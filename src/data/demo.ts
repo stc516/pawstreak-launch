@@ -65,6 +65,22 @@ export interface Flashback {
   subtitle: string
 }
 
+export interface LiveChip {
+  label: string
+}
+
+export interface CommunityPost {
+  id: string
+  avatarClass: 'cp-av1' | 'cp-av2'
+  initial: string
+  name: string
+  meta: string
+  caption: string
+  location: string
+  likes: number
+  comments: number
+}
+
 export interface AppState {
   activeTab: TabId
   activeAdventure: ActiveAdventure | null
@@ -102,6 +118,13 @@ export interface AppState {
   journeyFilters: JourneyFilter[]
   flashback: Flashback
   journeyEntries: JourneyEntry[]
+  communityLive: {
+    label: string
+    count: string
+    subtitle: string
+    chips: LiveChip[]
+  }
+  communityPosts: CommunityPost[]
 }
 
 export const defaultAppState: AppState = {
@@ -245,6 +268,44 @@ export const defaultAppState: AppState = {
       place: 'Julian Day Trip',
       date: 'Saturday',
       tags: ['Road trip', '62 mi', 'Both dogs', 'New place'],
+    },
+  ],
+  communityLive: {
+    label: 'Right now in San Diego',
+    count: '247 dogs on adventure',
+    subtitle: 'Your city is out there. Are you?',
+    chips: [
+      { label: '🏖️ 89 at the beach' },
+      { label: '🌲 54 on trails' },
+      { label: '☕ 41 at cafes' },
+      { label: '🐕 38 at dog parks' },
+      { label: '🚗 25 on road trips' },
+    ],
+  },
+  communityPosts: [
+    {
+      id: 'sophie-mango',
+      avatarClass: 'cp-av1',
+      initial: 'S',
+      name: 'Sophie + Mango',
+      meta: '2h ago · Day 31 streak',
+      caption:
+        "Mango absolutely lost his mind at the water today. Best $0 we've ever spent.",
+      location: 'Del Mar Dog Beach',
+      likes: 84,
+      comments: 12,
+    },
+    {
+      id: 'jake-luna-biscuit',
+      avatarClass: 'cp-av2',
+      initial: 'J',
+      name: 'Jake + Luna + Biscuit',
+      meta: '4h ago · Day 8 streak',
+      caption:
+        'First road trip with both dogs. Julian was worth every minute of the drive.',
+      location: 'Julian, CA · Road trip',
+      likes: 61,
+      comments: 7,
     },
   ],
 }

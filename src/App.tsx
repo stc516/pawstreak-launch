@@ -5,6 +5,7 @@ import { loadAppState, saveAppState } from './lib/storage'
 import { AppShell } from './components/AppShell'
 import { ActiveAdventureScreen } from './screens/app/ActiveAdventureScreen'
 import { HomeScreen } from './screens/app/HomeScreen'
+import { CommunityScreen } from './screens/app/CommunityScreen'
 import { JourneyScreen } from './screens/app/JourneyScreen'
 import { PlanScreen } from './screens/app/PlanScreen'
 
@@ -87,6 +88,8 @@ function App() {
             onSelectFilter={setSelectedJourneyFilter}
           />
         )
+      case 'community':
+        return <CommunityScreen state={state} />
       default:
         return (
           <div className="placeholder-screen">
