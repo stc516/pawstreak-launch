@@ -5,9 +5,14 @@ import { getPlaceById } from '../../data/places'
 interface JourneyScreenProps {
   state: AppState
   onSelectFilter: (filterId: string) => void
+  onOpenMemory: (entryId: string) => void
 }
 
-export function JourneyScreen({ state, onSelectFilter }: JourneyScreenProps) {
+export function JourneyScreen({
+  state,
+  onSelectFilter,
+  onOpenMemory,
+}: JourneyScreenProps) {
   return (
     <>
       <div className="aheader">
@@ -47,7 +52,12 @@ export function JourneyScreen({ state, onSelectFilter }: JourneyScreenProps) {
         const place = entry.placeId ? getPlaceById(entry.placeId) : undefined
 
         return (
-          <div key={entry.id} className="mcard">
+          <button
+            key={entry.id}
+            type="button"
+            className="mcard mcard--tap"
+            onClick={() => onOpenMemory(entry.id)}
+          >
             <CardImage
               className="mcard-img"
               imageUrl={place?.imageUrl}
@@ -74,7 +84,7 @@ export function JourneyScreen({ state, onSelectFilter }: JourneyScreenProps) {
                 Share · Post to community
               </div>
             </div>
-          </div>
+          </button>
         )
       })}
     </>

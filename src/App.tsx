@@ -15,6 +15,7 @@ import { JourneyScreen } from './screens/app/JourneyScreen'
 import { MilestonesScreen } from './screens/app/MilestonesScreen'
 import { ProfileScreen } from './screens/app/ProfileScreen'
 import { OnboardingFlow } from './screens/onboarding/OnboardingFlow'
+import { JourneyMemoryView } from './screens/overlays/JourneyMemoryView'
 import { PlanScreen } from './screens/app/PlanScreen'
 
 function App() {
@@ -46,6 +47,14 @@ function App() {
 
   const setSelectedMonthlyPlan = (selectedMonthlyPlanId: string) => {
     setState((current) => ({ ...current, selectedMonthlyPlanId }))
+  }
+
+  const openJourneyMemory = (selectedJourneyEntryId: string) => {
+    setState((current) => ({ ...current, selectedJourneyEntryId }))
+  }
+
+  const closeJourneyMemory = () => {
+    setState((current) => ({ ...current, selectedJourneyEntryId: null }))
   }
 
   const addAdventurePhoto = (photoDataUrl: string) => {
@@ -101,6 +110,21 @@ function App() {
     return <OnboardingFlow onComplete={completeOnboarding} />
   }
 
+  if (state.selectedJourneyEntryId) {
+    const entry = state.journeyEntries.find(
+      (item) => item.id === state.selectedJourneyEntryId,
+    )
+    if (entry) {
+      return (
+        <JourneyMemoryView
+          state={state}
+          entry={entry}
+          onBack={closeJourneyMemory}
+        />
+      )
+    }
+  }
+
   if (state.activeAdventure) {
     return (
       <ActiveAdventureScreen
@@ -138,6 +162,7 @@ function App() {
           <JourneyScreen
             state={state}
             onSelectFilter={setSelectedJourneyFilter}
+            onOpenMemory={openJourneyMemory}
           />
         )
       case 'community':
