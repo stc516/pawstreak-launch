@@ -5,11 +5,16 @@ import { StatusBar } from '../../components/StatusBar'
 
 interface ChallengeDetailViewProps {
   challenge: Challenge
+  dogs?: import('../../data/demo').Dog[]
   onBack: () => void
 }
 
-export function ChallengeDetailView({ challenge, onBack }: ChallengeDetailViewProps) {
-  const detail = getChallengeDetail(challenge.id)
+export function ChallengeDetailView({
+  challenge,
+  dogs = [],
+  onBack,
+}: ChallengeDetailViewProps) {
+  const detail = getChallengeDetail(challenge.id, dogs)
   if (!detail) return null
 
   return (

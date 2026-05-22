@@ -1,5 +1,5 @@
 import type { Dog } from '../data/demo'
-import { dogNamesLabel } from '../data/demo'
+import { getDogDisplayName, getPackDisplayName } from './dogLabels'
 import { getPlaceById, PLACES } from '../data/places'
 
 export interface CuratedPlanWeekItem {
@@ -239,7 +239,7 @@ function buildWeeklySchedule(
 }
 
 function pickFirstAdventure(loveIds: string[]) {
-  const spots = recommendSpots(loveIds)
+  const spots = recommendSpots(loveIds, [])
   const place = PLACES.find((p) => p.name === spots[0]?.name) ?? PLACES[0]
   return {
     placeId: place.id,
@@ -282,7 +282,10 @@ function buildMonthlyGoals(optimizeIds: string[], loveIds: string[]): string[] {
   return [...new Set(goals)].slice(0, 4)
 }
 
-function recommendSpots(loveIds: string[]): { name: string; reason: string }[] {
+function recommendSpots(
+  loveIds: string[],
+  dogs: Dog[],
+): { name: string; reason: string }[] {
   const categoryPriority: string[] = []
   if (loveIds.includes('beaches') || loveIds.includes('water')) {
     categoryPriority.push('Beach')
@@ -308,6 +311,13 @@ function recommendSpots(loveIds: string[]): { name: string; reason: string }[] {
 
   if (spots.length >= 2) return spots
 
+  return buildFallbackSpots(dogs)
+}
+
+function buildFallbackSpots(dogs: Dog[]): { name: string; reason: string }[] {
+  const support = getDogDisplayName(dogs, 1)
+  const pacedLabel = dogs.length >= 2 ? `${support}-paced` : 'slower-paced'
+
   return [
     {
       name: getPlaceById('dog-beach-ocean-beach')?.name ?? 'Dog Beach, OB',
@@ -319,7 +329,7 @@ function recommendSpots(loveIds: string[]): { name: string; reason: string }[] {
     },
     {
       name: getPlaceById('coronado-dog-beach')?.name ?? 'Coronado Dog Beach',
-      reason: 'Flat shoreline perfect for a calmer loop on an Omi-paced day.',
+      reason: `Flat shoreline perfect for a calmer loop on a ${pacedLabel} day.`,
     },
   ]
 }
@@ -333,7 +343,7 @@ export function generateCuratedPlanResult(
   const primaryOptimizeId = optimizeIds[0]
   const timeId = draft.timeId ?? 'flexible'
   const loveIds = draft.loveIds.length > 0 ? draft.loveIds : ['trails', 'sniffing']
-  const dogLabel = dogNamesLabel(dogs)
+  const dogLabel = getPackDisplayName(dogs)
   const goalLabels = optimizeIds.map((id) => OPTIMIZE_LABELS[id] ?? id)
   const goalSummary = formatGoalList(goalLabels)
   const firstAdventure = pickFirstAdventure(loveIds)
@@ -363,7 +373,7 @@ export function generateCuratedPlanResult(
     balance: mergeBalance(optimizeIds),
     adventureTypes: loveToAdventureTypes(loveIds),
     monthlyGoals: buildMonthlyGoals(optimizeIds, loveIds),
-    recommendedSpots: recommendSpots(loveIds),
+    recommendedSpots: recommendSpots(loveIds, dogs),
     savedAt: new Date().toISOString(),
   }
 }

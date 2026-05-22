@@ -1,5 +1,6 @@
-import type { JourneyEntry } from './demo'
+import type { JourneyEntry, Dog } from './demo'
 import { getPlaceById } from './places'
+import { personalizeGhostText } from '../lib/dogLabels'
 
 export interface JourneyMemoryDetail {
   memorySubtitle: string
@@ -77,7 +78,10 @@ const DEFAULT_MEMORY: JourneyMemoryDetail = {
   dogTags: ['Bailey + Omi'],
 }
 
-export function getJourneyMemoryDetail(entry: JourneyEntry): JourneyMemoryDetail {
+export function getJourneyMemoryDetail(
+  entry: JourneyEntry,
+  dogs: Dog[] = [],
+): JourneyMemoryDetail {
   const base = {
     ...DEFAULT_MEMORY,
     ...(MEMORY_BY_ENTRY[entry.id] ?? {}),
@@ -101,8 +105,8 @@ export function getJourneyMemoryDetail(entry: JourneyEntry): JourneyMemoryDetail
   if (entry.recapLabels?.length) {
     base.adventureChips = entry.recapLabels
     base.whatDogsLoved = entry.recapLabels.map((label) => {
-      if (label === 'Bailey led the way') return 'Leading the route'
-      if (label === 'Omi set the pace') return 'Setting a slower rhythm'
+      if (label.endsWith('led the way')) return 'Leading the route'
+      if (label.endsWith('set the pace')) return 'Setting a slower rhythm'
       if (label === 'Found a new smell') return 'Deep sniff time'
       return label
     })
@@ -128,6 +132,18 @@ export function getJourneyMemoryDetail(entry: JourneyEntry): JourneyMemoryDetail
 
   if (entry.magicLine && !entry.emotionalLine) {
     base.emotionalRecaps = [entry.magicLine, ...base.emotionalRecaps.slice(0, 2)]
+  }
+
+  if (dogs.length > 0) {
+    return {
+      ...base,
+      dogLoveLine: personalizeGhostText(base.dogLoveLine, dogs),
+      emotionalRecaps: base.emotionalRecaps.map((line) =>
+        personalizeGhostText(line, dogs),
+      ),
+      favoriteMoment: personalizeGhostText(base.favoriteMoment, dogs),
+      dogTags: base.dogTags.map((tag) => personalizeGhostText(tag, dogs)),
+    }
   }
 
   return base

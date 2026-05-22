@@ -1,8 +1,9 @@
 import type { Dog } from '../data/demo'
-import { dogNamesLabel } from '../data/demo'
+import { getPackDisplayName } from './dogLabels'
 import type { AppState } from '../data/demo'
 import type { CuratedPlanDraft } from './curatedPlan'
 import type { Place, PlaceCategory } from '../types/place'
+import { personalizeAppContentForDogs } from './personalizeContent'
 
 export function getRecommendationPrefs(state: AppState): RecommendationPrefs {
   return {
@@ -230,20 +231,20 @@ export function buildCuratedDraftFromOnboarding(
 export function journeyTitleFor(dogs: Dog[]): string {
   if (dogs.length === 0) return 'Your Journey'
   if (dogs.length === 1) return `${dogs[0].name}'s Journey`
-  return `${dogNamesLabel(dogs)}'s Journey`
+  return `${getPackDisplayName(dogs)}'s Journey`
 }
 
 export function dogsAreOutLabel(dogs: Dog[]): string {
   if (dogs.length === 0) return 'Your pack is out'
   if (dogs.length === 1) return `${dogs[0].name} is out`
-  return `${dogNamesLabel(dogs)} are out`
+  return `${getPackDisplayName(dogs)} are out`
 }
 
 export function bondSubtitleFor(dogs: Dog[], adventureCount: number, placeCount: number): string {
   const stats = `${adventureCount} adventures · ${placeCount} places`
   if (dogs.length === 0) return stats
   if (dogs.length === 1) return `${stats} · ${dogs[0].name}`
-  return `${stats} · ${dogNamesLabel(dogs)}`
+  return `${stats} · ${getPackDisplayName(dogs)}`
 }
 
 export function buildAdventureRecapOptions(dogs: Dog[]): {
@@ -305,9 +306,9 @@ export interface RecommendationPrefs {
 }
 
 export function applyOnboardingToAppState(
-  current: import('../data/demo').AppState,
+  current: AppState,
   result: OnboardingResult,
-): Partial<import('../data/demo').AppState> {
+): Partial<AppState> {
   const dogs = buildDogsFromOnboarding(result.dogs)
   const finalDogs = dogs.length > 0 ? dogs : current.dogs
   const location = resolveLocationProfile(result.locationQuery)
@@ -316,6 +317,8 @@ export function applyOnboardingToAppState(
     result.vibeNames,
     result.categoryIds,
   )
+  const personalized =
+    dogs.length > 0 ? personalizeAppContentForDogs(current, finalDogs) : {}
 
   return {
     onboardingComplete: true,
@@ -337,27 +340,11 @@ export function applyOnboardingToAppState(
       ...current.communityLive,
       label: location.communityLabel,
     },
-    journeyTitle: journeyTitleFor(finalDogs),
-    bondLevel: {
-      ...current.bondLevel,
-      subtitle: bondSubtitleFor(finalDogs, current.adventureCount, current.placeCount),
-    },
-    adventureRecapOptions: buildAdventureRecapOptions(finalDogs),
     curatedPlanDraft: {
       ...current.curatedPlanDraft,
       optimizeIds: curatedPartial.optimizeIds ?? [],
       loveIds: curatedPartial.loveIds ?? [],
     },
-    monthlyPlanOptions: current.monthlyPlanOptions.map((option) =>
-      option.id === 'curated'
-        ? {
-            ...option,
-            subtitle:
-              finalDogs.length === 1
-                ? `Based on what ${finalDogs[0].name} loves most`
-                : `Based on what they love most`,
-          }
-        : option,
-    ),
+    ...personalized,
   }
 }

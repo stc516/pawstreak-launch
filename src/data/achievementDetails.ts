@@ -1,3 +1,6 @@
+import type { Dog } from './demo'
+import { personalizeGhostText } from '../lib/dogLabels'
+
 export interface AchievementMemory {
   placeName: string
   caption: string
@@ -100,6 +103,31 @@ const ACHIEVEMENT_DETAILS: Record<string, AchievementDetail> = {
   },
 }
 
-export function getAchievementDetail(achievementId: string): AchievementDetail | null {
-  return ACHIEVEMENT_DETAILS[achievementId] ?? null
+function personalizeAchievementDetail(
+  detail: AchievementDetail,
+  dogs: Dog[],
+): AchievementDetail {
+  if (dogs.length === 0) return detail
+
+  return {
+    ...detail,
+    emotionalExplanation: personalizeGhostText(detail.emotionalExplanation, dogs),
+    relatedMemories: detail.relatedMemories.map((memory) => ({
+      ...memory,
+      caption: personalizeGhostText(memory.caption, dogs),
+    })),
+    suggestedAction: {
+      ...detail.suggestedAction,
+      description: personalizeGhostText(detail.suggestedAction.description, dogs),
+    },
+  }
+}
+
+export function getAchievementDetail(
+  achievementId: string,
+  dogs: Dog[] = [],
+): AchievementDetail | null {
+  const detail = ACHIEVEMENT_DETAILS[achievementId]
+  if (!detail) return null
+  return dogs.length > 0 ? personalizeAchievementDetail(detail, dogs) : detail
 }

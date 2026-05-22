@@ -1,4 +1,6 @@
 import type { Place, PlaceCategory } from '../types/place'
+import type { Dog } from '../data/demo'
+import { getPackDisplayName } from './dogLabels'
 
 const CATEGORY_LINES: Partial<Record<PlaceCategory, string>> = {
   Beach: 'Beach day energy — worth getting out.',
@@ -46,7 +48,7 @@ export function getMagicLine(place: Place): string {
   return CATEGORY_LINES[place.category] ?? 'Worth getting out.'
 }
 
-export function getHeroMagicSubtitle(place: Place): string {
+export function getHeroMagicSubtitle(place: Place, dogs: Dog[] = []): string {
   if (place.popularNow) {
     return `${place.distanceLabel} · Perfect right now`
   }
@@ -55,7 +57,14 @@ export function getHeroMagicSubtitle(place: Place): string {
     return `${place.distanceLabel} · Worth getting out`
   }
 
-  return `${place.distanceLabel} · ${place.leashInfo} · Both dogs welcome`
+  const welcome =
+    dogs.length === 0
+      ? 'Dog-friendly spot'
+      : dogs.length === 1
+        ? `${dogs[0].name} would love this`
+        : `${getPackDisplayName(dogs)} welcome`
+
+  return `${place.distanceLabel} · ${place.leashInfo} · ${welcome}`
 }
 
 export function getPlanMagicMeta(place: Place): string {

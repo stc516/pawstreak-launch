@@ -3,6 +3,19 @@ export type TabId = 'home' | 'plan' | 'journey' | 'community' | 'milestones' | '
 import type { CuratedPlanDraft, CuratedPlanResult } from '../lib/curatedPlan'
 import { EMPTY_CURATED_PLAN_DRAFT } from '../lib/curatedPlan'
 import type { RandomPlanResult } from '../lib/randomPlan'
+import type { PackAccessMember } from './packAccess'
+import { DEFAULT_PACK_ACCESS_MEMBERS } from './packAccess'
+
+export type {
+  PackAccessMember,
+  PackInviteAccessLevel,
+  PackInviteRole,
+} from './packAccess'
+export {
+  DEFAULT_PACK_ACCESS_MEMBERS,
+  PACK_INVITE_ACCESS_LEVELS,
+  PACK_INVITE_ROLES,
+} from './packAccess'
 
 export interface Dog {
   id: string
@@ -200,6 +213,10 @@ export interface AppState {
   challenges: Challenge[]
   achievements: Achievement[]
   favoritePlaces: FavoritePlace[]
+  hasUserDogProfile: boolean
+  packAccessMembers: PackAccessMember[]
+  showPackInviteOverlay: boolean
+  packAccessToast: string | null
 }
 
 export const defaultAppState: AppState = {
@@ -497,17 +514,22 @@ export const defaultAppState: AppState = {
       visits: '2 visits · road trip · photos',
     },
   ],
+  hasUserDogProfile: false,
+  packAccessMembers: DEFAULT_PACK_ACCESS_MEMBERS,
+  showPackInviteOverlay: false,
+  packAccessToast: null,
 }
 
-export function dogNamesLabel(dogs: Dog[]): string {
-  return dogs.map((dog) => dog.name).join(' + ')
-}
-
-export function dogPossessiveLabel(dogs: Dog[]): string {
-  if (dogs.length === 0) return 'your dog'
-  if (dogs.length === 1) return `${dogs[0].name}'s`
-  return `${dogNamesLabel(dogs)}'s`
-}
+export {
+  dogNamesLabel,
+  dogPossessiveLabel,
+  getAdventureDogLabel,
+  getDogCountLabel,
+  getDogDisplayName,
+  getDogPossessive,
+  getPackDisplayName,
+  personalizeGhostText,
+} from '../lib/dogLabels'
 
 export function createActiveAdventure(
   placeId: string,

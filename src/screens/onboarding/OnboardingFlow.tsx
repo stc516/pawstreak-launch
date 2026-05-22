@@ -314,7 +314,7 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
               <input
                 className="field-input"
                 type="text"
-                placeholder="e.g. Bailey"
+                placeholder="e.g. Luna"
                 value={dogName}
                 onChange={(event) => setDogName(event.target.value)}
               />
@@ -374,7 +374,7 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                   Got another dog? Add them too.
                 </div>
                 <div className="caption onboarding-toggle-caption">
-                  Both dogs show on every adventure card.
+                  Every dog in your pack shows on adventure cards.
                 </div>
               </div>
               <div className={`tog${secondDogOn ? ' on' : ''}`} />
@@ -388,7 +388,7 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                   <input
                     className="field-input"
                     type="text"
-                    placeholder="e.g. Omi"
+                    placeholder="e.g. Max"
                     value={secondDogName}
                     onChange={(event) => setSecondDogName(event.target.value)}
                   />

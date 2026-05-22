@@ -759,8 +759,8 @@ export function formatPlaceMeta(place: Place): string {
   return `${place.distanceLabel} · ${place.leashInfo} · ${regionShort(place.region)}`
 }
 
-export function formatHeroSubtitle(place: Place): string {
-  return getHeroMagicSubtitle(place)
+export function formatHeroSubtitle(place: Place, dogs: Dog[] = []): string {
+  return getHeroMagicSubtitle(place, dogs)
 }
 
 export function getHeroBadge(place: Place): string {

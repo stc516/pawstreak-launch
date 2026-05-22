@@ -1,5 +1,5 @@
 import type { Dog } from '../data/demo'
-import { dogNamesLabel } from '../data/demo'
+import { getDogDisplayName, getPackDisplayName } from './dogLabels'
 
 export interface AdventureFinishPayload {
   recapLabels: string[]
@@ -43,7 +43,7 @@ export function buildEmotionalMemoryLine(
         return `${dogs[0].name} stopped at one patch and forgot the rest of the world.`
       }
       if (label === 'Found a new smell' && dogs.length >= 2) {
-        return `${dogNamesLabel(dogs)} stopped at the same patch — worth remembering.`
+        return `${getPackDisplayName(dogs)} stopped at the same patch — worth remembering.`
       }
       return staticLine
     }
@@ -65,8 +65,8 @@ export function buildFavoriteMoment(recapLabels: string[], dogs: Dog[] = []): st
 
   if (recapLabels.includes('Found a new smell')) {
     return dogs.length >= 2
-      ? 'That one corner where both dogs stopped and forgot the rest of the world.'
-      : `${dogs[0]?.name ?? 'They'} found one smell worth staying for.`
+      ? `That one corner where ${getPackDisplayName(dogs)} stopped and forgot the rest of the world.`
+      : `${getDogDisplayName(dogs)} found one smell worth staying for.`
   }
   if (recapLabels.includes('Met new friends')) {
     return 'The moment tails started wagging at the same time.'

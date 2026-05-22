@@ -1,0 +1,63 @@
+{
+  "commit": "1aae4ae",
+  "testedAt": "2026-05-22T01:05:55.612Z",
+  "overallPass": true,
+  "evidenceDir": "qa/evidence/personalization-pack-access",
+  "results": [
+    {
+      "flow": "home-taco",
+      "pass": true,
+      "message": "Home shows Taco (\"Today with Taco\")"
+    },
+    {
+      "flow": "home-no-ghost-names",
+      "pass": true,
+      "message": "Home has no Bailey/Omi ghost names after onboarding"
+    },
+    {
+      "flow": "profile-taco",
+      "pass": true,
+      "message": "Profile shows Taco"
+    },
+    {
+      "flow": "pack-access-section",
+      "pass": true,
+      "message": "Pack Access section appears on Profile"
+    },
+    {
+      "flow": "pack-invite-open",
+      "pass": true,
+      "message": "Pack invite overlay opens"
+    },
+    {
+      "flow": "pack-invite-toast",
+      "pass": true,
+      "message": "Invite toast appears after submit"
+    },
+    {
+      "flow": "pack-member-added",
+      "pass": true,
+      "message": "Pack Access list includes invited member (4 cards)"
+    },
+    {
+      "flow": "pack-member-persists",
+      "pass": true,
+      "message": "Invited member persists after refresh (4 cards)"
+    },
+    {
+      "flow": "journey-taco",
+      "pass": true,
+      "message": "Journey title personalized (\"Taco's Journey\")"
+    },
+    {
+      "flow": "plan-taco",
+      "pass": true,
+      "message": "Plan copy uses Taco (\"Set up a monthly plan for Taco\")"
+    },
+    {
+      "flow": "active-adventure-taco",
+      "pass": true,
+      "message": "Active Adventure uses Taco without ghost names"
+    }
+  ]
+}

@@ -102,7 +102,7 @@ export function HomeScreen({
           <div>
             <div className="hc-eyebrow">Today&apos;s pick</div>
             <div className="hc-title">{heroPlace.name}</div>
-            <div className="hc-sub">{formatHeroSubtitle(heroPlace)}</div>
+            <div className="hc-sub">{formatHeroSubtitle(heroPlace, state.dogs)}</div>
             <div className="hc-magic">{getMagicLine(heroPlace)}</div>
           </div>
           {heroBadge ? <div className="hc-badge">{heroBadge}</div> : null}

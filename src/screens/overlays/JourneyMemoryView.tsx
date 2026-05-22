@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { Dog, JourneyEntry } from '../../data/demo'
+import type { Dog, JourneyEntry, PackAccessMember } from '../../data/demo'
 import { dogNamesLabel } from '../../data/demo'
 import { CardImage } from '../../components/CardImage'
 import { getJourneyMemoryDetail } from '../../data/journeyMemories'
@@ -9,6 +9,8 @@ import { StatusBar } from '../../components/StatusBar'
 interface JourneyMemoryViewProps {
   entry: JourneyEntry
   dogs: Dog[]
+  hasUserDogProfile?: boolean
+  packAccessMembers?: PackAccessMember[]
   onBack: () => void
   onGoAgain: (placeId: string) => void
 }
@@ -16,12 +18,15 @@ interface JourneyMemoryViewProps {
 export function JourneyMemoryView({
   entry,
   dogs,
+  hasUserDogProfile = false,
+  packAccessMembers = [],
   onBack,
   onGoAgain,
 }: JourneyMemoryViewProps) {
   const [shareNote, setShareNote] = useState<string | null>(null)
   const place = entry.placeId ? getPlaceById(entry.placeId) : undefined
-  const memory = getJourneyMemoryDetail(entry)
+  const memory = getJourneyMemoryDetail(entry, hasUserDogProfile ? dogs : [])
+  const familyMember = packAccessMembers.find((member) => member.name === 'Dog Mom')
   const heroUrl = place?.imageUrl ?? memory.photoUrls[0]
   const galleryPhotos = [
     ...(entry.photoUrls ?? []),
@@ -96,6 +101,12 @@ export function JourneyMemoryView({
               </span>
             ))}
           </div>
+
+          {familyMember ? (
+            <div className="memory-pack-reaction detail-card-warm">
+              {familyMember.name} loved this memory.
+            </div>
+          ) : null}
 
           <div className="memory-section detail-quote-block">
             <div className="memory-section-title">Emotional recap</div>

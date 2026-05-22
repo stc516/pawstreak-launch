@@ -2,6 +2,8 @@ import { defaultAppState, type ActiveAdventure, type AppState } from '../data/de
 import { normalizePhotoSlots } from '../lib/imageUtils'
 import { resolvePlaceFromAdventure } from '../data/places'
 import { EMPTY_CURATED_PLAN_DRAFT, type LegacyCuratedPlanDraft } from '../lib/curatedPlan'
+import { DEFAULT_PACK_ACCESS_MEMBERS } from '../data/packAccess'
+import { personalizeAppContentForDogs } from '../lib/personalizeContent'
 
 const STORAGE_KEY = 'pawstreak:app'
 
@@ -40,6 +42,14 @@ function normalizeCuratedDraft(
   }
 }
 
+function isDefaultDemoDogs(dogs: AppState['dogs']): boolean {
+  return (
+    dogs.length === 2 &&
+    dogs[0]?.id === 'bailey' &&
+    dogs[1]?.id === 'omi'
+  )
+}
+
 function normalizeAppState(state: AppState): AppState {
   const { heroSpot: _heroSpot, planPlaces: _planPlaces, ...rest } =
     state as AppState & {
@@ -47,7 +57,7 @@ function normalizeAppState(state: AppState): AppState {
       planPlaces?: unknown
     }
 
-  return {
+  let normalized: AppState = {
     ...rest,
     selectedMonthlyPlanId: rest.selectedMonthlyPlanId ?? null,
     selectedJourneyEntryId: rest.selectedJourneyEntryId ?? null,
@@ -69,6 +79,10 @@ function normalizeAppState(state: AppState): AppState {
     userName: rest.userName ?? '',
     dogVibeNames: rest.dogVibeNames ?? [],
     onboardingCategoryIds: rest.onboardingCategoryIds ?? [],
+    hasUserDogProfile: rest.hasUserDogProfile ?? false,
+    packAccessMembers: rest.packAccessMembers ?? DEFAULT_PACK_ACCESS_MEMBERS,
+    showPackInviteOverlay: rest.showPackInviteOverlay ?? false,
+    packAccessToast: rest.packAccessToast ?? null,
     communityPosts: (rest.communityPosts ?? defaultAppState.communityPosts).map(
       (post) => ({
         ...post,
@@ -77,6 +91,19 @@ function normalizeAppState(state: AppState): AppState {
       }),
     ),
   }
+
+  if (
+    normalized.onboardingComplete &&
+    !normalized.hasUserDogProfile &&
+    !isDefaultDemoDogs(normalized.dogs)
+  ) {
+    normalized = {
+      ...normalized,
+      ...personalizeAppContentForDogs(normalized, normalized.dogs),
+    }
+  }
+
+  return normalized
 }
 
 export function loadAppState(): AppState {

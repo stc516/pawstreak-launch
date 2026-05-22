@@ -1,3 +1,6 @@
+import type { Dog } from './demo'
+import { getDogDisplayName, personalizeGhostText } from '../lib/dogLabels'
+
 export interface ChallengePlace {
   id: string
   name: string
@@ -151,6 +154,59 @@ const CHALLENGE_DETAILS: Record<string, ChallengeDetail> = {
   },
 }
 
-export function getChallengeDetail(challengeId: string): ChallengeDetail | null {
-  return CHALLENGE_DETAILS[challengeId] ?? null
+function personalizeChallengeDetail(
+  detail: ChallengeDetail,
+  dogs: Dog[],
+): ChallengeDetail {
+  if (dogs.length === 0) return detail
+
+  return {
+    ...detail,
+    motivationalLines: detail.motivationalLines.map((line) =>
+      personalizeGhostText(line, dogs),
+    ),
+    suggestedNext: {
+      ...detail.suggestedNext,
+      reason: personalizeGhostText(detail.suggestedNext.reason, dogs),
+    },
+  }
+}
+
+export function getChallengeDetail(
+  challengeId: string,
+  dogs: Dog[] = [],
+): ChallengeDetail | null {
+  const detail = CHALLENGE_DETAILS[challengeId]
+  if (!detail) return null
+
+  if (dogs.length === 0) return detail
+
+  const lead = getDogDisplayName(dogs, 0)
+
+  if (dogs.length === 1) {
+    return personalizeChallengeDetail(
+      {
+        ...detail,
+        motivationalLines: detail.motivationalLines.map((line, index) => {
+          if (index === 2 && line.includes('Both dogs')) {
+            return `${lead} lights up on the drive — keep going.`
+          }
+          if (line.includes('seems happiest')) {
+            return `${lead} seems happiest near the water.`
+          }
+          if (line.includes('loves the quiet')) {
+            return `${lead} loves the quiet streets before 9am.`
+          }
+          return personalizeGhostText(line, dogs)
+        }),
+        suggestedNext: {
+          ...detail.suggestedNext,
+          reason: detail.suggestedNext.reason.replace(/Bailey sprint day/i, `${lead} sprint day`),
+        },
+      },
+      dogs,
+    )
+  }
+
+  return personalizeChallengeDetail(detail, dogs)
 }

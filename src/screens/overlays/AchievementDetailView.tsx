@@ -5,14 +5,16 @@ import { StatusBar } from '../../components/StatusBar'
 
 interface AchievementDetailViewProps {
   achievement: Achievement
+  dogs?: import('../../data/demo').Dog[]
   onBack: () => void
 }
 
 export function AchievementDetailView({
   achievement,
+  dogs = [],
   onBack,
 }: AchievementDetailViewProps) {
-  const detail = getAchievementDetail(achievement.id)
+  const detail = getAchievementDetail(achievement.id, dogs)
   if (!detail) return null
 
   const statusClass =

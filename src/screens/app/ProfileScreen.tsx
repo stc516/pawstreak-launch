@@ -4,9 +4,10 @@ import { getMagicLine, getPlaceById } from '../../data/places'
 
 interface ProfileScreenProps {
   state: AppState
+  onOpenPackInvite: () => void
 }
 
-export function ProfileScreen({ state }: ProfileScreenProps) {
+export function ProfileScreen({ state, onOpenPackInvite }: ProfileScreenProps) {
   return (
     <>
       <div className="prof-top">
@@ -39,6 +40,46 @@ export function ProfileScreen({ state }: ProfileScreenProps) {
         <div className="sc">
           <div className="sn">{state.placeCount}</div>
           <div className="sl">places</div>
+        </div>
+      </div>
+
+      <div className="pack-access-section">
+        <div className="pack-access-header">
+          <div>
+            <div className="sec pack-access-title">Pack Access</div>
+            <p className="pack-access-sub">
+              Let the people who love your dog stay close, even when they&apos;re far
+              away.
+            </p>
+            <p className="pack-access-copy">
+              Perfect for family, walkers, sitters, or someone stationed far away.
+              They can follow the memories, suggest adventures, and stay part of the
+              pack.
+            </p>
+          </div>
+          <button
+            type="button"
+            className="pack-invite-btn tap-target"
+            onClick={onOpenPackInvite}
+          >
+            Invite someone
+          </button>
+        </div>
+
+        <div className="pack-access-list">
+          {state.packAccessMembers.map((member) => (
+            <div key={member.id} className="pack-access-card detail-card-warm">
+              <div className="pack-access-card-top">
+                <div>
+                  <div className="pack-access-name">{member.name}</div>
+                  <div className="pack-access-role">{member.role}</div>
+                </div>
+                <div className="pack-access-level">{member.accessLevel}</div>
+              </div>
+              <div className="pack-access-desc">{member.accessDescription}</div>
+              <div className="pack-access-activity">{member.lastActivity}</div>
+            </div>
+          ))}
         </div>
       </div>
 

@@ -4676,3 +4676,179 @@ select.field-input {
   line-height: 1.45;
   color: var(--color-text-secondary);
 }
+
+.pack-access-section {
+  margin-bottom: 22px;
+}
+
+.pack-access-header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.pack-access-title {
+  margin-bottom: 6px;
+}
+
+.pack-access-sub {
+  margin: 0 0 8px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--color-text-primary);
+}
+
+.pack-access-copy {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--color-text-secondary);
+}
+
+.pack-invite-btn {
+  align-self: flex-start;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 0.5px solid var(--accent-border);
+  background: var(--accent-light);
+  color: var(--accent-deep);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.pack-access-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pack-access-card {
+  padding: 14px;
+}
+
+.pack-access-card-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.pack-access-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.pack-access-role,
+.pack-access-level {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.pack-access-desc {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--color-text-primary);
+  margin-bottom: 6px;
+}
+
+.pack-access-activity {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.pack-invite-intro {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-deep);
+  margin-bottom: 6px;
+}
+
+.pack-invite-title {
+  font-size: 24px;
+  line-height: 1.15;
+  margin: 0 0 8px;
+}
+
+.pack-invite-sub {
+  margin: 0 0 18px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--color-text-secondary);
+}
+
+.pack-invite-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.pack-invite-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.pack-invite-access {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pack-access-chip {
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 0.5px solid var(--color-border-secondary);
+  background: var(--color-surface-secondary);
+  font-size: 12px;
+  color: var(--color-text-primary);
+}
+
+.pack-access-chip.on {
+  background: var(--accent-light);
+  border-color: var(--accent-border);
+  color: var(--accent-deep);
+}
+
+.pack-invite-submit {
+  width: 100%;
+  margin-top: 8px;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.pack-invite-submit:disabled {
+  opacity: 0.5;
+}
+
+.pack-invite-note {
+  margin: 10px 0 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.memory-pack-reaction {
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--color-text-primary);
+}
+
+.memory-toast--shell {
+  position: fixed;
+  left: 50%;
+  bottom: 92px;
+  transform: translateX(-50%);
+  z-index: 30;
+  max-width: calc(100% - 32px);
+}

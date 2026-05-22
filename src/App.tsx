@@ -21,6 +21,8 @@ import { ChallengeDetailView } from './screens/overlays/ChallengeDetailView'
 import { CuratedPlanFlow } from './screens/overlays/CuratedPlanFlow'
 import { AchievementDetailView } from './screens/overlays/AchievementDetailView'
 import { CommunityComposeOverlay } from './screens/overlays/CommunityComposeOverlay'
+import { PackInviteOverlay } from './screens/overlays/PackInviteOverlay'
+import type { PackInvitePayload } from './screens/overlays/PackInviteOverlay'
 import { PresetPlanOverlay } from './screens/overlays/PresetPlanOverlay'
 import { PlanScreen } from './screens/app/PlanScreen'
 import {
@@ -30,6 +32,10 @@ import {
 import { generateRandomPlan } from './lib/randomPlan'
 import type { OnboardingResult } from './lib/onboardingProfile'
 import { applyOnboardingToAppState } from './lib/onboardingProfile'
+import {
+  accessDescriptionFor,
+  roleLabelForInvite,
+} from './data/packAccess'
 
 function App() {
   const [state, setState] = useState<AppState>(() => loadAppState())
@@ -450,6 +456,46 @@ function App() {
     setState((current) => ({ ...current, memorySaveToast: null }))
   }
 
+  const openPackInvite = () => {
+    setState((current) => ({ ...current, showPackInviteOverlay: true }))
+  }
+
+  const closePackInvite = () => {
+    setState((current) => ({ ...current, showPackInviteOverlay: false }))
+  }
+
+  const submitPackInvite = (payload: PackInvitePayload) => {
+    setState((current) => ({
+      ...current,
+      showPackInviteOverlay: false,
+      packAccessMembers: [
+        ...current.packAccessMembers,
+        {
+          id: `pack-${Date.now()}`,
+          name: payload.name,
+          role: roleLabelForInvite(payload.role),
+          accessLevel:
+            payload.role === 'Dog Mom / Dog Dad'
+              ? 'Family access'
+              : payload.role === 'Walker / Sitter'
+                ? 'Helper access'
+                : `${payload.role} access`,
+          accessDescription: accessDescriptionFor(payload.accessLevels),
+          lastActivity: 'Invite saved locally',
+        },
+      ],
+      packAccessToast: 'Invite saved locally — real invites coming later.',
+    }))
+  }
+
+  useEffect(() => {
+    if (!state.packAccessToast) return
+    const timer = window.setTimeout(() => {
+      setState((current) => ({ ...current, packAccessToast: null }))
+    }, 3200)
+    return () => window.clearTimeout(timer)
+  }, [state.packAccessToast])
+
   if (!state.onboardingComplete) {
     return <OnboardingFlow onComplete={completeOnboarding} />
   }
@@ -485,6 +531,12 @@ function App() {
     )
   }
 
+  if (state.showPackInviteOverlay) {
+    return (
+      <PackInviteOverlay onClose={closePackInvite} onSubmit={submitPackInvite} />
+    )
+  }
+
   if (state.showPresetPlanOverlay) {
     return <PresetPlanOverlay onClose={closePresetPlanOverlay} />
   }
@@ -507,6 +559,7 @@ function App() {
       return (
         <ChallengeDetailView
           challenge={challenge}
+          dogs={state.hasUserDogProfile ? state.dogs : []}
           onBack={closeChallengeDetail}
         />
       )
@@ -521,6 +574,7 @@ function App() {
       return (
         <AchievementDetailView
           achievement={achievement}
+          dogs={state.hasUserDogProfile ? state.dogs : []}
           onBack={closeAchievementDetail}
         />
       )
@@ -536,6 +590,8 @@ function App() {
         <JourneyMemoryView
           entry={entry}
           dogs={state.dogs}
+          hasUserDogProfile={state.hasUserDogProfile}
+          packAccessMembers={state.packAccessMembers}
           onBack={closeJourneyMemory}
           onGoAgain={goAgainFromMemory}
         />
@@ -594,7 +650,9 @@ function App() {
           />
         )
       case 'profile':
-        return <ProfileScreen state={state} />
+        return (
+          <ProfileScreen state={state} onOpenPackInvite={openPackInvite} />
+        )
       default:
         return (
           <div className="placeholder-screen">
@@ -608,6 +666,11 @@ function App() {
   return (
     <AppShell activeTab={state.activeTab} onTabChange={setActiveTab}>
       {renderScreen()}
+      {state.packAccessToast ? (
+        <div className="memory-toast memory-toast--shell" role="status">
+          {state.packAccessToast}
+        </div>
+      ) : null}
     </AppShell>
   )
 }
