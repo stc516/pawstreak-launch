@@ -1,0 +1,53 @@
+{
+  "commit": "d54bf34",
+  "testedAt": "2026-05-22T00:57:53.502Z",
+  "overallPass": true,
+  "evidenceDir": "qa/evidence/onboarding-personalization",
+  "results": [
+    {
+      "flow": "breed-dropdown",
+      "pass": true,
+      "message": "Expanded breed list includes Golden Retriever and Pit Bull / Staffy"
+    },
+    {
+      "flow": "home-taco",
+      "pass": true,
+      "message": "Home intro shows Taco (\"Today with Taco\")"
+    },
+    {
+      "flow": "home-no-bailey-omi",
+      "pass": true,
+      "message": "Home does not show Bailey + Omi for single-dog Taco profile"
+    },
+    {
+      "flow": "profile-taco",
+      "pass": true,
+      "message": "Profile shows Taco"
+    },
+    {
+      "flow": "journey-title",
+      "pass": true,
+      "message": "Journey title is personalized (\"Taco's Journey\")"
+    },
+    {
+      "flow": "plan-copy",
+      "pass": true,
+      "message": "Plan monthly copy uses Taco (\"Set up a monthly plan for Taco\")"
+    },
+    {
+      "flow": "curated-intro",
+      "pass": true,
+      "message": "Curated plan flow opens after onboarding personalization"
+    },
+    {
+      "flow": "curated-taco",
+      "pass": true,
+      "message": "Curated plan step 3 uses Taco (\"What does Taco love most?\")"
+    },
+    {
+      "flow": "unsupported-location-fallback",
+      "pass": true,
+      "message": "Unsupported location shows friendly fallback on Home"
+    }
+  ]
+}

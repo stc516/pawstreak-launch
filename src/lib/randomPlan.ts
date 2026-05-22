@@ -12,7 +12,7 @@ export interface RandomPlanResult {
 }
 
 const RANDOM_COPY = [
-  'Surprise keeps tails high. A little randomness goes a long way with Bailey + Omi.',
+  'Surprise keeps tails high. A little randomness goes a long way.',
   'Not knowing what is next is half the fun — new smells, same happy dogs.',
   'Mix familiar loops with one wild card each week. That is how streaks stay alive.',
 ]

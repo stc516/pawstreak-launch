@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { AppState } from '../../data/demo'
 import { dogNamesLabel, formatTimerWithTarget } from '../../data/demo'
+import { dogsAreOutLabel } from '../../lib/onboardingProfile'
 import type { AdventureFinishPayload } from '../../lib/adventureFinish'
 import { readImageFileAsDataUrl } from '../../lib/imageUtils'
 import { getPlaceById, getPlanMagicMeta } from '../../data/places'
@@ -178,7 +179,7 @@ export function ActiveAdventureScreen({
                   {dog.initial}
                 </div>
               ))}
-              <span>{dogNamesLabel(state.dogs)} are out</span>
+              <span>{dogsAreOutLabel(state.dogs)}</span>
             </div>
           </div>
         </div>

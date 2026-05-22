@@ -153,6 +153,12 @@ export interface AppState {
   showPresetPlanOverlay: boolean
   adventurePhotos: string[]
   zipCode: string
+  locationQuery: string
+  locationLabel: string
+  locationSupported: boolean
+  userName: string
+  dogVibeNames: string[]
+  onboardingCategoryIds: string[]
   dogs: Dog[]
   streak: number
   adventureCount: number
@@ -216,6 +222,12 @@ export const defaultAppState: AppState = {
   showPresetPlanOverlay: false,
   adventurePhotos: ['', '', ''],
   zipCode: '',
+  locationQuery: '',
+  locationLabel: 'San Diego, CA',
+  locationSupported: true,
+  userName: '',
+  dogVibeNames: [],
+  onboardingCategoryIds: [],
   dogs: [
     {
       id: 'bailey',
@@ -491,6 +503,12 @@ export function dogNamesLabel(dogs: Dog[]): string {
   return dogs.map((dog) => dog.name).join(' + ')
 }
 
+export function dogPossessiveLabel(dogs: Dog[]): string {
+  if (dogs.length === 0) return 'your dog'
+  if (dogs.length === 1) return `${dogs[0].name}'s`
+  return `${dogNamesLabel(dogs)}'s`
+}
+
 export function createActiveAdventure(
   placeId: string,
   location: string,
@@ -562,11 +580,21 @@ export const dogBreeds = [
   'Golden Retriever',
   'Labrador',
   'Husky',
-  'Doodle',
-  'Poodle',
+  'German Shepherd',
+  'Australian Shepherd',
+  'French Bulldog',
   'Bulldog',
   'Beagle',
-  'Shepherd',
+  'Boxer',
+  'Dachshund',
+  'Chihuahua',
+  'Pit Bull / Staffy',
+  'Border Collie',
+  'Poodle',
+  'Doodle',
+  'Corgi',
+  'Shih Tzu',
+  'Terrier',
   'Mixed / Other',
 ]
 

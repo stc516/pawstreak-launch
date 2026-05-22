@@ -6,6 +6,8 @@ import {
   onboardingPlaces,
   onboardingVibes,
 } from '../../data/demo'
+import type { OnboardingResult } from '../../lib/onboardingProfile'
+import { resolveLocationProfile } from '../../lib/onboardingProfile'
 
 const arrowIcon = (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
@@ -34,7 +36,7 @@ function StepsIndicator({ current }: { current: number }) {
 }
 
 interface OnboardingFlowProps {
-  onComplete: () => void
+  onComplete: (result: OnboardingResult) => void
 }
 
 export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
@@ -43,9 +45,17 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [dogName, setDogName] = useState('')
+  const [dogBreed, setDogBreed] = useState('')
+  const [dogOtherBreed, setDogOtherBreed] = useState('')
+  const [dogAge, setDogAge] = useState(dogAges[1])
   const [secondDogOn, setSecondDogOn] = useState(false)
+  const [secondDogName, setSecondDogName] = useState('')
+  const [secondDogBreed, setSecondDogBreed] = useState('')
+  const [secondDogOtherBreed, setSecondDogOtherBreed] = useState('')
+  const [secondDogAge, setSecondDogAge] = useState(dogAges[3])
   const [selectedVibes, setSelectedVibes] = useState<string[]>([])
   const [selectedCats, setSelectedCats] = useState<string[]>(['park'])
+  const [locationQuery, setLocationQuery] = useState('92123')
   const [modalOpen, setModalOpen] = useState(false)
 
   const signupValid =
@@ -56,10 +66,42 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   const vibesValid = selectedVibes.length > 0
 
   const displayDogName = dogName.trim() || 'your dog'
+  const locationProfile = useMemo(
+    () => resolveLocationProfile(locationQuery),
+    [locationQuery],
+  )
   const confirmStyles = useMemo(
     () => (selectedVibes.length ? selectedVibes.join(', ') : '—'),
     [selectedVibes],
   )
+
+  const handleComplete = () => {
+    const dogs = [
+      {
+        name: dogName,
+        breed: dogBreed,
+        otherBreed: dogOtherBreed,
+        age: dogAge,
+      },
+    ]
+
+    if (secondDogOn && secondDogName.trim()) {
+      dogs.push({
+        name: secondDogName,
+        breed: secondDogBreed,
+        otherBreed: secondDogOtherBreed,
+        age: secondDogAge,
+      })
+    }
+
+    onComplete({
+      userName,
+      dogs,
+      vibeNames: selectedVibes,
+      categoryIds: selectedCats,
+      locationQuery,
+    })
+  }
 
   const toggleVibe = (name: string) => {
     setSelectedVibes((current) =>
@@ -280,22 +322,47 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
             <div className="onboarding-grid-2">
               <div className="field onboarding-field-flush">
                 <span className="field-label">Breed</span>
-                <select className="field-input" defaultValue="">
+                <select
+                  className="field-input"
+                  value={dogBreed}
+                  onChange={(event) => setDogBreed(event.target.value)}
+                >
                   <option value="">Select</option>
                   {dogBreeds.map((breed) => (
-                    <option key={breed}>{breed}</option>
+                    <option key={breed} value={breed}>
+                      {breed}
+                    </option>
                   ))}
                 </select>
               </div>
               <div className="field onboarding-field-flush">
                 <span className="field-label">Age</span>
-                <select className="field-input" defaultValue={dogAges[1]}>
+                <select
+                  className="field-input"
+                  value={dogAge}
+                  onChange={(event) => setDogAge(event.target.value)}
+                >
                   {dogAges.map((age) => (
-                    <option key={age}>{age}</option>
+                    <option key={age} value={age}>
+                      {age}
+                    </option>
                   ))}
                 </select>
               </div>
             </div>
+
+            {dogBreed === 'Mixed / Other' ? (
+              <div className="field">
+                <span className="field-label">Breed details</span>
+                <input
+                  className="field-input"
+                  type="text"
+                  placeholder="Tell us the mix or breed"
+                  value={dogOtherBreed}
+                  onChange={(event) => setDogOtherBreed(event.target.value)}
+                />
+              </div>
+            ) : null}
 
             <button
               type="button"
@@ -318,27 +385,57 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                 <div className="label onboarding-second-dog-label">Second dog</div>
                 <div className="field">
                   <span className="field-label">Name</span>
-                  <input className="field-input" type="text" placeholder="e.g. Omi" />
+                  <input
+                    className="field-input"
+                    type="text"
+                    placeholder="e.g. Omi"
+                    value={secondDogName}
+                    onChange={(event) => setSecondDogName(event.target.value)}
+                  />
                 </div>
                 <div className="onboarding-grid-2">
                   <div className="field onboarding-field-flush">
                     <span className="field-label">Breed</span>
-                    <select className="field-input" defaultValue="">
+                    <select
+                      className="field-input"
+                      value={secondDogBreed}
+                      onChange={(event) => setSecondDogBreed(event.target.value)}
+                    >
                       <option value="">Select</option>
                       {dogBreeds.map((breed) => (
-                        <option key={breed}>{breed}</option>
+                        <option key={breed} value={breed}>
+                          {breed}
+                        </option>
                       ))}
                     </select>
                   </div>
                   <div className="field onboarding-field-flush">
                     <span className="field-label">Age</span>
-                    <select className="field-input" defaultValue={dogAges[3]}>
+                    <select
+                      className="field-input"
+                      value={secondDogAge}
+                      onChange={(event) => setSecondDogAge(event.target.value)}
+                    >
                       {dogAges.map((age) => (
-                        <option key={age}>{age}</option>
+                        <option key={age} value={age}>
+                          {age}
+                        </option>
                       ))}
                     </select>
                   </div>
                 </div>
+                {secondDogBreed === 'Mixed / Other' ? (
+                  <div className="field">
+                    <span className="field-label">Breed details</span>
+                    <input
+                      className="field-input"
+                      type="text"
+                      placeholder="Tell us the mix or breed"
+                      value={secondDogOtherBreed}
+                      onChange={(event) => setSecondDogOtherBreed(event.target.value)}
+                    />
+                  </div>
+                ) : null}
               </div>
             )}
             <div className="onboarding-spacer-24" />
@@ -441,7 +538,9 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
               <input
                 className="search-input"
                 type="text"
-                placeholder="Search for a park, trail, or city..."
+                placeholder="ZIP, city, or neighborhood — e.g. 92123 or San Diego"
+                value={locationQuery}
+                onChange={(event) => setLocationQuery(event.target.value)}
               />
             </div>
 
@@ -533,12 +632,20 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
               </div>
               <div className="confirm-row">
                 <span className="confirm-key">Area</span>
-                <span className="confirm-val">San Diego, CA</span>
+                <span className="confirm-val">{locationProfile.label}</span>
               </div>
               <div className="confirm-row">
                 <span className="confirm-key">Spots ready</span>
-                <span className="confirm-val onboarding-spots-ready">200+ nearby</span>
+                <span className="confirm-val onboarding-spots-ready">
+                  {locationProfile.supported ? '200+ nearby' : 'Sample adventures for now'}
+                </span>
               </div>
+              {!locationProfile.supported ? (
+                <div className="confirm-note">
+                  We&apos;re still building your area. You can request it, but sample
+                  adventures will show for now.
+                </div>
+              ) : null}
             </div>
 
             <div className="onboarding-done-features">
@@ -574,7 +681,7 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
             </div>
           </div>
           <div className="bottom-bar">
-            <button type="button" className="btn-primary" onClick={onComplete}>
+            <button type="button" className="btn-primary" onClick={handleComplete}>
               Start your first adventure
               {arrowIcon}
             </button>

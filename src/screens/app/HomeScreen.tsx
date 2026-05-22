@@ -8,6 +8,7 @@ import {
   getMagicLine,
   getPlaceById,
 } from '../../data/places'
+import { getRecommendationPrefs } from '../../lib/onboardingProfile'
 
 interface HomeScreenProps {
   state: AppState
@@ -22,7 +23,7 @@ export function HomeScreen({
   onStartAdventure,
   onOpenProfile,
 }: HomeScreenProps) {
-  const heroPlace = getHeroPlace(state.selectedActivityId)
+  const heroPlace = getHeroPlace(state.selectedActivityId, getRecommendationPrefs(state))
   const heroBadge = getHeroBadge(heroPlace)
   const dogLabel = dogNamesLabel(state.dogs)
 
@@ -66,6 +67,13 @@ export function HomeScreen({
         <div className="home-pack-count">{state.communityLive.count}</div>
         <div className="home-pack-sub">{state.communityLive.subtitle}</div>
       </div>
+
+      {!state.locationSupported ? (
+        <div className="home-area-fallback detail-card-warm">
+          We&apos;re still building your area. You can request it, but here are sample
+          adventures for now.
+        </div>
+      ) : null}
 
       <div className="sec">Start with a vibe</div>
 

@@ -54,17 +54,17 @@ const OPTIMIZE_LABELS: Record<string, string> = {
   training: 'training consistency',
 }
 
-const WHY_IT_FITS: Record<string, string> = {
+const WHY_IT_FITS_TEMPLATES: Record<string, string> = {
   'burn-energy':
-    'Bailey needs room to run; Omi does best with a mix of movement and sniff breaks.',
+    '{lead} needs room to run; {support} does best with a mix of movement and sniff breaks.',
   confidence:
-    'Short, predictable outings help Omi settle in without overwhelming either dog.',
+    'Short, predictable outings help {support} settle in without overwhelming either dog.',
   behavior:
     'Structure with built-in sniff time keeps walks productive without feeling rigid.',
   social:
     'Friendly hellos in low-pressure settings — enough social time without overstimulation.',
   calmer:
-    'Shorter loops and familiar routes give Omi the slower pace she prefers.',
+    'Shorter loops and familiar routes give {support} the slower pace they prefer.',
   bonding:
     'Shared adventures at a pace both dogs can enjoy — that is how trust builds.',
   weight:
@@ -75,6 +75,25 @@ const WHY_IT_FITS: Record<string, string> = {
     'One bigger day to look forward to, with lighter touchpoints during the week.',
   training:
     'Same cues, different places. Skills stick when practice feels like an adventure.',
+}
+
+function personalizeWhyCopy(template: string, dogs: Dog[]): string {
+  if (dogs.length === 0) return template.replace(/\{lead\}|\{support\}/g, 'Your dog')
+  if (dogs.length === 1) {
+    return template
+      .replace('{lead}', dogs[0].name)
+      .replace('{support}', dogs[0].name)
+      .replace('either dog', 'them')
+      .replace('both dogs', 'them')
+  }
+  return template.replace('{lead}', dogs[0].name).replace('{support}', dogs[1].name)
+}
+
+function whyItFitsFor(dogs: Dog[], optimizeId: string): string {
+  const template =
+    WHY_IT_FITS_TEMPLATES[optimizeId] ??
+    'Built around what they love and the time you actually have — not a perfect schedule.'
+  return personalizeWhyCopy(template, dogs)
 }
 
 const BALANCE_BY_OPTIMIZE: Record<string, CuratedPlanBalance[]> = {
@@ -112,11 +131,11 @@ const DEFAULT_BALANCE: CuratedPlanBalance[] = [
   { id: 'confidence', label: 'Confidence', percent: 10 },
 ]
 
-const EMOTIONAL_COPY: Record<string, string> = {
+const EMOTIONAL_COPY_TEMPLATES: Record<string, string> = {
   'burn-energy':
-    'Small adventures count. Bailey thrives when there is something new to explore each week.',
+    'Small adventures count. {lead} thrives when there is something new to explore each week.',
   confidence:
-    'Gentle wins build brave dogs. Omi opens up when the routine feels predictable and kind.',
+    'Gentle wins build brave dogs. {support} opens up when the routine feels predictable and kind.',
   behavior:
     'Structure plus joy — the best behavior plans leave room for sniff breaks and praise.',
   social:
@@ -292,7 +311,7 @@ function recommendSpots(loveIds: string[]): { name: string; reason: string }[] {
   return [
     {
       name: getPlaceById('dog-beach-ocean-beach')?.name ?? 'Dog Beach, OB',
-      reason: 'Wide sand and room to run — a classic Bailey day.',
+      reason: 'Wide sand and room to run — an easy win for a high-energy day.',
     },
     {
       name: getPlaceById('balboa-park')?.name ?? 'Balboa Park',
@@ -300,7 +319,7 @@ function recommendSpots(loveIds: string[]): { name: string; reason: string }[] {
     },
     {
       name: getPlaceById('coronado-dog-beach')?.name ?? 'Coronado Dog Beach',
-      reason: 'Flat shoreline perfect for a calmer loop with Omi.',
+      reason: 'Flat shoreline perfect for a calmer loop on an Omi-paced day.',
     },
   ]
 }
@@ -320,12 +339,11 @@ export function generateCuratedPlanResult(
   const firstAdventure = pickFirstAdventure(loveIds)
 
   const whyParts = optimizeIds
-    .map((id) => WHY_IT_FITS[id])
-    .filter(Boolean)
+    .map((id) => whyItFitsFor(dogs, id))
     .slice(0, 2)
 
   const emotionalParts = optimizeIds
-    .map((id) => EMOTIONAL_COPY[id])
+    .map((id) => personalizeWhyCopy(EMOTIONAL_COPY_TEMPLATES[id] ?? '', dogs))
     .filter(Boolean)
     .slice(0, 2)
 

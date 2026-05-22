@@ -89,7 +89,8 @@ async function completeOnboarding(page, flowPrefix) {
   await page.getByRole('button', { name: /Create account/i }).click()
   await screenshot(page, step(2, 'onboarding-account'))
 
-  await page.getByPlaceholder('e.g. Bailey').fill('Bailey')
+  await page.getByPlaceholder('e.g. Bailey').fill('Taco')
+  await page.locator('select.field-input').first().selectOption('Golden Retriever')
   await page.getByRole('button', { name: /^Next$/ }).click()
   await screenshot(page, step(3, 'onboarding-dog'))
 
@@ -178,7 +179,7 @@ async function runFlows(page) {
   await screenshot(page, step(14, 'curated-step-3'))
 
   await clickCuratedOption(page, 'Beaches')
-  await page.getByRole('button', { name: /Build Bailey \+ Omi's plan/i }).click()
+  await page.getByRole('button', { name: /Build .* plan/i }).click()
   await page.waitForTimeout(400)
   await expectVisible(page, '.curated-result-title', '4-curated-result', 'Curated result screen visible')
   await screenshot(page, step(15, 'curated-result'))

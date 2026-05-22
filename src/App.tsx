@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import type { AppState, TabId } from './data/demo'
+import type { AppState, CommunityPost, TabId } from './data/demo'
 import { createActiveAdventure } from './data/demo'
+import type { AdventureFinishPayload } from './lib/adventureFinish'
 import {
   createJourneyEntryFromPlace,
   getPlaceById,
@@ -27,8 +28,8 @@ import {
   generateCuratedPlanResult,
 } from './lib/curatedPlan'
 import { generateRandomPlan } from './lib/randomPlan'
-import type { AdventureFinishPayload } from './lib/adventureFinish'
-import type { CommunityPost } from './data/demo'
+import type { OnboardingResult } from './lib/onboardingProfile'
+import { applyOnboardingToAppState } from './lib/onboardingProfile'
 
 function App() {
   const [state, setState] = useState<AppState>(() => loadAppState())
@@ -438,11 +439,10 @@ function App() {
     })
   }
 
-  const completeOnboarding = () => {
+  const completeOnboarding = (result: OnboardingResult) => {
     setState((current) => ({
       ...current,
-      onboardingComplete: true,
-      activeTab: 'home',
+      ...applyOnboardingToAppState(current, result),
     }))
   }
 

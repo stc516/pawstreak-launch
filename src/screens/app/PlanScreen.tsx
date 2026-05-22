@@ -5,6 +5,7 @@ import {
   getPlacesForPlanCategory,
   getPlanMagicMeta,
 } from '../../data/places'
+import { getRecommendationPrefs } from '../../lib/onboardingProfile'
 
 interface PlanScreenProps {
   state: AppState
@@ -25,7 +26,10 @@ export function PlanScreen({
   onGenerateRandomPlan,
   onOpenPresetPlan,
 }: PlanScreenProps) {
-  const places = getPlacesForPlanCategory(state.selectedPlanCategoryId)
+  const places = getPlacesForPlanCategory(
+    state.selectedPlanCategoryId,
+    getRecommendationPrefs(state),
+  )
 
   const handleMonthlyPlanClick = (planId: string) => {
     if (planId === 'curated') {
@@ -72,6 +76,12 @@ export function PlanScreen({
         </div>
         <div className="cs-badge">Coming soon</div>
       </div>
+
+      {!state.locationSupported ? (
+        <div className="plan-area-fallback detail-card-warm">
+          {state.mapRegion.subtitle}
+        </div>
+      ) : null}
 
       <div className="chips chips--plan">
         {state.planCategories.map((category) => (

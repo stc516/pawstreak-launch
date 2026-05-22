@@ -6,6 +6,8 @@ import {
   buildEmotionalMemoryLine,
   buildFavoriteMoment,
 } from '../lib/adventureFinish'
+import type { RecommendationPrefs } from '../lib/onboardingProfile'
+import { scorePlaceForProfile } from '../lib/onboardingProfile'
 import { getSampleImageForPlace } from './sampleImages'
 
 export { getMagicLine, getHeroMagicSubtitle, getPlanMagicMeta }
@@ -775,30 +777,51 @@ function sortPlacesForDisplay(places: Place[]): Place[] {
   })
 }
 
-export function getPlacesForPlanCategory(categoryId: string): Place[] {
+export function getPlacesForPlanCategory(
+  categoryId: string,
+  prefs?: RecommendationPrefs,
+): Place[] {
   const category = PLAN_CATEGORY_MAP[categoryId]
 
+  let places: Place[]
   if (category === null) {
     const featuredMix = PLACES.filter((place) => place.featured || place.popularNow)
-    return sortPlacesForDisplay(featuredMix).slice(0, 4)
+    places = sortPlacesForDisplay(featuredMix)
+  } else {
+    places = sortPlacesForDisplay(PLACES.filter((place) => place.category === category))
   }
 
-  return sortPlacesForDisplay(PLACES.filter((place) => place.category === category))
+  if (!prefs) return places.slice(0, category === null ? 4 : places.length)
+
+  const ranked = [...places].sort(
+    (a, b) =>
+      scorePlaceForProfile(b, prefs.vibeNames, prefs.categoryIds) -
+      scorePlaceForProfile(a, prefs.vibeNames, prefs.categoryIds),
+  )
+
+  return category === null ? ranked.slice(0, 4) : ranked
 }
 
-export function getHeroPlace(activityId: string): Place {
+export function getHeroPlace(activityId: string, prefs?: RecommendationPrefs): Place {
   const category = ACTIVITY_CATEGORY_MAP[activityId]
   const pool = category
     ? PLACES.filter((place) => place.category === category)
     : PLACES
 
-  const highlighted = sortPlacesForDisplay(
-    pool.filter((place) => place.popularNow || place.featured),
-  )
+  const rankPool = (items: Place[]) => {
+    if (!prefs) return sortPlacesForDisplay(items)
+    return [...items].sort(
+      (a, b) =>
+        scorePlaceForProfile(b, prefs.vibeNames, prefs.categoryIds) -
+        scorePlaceForProfile(a, prefs.vibeNames, prefs.categoryIds),
+    )
+  }
+
+  const highlighted = rankPool(pool.filter((place) => place.popularNow || place.featured))
 
   if (highlighted[0]) return highlighted[0]
 
-  const fallback = sortPlacesForDisplay(pool)
+  const fallback = rankPool(pool)
   if (fallback[0]) return fallback[0]
 
   return PLACES[0]
@@ -814,8 +837,8 @@ export function createJourneyEntryFromPlace(
   } = {},
 ): JourneyEntry {
   const recapLabels = options.recapLabels ?? []
-  const emotionalLine = buildEmotionalMemoryLine(recapLabels)
-  const favoriteMoment = buildFavoriteMoment(recapLabels)
+  const emotionalLine = buildEmotionalMemoryLine(recapLabels, dogs)
+  const favoriteMoment = buildFavoriteMoment(recapLabels, dogs)
   const memoryMood =
     recapLabels.includes('Needed a slower pace') ? 'Calm + close' :
     recapLabels.includes('Loved every second') ? 'Joyful + tired' :

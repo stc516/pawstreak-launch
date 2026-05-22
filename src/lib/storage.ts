@@ -62,6 +62,13 @@ function normalizeAppState(state: AppState): AppState {
     adventurePhotos: normalizePhotoSlots(rest.adventurePhotos),
     activeAdventure: normalizeActiveAdventure(rest.activeAdventure),
     memorySaveToast: rest.memorySaveToast ?? null,
+    zipCode: rest.zipCode ?? '',
+    locationQuery: rest.locationQuery ?? defaultAppState.locationQuery,
+    locationLabel: rest.locationLabel ?? defaultAppState.locationLabel,
+    locationSupported: rest.locationSupported ?? defaultAppState.locationSupported,
+    userName: rest.userName ?? '',
+    dogVibeNames: rest.dogVibeNames ?? [],
+    onboardingCategoryIds: rest.onboardingCategoryIds ?? [],
     communityPosts: (rest.communityPosts ?? defaultAppState.communityPosts).map(
       (post) => ({
         ...post,

@@ -1,7 +1,7 @@
 import type { Place, PlaceCategory } from '../types/place'
 
 const CATEGORY_LINES: Partial<Record<PlaceCategory, string>> = {
-  Beach: 'Bailey-approved beach day energy.',
+  Beach: 'Beach day energy — worth getting out.',
   Trail: 'Trail day — worth getting out.',
   Coffee: 'Easy win for a short outing.',
   'Dog park': 'Popular with the pack right now.',
