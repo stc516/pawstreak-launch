@@ -1,5 +1,11 @@
 import type { JourneyEntry } from '../data/demo'
 
+export interface JourneyFilterEmptyState {
+  title: string
+  body: string
+  cta: string
+}
+
 export function filterJourneyEntries(
   entries: JourneyEntry[],
   filterId: string,
@@ -29,15 +35,36 @@ export function filterJourneyEntries(
   return entries
 }
 
-export function getJourneyFilterEmptyMessage(filterId: string): string | null {
+export function getJourneyFilterEmptyState(
+  filterId: string,
+): JourneyFilterEmptyState | null {
   if (filterId === 'beach') {
-    return 'No beach memories saved yet. Pick a beach spot from Plan and start building the map.'
+    return {
+      title: 'No beach memories saved yet',
+      body: 'Plan a beach day this weekend and this map starts filling in.',
+      cta: 'Find an adventure',
+    }
   }
   if (filterId === 'trail') {
-    return 'No trail memories saved yet. Pick a trail from Plan and start building the map.'
+    return {
+      title: 'No trail memories saved yet',
+      body: 'Pick a trail from Plan and this list starts filling in.',
+      cta: 'Find an adventure',
+    }
   }
   if (filterId === 'road-trips') {
-    return 'No road trips saved yet. Pick one from Plan and start building the map.'
+    return {
+      title: 'No road trips saved yet',
+      body: 'Plan one this weekend and this map starts filling in.',
+      cta: 'Find an adventure',
+    }
   }
   return null
+}
+
+/** @deprecated Use getJourneyFilterEmptyState */
+export function getJourneyFilterEmptyMessage(filterId: string): string | null {
+  const emptyState = getJourneyFilterEmptyState(filterId)
+  if (!emptyState) return null
+  return `${emptyState.title}. ${emptyState.body}`
 }

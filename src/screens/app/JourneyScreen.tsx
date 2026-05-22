@@ -1,7 +1,10 @@
 import { useEffect } from 'react'
 import type { AppState } from '../../data/demo'
 import { getDisplayFlashbackSubtitle, getDisplayJourneyTitle } from '../../lib/profileDisplay'
-import { filterJourneyEntries, getJourneyFilterEmptyMessage } from '../../lib/journeyFilter'
+import {
+  filterJourneyEntries,
+  getJourneyFilterEmptyState,
+} from '../../lib/journeyFilter'
 import { CardImage } from '../../components/CardImage'
 import { getPlaceById } from '../../data/places'
 
@@ -10,6 +13,7 @@ interface JourneyScreenProps {
   onSelectFilter: (filterId: string) => void
   onOpenMemory: (entryId: string) => void
   onOpenMap: () => void
+  onGoToPlan: () => void
   onDismissToast: () => void
 }
 
@@ -18,6 +22,7 @@ export function JourneyScreen({
   onSelectFilter,
   onOpenMemory,
   onOpenMap,
+  onGoToPlan,
   onDismissToast,
 }: JourneyScreenProps) {
   useEffect(() => {
@@ -30,7 +35,7 @@ export function JourneyScreen({
     state.journeyEntries,
     state.selectedJourneyFilterId,
   )
-  const emptyMessage = getJourneyFilterEmptyMessage(state.selectedJourneyFilterId)
+  const emptyState = getJourneyFilterEmptyState(state.selectedJourneyFilterId)
 
   return (
     <>
@@ -73,8 +78,18 @@ export function JourneyScreen({
 
       <div className="sec">This week</div>
 
-      {filteredEntries.length === 0 && emptyMessage ? (
-        <div className="journey-empty detail-card-warm">{emptyMessage}</div>
+      {filteredEntries.length === 0 && emptyState ? (
+        <div className="journey-empty detail-card-warm">
+          <div className="journey-empty-title">{emptyState.title}</div>
+          <div className="journey-empty-body">{emptyState.body}</div>
+          <button
+            type="button"
+            className="journey-empty-cta tap-target"
+            onClick={onGoToPlan}
+          >
+            {emptyState.cta}
+          </button>
+        </div>
       ) : null}
 
       {filteredEntries.map((entry) => {

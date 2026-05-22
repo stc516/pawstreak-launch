@@ -7,6 +7,7 @@ interface CommunityScreenProps {
   state: AppState
   onToggleLike: (postId: string) => void
   onAddComment: (postId: string, text: string) => void
+  onQuickShare: (caption: string) => void
   onOpenCompose: () => void
   onDismissToast: () => void
 }
@@ -15,12 +16,14 @@ export function CommunityScreen({
   state,
   onToggleLike,
   onAddComment,
+  onQuickShare,
   onOpenCompose,
   onDismissToast,
 }: CommunityScreenProps) {
   const [commentsPostId, setCommentsPostId] = useState<string | null>(null)
   const [commentDraft, setCommentDraft] = useState('')
   const [shareNote, setShareNote] = useState<string | null>(null)
+  const [quickShareDraft, setQuickShareDraft] = useState('')
 
   useEffect(() => {
     if (!state.memorySaveToast) return
@@ -41,6 +44,12 @@ export function CommunityScreen({
     setCommentDraft('')
   }
 
+  const handleQuickShare = () => {
+    if (!quickShareDraft.trim()) return
+    onQuickShare(quickShareDraft.trim())
+    setQuickShareDraft('')
+  }
+
   return (
     <>
       <div className="aheader">
@@ -51,20 +60,51 @@ export function CommunityScreen({
         Share a moment, leave a kind word, or cheer someone on — the pack is out there.
       </p>
 
-      <div className="comm-live detail-tint detail-tint--accent">
-        <div className="comm-live-top">
-          <div className="live-dot" />
-          <div className="live-label">{state.communityLive.label}</div>
+      <div className="comm-live-tiles">
+        <div className="comm-live-tile detail-tint detail-tint--accent">
+          <div className="comm-live-tile-top">
+            <span className="live-dot" aria-hidden="true" />
+            <span className="comm-live-tile-label">{state.communityLive.label}</span>
+          </div>
+          <div className="comm-live-tile-value">{state.communityLive.count}</div>
         </div>
-        <div className="live-count">{state.communityLive.count}</div>
-        <div className="live-sub live-sub--spaced">{state.communityLive.subtitle}</div>
-        <div className="live-bar">
+        <div className="comm-live-tile detail-tint detail-tint--warm">
+          <div className="comm-live-tile-label">Top spot</div>
+          <div className="comm-live-tile-value comm-live-tile-value--sm">
+            {state.communityLive.subtitle.replace(/^Top spot:\s*/i, '')}
+          </div>
+        </div>
+      </div>
+
+      {state.communityLive.chips.length > 0 ? (
+        <div className="comm-live-chips">
           {state.communityLive.chips.map((chip) => (
-            <div key={chip.label} className="live-chip">
+            <div key={chip.label} className="live-chip live-chip--compact">
               {chip.label}
             </div>
           ))}
         </div>
+      ) : null}
+
+      <div className="comm-quick-share detail-card-warm">
+        <input
+          className="comm-quick-share-input"
+          type="text"
+          placeholder="Share a moment from today…"
+          value={quickShareDraft}
+          onChange={(event) => setQuickShareDraft(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') handleQuickShare()
+          }}
+        />
+        <button
+          type="button"
+          className="comm-quick-share-btn tap-target"
+          disabled={!quickShareDraft.trim()}
+          onClick={handleQuickShare}
+        >
+          Post
+        </button>
       </div>
 
       <button
@@ -89,24 +129,26 @@ export function CommunityScreen({
         const imageUrl = post.photoUrl ?? place?.imageUrl
 
         return (
-          <div key={post.id} className="comm-post detail-card-warm">
-            <CardImage
-              className="cp-img"
-              imageUrl={imageUrl}
-              imageAlt={place?.imageAlt ?? post.location}
-              imageTone={place?.imageTone}
-            />
-            <div className="cp-body">
-              <div className="cp-user">
-                <div className={`cp-av ${post.avatarClass}`}>{post.initial}</div>
-                <div>
-                  <div className="cp-name">{post.name}</div>
-                  <div className="cp-meta">
-                    {post.meta}
-                    {place ? ` · ${getMagicLine(place)}` : ''}
-                  </div>
+          <article key={post.id} className="comm-post">
+            <div className="cp-header">
+              <div className={`cp-av ${post.avatarClass}`}>{post.initial}</div>
+              <div className="cp-header-text">
+                <div className="cp-name">{post.name}</div>
+                <div className="cp-meta">
+                  {post.meta}
+                  {place ? ` · ${getMagicLine(place)}` : ''}
                 </div>
               </div>
+            </div>
+            {imageUrl ? (
+              <CardImage
+                className="cp-img"
+                imageUrl={imageUrl}
+                imageAlt={place?.imageAlt ?? post.location}
+                imageTone={place?.imageTone}
+              />
+            ) : null}
+            <div className="cp-body">
               <div className="cp-caption">{post.caption}</div>
               <div className="cp-loc">
                 <i className="ti ti-map-pin" aria-hidden="true" />
@@ -141,7 +183,7 @@ export function CommunityScreen({
                 </button>
               </div>
             </div>
-          </div>
+          </article>
         )
       })}
 

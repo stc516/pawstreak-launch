@@ -5,6 +5,7 @@ import {
   filterJourneyMapPins,
   type JourneyMapFilterId,
 } from '../../data/journeyMapPins'
+import { getJourneyMapStats } from '../../lib/journeyMapStats'
 import { getPlaceById } from '../../data/places'
 import { StatusBar } from '../../components/StatusBar'
 
@@ -25,7 +26,14 @@ interface JourneyMapViewProps {
 
 export function JourneyMapView({ state, onBack, onOpenMemory }: JourneyMapViewProps) {
   const [filterId, setFilterId] = useState<JourneyMapFilterId>('all')
+  const [selectedPinId, setSelectedPinId] = useState<string | null>(null)
   const pins = filterJourneyMapPins(buildJourneyMapPins(state.journeyEntries), filterId)
+  const stats = getJourneyMapStats(state)
+
+  const handlePinClick = (pinId: string, entryId?: string) => {
+    setSelectedPinId(pinId)
+    if (entryId) onOpenMemory(entryId)
+  }
 
   return (
     <div className="app-viewport">
@@ -49,11 +57,11 @@ export function JourneyMapView({ state, onBack, onOpenMemory }: JourneyMapViewPr
 
           <div className="jmap-overlay-stats detail-card-warm">
             <div className="jmap-overlay-stat">
-              <div className="jmap-overlay-stat-value">{state.adventureCount}</div>
+              <div className="jmap-overlay-stat-value">{stats.adventures}</div>
               <div className="jmap-overlay-stat-label">adventures saved</div>
             </div>
             <div className="jmap-overlay-stat">
-              <div className="jmap-overlay-stat-value">{state.placeCount}</div>
+              <div className="jmap-overlay-stat-value">{stats.places}</div>
               <div className="jmap-overlay-stat-label">places discovered</div>
             </div>
           </div>
@@ -76,12 +84,11 @@ export function JourneyMapView({ state, onBack, onOpenMemory }: JourneyMapViewPr
               {pins.map((pin) => (
                 <button
                   key={pin.id}
+                  id={pin.id}
                   type="button"
-                  className="jmap-overlay-pin tap-target"
+                  className={`jmap-overlay-pin tap-target${selectedPinId === pin.id ? ' jmap-overlay-pin--selected' : ''}`}
                   style={{ top: pin.top, left: pin.left }}
-                  onClick={() => {
-                    if (pin.entryId) onOpenMemory(pin.entryId)
-                  }}
+                  onClick={() => handlePinClick(pin.id, pin.entryId)}
                 >
                   <span className="jmap-overlay-pin-dot" />
                   <span className="jmap-overlay-pin-label">{pin.label}</span>

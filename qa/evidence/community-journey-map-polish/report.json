@@ -1,0 +1,52 @@
+{
+  "commit": "6d13d8d2633f72955187131ae4fc9a31f09d5cc6",
+  "overallPass": true,
+  "results": [
+    {
+      "flow": "community-feed-visible",
+      "pass": true,
+      "message": "Community feed shows author, caption, and compact live tiles"
+    },
+    {
+      "flow": "community-quick-share",
+      "pass": true,
+      "message": "Quick share composer is visible under Community header"
+    },
+    {
+      "flow": "community-new-post",
+      "pass": true,
+      "message": "Quick share adds a new post at the top of the feed"
+    },
+    {
+      "flow": "community-like",
+      "pass": true,
+      "message": "Like interaction still works on community posts"
+    },
+    {
+      "flow": "journey-all-filled",
+      "pass": true,
+      "message": "Journey All shows 5 memory cards"
+    },
+    {
+      "flow": "journey-filter-beach",
+      "pass": true,
+      "message": "Beach filter shows 1 beach memories"
+    },
+    {
+      "flow": "journey-filter-roadtrip-or-empty",
+      "pass": true,
+      "message": "Road trips filter shows 1 memories"
+    },
+    {
+      "flow": "journey-map-stats",
+      "pass": true,
+      "message": "Map overlay stats show 47 / 22 (expected 47 / 22)"
+    },
+    {
+      "flow": "journey-map-pin-detail",
+      "pass": true,
+      "message": "Torrey Pines pin opens memory detail overlay"
+    }
+  ],
+  "error": null
+}

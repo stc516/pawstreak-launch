@@ -11,7 +11,8 @@ import { getDemoRoute, navigateTo } from './lib/demoRoute'
 import { usePathname } from './lib/usePathname'
 import { DemoLauncher } from './screens/demo/DemoLauncher'
 import type { DemoRoute } from './lib/demoRoute'
-import { shouldPersonalizeContent } from './lib/profileDisplay'
+import { shouldPersonalizeContent, getDisplayDogLabel } from './lib/profileDisplay'
+import { SAMPLE_IMAGES } from './data/sampleImages'
 import { fillPhotoSlots } from './lib/imageUtils'
 import { AppShell } from './components/AppShell'
 import { ActiveAdventureScreen } from './screens/app/ActiveAdventureScreen'
@@ -447,6 +448,33 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     }))
   }
 
+  const addQuickCommunityPost = (caption: string) => {
+    setState((current) => {
+      const post: CommunityPost = {
+        id: `quick-post-${Date.now()}`,
+        photoUrl: SAMPLE_IMAGES.beach,
+        avatarClass: 'cp-av1',
+        initial: current.dogs[0]?.initial ?? 'Y',
+        name: getDisplayDogLabel(current),
+        meta: 'Just now · quick share',
+        caption,
+        location: 'San Diego · out with the pack',
+        likes: 0,
+        comments: 0,
+        likedByUser: false,
+        commentList: [],
+        isUserPost: true,
+      }
+
+      return {
+        ...current,
+        activeTab: 'community',
+        communityPosts: [post, ...current.communityPosts],
+        memorySaveToast: 'Posted to the pack — saved locally.',
+      }
+    })
+  }
+
   const startAdventure = (placeId: string, durationLabel = 'Open end') => {
     const place = getPlaceById(placeId)
     if (!place) return
@@ -720,6 +748,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onSelectFilter={setSelectedJourneyFilter}
             onOpenMemory={openJourneyMemory}
             onOpenMap={openJourneyMap}
+            onGoToPlan={() => setActiveTab('plan')}
             onDismissToast={clearMemorySaveToast}
           />
         )
@@ -729,6 +758,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             state={state}
             onToggleLike={toggleCommunityLike}
             onAddComment={addCommunityComment}
+            onQuickShare={addQuickCommunityPost}
             onOpenCompose={openCommunityCompose}
             onDismissToast={clearMemorySaveToast}
           />
