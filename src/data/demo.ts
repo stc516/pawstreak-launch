@@ -146,7 +146,10 @@ export interface FavoritePlace {
   visits: string
 }
 
+export type AppMode = 'app' | 'demo'
+
 export interface AppState {
+  mode?: AppMode
   onboardingComplete: boolean
   activeTab: TabId
   activeAdventure: ActiveAdventure | null
@@ -518,6 +521,16 @@ export const defaultAppState: AppState = {
   packAccessMembers: DEFAULT_PACK_ACCESS_MEMBERS,
   showPackInviteOverlay: false,
   packAccessToast: null,
+}
+
+export function createSeededDemoState(): AppState {
+  return {
+    ...defaultAppState,
+    mode: 'demo',
+    onboardingComplete: true,
+    activeTab: 'home',
+    hasUserDogProfile: false,
+  }
 }
 
 export {

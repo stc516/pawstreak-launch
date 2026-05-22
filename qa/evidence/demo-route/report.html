@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Demo Route QA</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 24px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 16px; }
+    th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; }
+    tr.pass td:nth-child(2) { color: #0a7a32; font-weight: 600; }
+    tr.fail td:nth-child(2) { color: #b42318; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>Demo Route QA</h1>
+  <p><strong>Commit:</strong> 6e9369075476c8169b4660303a0a6e3f3e36a355</p>
+  <p><strong>Overall:</strong> PASS</p>
+  <table>
+    <thead><tr><th>Flow</th><th>Result</th><th>Message</th></tr></thead>
+    <tbody><tr class="pass"><td>root-onboarding</td><td>PASS</td><td>Root route shows onboarding for new users</td></tr>
+<tr class="pass"><td>demo-home-visible</td><td>PASS</td><td>Demo route shows Home immediately</td></tr>
+<tr class="pass"><td>demo-bailey-omi</td><td>PASS</td><td>Demo home shows Bailey + Omi ("Bailey + Omi")</td></tr>
+<tr class="pass"><td>demo-pill-visible</td><td>PASS</td><td>Demo pill indicator is visible</td></tr>
+<tr class="pass"><td>demo-plan</td><td>PASS</td><td>Demo Plan screen loads</td></tr>
+<tr class="pass"><td>demo-journey</td><td>PASS</td><td>Demo Journey title shows seeded demo ("Bailey + Omi's Journey")</td></tr>
+<tr class="pass"><td>demo-community</td><td>PASS</td><td>Demo Community screen loads</td></tr>
+<tr class="pass"><td>demo-milestones</td><td>PASS</td><td>Demo Milestones bond subtitle uses Bailey + Omi ("47 adventures · 22 places · Bailey + Omi")</td></tr>
+<tr class="pass"><td>demo-challenge-detail</td><td>PASS</td><td>Demo Challenge detail opens</td></tr>
+<tr class="pass"><td>demo-memory-detail</td><td>PASS</td><td>Demo Journey memory detail opens</td></tr>
+<tr class="pass"><td>demo-active-ready</td><td>PASS</td><td>Demo Active Adventure ready screen opens</td></tr>
+<tr class="pass"><td>demo-active-ready-dogs</td><td>PASS</td><td>Active Adventure ready shows Bailey + Omi ("DogsBailey + Omi")</td></tr>
+<tr class="pass"><td>demo-storage-mode</td><td>PASS</td><td>Demo interactions persist under pawstreak:demo with mode "demo"</td></tr>
+<tr class="pass"><td>demo-does-not-touch-app-storage</td><td>PASS</td><td>Demo route does not modify pawstreak:app while browsing /demo</td></tr>
+<tr class="pass"><td>root-onboarding-after-demo</td><td>PASS</td><td>Root route still shows onboarding when app storage is cleared</td></tr>
+<tr class="pass"><td>demo-storage-separate</td><td>PASS</td><td>Demo localStorage remains separate from normal app storage</td></tr></tbody>
+  </table>
+</body>
+</html>

@@ -1,0 +1,90 @@
+{
+  "commit": "6e9369075476c8169b4660303a0a6e3f3e36a355",
+  "testedAt": "2026-05-22T01:36:52.127Z",
+  "overallPass": true,
+  "errorMessage": null,
+  "evidenceDir": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/demo-route",
+  "videoPath": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/demo-route/video/run.webm",
+  "results": [
+    {
+      "flow": "root-onboarding",
+      "pass": true,
+      "message": "Root route shows onboarding for new users"
+    },
+    {
+      "flow": "demo-home-visible",
+      "pass": true,
+      "message": "Demo route shows Home immediately"
+    },
+    {
+      "flow": "demo-bailey-omi",
+      "pass": true,
+      "message": "Demo home shows Bailey + Omi (\"Bailey + Omi\")"
+    },
+    {
+      "flow": "demo-pill-visible",
+      "pass": true,
+      "message": "Demo pill indicator is visible"
+    },
+    {
+      "flow": "demo-plan",
+      "pass": true,
+      "message": "Demo Plan screen loads"
+    },
+    {
+      "flow": "demo-journey",
+      "pass": true,
+      "message": "Demo Journey title shows seeded demo (\"Bailey + Omi's Journey\")"
+    },
+    {
+      "flow": "demo-community",
+      "pass": true,
+      "message": "Demo Community screen loads"
+    },
+    {
+      "flow": "demo-milestones",
+      "pass": true,
+      "message": "Demo Milestones bond subtitle uses Bailey + Omi (\"47 adventures · 22 places · Bailey + Omi\")"
+    },
+    {
+      "flow": "demo-challenge-detail",
+      "pass": true,
+      "message": "Demo Challenge detail opens"
+    },
+    {
+      "flow": "demo-memory-detail",
+      "pass": true,
+      "message": "Demo Journey memory detail opens"
+    },
+    {
+      "flow": "demo-active-ready",
+      "pass": true,
+      "message": "Demo Active Adventure ready screen opens"
+    },
+    {
+      "flow": "demo-active-ready-dogs",
+      "pass": true,
+      "message": "Active Adventure ready shows Bailey + Omi (\"DogsBailey + Omi\")"
+    },
+    {
+      "flow": "demo-storage-mode",
+      "pass": true,
+      "message": "Demo interactions persist under pawstreak:demo with mode \"demo\""
+    },
+    {
+      "flow": "demo-does-not-touch-app-storage",
+      "pass": true,
+      "message": "Demo route does not modify pawstreak:app while browsing /demo"
+    },
+    {
+      "flow": "root-onboarding-after-demo",
+      "pass": true,
+      "message": "Root route still shows onboarding when app storage is cleared"
+    },
+    {
+      "flow": "demo-storage-separate",
+      "pass": true,
+      "message": "Demo localStorage remains separate from normal app storage"
+    }
+  ]
+}

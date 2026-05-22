@@ -1,4 +1,10 @@
-import { defaultAppState, type ActiveAdventure, type AppState } from '../data/demo'
+import {
+  createSeededDemoState,
+  defaultAppState,
+  type ActiveAdventure,
+  type AppMode,
+  type AppState,
+} from '../data/demo'
 import { normalizePhotoSlots } from '../lib/imageUtils'
 import { resolvePlaceFromAdventure } from '../data/places'
 import { EMPTY_CURATED_PLAN_DRAFT, type LegacyCuratedPlanDraft } from '../lib/curatedPlan'
@@ -6,7 +12,16 @@ import { DEFAULT_PACK_ACCESS_MEMBERS } from '../data/packAccess'
 import { isDefaultDemoDogs } from './dogLabels'
 import { personalizeAppContentForDogs } from './personalizeContent'
 
-const STORAGE_KEY = 'pawstreak:app'
+const APP_STORAGE_KEY = 'pawstreak:app'
+const DEMO_STORAGE_KEY = 'pawstreak:demo'
+
+export function getAppModeFromPath(pathname = window.location.pathname): AppMode {
+  return pathname === '/demo' || pathname.startsWith('/demo/') ? 'demo' : 'app'
+}
+
+function getStorageKey(mode: AppMode): string {
+  return mode === 'demo' ? DEMO_STORAGE_KEY : APP_STORAGE_KEY
+}
 
 function normalizeActiveAdventure(
   adventure: ActiveAdventure | { location: string; placeId?: string; started?: boolean } | null,
@@ -43,7 +58,7 @@ function normalizeCuratedDraft(
   }
 }
 
-function normalizeAppState(state: AppState): AppState {
+function normalizeAppState(state: AppState, mode: AppMode): AppState {
   const { heroSpot: _heroSpot, planPlaces: _planPlaces, ...rest } =
     state as AppState & {
       heroSpot?: unknown
@@ -52,6 +67,7 @@ function normalizeAppState(state: AppState): AppState {
 
   let normalized: AppState = {
     ...rest,
+    mode,
     selectedMonthlyPlanId: rest.selectedMonthlyPlanId ?? null,
     selectedJourneyEntryId: rest.selectedJourneyEntryId ?? null,
     selectedChallengeId: rest.selectedChallengeId ?? null,
@@ -85,7 +101,11 @@ function normalizeAppState(state: AppState): AppState {
     ),
   }
 
-  if (normalized.onboardingComplete && !isDefaultDemoDogs(normalized.dogs)) {
+  if (
+    mode === 'app' &&
+    normalized.onboardingComplete &&
+    !isDefaultDemoDogs(normalized.dogs)
+  ) {
     normalized = {
       ...normalized,
       hasUserDogProfile: true,
@@ -93,24 +113,61 @@ function normalizeAppState(state: AppState): AppState {
     }
   }
 
+  if (mode === 'demo') {
+    normalized = {
+      ...normalized,
+      onboardingComplete: true,
+      hasUserDogProfile: false,
+    }
+  }
+
   return normalized
 }
 
-export function loadAppState(): AppState {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) {
-      return defaultAppState
+export function loadAppState(mode: AppMode = getAppModeFromPath()): AppState {
+  const key = getStorageKey(mode)
+
+  if (mode === 'demo') {
+    try {
+      const raw = localStorage.getItem(key)
+      if (!raw) {
+        return normalizeAppState(createSeededDemoState(), mode)
+      }
+      return normalizeAppState(
+        {
+          ...createSeededDemoState(),
+          ...JSON.parse(raw),
+        } as AppState,
+        mode,
+      )
+    } catch {
+      return normalizeAppState(createSeededDemoState(), mode)
     }
-    return normalizeAppState({
-      ...defaultAppState,
-      ...JSON.parse(raw),
-    } as AppState)
+  }
+
+  try {
+    const raw = localStorage.getItem(key)
+    if (!raw) {
+      return normalizeAppState(defaultAppState, mode)
+    }
+    return normalizeAppState(
+      {
+        ...defaultAppState,
+        ...JSON.parse(raw),
+      } as AppState,
+      mode,
+    )
   } catch {
-    return defaultAppState
+    return normalizeAppState(defaultAppState, mode)
   }
 }
 
-export function saveAppState(state: AppState): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+export function saveAppState(
+  state: AppState,
+  mode: AppMode = getAppModeFromPath(),
+): void {
+  localStorage.setItem(
+    getStorageKey(mode),
+    JSON.stringify({ ...state, mode }),
+  )
 }

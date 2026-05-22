@@ -6,14 +6,21 @@ import { StatusBar } from './StatusBar'
 interface AppShellProps {
   activeTab: TabId
   onTabChange: (tab: TabId) => void
+  isDemoMode?: boolean
   children: ReactNode
 }
 
-export function AppShell({ activeTab, onTabChange, children }: AppShellProps) {
+export function AppShell({
+  activeTab,
+  onTabChange,
+  isDemoMode = false,
+  children,
+}: AppShellProps) {
   return (
     <div className="app-viewport">
       <div className="app-shell">
         <StatusBar />
+        {isDemoMode ? <div className="demo-pill">Demo</div> : null}
         <main className="scroll">{children}</main>
         <BottomNav activeTab={activeTab} onTabChange={onTabChange} />
       </div>

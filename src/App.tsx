@@ -6,7 +6,7 @@ import {
   createJourneyEntryFromPlace,
   getPlaceById,
 } from './data/places'
-import { loadAppState, saveAppState } from './lib/storage'
+import { loadAppState, saveAppState, getAppModeFromPath } from './lib/storage'
 import { shouldPersonalizeContent } from './lib/profileDisplay'
 import { fillPhotoSlots } from './lib/imageUtils'
 import { AppShell } from './components/AppShell'
@@ -39,11 +39,13 @@ import {
 } from './data/packAccess'
 
 function App() {
-  const [state, setState] = useState<AppState>(() => loadAppState())
+  const appMode = getAppModeFromPath()
+  const isDemoMode = appMode === 'demo'
+  const [state, setState] = useState<AppState>(() => loadAppState(appMode))
 
   useEffect(() => {
-    saveAppState(state)
-  }, [state])
+    saveAppState(state, appMode)
+  }, [state, appMode])
 
   useEffect(() => {
     setState((current) => {
@@ -668,7 +670,7 @@ function App() {
   }
 
   return (
-    <AppShell activeTab={state.activeTab} onTabChange={setActiveTab}>
+    <AppShell activeTab={state.activeTab} onTabChange={setActiveTab} isDemoMode={isDemoMode}>
       {renderScreen()}
       {state.packAccessToast ? (
         <div className="memory-toast memory-toast--shell" role="status">
