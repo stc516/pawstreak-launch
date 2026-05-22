@@ -1,17 +1,18 @@
 import { useEffect, useRef, useState } from 'react'
 import type { AppState } from '../../data/demo'
-import { dogNamesLabel, formatTimer } from '../../data/demo'
+import { dogNamesLabel, formatTimerWithTarget } from '../../data/demo'
 import type { AdventureFinishPayload } from '../../lib/adventureFinish'
 import { readImageFileAsDataUrl } from '../../lib/imageUtils'
 import { getPlaceById, getPlanMagicMeta } from '../../data/places'
 import { BottomNav } from '../../components/BottomNav'
+import { CardImage } from '../../components/CardImage'
 import { StatusBar } from '../../components/StatusBar'
 import type { TabId } from '../../data/demo'
 
-const INITIAL_SECONDS = 24 * 60 + 7
-
 interface ActiveAdventureScreenProps {
   state: AppState
+  onStart: () => void
+  onCancel: () => void
   onFinish: (payload: AdventureFinishPayload) => void
   onTabChange: (tab: TabId) => void
   onAddPhoto: (photoDataUrl: string) => void
@@ -19,22 +20,26 @@ interface ActiveAdventureScreenProps {
 
 export function ActiveAdventureScreen({
   state,
+  onStart,
+  onCancel,
   onFinish,
   onTabChange,
   onAddPhoto,
 }: ActiveAdventureScreenProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const [elapsedSeconds, setElapsedSeconds] = useState(INITIAL_SECONDS)
+  const [elapsedSeconds, setElapsedSeconds] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
   const [selectedRecaps, setSelectedRecaps] = useState<string[]>([
     'Loved every second',
   ])
 
-  const place = getPlaceById(state.activeAdventure?.placeId ?? '')
+  const adventure = state.activeAdventure
+  const place = getPlaceById(adventure?.placeId ?? '')
   const hasPhotos = state.adventurePhotos.some(Boolean)
+  const isStarted = adventure?.started ?? false
 
   useEffect(() => {
-    if (isPaused) {
+    if (!isStarted || isPaused) {
       return
     }
 
@@ -43,7 +48,7 @@ export function ActiveAdventureScreen({
     }, 1000)
 
     return () => window.clearInterval(interval)
-  }, [isPaused])
+  }, [isPaused, isStarted])
 
   const handleCaptureClick = () => {
     fileInputRef.current?.click()
@@ -79,8 +84,73 @@ export function ActiveAdventureScreen({
     })
   }
 
-  if (!state.activeAdventure) {
+  if (!adventure) {
     return null
+  }
+
+  if (!isStarted) {
+    return (
+      <div className="app-viewport">
+        <div className="app-shell">
+          <StatusBar />
+          <main className="scroll scroll--overlay">
+            <div className="overlay-topbar">
+              <button type="button" className="overlay-back tap-target" onClick={onCancel}>
+                <i className="ti ti-arrow-left" aria-hidden="true" />
+                Back
+              </button>
+            </div>
+
+            <div className="adv-ready-hero detail-tint detail-tint--warm">
+              {place ? (
+                <CardImage
+                  className="adv-ready-hero-img"
+                  imageUrl={place.imageUrl}
+                  imageAlt={place.imageAlt}
+                  imageTone={place.imageTone}
+                />
+              ) : null}
+              <div className="adv-ready-hero-text">
+                <div className="adv-ready-label">Adventure ready</div>
+                <div className="adv-ready-place">{adventure.location}</div>
+              </div>
+            </div>
+
+            <div className="adv-ready-meta detail-card-warm">
+              <div className="adv-ready-row">
+                <span className="adv-ready-meta-label">Duration</span>
+                <span>{adventure.durationLabel}</span>
+              </div>
+              <div className="adv-ready-row">
+                <span className="adv-ready-meta-label">Dogs</span>
+                <span>{dogNamesLabel(state.dogs)}</span>
+              </div>
+              {place ? (
+                <div className="adv-ready-context">{getPlanMagicMeta(place)}</div>
+              ) : null}
+              {place ? (
+                <div className="adv-ready-note">{place.whyDogsLoveIt}</div>
+              ) : null}
+            </div>
+
+            <div className="detail-quote-block">
+              <p className="detail-quote-text">
+                Timer starts when you are ready — not before.
+              </p>
+            </div>
+
+            <div className="adv-ready-actions">
+              <button type="button" className="adv-ready-start tap-target" onClick={onStart}>
+                Start adventure
+              </button>
+              <button type="button" className="adv-ready-back tap-target" onClick={onCancel}>
+                Back
+              </button>
+            </div>
+          </main>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -88,11 +158,13 @@ export function ActiveAdventureScreen({
       <div className="app-shell">
         <StatusBar />
 
-        <div className="clock-bg">
+        <div className="clock-bg clock-bg--active detail-tint detail-tint--accent">
           <div className="clk-top">
-            <div className="clk-sub">{state.activeAdventure.location}</div>
-            <div className="clk-time">{formatTimer(elapsedSeconds)}</div>
-            <div className="clk-duration">{state.activeAdventure.durationLabel}</div>
+            <div className="clk-sub">{adventure.location}</div>
+            <div className="clk-time">
+              {formatTimerWithTarget(elapsedSeconds, adventure.durationLabel)}
+            </div>
+            <div className="clk-duration">{adventure.durationLabel}</div>
             <div className="clk-where">
               <i className="ti ti-map-pin" aria-hidden="true" />
               Active adventure
@@ -113,15 +185,17 @@ export function ActiveAdventureScreen({
 
         <main className="scroll scroll--active">
           {place ? (
-            <div className="adv-place-context">
+            <div className="adv-place-context detail-card-warm">
               <div className="adv-place-name">{place.name}</div>
               <div className="adv-place-meta">{getPlanMagicMeta(place)}</div>
               <div className="adv-place-note">{place.whyDogsLoveIt}</div>
             </div>
           ) : null}
 
-          <div className="adv-capture-prompt">
-            Capture one thing you&apos;ll want to remember.
+          <div className="adv-capture-prompt detail-quote-block detail-quote-block--compact">
+            <p className="detail-quote-text">
+              Capture one thing you&apos;ll want to remember.
+            </p>
           </div>
 
           <input

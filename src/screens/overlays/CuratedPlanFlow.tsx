@@ -14,7 +14,7 @@ interface CuratedPlanFlowProps {
   draft: CuratedPlanDraft
   result: CuratedPlanResult | null
   onBack: () => void
-  onSelectOptimize: (optimizeId: string) => void
+  onToggleOptimize: (optimizeId: string) => void
   onSelectTime: (timeId: string) => void
   onToggleLove: (loveId: string) => void
   onNext: () => void
@@ -38,7 +38,7 @@ function getStepSubtitle(step: number): string {
 }
 
 function getStepEncouragement(step: number): string {
-  if (step === 1) return 'Start with what matters most — there is no wrong answer.'
+  if (step === 1) return 'Pick everything that matters — you can choose more than one.'
   if (step === 2) return 'You are doing great. Almost there.'
   return 'The more you pick, the more personal their plan feels.'
 }
@@ -46,18 +46,22 @@ function getStepEncouragement(step: number): string {
 function getFooterHint(
   step: number,
   canContinue: boolean,
+  optimizeCount: number,
   loveCount: number,
 ): string {
   if (step === 4) {
     return 'Save this plan to keep it on your monthly setup.'
   }
   if (canContinue) {
+    if (step === 1) {
+      return `${optimizeCount} selected · ready to continue`
+    }
     if (step === 3) {
       return `${loveCount} selected · ready to build their plan`
     }
     return 'Looks good — tap below to continue'
   }
-  if (step === 1) return 'Choose one option above to continue'
+  if (step === 1) return 'Pick at least one goal above to continue'
   if (step === 2) return 'Pick the time you can realistically give'
   return 'Pick at least one thing they love'
 }
@@ -74,7 +78,7 @@ export function CuratedPlanFlow({
   draft,
   result,
   onBack,
-  onSelectOptimize,
+  onToggleOptimize,
   onSelectTime,
   onToggleLove,
   onNext,
@@ -83,13 +87,18 @@ export function CuratedPlanFlow({
 }: CuratedPlanFlowProps) {
   const dogLabel = dogNamesLabel(state.dogs)
   const canContinue =
-    (step === 1 && Boolean(draft.optimizeId)) ||
+    (step === 1 && draft.optimizeIds.length > 0) ||
     (step === 2 && Boolean(draft.timeId)) ||
     (step === 3 && draft.loveIds.length > 0) ||
     step === 4
 
   const progressPercent = step >= 4 ? 100 : Math.round((step / 3) * 100)
-  const footerHint = getFooterHint(step, canContinue, draft.loveIds.length)
+  const footerHint = getFooterHint(
+    step,
+    canContinue,
+    draft.optimizeIds.length,
+    draft.loveIds.length,
+  )
   const ctaLabel = getCtaLabel(step, dogLabel)
 
   const handleCtaClick = () => {
@@ -139,14 +148,21 @@ export function CuratedPlanFlow({
             <>
               <div className="curated-result-badge">Your plan</div>
               <h1 className="curated-result-title">{result.planName}</h1>
-              <p className="curated-result-copy">{result.emotionalCopy}</p>
+              <p className="curated-result-copy detail-quote-block detail-quote-block--compact">
+                <span className="detail-quote-text">{result.emotionalCopy}</span>
+              </p>
 
-              <div className="curated-result-block curated-result-block--why">
+              <div className="curated-result-block curated-result-block--why detail-card-warm">
+                <div className="curated-result-label">Built around</div>
+                <div className="curated-result-value">{result.goalSummary}</div>
+              </div>
+
+              <div className="curated-result-block detail-card-warm">
                 <div className="curated-result-label">Why this fits {dogLabel}</div>
                 <div className="curated-result-value">{result.whyItFits}</div>
               </div>
 
-              <div className="curated-result-block">
+              <div className="curated-result-block detail-card-warm">
                 <div className="curated-result-label">Weekly cadence</div>
                 <div className="curated-result-value">{result.weeklyCadence}</div>
               </div>
@@ -238,7 +254,7 @@ export function CuratedPlanFlow({
                 ).map((option) => {
                   const selected =
                     step === 1
-                      ? draft.optimizeId === option.id
+                      ? draft.optimizeIds.includes(option.id)
                       : step === 2
                         ? draft.timeId === option.id
                         : draft.loveIds.includes(option.id)
@@ -250,7 +266,7 @@ export function CuratedPlanFlow({
                       className={`curated-option tap-target${selected ? ' on' : ''}`}
                       aria-pressed={selected}
                       onClick={() => {
-                        if (step === 1) onSelectOptimize(option.id)
+                        if (step === 1) onToggleOptimize(option.id)
                         else if (step === 2) onSelectTime(option.id)
                         else onToggleLove(option.id)
                       }}

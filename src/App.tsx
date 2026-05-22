@@ -18,6 +18,8 @@ import { OnboardingFlow } from './screens/onboarding/OnboardingFlow'
 import { JourneyMemoryView } from './screens/overlays/JourneyMemoryView'
 import { ChallengeDetailView } from './screens/overlays/ChallengeDetailView'
 import { CuratedPlanFlow } from './screens/overlays/CuratedPlanFlow'
+import { AchievementDetailView } from './screens/overlays/AchievementDetailView'
+import { CommunityComposeOverlay } from './screens/overlays/CommunityComposeOverlay'
 import { PresetPlanOverlay } from './screens/overlays/PresetPlanOverlay'
 import { PlanScreen } from './screens/app/PlanScreen'
 import {
@@ -26,6 +28,7 @@ import {
 } from './lib/curatedPlan'
 import { generateRandomPlan } from './lib/randomPlan'
 import type { AdventureFinishPayload } from './lib/adventureFinish'
+import type { CommunityPost } from './data/demo'
 
 function App() {
   const [state, setState] = useState<AppState>(() => loadAppState())
@@ -56,6 +59,15 @@ function App() {
         patch.selectedChallengeId = null
       }
 
+      if (
+        current.selectedAchievementId &&
+        !current.achievements.some(
+          (achievement) => achievement.id === current.selectedAchievementId,
+        )
+      ) {
+        patch.selectedAchievementId = null
+      }
+
       if (Object.keys(patch).length === 0) {
         return current
       }
@@ -67,6 +79,7 @@ function App() {
     state.challenges,
     state.selectedJourneyEntryId,
     state.selectedChallengeId,
+    state.selectedAchievementId,
   ])
 
   const setActiveTab = (activeTab: TabId) => {
@@ -75,7 +88,9 @@ function App() {
       activeTab,
       selectedJourneyEntryId: null,
       selectedChallengeId: null,
+      selectedAchievementId: null,
       showPresetPlanOverlay: false,
+      showCommunityCompose: false,
     }))
   }
 
@@ -113,12 +128,27 @@ function App() {
       ...current,
       selectedChallengeId,
       selectedJourneyEntryId: null,
+      selectedAchievementId: null,
       showPresetPlanOverlay: false,
     }))
   }
 
   const closeChallengeDetail = () => {
     setState((current) => ({ ...current, selectedChallengeId: null }))
+  }
+
+  const openAchievementDetail = (selectedAchievementId: string) => {
+    setState((current) => ({
+      ...current,
+      selectedAchievementId,
+      selectedChallengeId: null,
+      selectedJourneyEntryId: null,
+      showPresetPlanOverlay: false,
+    }))
+  }
+
+  const closeAchievementDetail = () => {
+    setState((current) => ({ ...current, selectedAchievementId: null }))
   }
 
   const openCuratedPlanFlow = () => {
@@ -154,10 +184,15 @@ function App() {
   }
 
   const setCuratedOptimize = (optimizeId: string) => {
-    setState((current) => ({
-      ...current,
-      curatedPlanDraft: { ...current.curatedPlanDraft, optimizeId },
-    }))
+    setState((current) => {
+      const optimizeIds = current.curatedPlanDraft.optimizeIds.includes(optimizeId)
+        ? current.curatedPlanDraft.optimizeIds.filter((id) => id !== optimizeId)
+        : [...current.curatedPlanDraft.optimizeIds, optimizeId]
+      return {
+        ...current,
+        curatedPlanDraft: { ...current.curatedPlanDraft, optimizeIds },
+      }
+    })
   }
 
   const setCuratedTime = (timeId: string) => {
@@ -264,6 +299,82 @@ function App() {
     }))
   }
 
+  const startAdventureSession = () => {
+    setState((current) => {
+      if (!current.activeAdventure) return current
+      return {
+        ...current,
+        activeAdventure: { ...current.activeAdventure, started: true },
+      }
+    })
+  }
+
+  const cancelAdventure = () => {
+    setState((current) => ({
+      ...current,
+      activeAdventure: null,
+      adventurePhotos: ['', '', ''],
+    }))
+  }
+
+  const toggleCommunityLike = (postId: string) => {
+    setState((current) => ({
+      ...current,
+      communityPosts: current.communityPosts.map((post) => {
+        if (post.id !== postId) return post
+        const likedByUser = !post.likedByUser
+        return {
+          ...post,
+          likedByUser,
+          likes: Math.max(0, post.likes + (likedByUser ? 1 : -1)),
+        }
+      }),
+    }))
+  }
+
+  const addCommunityComment = (postId: string, text: string) => {
+    setState((current) => ({
+      ...current,
+      communityPosts: current.communityPosts.map((post) => {
+        if (post.id !== postId) return post
+        const comment = {
+          id: `comment-${Date.now()}`,
+          author: 'You',
+          initial: current.dogs[0]?.initial ?? 'Y',
+          text,
+        }
+        return {
+          ...post,
+          comments: post.comments + 1,
+          commentList: [...(post.commentList ?? []), comment],
+        }
+      }),
+    }))
+  }
+
+  const openCommunityCompose = () => {
+    setState((current) => ({
+      ...current,
+      showCommunityCompose: true,
+      selectedJourneyEntryId: null,
+      selectedChallengeId: null,
+      selectedAchievementId: null,
+    }))
+  }
+
+  const closeCommunityCompose = () => {
+    setState((current) => ({ ...current, showCommunityCompose: false }))
+  }
+
+  const submitCommunityPost = (post: CommunityPost) => {
+    setState((current) => ({
+      ...current,
+      showCommunityCompose: false,
+      activeTab: 'community',
+      communityPosts: [post, ...current.communityPosts],
+    }))
+  }
+
   const startAdventure = (placeId: string, durationLabel = 'Open end') => {
     const place = getPlaceById(placeId)
     if (!place) return
@@ -341,6 +452,8 @@ function App() {
     return (
       <ActiveAdventureScreen
         state={state}
+        onStart={startAdventureSession}
+        onCancel={cancelAdventure}
         onFinish={finishAdventure}
         onTabChange={setActiveTab}
         onAddPhoto={addAdventurePhoto}
@@ -356,7 +469,7 @@ function App() {
         draft={state.curatedPlanDraft}
         result={state.curatedPlanResult}
         onBack={handleCuratedPlanBack}
-        onSelectOptimize={setCuratedOptimize}
+        onToggleOptimize={setCuratedOptimize}
         onSelectTime={setCuratedTime}
         onToggleLove={toggleCuratedLove}
         onNext={advanceCuratedPlanFlow}
@@ -370,6 +483,16 @@ function App() {
     return <PresetPlanOverlay onClose={closePresetPlanOverlay} />
   }
 
+  if (state.showCommunityCompose) {
+    return (
+      <CommunityComposeOverlay
+        state={state}
+        onClose={closeCommunityCompose}
+        onSubmit={submitCommunityPost}
+      />
+    )
+  }
+
   if (state.selectedChallengeId) {
     const challenge = state.challenges.find(
       (item) => item.id === state.selectedChallengeId,
@@ -379,6 +502,20 @@ function App() {
         <ChallengeDetailView
           challenge={challenge}
           onBack={closeChallengeDetail}
+        />
+      )
+    }
+  }
+
+  if (state.selectedAchievementId) {
+    const achievement = state.achievements.find(
+      (item) => item.id === state.selectedAchievementId,
+    )
+    if (achievement) {
+      return (
+        <AchievementDetailView
+          achievement={achievement}
+          onBack={closeAchievementDetail}
         />
       )
     }
@@ -432,12 +569,20 @@ function App() {
           />
         )
       case 'community':
-        return <CommunityScreen state={state} />
+        return (
+          <CommunityScreen
+            state={state}
+            onToggleLike={toggleCommunityLike}
+            onAddComment={addCommunityComment}
+            onOpenCompose={openCommunityCompose}
+          />
+        )
       case 'milestones':
         return (
           <MilestonesScreen
             state={state}
             onOpenChallenge={openChallengeDetail}
+            onOpenAchievement={openAchievementDetail}
           />
         )
       case 'profile':

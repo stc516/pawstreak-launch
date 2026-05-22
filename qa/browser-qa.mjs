@@ -58,6 +58,20 @@ async function exitActiveAdventure(page) {
   if (await finish.isVisible().catch(() => false)) {
     await finish.click()
     await page.waitForTimeout(500)
+    return
+  }
+  const back = page.getByRole('button', { name: 'Back', exact: true })
+  if (await back.isVisible().catch(() => false)) {
+    await back.click()
+    await page.waitForTimeout(400)
+  }
+}
+
+async function startActiveAdventure(page) {
+  const startBtn = page.getByRole('button', { name: 'Start adventure', exact: true })
+  if (await startBtn.isVisible().catch(() => false)) {
+    await startBtn.click()
+    await page.waitForTimeout(400)
   }
 }
 
@@ -110,7 +124,12 @@ async function runFlows(page) {
 
   await page.getByRole('button', { name: '15 min', exact: true }).click()
   await page.waitForTimeout(500)
-  await expectVisible(page, '.clk-time', '2-home-15min', 'Active Adventure timer visible after 15 min')
+  await expectVisible(page, '.adv-ready-place', '2-home-ready', 'Adventure Ready screen visible after 15 min')
+  await startActiveAdventure(page)
+  const timerText = (await page.locator('.clk-time').textContent())?.trim() || ''
+  const timerAtZero = timerText.startsWith('0:00')
+  await record('2-home-timer-zero', timerAtZero, `Timer starts at 0:00 (got "${timerText}")`)
+  await expectVisible(page, '.clk-time', '2-home-15min', 'Active Adventure timer visible after Start adventure')
   await screenshot(page, step(8, 'home-active-adventure'))
   await exitActiveAdventure(page)
   await expectVisible(page, '.alogo', '2-home-reset', 'Returned to shell after Finish')
@@ -132,6 +151,8 @@ async function runFlows(page) {
   const placeName = (await page.locator('.pname').first().textContent())?.trim() || ''
   await firstGo.click()
   await page.waitForTimeout(500)
+  await expectVisible(page, '.adv-ready-place', '3-plan-ready', 'Adventure Ready screen visible after Go')
+  await startActiveAdventure(page)
   const activeLocation = (await page.locator('.clk-sub').textContent())?.trim() || ''
   const goWorked = activeLocation.length > 0
   await record('3-plan-go', goWorked, `Active Adventure opened for "${placeName}" (header: "${activeLocation}")`)
@@ -195,10 +216,18 @@ async function runFlows(page) {
   await screenshot(page, step(20, 'milestones-list'))
   if (!backOnMilestones) throw new Error('Challenge Back did not return to Milestones')
 
+  await page.getByRole('button', { name: /First Beach Day/i }).click()
+  await page.waitForTimeout(400)
+  await expectVisible(page, '.achdetail-title', '6-achievement-detail', 'Achievement Detail overlay opened')
+  await screenshot(page, step(20.5, 'achievement-detail'))
+  await page.getByRole('button', { name: 'Back', exact: true }).click()
+  await page.waitForTimeout(400)
+
   // 7. Active Adventure capture + finish
   await clickNav(page, 'Home')
   await page.getByRole('button', { name: '15 min', exact: true }).click()
   await page.waitForTimeout(400)
+  await startActiveAdventure(page)
 
   const fileInput = page.locator('input.cam-input[type="file"]')
   const pickerExists = (await fileInput.count()) > 0

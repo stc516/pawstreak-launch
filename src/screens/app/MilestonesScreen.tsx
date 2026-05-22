@@ -3,9 +3,14 @@ import type { AppState } from '../../data/demo'
 interface MilestonesScreenProps {
   state: AppState
   onOpenChallenge: (challengeId: string) => void
+  onOpenAchievement: (achievementId: string) => void
 }
 
-export function MilestonesScreen({ state, onOpenChallenge }: MilestonesScreenProps) {
+export function MilestonesScreen({
+  state,
+  onOpenChallenge,
+  onOpenAchievement,
+}: MilestonesScreenProps) {
   return (
     <>
       <div className="aheader">
@@ -56,7 +61,12 @@ export function MilestonesScreen({ state, onOpenChallenge }: MilestonesScreenPro
       <div className="sec">Achievements</div>
 
       {state.achievements.map((achievement) => (
-        <div key={achievement.id} className={`ach-item ${achievement.status}`}>
+        <button
+          key={achievement.id}
+          type="button"
+          className={`ach-item ach-item--tap tap-target ${achievement.status}`}
+          onClick={() => onOpenAchievement(achievement.id)}
+        >
           <div className="ach-ico">{achievement.emoji}</div>
           <div>
             <div className="ach-title">{achievement.title}</div>
@@ -65,7 +75,7 @@ export function MilestonesScreen({ state, onOpenChallenge }: MilestonesScreenPro
           <div className={`ach-badge ${achievement.status}`}>
             {achievement.badge}
           </div>
-        </div>
+        </button>
       ))}
     </>
   )

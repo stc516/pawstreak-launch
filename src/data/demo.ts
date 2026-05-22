@@ -42,6 +42,7 @@ export interface ActiveAdventure {
   placeId: string
   location: string
   durationLabel: string
+  started: boolean
 }
 
 export type DogMode = 'both' | 'bailey' | 'omi'
@@ -81,9 +82,17 @@ export interface LiveChip {
   label: string
 }
 
+export interface CommunityComment {
+  id: string
+  author: string
+  initial: string
+  text: string
+}
+
 export interface CommunityPost {
   id: string
   placeId?: string
+  photoUrl?: string
   avatarClass: 'cp-av1' | 'cp-av2'
   initial: string
   name: string
@@ -92,6 +101,9 @@ export interface CommunityPost {
   location: string
   likes: number
   comments: number
+  likedByUser?: boolean
+  commentList?: CommunityComment[]
+  isUserPost?: boolean
 }
 
 export interface Challenge {
@@ -130,6 +142,8 @@ export interface AppState {
   selectedMonthlyPlanId: string | null
   selectedJourneyEntryId: string | null
   selectedChallengeId: string | null
+  selectedAchievementId: string | null
+  showCommunityCompose: boolean
   curatedPlanFlowStep: number
   curatedPlanDraft: CuratedPlanDraft
   curatedPlanResult: CuratedPlanResult | null
@@ -190,6 +204,8 @@ export const defaultAppState: AppState = {
   selectedMonthlyPlanId: null,
   selectedJourneyEntryId: null,
   selectedChallengeId: null,
+  selectedAchievementId: null,
+  showCommunityCompose: false,
   curatedPlanFlowStep: 0,
   curatedPlanDraft: EMPTY_CURATED_PLAN_DRAFT,
   curatedPlanResult: null,
@@ -461,8 +477,20 @@ export function createActiveAdventure(
   placeId: string,
   location: string,
   durationLabel = 'Open end',
+  started = false,
 ): ActiveAdventure {
-  return { placeId, location, durationLabel }
+  return { placeId, location, durationLabel, started }
+}
+
+export function formatTimerWithTarget(
+  elapsedSeconds: number,
+  durationLabel: string,
+): string {
+  const elapsed = formatTimer(elapsedSeconds)
+  if (durationLabel === 'Open end') {
+    return elapsed
+  }
+  return `${elapsed} / ${durationLabel}`
 }
 
 export function formatTimer(seconds: number): string {

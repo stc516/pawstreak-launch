@@ -74,7 +74,7 @@ export function JourneyMemoryView({
             </div>
           </div>
 
-          <div className="memory-context">
+          <div className="memory-context detail-card-warm">
             <div className="memory-context-item">
               <span className="memory-context-label">Visits</span>
               <span>{memory.visitCount} times here</span>
@@ -97,23 +97,23 @@ export function JourneyMemoryView({
             ))}
           </div>
 
-          <div className="memory-section">
+          <div className="memory-section detail-quote-block">
             <div className="memory-section-title">Emotional recap</div>
             <div className="memory-recap">
               {memory.emotionalRecaps.map((line) => (
-                <p key={line} className="memory-recap-line">
+                <p key={line} className="detail-quote-text">
                   {line}
                 </p>
               ))}
             </div>
           </div>
 
-          <div className="memory-section">
+          <div className="memory-section detail-card-warm">
             <div className="memory-section-title">Favorite moment</div>
             <p className="memory-favorite">{memory.favoriteMoment}</p>
           </div>
 
-          <div className="memory-section">
+          <div className="memory-section detail-card-warm">
             <div className="memory-section-title">
               What {dogNamesLabel(dogs)} loved
             </div>

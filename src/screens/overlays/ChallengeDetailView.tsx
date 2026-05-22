@@ -24,7 +24,7 @@ export function ChallengeDetailView({ challenge, onBack }: ChallengeDetailViewPr
             </button>
           </div>
 
-          <div className="chdetail-header">
+          <div className="chdetail-header detail-tint detail-tint--warm">
             <div className="chdetail-title">{challenge.name}</div>
             <div className="chdetail-progress-label">{detail.progressPercent}% complete</div>
           </div>
@@ -36,15 +36,15 @@ export function ChallengeDetailView({ challenge, onBack }: ChallengeDetailViewPr
             />
           </div>
 
-          <div className="chdetail-motivation">
+          <div className="chdetail-motivation detail-quote-block">
             {detail.motivationalLines.map((line) => (
-              <p key={line} className="chdetail-motivation-line">
+              <p key={line} className="detail-quote-text">
                 {line}
               </p>
             ))}
           </div>
 
-          <div className="chdetail-reward">
+          <div className="chdetail-reward detail-card-warm">
             <div className="chdetail-reward-emoji">{detail.rewardEmoji}</div>
             <div>
               <div className="chdetail-reward-title">{detail.rewardTitle}</div>
@@ -53,7 +53,7 @@ export function ChallengeDetailView({ challenge, onBack }: ChallengeDetailViewPr
           </div>
 
           <div className="sec">Completed</div>
-          <div className="chdetail-places">
+          <div className="chdetail-places detail-card-warm">
             {detail.completedPlaces.map((place) => (
               <div key={place.id} className="chdetail-place chdetail-place--done">
                 <i className="ti ti-circle-check" aria-hidden="true" />
@@ -63,7 +63,7 @@ export function ChallengeDetailView({ challenge, onBack }: ChallengeDetailViewPr
           </div>
 
           <div className="sec">Still to go</div>
-          <div className="chdetail-places">
+          <div className="chdetail-places detail-card-warm">
             {detail.remainingPlaces.map((place) => (
               <div key={place.id} className="chdetail-place">
                 <i className="ti ti-circle-dashed" aria-hidden="true" />
@@ -74,7 +74,7 @@ export function ChallengeDetailView({ challenge, onBack }: ChallengeDetailViewPr
 
           <div className="chdetail-next">
             <div className="sec">Suggested next adventure</div>
-            <div className="chdetail-next-card">
+            <div className="chdetail-next-card detail-card-warm">
               <CardImage
                 className="chdetail-next-img"
                 imageUrl={detail.suggestedNext.imageUrl}
