@@ -1,0 +1,164 @@
+{
+  "productionCommit": "5a6c5527ca6ce612a2715c4b92d89ce4aed3e6a4",
+  "testedAt": "2026-05-22T03:16:01.334Z",
+  "demoUrl": "https://pawstreak-launch.vercel.app/demo",
+  "appUrl": "https://pawstreak-launch.vercel.app",
+  "overallPass": true,
+  "readyToShare": true,
+  "blockers": [],
+  "evidenceDir": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/final-production-smoke",
+  "videoPath": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/final-production-smoke/video/run.webm",
+  "screenshotDir": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/final-production-smoke",
+  "results": [
+    {
+      "id": "A01-home-loads",
+      "pass": true,
+      "message": "Demo Home loads immediately",
+      "screenshot": "a01-demo-home.png"
+    },
+    {
+      "id": "A02-chips-change-hero",
+      "pass": true,
+      "message": "Activity chips change recommendation (\"Dog Beach, Ocean Beach\" -> \"Better Buzz Coffee — Hillcrest\")",
+      "screenshot": "a02-demo-chip-change.png"
+    },
+    {
+      "id": "A03-adventure-ready",
+      "pass": true,
+      "message": "Duration button opens Adventure Ready screen",
+      "screenshot": "a03-demo-adventure-ready.png"
+    },
+    {
+      "id": "A04-timer-zero",
+      "pass": true,
+      "message": "Start Adventure timer at 0:00 (got \"0:00 / 15 min\")",
+      "screenshot": "a04-demo-active-timer.png"
+    },
+    {
+      "id": "A05-finish-journey-memory",
+      "pass": true,
+      "message": "Finish creates Journey memory (Today entry: true)",
+      "screenshot": "a05-demo-journey-after-finish.png"
+    },
+    {
+      "id": "A06-plan-tab",
+      "pass": true,
+      "message": "Plan tab opens",
+      "screenshot": "a06-demo-plan.png"
+    },
+    {
+      "id": "A07-curated-plan",
+      "pass": true,
+      "message": "Curated Plan opens and progresses to result",
+      "screenshot": "a07-demo-curated-result.png"
+    },
+    {
+      "id": "A08-journey-tab",
+      "pass": true,
+      "message": "Journey tab opens",
+      "screenshot": "a08-demo-journey.png"
+    },
+    {
+      "id": "A09-journey-memory-detail",
+      "pass": true,
+      "message": "Journey memory detail opens",
+      "screenshot": "a09-demo-memory-detail.png"
+    },
+    {
+      "id": "A10-community-tab",
+      "pass": true,
+      "message": "Community tab opens",
+      "screenshot": "a10-demo-community.png"
+    },
+    {
+      "id": "A11-like",
+      "pass": true,
+      "message": "Like interaction works (liked state: true, before count 84)",
+      "screenshot": null
+    },
+    {
+      "id": "A12-comment",
+      "pass": true,
+      "message": "Comment interaction works (visible: true, 12 -> 13)",
+      "screenshot": null
+    },
+    {
+      "id": "A13-post",
+      "pass": true,
+      "message": "Post to community works",
+      "screenshot": "a11-demo-community-post.png"
+    },
+    {
+      "id": "A14-milestones-tab",
+      "pass": true,
+      "message": "Milestones tab opens",
+      "screenshot": "a12-demo-milestones.png"
+    },
+    {
+      "id": "A15-challenge-detail",
+      "pass": true,
+      "message": "Challenge detail opens",
+      "screenshot": "a13-demo-challenge-detail.png"
+    },
+    {
+      "id": "A16-achievement-detail",
+      "pass": true,
+      "message": "Achievement detail opens",
+      "screenshot": "a14-demo-achievement-detail.png"
+    },
+    {
+      "id": "A17-bottom-nav",
+      "pass": true,
+      "message": "Bottom nav works throughout (returned to Home)",
+      "screenshot": null
+    },
+    {
+      "id": "B01-onboarding",
+      "pass": true,
+      "message": "Onboarding appears on root URL",
+      "screenshot": "b01-onboarding.png"
+    },
+    {
+      "id": "B02-taco-created",
+      "pass": true,
+      "message": "Dog named Taco entered during onboarding",
+      "screenshot": "b02-onboarding-taco.png"
+    },
+    {
+      "id": "B03-home-taco",
+      "pass": true,
+      "message": "Home says Taco (\"What kind of day are we giving Taco?\")",
+      "screenshot": "b03-taco-home.png"
+    },
+    {
+      "id": "B04-screens-personalized",
+      "pass": true,
+      "message": "Plan/Journey/Profile use Taco (plan: \"Set up a monthly plan for Taco\", journey: \"Taco's Journey\")",
+      "screenshot": "b04-taco-profile.png"
+    },
+    {
+      "id": "B05-no-ghost-names",
+      "pass": true,
+      "message": "No Bailey/Omi ghost names after onboarding",
+      "screenshot": null
+    },
+    {
+      "id": "B06-pack-access",
+      "pass": true,
+      "message": "Pack Access appears on Profile",
+      "screenshot": "b05-pack-access.png"
+    },
+    {
+      "id": "B07-invite-dog-mom",
+      "pass": true,
+      "message": "Invite Dog Mom / Family member saved (4 pack cards)",
+      "screenshot": "b06-pack-invite-saved.png"
+    },
+    {
+      "id": "B08-persist-after-refresh",
+      "pass": true,
+      "message": "Taco and Pack Access persist after refresh (4 cards)",
+      "screenshot": "b07-taco-persist.png"
+    }
+  ]
+}

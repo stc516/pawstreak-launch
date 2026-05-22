@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Final Production Smoke Test</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 24px; max-width: 960px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 16px; font-size: 14px; }
+    th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; vertical-align: top; }
+    tr.pass td:nth-child(2) { color: #0a7a32; font-weight: 600; }
+    tr.fail td:nth-child(2) { color: #b42318; font-weight: 600; }
+    .meta { line-height: 1.7; margin-bottom: 16px; }
+    .ready { font-weight: 600; }
+    .ready.pass { color: #0a7a32; }
+    .ready.fail { color: #b42318; }
+  </style>
+</head>
+<body>
+  <h1>Final Production Smoke Test</h1>
+  <div class="meta">
+    <div><strong>Production commit:</strong> 5a6c5527ca6ce612a2715c4b92d89ce4aed3e6a4</div>
+    <div><strong>Tested at:</strong> 2026-05-22T03:16:01.334Z</div>
+    <div><strong>Demo URL:</strong> https://pawstreak-launch.vercel.app/demo</div>
+    <div><strong>App URL:</strong> https://pawstreak-launch.vercel.app</div>
+    <div><strong>Video:</strong> /Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/final-production-smoke/video/run.webm</div>
+    <div><strong>Screenshots:</strong> /Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/final-production-smoke</div>
+    <div class="ready pass">
+      Ready to share: YES
+    </div>
+    
+  </div>
+  <table>
+    <thead><tr><th>ID</th><th>Result</th><th>Message</th><th>Screenshot</th></tr></thead>
+    <tbody><tr class="pass"><td>A01-home-loads</td><td>PASS</td><td>Demo Home loads immediately</td><td>a01-demo-home.png</td></tr>
+<tr class="pass"><td>A02-chips-change-hero</td><td>PASS</td><td>Activity chips change recommendation ("Dog Beach, Ocean Beach" -> "Better Buzz Coffee — Hillcrest")</td><td>a02-demo-chip-change.png</td></tr>
+<tr class="pass"><td>A03-adventure-ready</td><td>PASS</td><td>Duration button opens Adventure Ready screen</td><td>a03-demo-adventure-ready.png</td></tr>
+<tr class="pass"><td>A04-timer-zero</td><td>PASS</td><td>Start Adventure timer at 0:00 (got "0:00 / 15 min")</td><td>a04-demo-active-timer.png</td></tr>
+<tr class="pass"><td>A05-finish-journey-memory</td><td>PASS</td><td>Finish creates Journey memory (Today entry: true)</td><td>a05-demo-journey-after-finish.png</td></tr>
+<tr class="pass"><td>A06-plan-tab</td><td>PASS</td><td>Plan tab opens</td><td>a06-demo-plan.png</td></tr>
+<tr class="pass"><td>A07-curated-plan</td><td>PASS</td><td>Curated Plan opens and progresses to result</td><td>a07-demo-curated-result.png</td></tr>
+<tr class="pass"><td>A08-journey-tab</td><td>PASS</td><td>Journey tab opens</td><td>a08-demo-journey.png</td></tr>
+<tr class="pass"><td>A09-journey-memory-detail</td><td>PASS</td><td>Journey memory detail opens</td><td>a09-demo-memory-detail.png</td></tr>
+<tr class="pass"><td>A10-community-tab</td><td>PASS</td><td>Community tab opens</td><td>a10-demo-community.png</td></tr>
+<tr class="pass"><td>A11-like</td><td>PASS</td><td>Like interaction works (liked state: true, before count 84)</td><td></td></tr>
+<tr class="pass"><td>A12-comment</td><td>PASS</td><td>Comment interaction works (visible: true, 12 -> 13)</td><td></td></tr>
+<tr class="pass"><td>A13-post</td><td>PASS</td><td>Post to community works</td><td>a11-demo-community-post.png</td></tr>
+<tr class="pass"><td>A14-milestones-tab</td><td>PASS</td><td>Milestones tab opens</td><td>a12-demo-milestones.png</td></tr>
+<tr class="pass"><td>A15-challenge-detail</td><td>PASS</td><td>Challenge detail opens</td><td>a13-demo-challenge-detail.png</td></tr>
+<tr class="pass"><td>A16-achievement-detail</td><td>PASS</td><td>Achievement detail opens</td><td>a14-demo-achievement-detail.png</td></tr>
+<tr class="pass"><td>A17-bottom-nav</td><td>PASS</td><td>Bottom nav works throughout (returned to Home)</td><td></td></tr>
+<tr class="pass"><td>B01-onboarding</td><td>PASS</td><td>Onboarding appears on root URL</td><td>b01-onboarding.png</td></tr>
+<tr class="pass"><td>B02-taco-created</td><td>PASS</td><td>Dog named Taco entered during onboarding</td><td>b02-onboarding-taco.png</td></tr>
+<tr class="pass"><td>B03-home-taco</td><td>PASS</td><td>Home says Taco ("What kind of day are we giving Taco?")</td><td>b03-taco-home.png</td></tr>
+<tr class="pass"><td>B04-screens-personalized</td><td>PASS</td><td>Plan/Journey/Profile use Taco (plan: "Set up a monthly plan for Taco", journey: "Taco's Journey")</td><td>b04-taco-profile.png</td></tr>
+<tr class="pass"><td>B05-no-ghost-names</td><td>PASS</td><td>No Bailey/Omi ghost names after onboarding</td><td></td></tr>
+<tr class="pass"><td>B06-pack-access</td><td>PASS</td><td>Pack Access appears on Profile</td><td>b05-pack-access.png</td></tr>
+<tr class="pass"><td>B07-invite-dog-mom</td><td>PASS</td><td>Invite Dog Mom / Family member saved (4 pack cards)</td><td>b06-pack-invite-saved.png</td></tr>
+<tr class="pass"><td>B08-persist-after-refresh</td><td>PASS</td><td>Taco and Pack Access persist after refresh (4 cards)</td><td>b07-taco-persist.png</td></tr></tbody>
+  </table>
+</body>
+</html>
