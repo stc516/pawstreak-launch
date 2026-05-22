@@ -76,9 +76,9 @@ export function JourneyScreen({
           >
             <CardImage
               className="mcard-img"
-              imageUrl={place?.imageUrl}
-              imageAlt={place?.imageAlt}
-              imageTone={place?.imageTone}
+              imageUrl={entry.photoUrls?.[0] ?? place?.imageUrl}
+              imageAlt={place?.imageAlt ?? entry.place}
+              imageTone={place?.imageTone ?? 'warm'}
             />
             <div className="mcard-body">
               <div className="mcard-row">

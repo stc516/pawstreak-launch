@@ -29,8 +29,11 @@ export function getHomeHeadline(dogLabel: string, dogCount: number): string {
   return `What kind of day are we giving ${target}?`
 }
 
-export function getHomeIntroSub(): string {
-  return 'Pick a vibe. Your city is out there.'
+export function getHomeIntroSub(locationLabel = 'Your area'): string {
+  if (locationLabel && locationLabel !== 'Your area') {
+    return `${locationLabel} is out there. Pick today's adventure.`
+  }
+  return "Pick a vibe. We'll find a good one nearby."
 }
 
 export function getHeroEyebrow(dogLabel: string, dogCount: number): string {
@@ -91,9 +94,6 @@ export function getMemoryWarmLabel(index: number): string {
   return 'A place they loved'
 }
 
-export function getPackEnergyNote(locationLabel: string): string {
-  if (locationLabel && locationLabel !== 'Your area') {
-    return `Your city is out there — ${locationLabel}.`
-  }
-  return 'Your city is out there.'
+export function getPackEnergyNote(_locationLabel: string): string {
+  return 'The pack is out exploring — your turn next.'
 }

@@ -19,9 +19,13 @@ export function AppShell({
 }: AppShellProps) {
   return (
     <div className="app-viewport">
-      <div className="app-shell">
+      <div className={`app-shell${isDemoMode ? ' app-shell--demo' : ''}`}>
         <StatusBar />
-        {isDemoMode ? <div className="demo-pill">Demo</div> : null}
+        {isDemoMode ? (
+          <div className="demo-mode-bar" aria-label="Demo preview mode">
+            <span className="demo-pill">Demo</span>
+          </div>
+        ) : null}
         <main className="scroll">{children}</main>
         {isDemoMode ? <DemoFeedbackCapture /> : null}
         <BottomNav activeTab={activeTab} onTabChange={onTabChange} />

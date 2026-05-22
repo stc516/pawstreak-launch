@@ -1,0 +1,55 @@
+{
+  "commit": "4913f189c0e6ef32a7cb496e865f6601d266a5d4",
+  "testedAt": "2026-05-22T03:47:52.274Z",
+  "overallPass": true,
+  "errorMessage": null,
+  "evidenceDir": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/final-demo-polish",
+  "videoPath": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/final-demo-polish/video/run.webm",
+  "results": [
+    {
+      "flow": "demo-badge-placement",
+      "pass": true,
+      "message": "Demo badge sits under status bar without overlapping dog pill"
+    },
+    {
+      "flow": "demo-feedback-subtle",
+      "pass": true,
+      "message": "Feedback appears as compact pill above bottom nav"
+    },
+    {
+      "flow": "demo-home-copy",
+      "pass": true,
+      "message": "Home copy de-duplicated (\"San Diego, CA is out there. Pick today's adventure.\")"
+    },
+    {
+      "flow": "demo-home-above-fold",
+      "pass": true,
+      "message": "Home vibe panel and primary action label are visible"
+    },
+    {
+      "flow": "demo-journey",
+      "pass": true,
+      "message": "Demo Journey list loads"
+    },
+    {
+      "flow": "demo-community",
+      "pass": true,
+      "message": "Demo Community feed loads"
+    },
+    {
+      "flow": "root-no-demo-feedback",
+      "pass": true,
+      "message": "Root onboarding has no demo feedback button"
+    },
+    {
+      "flow": "taco-onboarding-home",
+      "pass": true,
+      "message": "Taco onboarding reaches personalized Home"
+    },
+    {
+      "flow": "profile-pack-access",
+      "pass": true,
+      "message": "Profile Pack Access section visible"
+    }
+  ]
+}

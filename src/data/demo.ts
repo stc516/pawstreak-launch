@@ -386,6 +386,7 @@ export const defaultAppState: AppState = {
       date: 'Today',
       magicLine: 'Popular with the pack right now.',
       tags: ['Beach', 'Off-leash', 'Bailey + Omi', 'Loved it'],
+      photoUrls: ['/sample-images/dogs-outdoors.jpg', '/sample-images/beach.jpg'],
     },
     {
       id: 'julian-saturday',
@@ -394,12 +395,13 @@ export const defaultAppState: AppState = {
       date: 'Saturday',
       magicLine: 'Big adventure if they need to burn energy.',
       tags: ['Road trip', '62 mi', 'Both dogs', 'New place'],
+      photoUrls: ['/sample-images/dogs-outdoors.jpg', '/sample-images/road-trip.jpg'],
     },
   ],
   communityLive: {
     label: 'Right now in San Diego',
     count: '247 dogs on adventure',
-    subtitle: 'Your city is out there. Are you?',
+    subtitle: 'See what the pack is up to.',
     chips: [
       { label: '🏖️ 89 at the beach' },
       { label: '🌲 54 on trails' },
@@ -412,6 +414,7 @@ export const defaultAppState: AppState = {
     {
       id: 'sophie-mango',
       placeId: 'del-mar-dog-beach',
+      photoUrl: '/sample-images/dogs-outdoors.jpg',
       avatarClass: 'cp-av1',
       initial: 'S',
       name: 'Sophie + Mango',
@@ -425,6 +428,7 @@ export const defaultAppState: AppState = {
     {
       id: 'jake-luna-biscuit',
       placeId: 'julian-day-trip',
+      photoUrl: '/sample-images/dogs-outdoors.jpg',
       avatarClass: 'cp-av2',
       initial: 'J',
       name: 'Jake + Luna + Biscuit',

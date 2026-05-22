@@ -66,8 +66,9 @@ export function DemoFeedbackCapture() {
         type="button"
         className="demo-feedback-trigger tap-target"
         onClick={openOverlay}
+        aria-label="Leave quick feedback"
       >
-        Leave quick feedback
+        Feedback
       </button>
 
       <div

@@ -58,7 +58,7 @@ export function HomeScreen({
       <div className="home-intro detail-tint detail-tint--warm">
         <div className="home-intro-kicker">{getHomeKicker(dogLabel, dogCount)}</div>
         <h1 className="home-intro-title">{getHomeHeadline(dogLabel, dogCount)}</h1>
-        <p className="home-intro-sub">{getHomeIntroSub()}</p>
+        <p className="home-intro-sub">{getHomeIntroSub(state.locationLabel)}</p>
       </div>
 
       <div className="streak-bar">
@@ -88,7 +88,8 @@ export function HomeScreen({
         </div>
       ) : null}
 
-      <div className="sec">Pick today&apos;s vibe</div>
+      <div className="home-vibe-panel">
+      <div className="sec home-vibe-label">Pick today&apos;s vibe</div>
 
       <div className="chips">
         {state.activities.map((activity) => (
@@ -135,6 +136,7 @@ export function HomeScreen({
             </button>
           ))}
         </div>
+      </div>
       </div>
 
       <div className="sec">Worth remembering</div>
