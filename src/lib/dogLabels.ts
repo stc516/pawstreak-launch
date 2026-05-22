@@ -1,5 +1,13 @@
 import type { Dog } from '../data/demo'
 
+export function isDefaultDemoDogs(dogs: Dog[]): boolean {
+  return (
+    dogs.length === 2 &&
+    dogs[0]?.id === 'bailey' &&
+    dogs[1]?.id === 'omi'
+  )
+}
+
 export function getDogDisplayName(dogs: Dog[], index = 0): string {
   if (dogs.length === 0) return 'your dog'
   return dogs[index]?.name ?? dogs[0].name

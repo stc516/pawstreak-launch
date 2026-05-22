@@ -1,5 +1,5 @@
 import type { AppState } from '../../data/demo'
-import { dogNamesLabel } from '../../data/demo'
+import { getDisplayDogLabel } from '../../lib/profileDisplay'
 import {
   getPlaceEmoji,
   getPlacesForPlanCategory,
@@ -115,7 +115,7 @@ export function PlanScreen({
 
       <div className="plan-box">
         <div className="plan-title">
-          Set up a monthly plan for {dogNamesLabel(state.dogs)}
+          Set up a monthly plan for {getDisplayDogLabel(state)}
         </div>
         {state.monthlyPlanOptions.map((option) => (
           <button

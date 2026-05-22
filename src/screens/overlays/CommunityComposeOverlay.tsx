@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { AppState, CommunityPost } from '../../data/demo'
-import { dogNamesLabel } from '../../data/demo'
+import { getDisplayDogLabel } from '../../lib/profileDisplay'
 import { CardImage } from '../../components/CardImage'
 import { getPlaceById } from '../../data/places'
 import { StatusBar } from '../../components/StatusBar'
@@ -32,7 +32,7 @@ export function CommunityComposeOverlay({
   const handleSubmit = () => {
     if (!caption.trim()) return
 
-    const dogLabel = dogNamesLabel(state.dogs)
+    const dogLabel = getDisplayDogLabel(state)
     onSubmit({
       id: `user-post-${Date.now()}`,
       placeId: selectedEntry?.placeId,

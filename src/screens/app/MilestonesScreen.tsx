@@ -1,4 +1,5 @@
 import type { AppState } from '../../data/demo'
+import { getDisplayBondSubtitle } from '../../lib/profileDisplay'
 
 interface MilestonesScreenProps {
   state: AppState
@@ -28,7 +29,7 @@ export function MilestonesScreen({
             style={{ width: state.bondLevel.fillWidth }}
           />
         </div>
-        <div className="msb-sub">{state.bondLevel.subtitle}</div>
+        <div className="msb-sub">{getDisplayBondSubtitle(state)}</div>
       </div>
 
       <div className="sec">Active challenges</div>

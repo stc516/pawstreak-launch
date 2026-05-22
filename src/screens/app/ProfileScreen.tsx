@@ -1,4 +1,5 @@
 import type { AppState } from '../../data/demo'
+import { getProfileDogs } from '../../lib/profileDisplay'
 import { CardImage } from '../../components/CardImage'
 import { getMagicLine, getPlaceById } from '../../data/places'
 
@@ -8,11 +9,13 @@ interface ProfileScreenProps {
 }
 
 export function ProfileScreen({ state, onOpenPackInvite }: ProfileScreenProps) {
+  const profileDogs = getProfileDogs(state)
+
   return (
     <>
       <div className="prof-top">
         <div className="dogs-row">
-          {state.dogs.map((dog) => (
+          {profileDogs.map((dog) => (
             <div key={dog.id} className="dog-col">
               <div className={`dog-circle ${dog.circleClass}`}>
                 {dog.profileEmoji}

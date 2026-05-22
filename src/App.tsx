@@ -7,6 +7,7 @@ import {
   getPlaceById,
 } from './data/places'
 import { loadAppState, saveAppState } from './lib/storage'
+import { shouldPersonalizeContent } from './lib/profileDisplay'
 import { fillPhotoSlots } from './lib/imageUtils'
 import { AppShell } from './components/AppShell'
 import { ActiveAdventureScreen } from './screens/app/ActiveAdventureScreen'
@@ -555,11 +556,12 @@ function App() {
     const challenge = state.challenges.find(
       (item) => item.id === state.selectedChallengeId,
     )
+    const personalize = shouldPersonalizeContent(state)
     if (challenge) {
       return (
         <ChallengeDetailView
           challenge={challenge}
-          dogs={state.hasUserDogProfile ? state.dogs : []}
+          dogs={personalize ? state.dogs : []}
           onBack={closeChallengeDetail}
         />
       )
@@ -570,11 +572,12 @@ function App() {
     const achievement = state.achievements.find(
       (item) => item.id === state.selectedAchievementId,
     )
+    const personalize = shouldPersonalizeContent(state)
     if (achievement) {
       return (
         <AchievementDetailView
           achievement={achievement}
-          dogs={state.hasUserDogProfile ? state.dogs : []}
+          dogs={personalize ? state.dogs : []}
           onBack={closeAchievementDetail}
         />
       )
@@ -585,12 +588,13 @@ function App() {
     const entry = state.journeyEntries.find(
       (item) => item.id === state.selectedJourneyEntryId,
     )
+    const personalize = shouldPersonalizeContent(state)
     if (entry) {
       return (
         <JourneyMemoryView
           entry={entry}
           dogs={state.dogs}
-          hasUserDogProfile={state.hasUserDogProfile}
+          hasUserDogProfile={personalize}
           packAccessMembers={state.packAccessMembers}
           onBack={closeJourneyMemory}
           onGoAgain={goAgainFromMemory}

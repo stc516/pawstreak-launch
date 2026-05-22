@@ -1,0 +1,84 @@
+{
+  "commit": "unknown",
+  "testedAt": "2026-05-22T01:26:55.889Z",
+  "overallPass": true,
+  "evidenceDir": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/taco-personalization",
+  "videoPath": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/taco-personalization/video/run.webm",
+  "results": [
+    {
+      "flow": "onboarding-next-enabled",
+      "pass": true,
+      "message": "Next is enabled after Taco name is filled"
+    },
+    {
+      "flow": "home-taco-label",
+      "pass": true,
+      "message": "Home intro uses Taco (\"Today with Taco\")"
+    },
+    {
+      "flow": "home-no-ghosts",
+      "pass": true,
+      "message": "Home has no Bailey/Omi ghost names"
+    },
+    {
+      "flow": "plan-taco-label",
+      "pass": true,
+      "message": "Plan copy uses Taco (\"Set up a monthly plan for Taco\")"
+    },
+    {
+      "flow": "plan-no-ghosts",
+      "pass": true,
+      "message": "Plan has no Bailey/Omi ghost names"
+    },
+    {
+      "flow": "curated-step3-taco",
+      "pass": true,
+      "message": "Curated step 3 title uses Taco (\"What does Taco love most?\")"
+    },
+    {
+      "flow": "curated-cta-taco",
+      "pass": true,
+      "message": "Curated CTA uses Taco (\"Build Taco's plan\")"
+    },
+    {
+      "flow": "curated-no-ghosts",
+      "pass": true,
+      "message": "Curated Plan step 3 has no Bailey/Omi ghost names"
+    },
+    {
+      "flow": "journey-taco-title",
+      "pass": true,
+      "message": "Journey title personalized (\"Taco's Journey\")"
+    },
+    {
+      "flow": "journey-no-ghosts",
+      "pass": true,
+      "message": "Journey has no Bailey/Omi ghost names"
+    },
+    {
+      "flow": "milestones-taco-bond",
+      "pass": true,
+      "message": "Milestones bond subtitle uses Taco (\"47 adventures · 22 places · Taco\")"
+    },
+    {
+      "flow": "milestones-no-ghosts",
+      "pass": true,
+      "message": "Milestones has no Bailey/Omi ghost names"
+    },
+    {
+      "flow": "profile-taco",
+      "pass": true,
+      "message": "Profile shows Taco"
+    },
+    {
+      "flow": "profile-no-ghosts",
+      "pass": true,
+      "message": "Profile has no Bailey/Omi ghost names"
+    },
+    {
+      "flow": "pack-access-no-ghosts",
+      "pass": true,
+      "message": "Pack Access has no Bailey/Omi ghost names"
+    }
+  ]
+}

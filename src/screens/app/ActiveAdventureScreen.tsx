@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { AppState } from '../../data/demo'
-import { dogNamesLabel, formatTimerWithTarget } from '../../data/demo'
-import { dogsAreOutLabel } from '../../lib/onboardingProfile'
+import { formatTimerWithTarget } from '../../data/demo'
+import { getDisplayDogLabel, getDisplayDogsAreOutLabel, getProfileDogs } from '../../lib/profileDisplay'
 import type { AdventureFinishPayload } from '../../lib/adventureFinish'
 import { readImageFileAsDataUrl } from '../../lib/imageUtils'
 import { getPlaceById, getPlanMagicMeta } from '../../data/places'
@@ -124,7 +124,7 @@ export function ActiveAdventureScreen({
               </div>
               <div className="adv-ready-row">
                 <span className="adv-ready-meta-label">Dogs</span>
-                <span>{dogNamesLabel(state.dogs)}</span>
+                <span>{getDisplayDogLabel(state)}</span>
               </div>
               {place ? (
                 <div className="adv-ready-context">{getPlanMagicMeta(place)}</div>
@@ -171,7 +171,7 @@ export function ActiveAdventureScreen({
               Active adventure
             </div>
             <div className="clk-dogs">
-              {state.dogs.map((dog) => (
+              {getProfileDogs(state).map((dog) => (
                 <div
                   key={dog.id}
                   className={`dog-av dog-av--sm ${dog.avatarClass}`}
@@ -179,7 +179,7 @@ export function ActiveAdventureScreen({
                   {dog.initial}
                 </div>
               ))}
-              <span>{dogsAreOutLabel(state.dogs)}</span>
+              <span>{getDisplayDogsAreOutLabel(state)}</span>
             </div>
           </div>
         </div>

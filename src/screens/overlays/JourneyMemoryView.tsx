@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Dog, JourneyEntry, PackAccessMember } from '../../data/demo'
-import { dogNamesLabel } from '../../data/demo'
+import { getPackDisplayName } from '../../lib/dogLabels'
 import { CardImage } from '../../components/CardImage'
 import { getJourneyMemoryDetail } from '../../data/journeyMemories'
 import { getPlaceById } from '../../data/places'
@@ -25,7 +25,10 @@ export function JourneyMemoryView({
 }: JourneyMemoryViewProps) {
   const [shareNote, setShareNote] = useState<string | null>(null)
   const place = entry.placeId ? getPlaceById(entry.placeId) : undefined
-  const memory = getJourneyMemoryDetail(entry, hasUserDogProfile ? dogs : [])
+  const contentDogs = hasUserDogProfile ? dogs : []
+  const memory = getJourneyMemoryDetail(entry, contentDogs)
+  const dogLabel =
+    contentDogs.length > 0 ? getPackDisplayName(contentDogs) : 'your dog'
   const familyMember = packAccessMembers.find((member) => member.name === 'Dog Mom')
   const heroUrl = place?.imageUrl ?? memory.photoUrls[0]
   const galleryPhotos = [
@@ -126,7 +129,7 @@ export function JourneyMemoryView({
 
           <div className="memory-section detail-card-warm">
             <div className="memory-section-title">
-              What {dogNamesLabel(dogs)} loved
+              What {dogLabel} loved
             </div>
             <ul className="memory-loved">
               {memory.whatDogsLoved.map((item) => (

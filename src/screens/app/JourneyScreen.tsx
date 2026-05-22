@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import type { AppState } from '../../data/demo'
+import { getDisplayJourneyTitle } from '../../lib/profileDisplay'
 import { CardImage } from '../../components/CardImage'
 import { getPlaceById } from '../../data/places'
 
@@ -31,7 +32,7 @@ export function JourneyScreen({
       ) : null}
 
       <div className="aheader">
-        <div className="alogo">{state.journeyTitle}</div>
+        <div className="alogo">{getDisplayJourneyTitle(state)}</div>
       </div>
 
       <div className="jfilters">

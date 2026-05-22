@@ -89,8 +89,9 @@ async function completeOnboarding(page, flowPrefix) {
   await page.getByRole('button', { name: /Create account/i }).click()
   await screenshot(page, step(2, 'onboarding-account'))
 
-  await page.getByPlaceholder('e.g. Bailey').fill('Taco')
-  await page.locator('select.field-input').first().selectOption('Golden Retriever')
+  await page.getByPlaceholder('e.g. Luna').fill('Taco')
+  await page.locator('select.field-input').first().selectOption('Mixed / Other')
+  await page.locator('select.field-input').nth(1).selectOption('1–3 years')
   await page.getByRole('button', { name: /^Next$/ }).click()
   await screenshot(page, step(3, 'onboarding-dog'))
 

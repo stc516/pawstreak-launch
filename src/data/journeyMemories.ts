@@ -143,6 +143,7 @@ export function getJourneyMemoryDetail(
       ),
       favoriteMoment: personalizeGhostText(base.favoriteMoment, dogs),
       dogTags: base.dogTags.map((tag) => personalizeGhostText(tag, dogs)),
+      whatDogsLoved: base.whatDogsLoved.map((item) => personalizeGhostText(item, dogs)),
     }
   }
 

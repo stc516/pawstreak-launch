@@ -528,8 +528,17 @@ export {
   getDogDisplayName,
   getDogPossessive,
   getPackDisplayName,
+  isDefaultDemoDogs,
   personalizeGhostText,
 } from '../lib/dogLabels'
+export {
+  getDisplayBondSubtitle,
+  getDisplayDogLabel,
+  getDisplayDogPossessive,
+  getDisplayDogsAreOutLabel,
+  getDisplayJourneyTitle,
+  getProfileDogs,
+} from '../lib/profileDisplay'
 
 export function createActiveAdventure(
   placeId: string,

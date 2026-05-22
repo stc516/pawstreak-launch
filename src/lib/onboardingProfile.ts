@@ -309,19 +309,22 @@ export function applyOnboardingToAppState(
   current: AppState,
   result: OnboardingResult,
 ): Partial<AppState> {
-  const dogs = buildDogsFromOnboarding(result.dogs)
-  const finalDogs = dogs.length > 0 ? dogs : current.dogs
+  const builtDogs = buildDogsFromOnboarding(result.dogs)
+  const hasNamedDog = builtDogs.length > 0
+  const finalDogs = hasNamedDog ? builtDogs : current.dogs
   const location = resolveLocationProfile(result.locationQuery)
   const activityId = recommendActivityId(result.vibeNames, result.categoryIds)
   const curatedPartial = buildCuratedDraftFromOnboarding(
     result.vibeNames,
     result.categoryIds,
   )
-  const personalized =
-    dogs.length > 0 ? personalizeAppContentForDogs(current, finalDogs) : {}
+  const personalized = hasNamedDog
+    ? personalizeAppContentForDogs(current, finalDogs)
+    : {}
 
   return {
     onboardingComplete: true,
+    hasUserDogProfile: hasNamedDog,
     activeTab: 'home',
     userName: result.userName.trim(),
     dogs: finalDogs,

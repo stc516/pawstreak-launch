@@ -3,7 +3,8 @@ import { normalizePhotoSlots } from '../lib/imageUtils'
 import { resolvePlaceFromAdventure } from '../data/places'
 import { EMPTY_CURATED_PLAN_DRAFT, type LegacyCuratedPlanDraft } from '../lib/curatedPlan'
 import { DEFAULT_PACK_ACCESS_MEMBERS } from '../data/packAccess'
-import { personalizeAppContentForDogs } from '../lib/personalizeContent'
+import { isDefaultDemoDogs } from './dogLabels'
+import { personalizeAppContentForDogs } from './personalizeContent'
 
 const STORAGE_KEY = 'pawstreak:app'
 
@@ -40,14 +41,6 @@ function normalizeCuratedDraft(
     timeId: base.timeId ?? null,
     loveIds: base.loveIds ?? [],
   }
-}
-
-function isDefaultDemoDogs(dogs: AppState['dogs']): boolean {
-  return (
-    dogs.length === 2 &&
-    dogs[0]?.id === 'bailey' &&
-    dogs[1]?.id === 'omi'
-  )
 }
 
 function normalizeAppState(state: AppState): AppState {
@@ -92,13 +85,10 @@ function normalizeAppState(state: AppState): AppState {
     ),
   }
 
-  if (
-    normalized.onboardingComplete &&
-    !normalized.hasUserDogProfile &&
-    !isDefaultDemoDogs(normalized.dogs)
-  ) {
+  if (normalized.onboardingComplete && !isDefaultDemoDogs(normalized.dogs)) {
     normalized = {
       ...normalized,
+      hasUserDogProfile: true,
       ...personalizeAppContentForDogs(normalized, normalized.dogs),
     }
   }

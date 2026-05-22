@@ -55,8 +55,9 @@ async function main() {
       `Expanded breed list includes Golden Retriever and Pit Bull / Staffy`,
     )
 
-    await page.getByPlaceholder('e.g. Bailey').fill('Taco')
-    await page.locator('select.field-input').first().selectOption('Golden Retriever')
+    await page.getByPlaceholder('e.g. Luna').fill('Taco')
+    await page.locator('select.field-input').first().selectOption('Mixed / Other')
+    await page.locator('select.field-input').nth(1).selectOption('1–3 years')
     await page.getByRole('button', { name: /^Next$/ }).click()
     await screenshot(page, '01-dog-taco')
 
@@ -137,7 +138,7 @@ async function main() {
     await page.getByPlaceholder('you@email.com').fill('qa@pawstreak.test')
     await page.getByPlaceholder('Min. 8 characters').fill('password123')
     await page.getByRole('button', { name: /Create account/i }).click()
-    await page.getByPlaceholder('e.g. Bailey').fill('Taco')
+    await page.getByPlaceholder('e.g. Luna').fill('Taco')
     await page.getByRole('button', { name: /^Next$/ }).click()
     await page.getByRole('button', { name: 'Explorer' }).click()
     await page.getByRole('button', { name: /^Next$/ }).click()

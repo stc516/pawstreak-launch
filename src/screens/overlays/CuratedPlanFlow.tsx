@@ -1,5 +1,5 @@
 import type { AppState } from '../../data/demo'
-import { dogNamesLabel } from '../../data/demo'
+import { getDisplayDogLabel } from '../../lib/profileDisplay'
 import {
   CURATED_LOVE_OPTIONS,
   CURATED_OPTIMIZE_OPTIONS,
@@ -85,7 +85,7 @@ export function CuratedPlanFlow({
   onFinish,
   onStartWeek,
 }: CuratedPlanFlowProps) {
-  const dogLabel = dogNamesLabel(state.dogs)
+  const dogLabel = getDisplayDogLabel(state)
   const canContinue =
     (step === 1 && draft.optimizeIds.length > 0) ||
     (step === 2 && Boolean(draft.timeId)) ||

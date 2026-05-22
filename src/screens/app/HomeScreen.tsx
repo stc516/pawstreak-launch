@@ -1,5 +1,5 @@
 import type { AppState } from '../../data/demo'
-import { dogNamesLabel } from '../../data/demo'
+import { getDisplayDogLabel, getProfileDogs } from '../../lib/profileDisplay'
 import { CardImage } from '../../components/CardImage'
 import {
   formatHeroSubtitle,
@@ -25,7 +25,8 @@ export function HomeScreen({
 }: HomeScreenProps) {
   const heroPlace = getHeroPlace(state.selectedActivityId, getRecommendationPrefs(state))
   const heroBadge = getHeroBadge(heroPlace)
-  const dogLabel = dogNamesLabel(state.dogs)
+  const profileDogs = getProfileDogs(state)
+  const dogLabel = getDisplayDogLabel(state)
 
   return (
     <>
@@ -34,7 +35,7 @@ export function HomeScreen({
           Paw<span>Streak</span>
         </div>
         <button type="button" className="two-dogs tap-target" onClick={onOpenProfile}>
-          {state.dogs.map((dog) => (
+          {profileDogs.map((dog) => (
             <div key={dog.id} className={`dog-av ${dog.avatarClass}`}>
               {dog.initial}
             </div>
@@ -102,7 +103,7 @@ export function HomeScreen({
           <div>
             <div className="hc-eyebrow">Today&apos;s pick</div>
             <div className="hc-title">{heroPlace.name}</div>
-            <div className="hc-sub">{formatHeroSubtitle(heroPlace, state.dogs)}</div>
+            <div className="hc-sub">{formatHeroSubtitle(heroPlace, profileDogs)}</div>
             <div className="hc-magic">{getMagicLine(heroPlace)}</div>
           </div>
           {heroBadge ? <div className="hc-badge">{heroBadge}</div> : null}
