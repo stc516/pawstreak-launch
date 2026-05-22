@@ -212,6 +212,131 @@ textarea {
   pointer-events: none;
 }
 
+.demo-feedback-trigger {
+  position: absolute;
+  left: 13px;
+  right: 13px;
+  bottom: 58px;
+  z-index: 4;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 0.5px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 2px 10px rgba(22, 26, 50, 0.08);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.demo-feedback-overlay {
+  z-index: 120;
+}
+
+.demo-feedback-sheet {
+  max-height: min(78vh, 640px);
+  overflow-y: auto;
+  padding-bottom: 28px;
+}
+
+.demo-feedback-title {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--on-surface);
+}
+
+.demo-feedback-copy {
+  margin: 0 0 14px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--color-text-secondary);
+}
+
+.demo-feedback-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.demo-feedback-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--on-surface);
+}
+
+.demo-feedback-field textarea {
+  resize: vertical;
+  min-height: 52px;
+  padding: 10px 11px;
+  border-radius: 12px;
+  border: 0.5px solid var(--color-border-tertiary);
+  background: var(--color-background-primary);
+}
+
+.demo-feedback-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.demo-feedback-btn {
+  flex: 1;
+  padding: 11px 12px;
+  border-radius: 999px;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.demo-feedback-btn--secondary {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--on-surface);
+}
+
+.demo-feedback-link {
+  margin-top: 8px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.demo-feedback-export-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+}
+
+.demo-feedback-export-row .demo-feedback-link {
+  margin-top: 0;
+}
+
+.demo-feedback-success {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.demo-feedback-status {
+  margin: 10px 0 0;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
 .scroll {
   flex: 1 1 0;
   min-height: 0;

@@ -1,0 +1,40 @@
+{
+  "commit": "ed851f10ed0f391ae63b4d7bff5f948e3be9c093",
+  "testedAt": "2026-05-22T03:23:05.962Z",
+  "overallPass": true,
+  "errorMessage": null,
+  "evidenceDir": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/demo-feedback",
+  "videoPath": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/demo-feedback/video/run.webm",
+  "results": [
+    {
+      "flow": "root-no-feedback-button",
+      "pass": true,
+      "message": "Root onboarding route does not show demo feedback button"
+    },
+    {
+      "flow": "demo-feedback-button-visible",
+      "pass": true,
+      "message": "Demo route shows feedback button"
+    },
+    {
+      "flow": "demo-feedback-overlay",
+      "pass": true,
+      "message": "Feedback overlay opens from demo button"
+    },
+    {
+      "flow": "demo-feedback-saved-locally",
+      "pass": true,
+      "message": "Submit saves feedback locally (1 entry)"
+    },
+    {
+      "flow": "demo-feedback-copy-json",
+      "pass": true,
+      "message": "Copy JSON puts saved feedback on clipboard"
+    },
+    {
+      "flow": "demo-feedback-export-json",
+      "pass": true,
+      "message": "Export JSON downloads saved feedback"
+    }
+  ]
+}

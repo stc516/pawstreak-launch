@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Demo Feedback QA</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 24px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 16px; }
+    th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; }
+    tr.pass td:nth-child(2) { color: #0a7a32; font-weight: 600; }
+    tr.fail td:nth-child(2) { color: #b42318; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>Demo Feedback QA</h1>
+  <p><strong>Commit:</strong> ed851f10ed0f391ae63b4d7bff5f948e3be9c093</p>
+  <p><strong>Overall:</strong> PASS</p>
+  <table>
+    <thead><tr><th>Flow</th><th>Result</th><th>Message</th></tr></thead>
+    <tbody><tr class="pass"><td>root-no-feedback-button</td><td>PASS</td><td>Root onboarding route does not show demo feedback button</td></tr>
+<tr class="pass"><td>demo-feedback-button-visible</td><td>PASS</td><td>Demo route shows feedback button</td></tr>
+<tr class="pass"><td>demo-feedback-overlay</td><td>PASS</td><td>Feedback overlay opens from demo button</td></tr>
+<tr class="pass"><td>demo-feedback-saved-locally</td><td>PASS</td><td>Submit saves feedback locally (1 entry)</td></tr>
+<tr class="pass"><td>demo-feedback-copy-json</td><td>PASS</td><td>Copy JSON puts saved feedback on clipboard</td></tr>
+<tr class="pass"><td>demo-feedback-export-json</td><td>PASS</td><td>Export JSON downloads saved feedback</td></tr></tbody>
+  </table>
+</body>
+</html>

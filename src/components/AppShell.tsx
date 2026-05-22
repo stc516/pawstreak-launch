@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import type { TabId } from '../data/demo'
 import { BottomNav } from './BottomNav'
+import { DemoFeedbackCapture } from './DemoFeedbackCapture'
 import { StatusBar } from './StatusBar'
 
 interface AppShellProps {
@@ -22,6 +23,7 @@ export function AppShell({
         <StatusBar />
         {isDemoMode ? <div className="demo-pill">Demo</div> : null}
         <main className="scroll">{children}</main>
+        {isDemoMode ? <DemoFeedbackCapture /> : null}
         <BottomNav activeTab={activeTab} onTabChange={onTabChange} />
       </div>
     </div>
