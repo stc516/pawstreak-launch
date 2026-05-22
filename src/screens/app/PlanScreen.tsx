@@ -124,11 +124,17 @@ export function PlanScreen({
 
         {state.curatedPlanResult &&
         state.selectedMonthlyPlanId === 'curated' ? (
-          <div className="plan-saved">
+          <div className="plan-saved curated-saved detail-card-warm">
             <div className="plan-saved-title">{state.curatedPlanResult.title}</div>
+            <div className="plan-saved-goals">
+              Built around {state.curatedPlanResult.goalSummary}
+            </div>
             <div className="plan-saved-copy">{state.curatedPlanResult.emotionalCopy}</div>
             <div className="plan-saved-cadence">
               {state.curatedPlanResult.weeklyCadence}
+            </div>
+            <div className="plan-saved-first">
+              First up: {state.curatedPlanResult.firstAdventure.name}
             </div>
           </div>
         ) : null}

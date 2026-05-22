@@ -372,6 +372,7 @@ function App() {
       showCommunityCompose: false,
       activeTab: 'community',
       communityPosts: [post, ...current.communityPosts],
+      memorySaveToast: 'Shared with the pack — your post is live locally.',
     }))
   }
 
@@ -432,6 +433,7 @@ function App() {
         adventureCount: current.adventureCount + 1,
         journeyEntries,
         adventurePhotos: ['', '', ''],
+        memorySaveToast: 'Memory saved — worth remembering.',
       }
     })
   }
@@ -442,6 +444,10 @@ function App() {
       onboardingComplete: true,
       activeTab: 'home',
     }))
+  }
+
+  const clearMemorySaveToast = () => {
+    setState((current) => ({ ...current, memorySaveToast: null }))
   }
 
   if (!state.onboardingComplete) {
@@ -566,6 +572,7 @@ function App() {
             state={state}
             onSelectFilter={setSelectedJourneyFilter}
             onOpenMemory={openJourneyMemory}
+            onDismissToast={clearMemorySaveToast}
           />
         )
       case 'community':
@@ -575,6 +582,7 @@ function App() {
             onToggleLike={toggleCommunityLike}
             onAddComment={addCommunityComment}
             onOpenCompose={openCommunityCompose}
+            onDismissToast={clearMemorySaveToast}
           />
         )
       case 'milestones':

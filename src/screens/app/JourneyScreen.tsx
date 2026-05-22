@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import type { AppState } from '../../data/demo'
 import { CardImage } from '../../components/CardImage'
 import { getPlaceById } from '../../data/places'
@@ -6,15 +7,29 @@ interface JourneyScreenProps {
   state: AppState
   onSelectFilter: (filterId: string) => void
   onOpenMemory: (entryId: string) => void
+  onDismissToast: () => void
 }
 
 export function JourneyScreen({
   state,
   onSelectFilter,
   onOpenMemory,
+  onDismissToast,
 }: JourneyScreenProps) {
+  useEffect(() => {
+    if (!state.memorySaveToast) return
+    const timer = window.setTimeout(onDismissToast, 3200)
+    return () => window.clearTimeout(timer)
+  }, [state.memorySaveToast, onDismissToast])
+
   return (
     <>
+      {state.memorySaveToast ? (
+        <div className="memory-toast" role="status">
+          {state.memorySaveToast}
+        </div>
+      ) : null}
+
       <div className="aheader">
         <div className="alogo">{state.journeyTitle}</div>
       </div>

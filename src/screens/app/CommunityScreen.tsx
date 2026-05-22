@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { AppState, CommunityComment } from '../../data/demo'
 import { CardImage } from '../../components/CardImage'
 import { getMagicLine, getPlaceById } from '../../data/places'
@@ -8,6 +8,7 @@ interface CommunityScreenProps {
   onToggleLike: (postId: string) => void
   onAddComment: (postId: string, text: string) => void
   onOpenCompose: () => void
+  onDismissToast: () => void
 }
 
 export function CommunityScreen({
@@ -15,10 +16,17 @@ export function CommunityScreen({
   onToggleLike,
   onAddComment,
   onOpenCompose,
+  onDismissToast,
 }: CommunityScreenProps) {
   const [commentsPostId, setCommentsPostId] = useState<string | null>(null)
   const [commentDraft, setCommentDraft] = useState('')
   const [shareNote, setShareNote] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!state.memorySaveToast) return
+    const timer = window.setTimeout(onDismissToast, 3200)
+    return () => window.clearTimeout(timer)
+  }, [state.memorySaveToast, onDismissToast])
 
   const activePost = state.communityPosts.find((post) => post.id === commentsPostId)
 
@@ -38,6 +46,10 @@ export function CommunityScreen({
       <div className="aheader">
         <div className="alogo">Community</div>
       </div>
+
+      <p className="comm-participate">
+        Share a moment, leave a kind word, or cheer someone on — the pack is out there.
+      </p>
 
       <div className="comm-live detail-tint detail-tint--accent">
         <div className="comm-live-top">
@@ -64,9 +76,9 @@ export function CommunityScreen({
         Post to community
       </button>
 
-      {shareNote ? (
+      {shareNote || state.memorySaveToast ? (
         <div className="memory-toast" role="status">
-          {shareNote}
+          {shareNote ?? state.memorySaveToast}
         </div>
       ) : null}
 

@@ -126,6 +126,7 @@ export function AchievementDetailView({
                 <div className="achdetail-next-place">{detail.suggestedAction.placeName}</div>
               ) : null}
               <div className="achdetail-next-desc">{detail.suggestedAction.description}</div>
+              <div className="achdetail-next-cta">Easy win · tap Plan to go</div>
             </div>
           </div>
         </main>

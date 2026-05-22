@@ -61,6 +61,7 @@ function normalizeAppState(state: AppState): AppState {
     showPresetPlanOverlay: rest.showPresetPlanOverlay ?? false,
     adventurePhotos: normalizePhotoSlots(rest.adventurePhotos),
     activeAdventure: normalizeActiveAdventure(rest.activeAdventure),
+    memorySaveToast: rest.memorySaveToast ?? null,
     communityPosts: (rest.communityPosts ?? defaultAppState.communityPosts).map(
       (post) => ({
         ...post,
