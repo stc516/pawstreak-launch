@@ -25,6 +25,7 @@ import {
   generateCuratedPlanResult,
 } from './lib/curatedPlan'
 import { generateRandomPlan } from './lib/randomPlan'
+import type { AdventureFinishPayload } from './lib/adventureFinish'
 
 function App() {
   const [state, setState] = useState<AppState>(() => loadAppState())
@@ -208,6 +209,28 @@ function App() {
     }))
   }
 
+  const startWeekFromCuratedPlan = () => {
+    setState((current) => {
+      const first = current.curatedPlanResult?.firstAdventure
+      if (!first) {
+        return {
+          ...current,
+          curatedPlanFlowStep: 0,
+          activeTab: 'plan',
+          selectedMonthlyPlanId: 'curated',
+        }
+      }
+
+      return {
+        ...current,
+        curatedPlanFlowStep: 0,
+        selectedMonthlyPlanId: 'curated',
+        activeAdventure: createActiveAdventure(first.placeId, first.name, '30 min'),
+        adventurePhotos: ['', '', ''],
+      }
+    })
+  }
+
   const generateRandomPlanForDogs = () => {
     setState((current) => ({
       ...current,
@@ -260,7 +283,19 @@ function App() {
     }))
   }
 
-  const finishAdventure = () => {
+  const goAgainFromMemory = (placeId: string) => {
+    const place = getPlaceById(placeId)
+    if (!place) return
+
+    setState((current) => ({
+      ...current,
+      selectedJourneyEntryId: null,
+      activeAdventure: createActiveAdventure(place.id, place.name, 'Open end'),
+      adventurePhotos: ['', '', ''],
+    }))
+  }
+
+  const finishAdventure = (payload: AdventureFinishPayload) => {
     setState((current) => {
       if (!current.activeAdventure) {
         return { ...current, activeTab: 'journey', adventurePhotos: ['', '', ''] }
@@ -270,7 +305,11 @@ function App() {
       const capturedPhotos = current.adventurePhotos.filter(Boolean)
       const journeyEntries = place
         ? [
-            createJourneyEntryFromPlace(place, current.dogs, capturedPhotos),
+            createJourneyEntryFromPlace(place, current.dogs, {
+              photoUrls: capturedPhotos,
+              durationLabel: current.activeAdventure.durationLabel,
+              recapLabels: payload.recapLabels,
+            }),
             ...current.journeyEntries,
           ]
         : current.journeyEntries
@@ -322,6 +361,7 @@ function App() {
         onToggleLove={toggleCuratedLove}
         onNext={advanceCuratedPlanFlow}
         onFinish={finishCuratedPlanFlow}
+        onStartWeek={startWeekFromCuratedPlan}
       />
     )
   }
@@ -352,7 +392,9 @@ function App() {
       return (
         <JourneyMemoryView
           entry={entry}
+          dogs={state.dogs}
           onBack={closeJourneyMemory}
+          onGoAgain={goAgainFromMemory}
         />
       )
     }

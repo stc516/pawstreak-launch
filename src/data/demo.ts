@@ -64,6 +64,12 @@ export interface JourneyEntry {
   magicLine?: string
   tags: string[]
   photoUrls?: string[]
+  durationLabel?: string
+  recapLabels?: string[]
+  emotionalLine?: string
+  favoriteMoment?: string
+  memoryMood?: string
+  dogTags?: string[]
 }
 
 export interface Flashback {
@@ -146,6 +152,7 @@ export interface AppState {
   monthlyPlanOptions: MonthlyPlanOption[]
   moodRecapOptions: RecapChip[]
   highlightRecapOptions: RecapChip[]
+  adventureRecapOptions: RecapChip[]
   dogModeOptions: { id: DogMode; label: string }[]
   journeyTitle: string
   journeyMap: {
@@ -274,6 +281,14 @@ export const defaultAppState: AppState = {
     { id: 'playing-in-water', label: 'Playing in water' },
     { id: 'new-smells-everywhere', label: 'New smells everywhere' },
     { id: 'just-being-together', label: 'Just being together' },
+  ],
+  adventureRecapOptions: [
+    { id: 'loved-every-second', label: 'Loved every second' },
+    { id: 'slower-pace', label: 'Needed a slower pace' },
+    { id: 'met-new-friends', label: 'Met new friends' },
+    { id: 'new-smell', label: 'Found a new smell' },
+    { id: 'bailey-led', label: 'Bailey led the way' },
+    { id: 'omi-pace', label: 'Omi set the pace' },
   ],
   dogModeOptions: [
     { id: 'both', label: 'Both' },

@@ -2,6 +2,18 @@ import type { Dog } from '../data/demo'
 import { dogNamesLabel } from '../data/demo'
 import { getPlaceById, PLACES } from '../data/places'
 
+export interface CuratedPlanWeekItem {
+  day: string
+  focus: string
+  type: string
+}
+
+export interface CuratedPlanBalance {
+  id: string
+  label: string
+  percent: number
+}
+
 export interface CuratedPlanDraft {
   optimizeId: string | null
   timeId: string | null
@@ -10,12 +22,126 @@ export interface CuratedPlanDraft {
 
 export interface CuratedPlanResult {
   title: string
+  planName: string
   emotionalCopy: string
+  whyItFits: string
   weeklyCadence: string
+  weeklySchedule: CuratedPlanWeekItem[]
+  firstAdventure: {
+    placeId: string
+    name: string
+    reason: string
+    when: string
+  }
+  balance: CuratedPlanBalance[]
   adventureTypes: string[]
   monthlyGoals: string[]
   recommendedSpots: { name: string; reason: string }[]
   savedAt: string
+}
+
+const WHY_IT_FITS: Record<string, string> = {
+  'burn-energy':
+    'Bailey needs room to run; Omi does best with a mix of movement and sniff breaks. This plan balances both.',
+  confidence:
+    'Short, predictable outings help Omi settle in. Bailey still gets novelty without overwhelming either dog.',
+  behavior:
+    'Structure with built-in sniff time keeps walks productive without feeling rigid.',
+  social:
+    'Friendly hellos in low-pressure settings — enough social time without overstimulation.',
+  calmer:
+    'Shorter loops and familiar routes give Omi the slower pace she prefers while Bailey still gets out.',
+  bonding:
+    'Shared adventures at a pace both dogs can enjoy — that is how trust builds week by week.',
+  weight:
+    'Steady movement, not intensity. Easy to keep up even on busy weeks.',
+  puppy:
+    'Small doses of new sights and smells — exposure that stays happy, not overwhelming.',
+  weekend:
+    'One bigger day to look forward to, with lighter touchpoints during the week.',
+  training:
+    'Same cues, different places. Skills stick when practice feels like an adventure.',
+}
+
+const BALANCE_BY_OPTIMIZE: Record<string, CuratedPlanBalance[]> = {
+  'burn-energy': [
+    { id: 'adventure', label: 'Adventure', percent: 45 },
+    { id: 'activity', label: 'Activity', percent: 30 },
+    { id: 'training', label: 'Training', percent: 15 },
+    { id: 'bonding', label: 'Bonding', percent: 10 },
+  ],
+  confidence: [
+    { id: 'confidence', label: 'Confidence', percent: 35 },
+    { id: 'calmer', label: 'Calmer walks', percent: 25 },
+    { id: 'socialization', label: 'Socialization', percent: 20 },
+    { id: 'bonding', label: 'Bonding', percent: 20 },
+  ],
+  calmer: [
+    { id: 'calmer', label: 'Calmer walks', percent: 40 },
+    { id: 'senior', label: 'Senior-friendly', percent: 30 },
+    { id: 'bonding', label: 'Bonding', percent: 20 },
+    { id: 'activity', label: 'Activity', percent: 10 },
+  ],
+  social: [
+    { id: 'socialization', label: 'Socialization', percent: 40 },
+    { id: 'adventure', label: 'Adventure', percent: 30 },
+    { id: 'activity', label: 'Activity', percent: 20 },
+    { id: 'bonding', label: 'Bonding', percent: 10 },
+  ],
+}
+
+const DEFAULT_BALANCE: CuratedPlanBalance[] = [
+  { id: 'adventure', label: 'Adventure', percent: 35 },
+  { id: 'activity', label: 'Activity', percent: 25 },
+  { id: 'training', label: 'Training', percent: 15 },
+  { id: 'bonding', label: 'Bonding', percent: 15 },
+  { id: 'confidence', label: 'Confidence', percent: 10 },
+]
+
+function buildWeeklySchedule(
+  timeId: string,
+  loveIds: string[],
+  optimizeId: string,
+): CuratedPlanWeekItem[] {
+  const adventureLabel =
+    loveIds.includes('beaches') ? 'Beach outing' :
+    loveIds.includes('trails') ? 'Trail loop' :
+    loveIds.includes('cafes') ? 'Patio stop' : 'Neighborhood explore'
+
+  if (timeId === 'weekends') {
+    return [
+      { day: 'Sat', focus: `Big ${adventureLabel.toLowerCase()}`, type: 'adventure' },
+      { day: 'Sun', focus: 'Recovery sniff walk', type: 'calmer walks' },
+      { day: 'Wed', focus: 'Short training loop', type: 'training' },
+    ]
+  }
+
+  if (timeId === '15min') {
+    return [
+      { day: 'Mon', focus: 'Quick sniff loop', type: 'activity' },
+      { day: 'Wed', focus: adventureLabel, type: 'adventure' },
+      { day: 'Fri', focus: 'Calm bonding walk', type: 'bonding' },
+      { day: 'Sun', focus: 'Try somewhere new', type: 'adventure' },
+    ]
+  }
+
+  return [
+    { day: 'Mon', focus: 'Neighborhood reset', type: 'activity' },
+    { day: 'Wed', focus: adventureLabel, type: 'adventure' },
+    { day: 'Fri', focus: optimizeId === 'training' ? 'Cue practice walk' : 'Social hello route', type: optimizeId === 'training' ? 'training' : 'socialization' },
+    { day: 'Sat', focus: 'Longer adventure', type: 'adventure' },
+  ]
+}
+
+function pickFirstAdventure(loveIds: string[]) {
+  const spots = recommendSpots(loveIds)
+  const place = PLACES.find((p) => p.name === spots[0]?.name) ?? PLACES[0]
+  return {
+    placeId: place.id,
+    name: place.name,
+    reason: place.whyDogsLoveIt,
+    when: 'This Saturday morning',
+  }
 }
 
 const EMOTIONAL_COPY: Record<string, string> = {
@@ -125,13 +251,22 @@ export function generateCuratedPlanResult(
   const optimizeId = draft.optimizeId ?? 'bonding'
   const timeId = draft.timeId ?? 'flexible'
   const loveIds = draft.loveIds.length > 0 ? draft.loveIds : ['trails', 'sniffing']
+  const dogLabel = dogNamesLabel(dogs)
+  const firstAdventure = pickFirstAdventure(loveIds)
 
   return {
-    title: `${dogNamesLabel(dogs)}'s Adventure Plan`,
+    title: `${dogLabel}'s Adventure Plan`,
+    planName: `${dogLabel} · Weekly rhythm`,
     emotionalCopy:
       EMOTIONAL_COPY[optimizeId] ??
       'Small adventures count. Your dogs thrive when there is something new to explore each week.',
+    whyItFits:
+      WHY_IT_FITS[optimizeId] ??
+      'Built around what they love and the time you actually have — not a perfect schedule.',
     weeklyCadence: TIME_CADENCE[timeId] ?? TIME_CADENCE.flexible,
+    weeklySchedule: buildWeeklySchedule(timeId, loveIds, optimizeId),
+    firstAdventure,
+    balance: BALANCE_BY_OPTIMIZE[optimizeId] ?? DEFAULT_BALANCE,
     adventureTypes: loveToAdventureTypes(loveIds),
     monthlyGoals: buildMonthlyGoals(optimizeId, loveIds),
     recommendedSpots: recommendSpots(loveIds),

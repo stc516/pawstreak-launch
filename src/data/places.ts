@@ -2,6 +2,10 @@ import type { Dog, JourneyEntry } from './demo'
 import { dogNamesLabel } from './demo'
 import type { Place, PlaceCategory, PlaceImageTone } from '../types/place'
 import { getMagicLine, getHeroMagicSubtitle, getPlanMagicMeta } from '../lib/magicCopy'
+import {
+  buildEmotionalMemoryLine,
+  buildFavoriteMoment,
+} from '../lib/adventureFinish'
 import { getSampleImageForPlace } from './sampleImages'
 
 export { getMagicLine, getHeroMagicSubtitle, getPlanMagicMeta }
@@ -803,8 +807,20 @@ export function getHeroPlace(activityId: string): Place {
 export function createJourneyEntryFromPlace(
   place: Place,
   dogs: Dog[],
-  photoUrls: string[] = [],
+  options: {
+    photoUrls?: string[]
+    durationLabel?: string
+    recapLabels?: string[]
+  } = {},
 ): JourneyEntry {
+  const recapLabels = options.recapLabels ?? []
+  const emotionalLine = buildEmotionalMemoryLine(recapLabels)
+  const favoriteMoment = buildFavoriteMoment(recapLabels)
+  const memoryMood =
+    recapLabels.includes('Needed a slower pace') ? 'Calm + close' :
+    recapLabels.includes('Loved every second') ? 'Joyful + tired' :
+    'Warm + steady'
+
   return {
     id: `adventure-${place.id}-${Date.now()}`,
     placeId: place.id,
@@ -812,7 +828,15 @@ export function createJourneyEntryFromPlace(
     date: 'Today',
     magicLine: getMagicLine(place),
     tags: [place.category, place.leashInfo, dogNamesLabel(dogs), 'Loved it'],
-    photoUrls: photoUrls.length > 0 ? photoUrls : undefined,
+    photoUrls: options.photoUrls?.length ? options.photoUrls : undefined,
+    durationLabel: options.durationLabel,
+    recapLabels: recapLabels.length > 0 ? recapLabels : undefined,
+    emotionalLine,
+    favoriteMoment,
+    memoryMood,
+    dogTags: dogs.map(
+      (dog) => `${dog.name} · ${dog.breed.split('·')[0]?.trim() ?? 'companion'}`,
+    ),
   }
 }
 

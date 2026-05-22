@@ -162,7 +162,7 @@ async function runFlows(page) {
   await expectVisible(page, '.curated-result-title', '4-curated-result', 'Curated result screen visible')
   await screenshot(page, step(15, 'curated-result'))
 
-  await page.getByRole('button', { name: /Save Bailey \+ Omi's plan/i }).click()
+  await page.getByRole('button', { name: /Save plan/i }).click()
   await page.waitForTimeout(500)
   const savedVisible = await page.locator('.plan-saved, .curated-saved').first().isVisible()
   await record('4-curated-save', savedVisible, 'Saved curated plan summary visible on Plan screen')

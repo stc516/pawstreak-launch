@@ -19,6 +19,7 @@ interface CuratedPlanFlowProps {
   onToggleLove: (loveId: string) => void
   onNext: () => void
   onFinish: () => void
+  onStartWeek: () => void
 }
 
 const STEP_TITLES = [
@@ -64,7 +65,7 @@ function getFooterHint(
 function getCtaLabel(step: number, dogLabel: string): string {
   if (step === 1 || step === 2) return 'Continue'
   if (step === 3) return `Build ${dogLabel}'s plan`
-  return `Save ${dogLabel}'s plan`
+  return 'Save plan'
 }
 
 export function CuratedPlanFlow({
@@ -78,6 +79,7 @@ export function CuratedPlanFlow({
   onToggleLove,
   onNext,
   onFinish,
+  onStartWeek,
 }: CuratedPlanFlowProps) {
   const dogLabel = dogNamesLabel(state.dogs)
   const canContinue =
@@ -136,12 +138,60 @@ export function CuratedPlanFlow({
           {step === 4 && result ? (
             <>
               <div className="curated-result-badge">Your plan</div>
-              <h1 className="curated-result-title">{result.title}</h1>
+              <h1 className="curated-result-title">{result.planName}</h1>
               <p className="curated-result-copy">{result.emotionalCopy}</p>
+
+              <div className="curated-result-block curated-result-block--why">
+                <div className="curated-result-label">Why this fits {dogLabel}</div>
+                <div className="curated-result-value">{result.whyItFits}</div>
+              </div>
 
               <div className="curated-result-block">
                 <div className="curated-result-label">Weekly cadence</div>
                 <div className="curated-result-value">{result.weeklyCadence}</div>
+              </div>
+
+              <div className="sec">This week at a glance</div>
+              <div className="curated-schedule">
+                {result.weeklySchedule.map((item) => (
+                  <div key={`${item.day}-${item.focus}`} className="curated-schedule-row">
+                    <div className="curated-schedule-day">{item.day}</div>
+                    <div>
+                      <div className="curated-schedule-focus">{item.focus}</div>
+                      <div className="curated-schedule-type">{item.type}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="sec">Recommended first adventure</div>
+              <div className="curated-first-adv">
+                <div className="curated-first-name">{result.firstAdventure.name}</div>
+                <div className="curated-first-when">{result.firstAdventure.when}</div>
+                <div className="curated-first-reason">{result.firstAdventure.reason}</div>
+                <button
+                  type="button"
+                  className="curated-start-week tap-target"
+                  onClick={onStartWeek}
+                >
+                  Start this week
+                </button>
+              </div>
+
+              <div className="sec">Training & activity balance</div>
+              <div className="curated-balance">
+                {result.balance.map((item) => (
+                  <div key={item.id} className="curated-balance-row">
+                    <div className="curated-balance-label">{item.label}</div>
+                    <div className="curated-balance-track">
+                      <div
+                        className="curated-balance-fill"
+                        style={{ width: `${item.percent}%` }}
+                      />
+                    </div>
+                    <div className="curated-balance-pct">{item.percent}%</div>
+                  </div>
+                ))}
               </div>
 
               <div className="sec">Suggested adventure types</div>

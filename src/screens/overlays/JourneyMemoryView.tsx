@@ -1,4 +1,6 @@
-import type { JourneyEntry } from '../../data/demo'
+import { useState } from 'react'
+import type { Dog, JourneyEntry } from '../../data/demo'
+import { dogNamesLabel } from '../../data/demo'
 import { CardImage } from '../../components/CardImage'
 import { getJourneyMemoryDetail } from '../../data/journeyMemories'
 import { getPlaceById } from '../../data/places'
@@ -6,13 +8,30 @@ import { StatusBar } from '../../components/StatusBar'
 
 interface JourneyMemoryViewProps {
   entry: JourneyEntry
+  dogs: Dog[]
   onBack: () => void
+  onGoAgain: (placeId: string) => void
 }
 
-export function JourneyMemoryView({ entry, onBack }: JourneyMemoryViewProps) {
+export function JourneyMemoryView({
+  entry,
+  dogs,
+  onBack,
+  onGoAgain,
+}: JourneyMemoryViewProps) {
+  const [shareNote, setShareNote] = useState<string | null>(null)
   const place = entry.placeId ? getPlaceById(entry.placeId) : undefined
-  const memory = getJourneyMemoryDetail(entry.id)
+  const memory = getJourneyMemoryDetail(entry)
   const heroUrl = place?.imageUrl ?? memory.photoUrls[0]
+  const galleryPhotos = [
+    ...(entry.photoUrls ?? []),
+    ...memory.photoUrls,
+  ].slice(0, 6)
+
+  const handleShare = () => {
+    setShareNote('Memory link copied — ready to share when you want.')
+    window.setTimeout(() => setShareNote(null), 2800)
+  }
 
   return (
     <div className="app-viewport">
@@ -20,22 +39,34 @@ export function JourneyMemoryView({ entry, onBack }: JourneyMemoryViewProps) {
         <StatusBar />
         <main className="scroll scroll--overlay">
           <div className="overlay-topbar">
-            <button type="button" className="overlay-back" onClick={onBack}>
+            <button type="button" className="overlay-back tap-target" onClick={onBack}>
               <i className="ti ti-arrow-left" aria-hidden="true" />
               Back
             </button>
-            <button type="button" className="overlay-action" aria-label="Share memory">
+            <button
+              type="button"
+              className="overlay-action tap-target"
+              aria-label="Share memory"
+              onClick={handleShare}
+            >
               <i className="ti ti-share" aria-hidden="true" />
             </button>
           </div>
 
-          <div className="memory-hero">
+          {shareNote ? (
+            <div className="memory-toast" role="status">
+              {shareNote}
+            </div>
+          ) : null}
+
+          <div className="memory-hero memory-hero--rich">
             <CardImage
               className="memory-hero-img"
               imageUrl={heroUrl}
               imageAlt={place?.imageAlt ?? entry.place}
               imageTone={place?.imageTone ?? 'warm'}
             />
+            <div className="memory-hero-badge">Memory saved</div>
             <div className="memory-hero-text">
               <div className="memory-place">{entry.place}</div>
               <div className="memory-date">{entry.date}</div>
@@ -43,12 +74,54 @@ export function JourneyMemoryView({ entry, onBack }: JourneyMemoryViewProps) {
             </div>
           </div>
 
-          <div className="memory-tags">
-            {entry.tags.map((tag) => (
-              <span key={tag} className="mt">
+          <div className="memory-context">
+            <div className="memory-context-item">
+              <span className="memory-context-label">Visits</span>
+              <span>{memory.visitCount} times here</span>
+            </div>
+            <div className="memory-context-item">
+              <span className="memory-context-label">Type</span>
+              <span>{memory.adventureType}</span>
+            </div>
+            <div className="memory-context-item">
+              <span className="memory-context-label">Mood</span>
+              <span>{memory.memoryMood}</span>
+            </div>
+          </div>
+
+          <div className="memory-dog-tags">
+            {memory.dogTags.map((tag) => (
+              <span key={tag} className="memory-dog-tag">
                 {tag}
               </span>
             ))}
+          </div>
+
+          <div className="memory-section">
+            <div className="memory-section-title">Emotional recap</div>
+            <div className="memory-recap">
+              {memory.emotionalRecaps.map((line) => (
+                <p key={line} className="memory-recap-line">
+                  {line}
+                </p>
+              ))}
+            </div>
+          </div>
+
+          <div className="memory-section">
+            <div className="memory-section-title">Favorite moment</div>
+            <p className="memory-favorite">{memory.favoriteMoment}</p>
+          </div>
+
+          <div className="memory-section">
+            <div className="memory-section-title">
+              What {dogNamesLabel(dogs)} loved
+            </div>
+            <ul className="memory-loved">
+              {memory.whatDogsLoved.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
           </div>
 
           <div className="memory-chips">
@@ -59,43 +132,35 @@ export function JourneyMemoryView({ entry, onBack }: JourneyMemoryViewProps) {
             ))}
           </div>
 
-          <div className="memory-stats">
-            <div className="memory-stat">
-              You&apos;ve been here {memory.visitCount} times
-            </div>
-            <div className="memory-stat memory-stat--warm">{memory.dogLoveLine}</div>
-          </div>
-
-          <div className="memory-recap">
-            {memory.emotionalRecaps.map((line) => (
-              <p key={line} className="memory-recap-line">
-                {line}
-              </p>
-            ))}
-          </div>
-
-          <div className="sec">Photos from this day</div>
-          <div className="memory-photos">
-            {[
-              ...memory.photoUrls,
-              ...(entry.photoUrls ?? []),
-            ]
-              .slice(0, 6)
-              .map((url, index) => (
-                <div key={`${url}-${index}`} className="memory-photo">
-                  <img src={url} alt="" className="memory-photo-img" />
+          <div className="memory-section">
+            <div className="memory-section-title">Memory gallery</div>
+            <div className="memory-gallery">
+              {galleryPhotos.map((url, index) => (
+                <div key={`${url}-${index}`} className="memory-gallery-item">
+                  <img src={url} alt="" className="memory-gallery-img" />
                 </div>
               ))}
+            </div>
           </div>
 
           <div className="memory-actions">
-            <button type="button" className="memory-btn memory-btn--ghost">
+            {entry.placeId ? (
+              <button
+                type="button"
+                className="memory-btn memory-btn--primary tap-target"
+                onClick={() => onGoAgain(entry.placeId!)}
+              >
+                <i className="ti ti-refresh" aria-hidden="true" />
+                Go again
+              </button>
+            ) : null}
+            <button
+              type="button"
+              className="memory-btn memory-btn--ghost tap-target"
+              onClick={handleShare}
+            >
               <i className="ti ti-share" aria-hidden="true" />
-              Share
-            </button>
-            <button type="button" className="memory-btn memory-btn--primary">
-              <i className="ti ti-users" aria-hidden="true" />
-              Post to community
+              Share this memory
             </button>
           </div>
         </main>

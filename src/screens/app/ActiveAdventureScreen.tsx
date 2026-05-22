@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import type { AppState, DogMode } from '../../data/demo'
+import type { AppState } from '../../data/demo'
 import { dogNamesLabel, formatTimer } from '../../data/demo'
+import type { AdventureFinishPayload } from '../../lib/adventureFinish'
 import { readImageFileAsDataUrl } from '../../lib/imageUtils'
+import { getPlaceById, getPlanMagicMeta } from '../../data/places'
 import { BottomNav } from '../../components/BottomNav'
 import { StatusBar } from '../../components/StatusBar'
 import type { TabId } from '../../data/demo'
@@ -10,7 +12,7 @@ const INITIAL_SECONDS = 24 * 60 + 7
 
 interface ActiveAdventureScreenProps {
   state: AppState
-  onFinish: () => void
+  onFinish: (payload: AdventureFinishPayload) => void
   onTabChange: (tab: TabId) => void
   onAddPhoto: (photoDataUrl: string) => void
 }
@@ -24,9 +26,12 @@ export function ActiveAdventureScreen({
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [elapsedSeconds, setElapsedSeconds] = useState(INITIAL_SECONDS)
   const [isPaused, setIsPaused] = useState(false)
-  const [dogMode, setDogMode] = useState<DogMode>('both')
-  const [moodRecapId, setMoodRecapId] = useState('loved-every-second')
-  const [highlightRecapId, setHighlightRecapId] = useState('off-leash-run')
+  const [selectedRecaps, setSelectedRecaps] = useState<string[]>([
+    'Loved every second',
+  ])
+
+  const place = getPlaceById(state.activeAdventure?.placeId ?? '')
+  const hasPhotos = state.adventurePhotos.some(Boolean)
 
   useEffect(() => {
     if (isPaused) {
@@ -57,6 +62,21 @@ export function ActiveAdventureScreen({
     } catch {
       // Ignore invalid selections for now.
     }
+  }
+
+  const toggleRecap = (label: string) => {
+    setSelectedRecaps((current) =>
+      current.includes(label)
+        ? current.filter((item) => item !== label)
+        : [...current, label],
+    )
+  }
+
+  const handleFinish = () => {
+    onFinish({
+      recapLabels:
+        selectedRecaps.length > 0 ? selectedRecaps : ['Loved every second'],
+    })
   }
 
   if (!state.activeAdventure) {
@@ -92,30 +112,16 @@ export function ActiveAdventureScreen({
         </div>
 
         <main className="scroll scroll--active">
-          <div className="two-dog-toggle">
-            <div className="tdt-left">
-              {state.dogs.map((dog) => (
-                <div
-                  key={dog.id}
-                  className={`dog-av dog-av--md ${dog.avatarClass}`}
-                >
-                  {dog.initial}
-                </div>
-              ))}
-              <span className="tdt-label">Both dogs today</span>
+          {place ? (
+            <div className="adv-place-context">
+              <div className="adv-place-name">{place.name}</div>
+              <div className="adv-place-meta">{getPlanMagicMeta(place)}</div>
+              <div className="adv-place-note">{place.whyDogsLoveIt}</div>
             </div>
-            <div className="tdt-right">
-              {state.dogModeOptions.map((option) => (
-                <button
-                  key={option.id}
-                  type="button"
-                  className={`tdt-btn${dogMode === option.id ? '' : ' off'}`}
-                  onClick={() => setDogMode(option.id)}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
+          ) : null}
+
+          <div className="adv-capture-prompt">
+            Capture one thing you&apos;ll want to remember.
           </div>
 
           <input
@@ -132,43 +138,25 @@ export function ActiveAdventureScreen({
             <span>Capture a moment</span>
           </button>
 
-          <div className="clk-btns">
-            <button
-              type="button"
-              className="cbtn tap-target"
-              onClick={() => setIsPaused((current) => !current)}
-            >
-              Pause
-            </button>
-            <button type="button" className="cbtn pri tap-target" onClick={onFinish}>
-              Finish
-            </button>
-          </div>
-
-          <div className="recap-divider">
-            <div className="rq">How did they do today?</div>
-            <div className="rchips">
-              {state.moodRecapOptions.map((option) => (
-                <button
-                  key={option.id}
-                  type="button"
-                  className={`rc${moodRecapId === option.id ? ' on' : ''}`}
-                  onClick={() => setMoodRecapId(option.id)}
-                >
-                  {option.label}
-                </button>
-              ))}
+          {!hasPhotos ? (
+            <div className="adv-photo-reminder">
+              No photo yet — that is okay. You can still finish and save the memory.
             </div>
-          </div>
+          ) : (
+            <div className="adv-photo-reminder adv-photo-reminder--done">
+              {state.adventurePhotos.filter(Boolean).length} moment
+              {state.adventurePhotos.filter(Boolean).length === 1 ? '' : 's'} saved
+            </div>
+          )}
 
-          <div className="rq">What was the highlight?</div>
+          <div className="rq">What made today worth remembering?</div>
           <div className="rchips">
-            {state.highlightRecapOptions.map((option) => (
+            {state.adventureRecapOptions.map((option) => (
               <button
                 key={option.id}
                 type="button"
-                className={`rc${highlightRecapId === option.id ? ' on' : ''}`}
-                onClick={() => setHighlightRecapId(option.id)}
+                className={`rc tap-target${selectedRecaps.includes(option.label) ? ' on' : ''}`}
+                onClick={() => toggleRecap(option.label)}
               >
                 {option.label}
               </button>
@@ -186,6 +174,19 @@ export function ActiveAdventureScreen({
                 )}
               </div>
             ))}
+          </div>
+
+          <div className="clk-btns">
+            <button
+              type="button"
+              className="cbtn tap-target"
+              onClick={() => setIsPaused((current) => !current)}
+            >
+              Pause
+            </button>
+            <button type="button" className="cbtn pri tap-target" onClick={handleFinish}>
+              Finish
+            </button>
           </div>
         </main>
 
