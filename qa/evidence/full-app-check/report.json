@@ -1,0 +1,40 @@
+{
+  "phase": "full-app-check",
+  "testedAt": "2026-05-22T00:43:31.953Z",
+  "localCommit": "5303a6e9b842f77e5639da74c28bf59d8001f6dd",
+  "originMainCommit": "5303a6e9b842f77e5639da74c28bf59d8001f6dd",
+  "vercelProductionCommit": "5303a6e9b842f77e5639da74c28bf59d8001f6dd",
+  "productionUrl": "https://pawstreak-launch.vercel.app",
+  "productionCurrent": true,
+  "vercelConnected": true,
+  "vercelProductionBranch": "main",
+  "onboardingExpected": true,
+  "fullAppReachable": true,
+  "blockers": [],
+  "localQa": {
+    "overallPass": true,
+    "flowsPassed": 21,
+    "evidenceDir": "qa/evidence/full-app-check",
+    "videoPath": "qa/evidence/full-app-check/video/b52a575161e1b9dce1b1f7d6ef53b8d4.webm",
+    "reportPath": "qa/evidence/full-app-check/report.json"
+  },
+  "productionQa": {
+    "overallPass": true,
+    "flowsPassed": 21,
+    "baseUrl": "https://pawstreak-launch.vercel.app",
+    "evidenceDir": "qa/evidence/full-app-check/production",
+    "videoPath": "qa/evidence/full-app-check/production/video/c79c0f7e132fc42fa82e2aa4408aa837.webm"
+  },
+  "flowsTested": [
+    "onboarding → home",
+    "home activity chips",
+    "adventure ready → start → timer 0:00",
+    "plan filter + go",
+    "curated plan full flow + save",
+    "journey memory detail + back",
+    "challenge detail + back",
+    "achievement detail",
+    "active adventure photo capture + finish → journey entry"
+  ],
+  "phase2Blockers": "none — all interaction flows passed local and production QA"
+}
