@@ -76,7 +76,7 @@ export function JourneyScreen({
         </div>
       </div>
 
-      <div className="sec">This week</div>
+      <div className="sec sec--warm">This week&apos;s adventures</div>
 
       {filteredEntries.length === 0 && emptyState ? (
         <div className="journey-empty detail-card-warm">
@@ -92,45 +92,38 @@ export function JourneyScreen({
         </div>
       ) : null}
 
-      {filteredEntries.map((entry) => {
-        const place = entry.placeId ? getPlaceById(entry.placeId) : undefined
+      <div className="journey-grid">
+        {filteredEntries.map((entry) => {
+          const place = entry.placeId ? getPlaceById(entry.placeId) : undefined
+          const tagLine = entry.tags.slice(0, 2).join(' · ')
 
-        return (
-          <button
-            key={entry.id}
-            type="button"
-            className="mcard mcard--tap tap-target"
-            onClick={() => onOpenMemory(entry.id)}
-          >
-            <CardImage
-              className="mcard-img"
-              imageUrl={entry.photoUrls?.[0] ?? place?.imageUrl}
-              imageAlt={place?.imageAlt ?? entry.place}
-              imageTone={place?.imageTone ?? 'warm'}
-            />
-            <div className="mcard-body">
-              <div className="mcard-row">
+          return (
+            <button
+              key={entry.id}
+              type="button"
+              className="mcard mcard--grid mcard--tap tap-target"
+              onClick={() => onOpenMemory(entry.id)}
+            >
+              <div className="mcard-media">
+                <CardImage
+                  className="mcard-img"
+                  imageUrl={entry.photoUrls?.[0] ?? place?.imageUrl}
+                  imageAlt={place?.imageAlt ?? entry.place}
+                  imageTone={place?.imageTone ?? 'warm'}
+                />
+              </div>
+              <div className="mcard-body">
                 <div className="mcard-place">{entry.place}</div>
+                {entry.magicLine ? (
+                  <div className="mcard-magic">{entry.magicLine}</div>
+                ) : null}
+                {tagLine ? <div className="mcard-tagline">{tagLine}</div> : null}
                 <div className="mcard-date">{entry.date}</div>
               </div>
-              {entry.magicLine ? (
-                <div className="mcard-magic">{entry.magicLine}</div>
-              ) : null}
-              <div className="mcard-tags">
-                {entry.tags.map((tag) => (
-                  <span key={tag} className="mt">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-              <div className="mcard-share">
-                <i className="ti ti-share" aria-hidden="true" />
-                Share · Post to community
-              </div>
-            </div>
-          </button>
-        )
-      })}
+            </button>
+          )
+        })}
+      </div>
     </>
   )
 }

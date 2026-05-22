@@ -32,6 +32,7 @@ export function CommunityScreen({
   }, [state.memorySaveToast, onDismissToast])
 
   const activePost = state.communityPosts.find((post) => post.id === commentsPostId)
+  const live = state.communityLive
 
   const handleShare = () => {
     setShareNote('Post link copied — ready to share when you want.')
@@ -57,64 +58,73 @@ export function CommunityScreen({
       </div>
 
       <p className="comm-participate">
-        Share a moment, leave a kind word, or cheer someone on — the pack is out there.
+        Cheer on the pack, share a win, or steal an idea for your next outing.
       </p>
 
-      <div className="comm-live-tiles">
-        <div className="comm-live-tile detail-tint detail-tint--accent">
-          <div className="comm-live-tile-top">
+      <div className="comm-top-grid">
+        <div className="comm-top-now detail-tint detail-tint--accent">
+          <div className="comm-top-now-head">
             <span className="live-dot" aria-hidden="true" />
-            <span className="comm-live-tile-label">{state.communityLive.label}</span>
+            <span className="comm-top-now-label">{live.label}</span>
           </div>
-          <div className="comm-live-tile-value">{state.communityLive.count}</div>
+          <div className="comm-top-now-count">{live.count}</div>
+          <div className="comm-top-now-sublabel">{live.countLabel}</div>
+          <div className="comm-top-now-tagline">{live.tagline}</div>
         </div>
-        <div className="comm-live-tile detail-tint detail-tint--warm">
-          <div className="comm-live-tile-label">Top spot</div>
-          <div className="comm-live-tile-value comm-live-tile-value--sm">
-            {state.communityLive.subtitle.replace(/^Top spot:\s*/i, '')}
+
+        <div className="comm-top-right">
+          <div className="comm-top-spot detail-tint detail-tint--warm">
+            <div className="comm-top-spot-label">Top spot</div>
+            <div className="comm-top-spot-value">{live.topSpot}</div>
+            <div className="comm-top-spot-note">{live.topSpotNote}</div>
           </div>
+
+          <button
+            type="button"
+            className="comm-top-post tap-target detail-card-warm"
+            onClick={onOpenCompose}
+          >
+            <div className="comm-top-post-title">Post to community</div>
+            <div className="comm-top-post-note">Share a memory from today</div>
+          </button>
         </div>
       </div>
 
-      {state.communityLive.chips.length > 0 ? (
+      {live.chips.length > 0 ? (
         <div className="comm-live-chips">
-          {state.communityLive.chips.map((chip) => (
-            <div key={chip.label} className="live-chip live-chip--compact">
+          {live.chips.map((chip) => (
+            <div key={chip.label} className="live-chip live-chip--light">
               {chip.label}
             </div>
           ))}
         </div>
       ) : null}
 
-      <div className="comm-quick-share detail-card-warm">
-        <input
-          className="comm-quick-share-input"
-          type="text"
-          placeholder="Share a moment from today…"
-          value={quickShareDraft}
-          onChange={(event) => setQuickShareDraft(event.target.value)}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter') handleQuickShare()
-          }}
-        />
-        <button
-          type="button"
-          className="comm-quick-share-btn tap-target"
-          disabled={!quickShareDraft.trim()}
-          onClick={handleQuickShare}
-        >
-          Post
-        </button>
+      <div className="comm-quick-share-card detail-card-warm">
+        <div className="comm-quick-share-row">
+          <input
+            className="comm-quick-share-input"
+            type="text"
+            placeholder="What did your dog do today?"
+            value={quickShareDraft}
+            onChange={(event) => setQuickShareDraft(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') handleQuickShare()
+            }}
+          />
+          <button
+            type="button"
+            className="comm-quick-share-btn tap-target"
+            disabled={!quickShareDraft.trim()}
+            onClick={handleQuickShare}
+          >
+            Post
+          </button>
+        </div>
+        <div className="comm-quick-share-note">
+          Quick posts are saved locally in this demo.
+        </div>
       </div>
-
-      <button
-        type="button"
-        className="comm-post-btn tap-target"
-        onClick={onOpenCompose}
-      >
-        <i className="ti ti-plus" aria-hidden="true" />
-        Post to community
-      </button>
 
       {shareNote || state.memorySaveToast ? (
         <div className="memory-toast" role="status">
@@ -122,70 +132,72 @@ export function CommunityScreen({
         </div>
       ) : null}
 
-      <div className="sec">From the pack</div>
+      <div className="sec sec--warm">Stories from the pack</div>
 
-      {state.communityPosts.map((post) => {
-        const place = post.placeId ? getPlaceById(post.placeId) : undefined
-        const imageUrl = post.photoUrl ?? place?.imageUrl
+      <div className="comm-feed">
+        {state.communityPosts.map((post) => {
+          const place = post.placeId ? getPlaceById(post.placeId) : undefined
+          const imageUrl = post.photoUrl ?? place?.imageUrl
 
-        return (
-          <article key={post.id} className="comm-post">
-            <div className="cp-header">
-              <div className={`cp-av ${post.avatarClass}`}>{post.initial}</div>
-              <div className="cp-header-text">
-                <div className="cp-name">{post.name}</div>
-                <div className="cp-meta">
-                  {post.meta}
-                  {place ? ` · ${getMagicLine(place)}` : ''}
+          return (
+            <article key={post.id} className="comm-post">
+              <div className="cp-header">
+                <div className={`cp-av ${post.avatarClass}`}>{post.initial}</div>
+                <div className="cp-header-text">
+                  <div className="cp-name">{post.name}</div>
+                  <div className="cp-meta">
+                    {post.meta}
+                    {place ? ` · ${getMagicLine(place)}` : ''}
+                  </div>
                 </div>
               </div>
-            </div>
-            {imageUrl ? (
-              <CardImage
-                className="cp-img"
-                imageUrl={imageUrl}
-                imageAlt={place?.imageAlt ?? post.location}
-                imageTone={place?.imageTone}
-              />
-            ) : null}
-            <div className="cp-body">
-              <div className="cp-caption">{post.caption}</div>
-              <div className="cp-loc">
-                <i className="ti ti-map-pin" aria-hidden="true" />
-                {post.location}
+              {imageUrl ? (
+                <CardImage
+                  className="cp-img"
+                  imageUrl={imageUrl}
+                  imageAlt={place?.imageAlt ?? post.location}
+                  imageTone={place?.imageTone}
+                />
+              ) : null}
+              <div className="cp-body">
+                <div className="cp-caption">{post.caption}</div>
+                <div className="cp-loc">
+                  <i className="ti ti-map-pin" aria-hidden="true" />
+                  {post.location}
+                </div>
+                <div className="cp-actions">
+                  <button
+                    type="button"
+                    className={`cpa tap-target${post.likedByUser ? ' cpa--liked' : ''}`}
+                    onClick={() => onToggleLike(post.id)}
+                  >
+                    <i
+                      className={`ti ${post.likedByUser ? 'ti-heart-filled' : 'ti-heart'}`}
+                      aria-hidden="true"
+                    />
+                    {post.likes}
+                  </button>
+                  <button
+                    type="button"
+                    className="cpa tap-target"
+                    onClick={() => {
+                      setCommentsPostId(post.id)
+                      setCommentDraft('')
+                    }}
+                  >
+                    <i className="ti ti-message-circle" aria-hidden="true" />
+                    {post.comments}
+                  </button>
+                  <button type="button" className="cpa tap-target" onClick={handleShare}>
+                    <i className="ti ti-share" aria-hidden="true" />
+                    Share
+                  </button>
+                </div>
               </div>
-              <div className="cp-actions">
-                <button
-                  type="button"
-                  className={`cpa tap-target${post.likedByUser ? ' cpa--liked' : ''}`}
-                  onClick={() => onToggleLike(post.id)}
-                >
-                  <i
-                    className={`ti ${post.likedByUser ? 'ti-heart-filled' : 'ti-heart'}`}
-                    aria-hidden="true"
-                  />
-                  {post.likes}
-                </button>
-                <button
-                  type="button"
-                  className="cpa tap-target"
-                  onClick={() => {
-                    setCommentsPostId(post.id)
-                    setCommentDraft('')
-                  }}
-                >
-                  <i className="ti ti-message-circle" aria-hidden="true" />
-                  {post.comments}
-                </button>
-                <button type="button" className="cpa tap-target" onClick={handleShare}>
-                  <i className="ti ti-share" aria-hidden="true" />
-                  Share
-                </button>
-              </div>
-            </div>
-          </article>
-        )
-      })}
+            </article>
+          )
+        })}
+      </div>
 
       {activePost ? (
         <div className="comm-comments-drawer">

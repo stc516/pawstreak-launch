@@ -33,6 +33,37 @@ const SEEDED_PIN_ENTRY_IDS: Record<string, string> = {
   'pin-julian': 'julian-saturday',
 }
 
+const GHOST_PIN_PREVIEWS: Record<
+  string,
+  { place: string; date: string; magicLine: string }
+> = {
+  'pin-torrey': {
+    place: 'Torrey Pines State Reserve',
+    date: 'Example trail day',
+    magicLine: 'Ridge walks and ocean views — a classic San Diego trail.',
+  },
+  'pin-balboa': {
+    place: 'Balboa Park',
+    date: 'Example park stroll',
+    magicLine: 'Fountains, gardens, and a golden-hour loop together.',
+  },
+  'pin-lestats': {
+    place: "Lestat's Coffee House",
+    date: 'Example patio hang',
+    magicLine: 'Slow coffee mornings that become weekly rituals.',
+  },
+  'pin-coronado': {
+    place: 'Coronado Beach',
+    date: 'Example beach day',
+    magicLine: 'Wide sand, gentle waves, and room to sprint.',
+  },
+  'pin-julian': {
+    place: 'Julian Day Trip',
+    date: 'Example road trip',
+    magicLine: 'Mountain air, apple pie stops, and a big day out.',
+  },
+}
+
 function categoryForEntry(entry: JourneyEntry): JourneyMapFilterId {
   const tagText = entry.tags.join(' ').toLowerCase()
   if (tagText.includes('road trip')) return 'road-trips'
@@ -43,7 +74,22 @@ function categoryForEntry(entry: JourneyEntry): JourneyMapFilterId {
   return 'all'
 }
 
+export function getGhostPinPreview(pinId: string): {
+  place: string
+  date: string
+  magicLine: string
+} {
+  return (
+    GHOST_PIN_PREVIEWS[pinId] ?? {
+      place: 'Future adventure',
+      date: 'Example pin',
+      magicLine: 'Your map fills in one outing at a time.',
+    }
+  )
+}
+
 export function buildJourneyMapPins(entries: JourneyEntry[]): JourneyMapPin[] {
+  const entryIds = new Set(entries.map((entry) => entry.id))
   const seededEntryIds = new Set(Object.values(SEEDED_PIN_ENTRY_IDS))
 
   const entryPins = entries
@@ -65,10 +111,13 @@ export function buildJourneyMapPins(entries: JourneyEntry[]): JourneyMapPin[] {
       }
     })
 
-  const seededPins = SEEDED_PIN_DEFS.map((pin) => ({
-    ...pin,
-    entryId: SEEDED_PIN_ENTRY_IDS[pin.id],
-  }))
+  const seededPins = SEEDED_PIN_DEFS.map((pin) => {
+    const entryId = SEEDED_PIN_ENTRY_IDS[pin.id]
+    return {
+      ...pin,
+      entryId: entryIds.has(entryId) ? entryId : undefined,
+    }
+  })
 
   return [...seededPins, ...entryPins]
 }

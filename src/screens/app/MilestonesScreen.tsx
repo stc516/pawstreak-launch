@@ -36,6 +36,9 @@ export function MilestonesScreen({
           />
         </div>
         <div className="msb-sub">{getDisplayBondSubtitle(state)}</div>
+        <div className="msb-helper">
+          Every adventure, photo, and place adds to their story.
+        </div>
       </button>
 
       <div className="sec">Active challenges</div>

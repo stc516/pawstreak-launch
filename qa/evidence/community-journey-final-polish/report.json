@@ -1,0 +1,72 @@
+{
+  "commit": "3082581e8ba75162b11685d1afaa40a0256840d2",
+  "overallPass": true,
+  "results": [
+    {
+      "flow": "demo-app-loads",
+      "pass": true,
+      "message": "Demo app route loads"
+    },
+    {
+      "flow": "community-top-layout",
+      "pass": true,
+      "message": "Community top grid shows live stats and compose tile without redundant button"
+    },
+    {
+      "flow": "community-quick-share",
+      "pass": true,
+      "message": "Quick share card is visible above the feed"
+    },
+    {
+      "flow": "community-feed-visible",
+      "pass": true,
+      "message": "Community feed shows 4 cards with ~160px images"
+    },
+    {
+      "flow": "community-quick-share-post",
+      "pass": true,
+      "message": "Quick share prepends a new post to the feed"
+    },
+    {
+      "flow": "community-compose-cta",
+      "pass": true,
+      "message": "Post to community tile opens compose overlay"
+    },
+    {
+      "flow": "journey-grid-cards",
+      "pass": true,
+      "message": "Journey grid shows 5 modular cards (~236px tall)"
+    },
+    {
+      "flow": "journey-filter-beach",
+      "pass": true,
+      "message": "Beach filter shows 1 cards"
+    },
+    {
+      "flow": "journey-map-opens",
+      "pass": true,
+      "message": "Map view filter opens journey map overlay"
+    },
+    {
+      "flow": "journey-map-stats",
+      "pass": true,
+      "message": "Map stats show 47 / 22"
+    },
+    {
+      "flow": "journey-map-pin-preview",
+      "pass": true,
+      "message": "Selecting a pin shows a memory preview card"
+    },
+    {
+      "flow": "journey-memory-opens",
+      "pass": true,
+      "message": "Open memory launches JourneyMemoryView"
+    },
+    {
+      "flow": "bottom-nav-works",
+      "pass": true,
+      "message": "Bottom nav remains usable after map and memory flows"
+    }
+  ],
+  "error": null
+}

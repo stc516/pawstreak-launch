@@ -60,6 +60,27 @@ function normalizeCuratedDraft(
   }
 }
 
+function normalizeCommunityLive(
+  live: AppState['communityLive'] | undefined,
+): AppState['communityLive'] {
+  const defaults = defaultAppState.communityLive
+  const legacy = live as AppState['communityLive'] & { subtitle?: string }
+
+  return {
+    ...defaults,
+    ...live,
+    count: live?.count?.replace(/\s*dogs out now/i, '') ?? defaults.count,
+    countLabel: live?.countLabel ?? defaults.countLabel,
+    tagline: live?.tagline ?? defaults.tagline,
+    topSpot:
+      live?.topSpot ??
+      legacy?.subtitle?.replace(/^Top spot:\s*/i, '') ??
+      defaults.topSpot,
+    topSpotNote: live?.topSpotNote ?? defaults.topSpotNote,
+    chips: live?.chips?.length ? live.chips : defaults.chips,
+  }
+}
+
 function normalizeAppState(state: AppState, mode: AppMode): AppState {
   const { heroSpot: _heroSpot, planPlaces: _planPlaces, ...rest } =
     state as AppState & {
@@ -103,6 +124,7 @@ function normalizeAppState(state: AppState, mode: AppMode): AppState {
         commentList: post.commentList ?? [],
       }),
     ),
+    communityLive: normalizeCommunityLive(rest.communityLive),
   }
 
   if (

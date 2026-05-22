@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Community Journey Final Polish QA</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 24px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 16px; }
+    th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; }
+    tr.pass td:nth-child(2) { color: #0a7a32; font-weight: 600; }
+    tr.fail td:nth-child(2) { color: #b42318; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>Community Journey Final Polish QA</h1>
+  <p><strong>Commit:</strong> 3082581e8ba75162b11685d1afaa40a0256840d2</p>
+  <p><strong>Overall:</strong> PASS</p>
+  <table>
+    <thead><tr><th>Flow</th><th>Result</th><th>Message</th></tr></thead>
+    <tbody><tr class="pass"><td>demo-app-loads</td><td>PASS</td><td>Demo app route loads</td></tr>
+<tr class="pass"><td>community-top-layout</td><td>PASS</td><td>Community top grid shows live stats and compose tile without redundant button</td></tr>
+<tr class="pass"><td>community-quick-share</td><td>PASS</td><td>Quick share card is visible above the feed</td></tr>
+<tr class="pass"><td>community-feed-visible</td><td>PASS</td><td>Community feed shows 4 cards with ~160px images</td></tr>
+<tr class="pass"><td>community-quick-share-post</td><td>PASS</td><td>Quick share prepends a new post to the feed</td></tr>
+<tr class="pass"><td>community-compose-cta</td><td>PASS</td><td>Post to community tile opens compose overlay</td></tr>
+<tr class="pass"><td>journey-grid-cards</td><td>PASS</td><td>Journey grid shows 5 modular cards (~236px tall)</td></tr>
+<tr class="pass"><td>journey-filter-beach</td><td>PASS</td><td>Beach filter shows 1 cards</td></tr>
+<tr class="pass"><td>journey-map-opens</td><td>PASS</td><td>Map view filter opens journey map overlay</td></tr>
+<tr class="pass"><td>journey-map-stats</td><td>PASS</td><td>Map stats show 47 / 22</td></tr>
+<tr class="pass"><td>journey-map-pin-preview</td><td>PASS</td><td>Selecting a pin shows a memory preview card</td></tr>
+<tr class="pass"><td>journey-memory-opens</td><td>PASS</td><td>Open memory launches JourneyMemoryView</td></tr>
+<tr class="pass"><td>bottom-nav-works</td><td>PASS</td><td>Bottom nav remains usable after map and memory flows</td></tr></tbody>
+  </table>
+</body>
+</html>

@@ -207,7 +207,10 @@ export interface AppState {
   communityLive: {
     label: string
     count: string
-    subtitle: string
+    countLabel: string
+    tagline: string
+    topSpot: string
+    topSpotNote: string
     chips: LiveChip[]
   }
   communityPosts: CommunityPost[]
@@ -400,7 +403,7 @@ export const defaultAppState: AppState = {
       placeId: 'dog-beach-ocean-beach',
       place: 'Dog Beach, OB',
       date: 'Today',
-      magicLine: 'Popular with the pack right now.',
+      magicLine: 'Bailey sprinted through the shallows.',
       tags: ['Beach', 'Off-leash', 'Bailey + Omi', 'Loved it'],
       photoUrls: ['/sample-images/beach.jpg', '/sample-images/coastal.jpg'],
     },
@@ -443,11 +446,17 @@ export const defaultAppState: AppState = {
   ],
   communityLive: {
     label: 'Right now in San Diego',
-    count: '247 dogs out now',
-    subtitle: 'Top spot: Dog Beach',
+    count: '247',
+    countLabel: 'dogs out now',
+    tagline: 'Beach walks, trail runs, patio hangs.',
+    topSpot: 'Dog Beach',
+    topSpotNote: 'Pack favorite today',
     chips: [
-      { label: '🏖️ 89 beach adventures' },
-      { label: '🌲 54 on trails' },
+      { label: '89 beach adventures' },
+      { label: '54 trails' },
+      { label: '41 cafes' },
+      { label: '38 dog parks' },
+      { label: '25 road trips' },
     ],
   },
   communityPosts: [
@@ -492,6 +501,20 @@ export const defaultAppState: AppState = {
       location: 'Torrey Pines State Reserve',
       likes: 47,
       comments: 5,
+    },
+    {
+      id: 'bailey-omi-patio',
+      placeId: 'lestats-coffee',
+      photoUrl: '/sample-images/cafe.jpg',
+      avatarClass: 'cp-av2',
+      initial: 'B',
+      name: 'Bailey + Omi',
+      meta: 'Yesterday · Day 14 streak',
+      caption:
+        'Slow morning on the patio — Omi people-watched while Bailey guarded the treats.',
+      location: "Lestat's Coffee House · Patio hang",
+      likes: 52,
+      comments: 9,
     },
   ],
   bondLevel: {

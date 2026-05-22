@@ -30,7 +30,7 @@ export function JourneyLevelDetailView({ state, onBack }: JourneyLevelDetailView
             <div className="jl-detail-kicker">{state.bondLevel.label}</div>
             <h1 className="jl-detail-title">{title}</h1>
             <p className="jl-detail-copy">
-              Every adventure, memory, and new place moves their story forward.
+              Every adventure, photo, and place adds to their story.
             </p>
             <div className="jl-detail-rank-row">
               <span className="jl-detail-rank">{state.bondLevel.rank}</span>

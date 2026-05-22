@@ -76,8 +76,12 @@ export function HomeScreen({
           <div className="live-dot" />
           <div className="home-pack-label">{state.communityLive.label}</div>
         </div>
-        <div className="home-pack-count">{state.communityLive.count}</div>
-        <div className="home-pack-sub">{state.communityLive.subtitle}</div>
+        <div className="home-pack-count">
+          {state.communityLive.count} {state.communityLive.countLabel}
+        </div>
+        <div className="home-pack-sub">
+          Top spot: {state.communityLive.topSpot} · {state.communityLive.tagline}
+        </div>
         <div className="home-pack-note">
           {getPackEnergyNote(state.locationLabel)}
         </div>
