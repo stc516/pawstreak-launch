@@ -24,6 +24,7 @@ export function HomeScreen({
 }: HomeScreenProps) {
   const heroPlace = getHeroPlace(state.selectedActivityId)
   const heroBadge = getHeroBadge(heroPlace)
+  const dogLabel = dogNamesLabel(state.dogs)
 
   return (
     <>
@@ -37,8 +38,16 @@ export function HomeScreen({
               {dog.initial}
             </div>
           ))}
-          <span className="dog-names">{dogNamesLabel(state.dogs)}</span>
+          <span className="dog-names">{dogLabel}</span>
         </button>
+      </div>
+
+      <div className="home-intro detail-tint detail-tint--warm">
+        <div className="home-intro-kicker">Today with {dogLabel}</div>
+        <h1 className="home-intro-title">What kind of day are we giving them?</h1>
+        <p className="home-intro-sub">
+          Pick a vibe. We&apos;ll find somewhere worth getting out.
+        </p>
       </div>
 
       <div className="streak-bar">
@@ -46,10 +55,19 @@ export function HomeScreen({
           <div className="snum">{state.streak}</div>
           <div className="slabel">day streak</div>
         </div>
-        <div className="snudge">Walk them today</div>
+        <div className="snudge">Small adventures count — keep it going</div>
       </div>
 
-      <div className="sec">What are we doing today?</div>
+      <div className="home-pack detail-card-warm">
+        <div className="home-pack-top">
+          <div className="live-dot" />
+          <div className="home-pack-label">{state.communityLive.label}</div>
+        </div>
+        <div className="home-pack-count">{state.communityLive.count}</div>
+        <div className="home-pack-sub">{state.communityLive.subtitle}</div>
+      </div>
+
+      <div className="sec">Start with a vibe</div>
 
       <div className="chips">
         {state.activities.map((activity) => (
@@ -74,11 +92,15 @@ export function HomeScreen({
         />
         <div className="hc-top">
           <div>
+            <div className="hc-eyebrow">Today&apos;s pick</div>
             <div className="hc-title">{heroPlace.name}</div>
             <div className="hc-sub">{formatHeroSubtitle(heroPlace)}</div>
+            <div className="hc-magic">{getMagicLine(heroPlace)}</div>
           </div>
           {heroBadge ? <div className="hc-badge">{heroBadge}</div> : null}
         </div>
+        <div className="hc-why">{heroPlace.whyDogsLoveIt}</div>
+        <div className="hc-start-label">Start adventure</div>
         <div className="qbtns">
           {state.durations.map((duration) => (
             <button
@@ -93,14 +115,15 @@ export function HomeScreen({
         </div>
       </div>
 
-      <div className="sec">Recent adventures</div>
+      <div className="sec">Worth remembering</div>
+      <p className="home-memories-sub">Recent outings — the small days that stick.</p>
 
       <div className="mstrip">
         {state.recentAdventures.map((adventure) => {
           const place = getPlaceById(adventure.placeId)
 
           return (
-            <div key={adventure.title} className="mthumb">
+            <div key={adventure.title} className="mthumb mthumb--warm">
               {place ? (
                 <CardImage
                   className="mthumb-img"
@@ -114,6 +137,9 @@ export function HomeScreen({
                 <div className="mttag">
                   {place ? getMagicLine(place) : adventure.tag}
                 </div>
+                {adventure.memoryLine ? (
+                  <div className="mtmemory">{adventure.memoryLine}</div>
+                ) : null}
               </div>
             </div>
           )

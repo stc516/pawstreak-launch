@@ -24,6 +24,7 @@ export interface RecentAdventure {
   placeId: string
   title: string
   tag: string
+  memoryLine?: string
 }
 
 export interface PlanCategory {
@@ -144,6 +145,7 @@ export interface AppState {
   selectedChallengeId: string | null
   selectedAchievementId: string | null
   showCommunityCompose: boolean
+  memorySaveToast: string | null
   curatedPlanFlowStep: number
   curatedPlanDraft: CuratedPlanDraft
   curatedPlanResult: CuratedPlanResult | null
@@ -206,6 +208,7 @@ export const defaultAppState: AppState = {
   selectedChallengeId: null,
   selectedAchievementId: null,
   showCommunityCompose: false,
+  memorySaveToast: null,
   curatedPlanFlowStep: 0,
   curatedPlanDraft: EMPTY_CURATED_PLAN_DRAFT,
   curatedPlanResult: null,
@@ -248,9 +251,24 @@ export const defaultAppState: AppState = {
     { id: 'brewery', emoji: '🍺', label: 'Brewery' },
   ],
   recentAdventures: [
-    { placeId: 'torrey-pines', title: 'Torrey Pines State Reserve', tag: 'Trail · Tue' },
-    { placeId: 'lestats-coffee', title: "Lestat's Coffee House", tag: 'Coffee · Mon' },
-    { placeId: 'balboa-park', title: 'Balboa Park', tag: 'Park · Sun' },
+    {
+      placeId: 'torrey-pines',
+      title: 'Torrey Pines State Reserve',
+      tag: 'Trail · Tue',
+      memoryLine: 'Omi set the pace on the ridge.',
+    },
+    {
+      placeId: 'lestats-coffee',
+      title: "Lestat's Coffee House",
+      tag: 'Coffee · Mon',
+      memoryLine: 'One of those small days that becomes a favorite.',
+    },
+    {
+      placeId: 'balboa-park',
+      title: 'Balboa Park',
+      tag: 'Park · Sun',
+      memoryLine: 'Bailey kept pulling toward the fountain.',
+    },
   ],
   mapRegion: {
     title: 'San Diego + OC spots',

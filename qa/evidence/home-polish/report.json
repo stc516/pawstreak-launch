@@ -1,0 +1,128 @@
+{
+  "target": "local",
+  "baseUrl": "http://localhost:5173",
+  "commit": "5303a6e",
+  "testedAt": "2026-05-22T00:46:47.013Z",
+  "overallPass": true,
+  "errorMessage": null,
+  "videoPath": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/home-polish/video/abee270ea07af896742e4ea08184beaa.webm",
+  "evidenceDir": "qa/evidence/home-polish",
+  "results": [
+    {
+      "flow": "1-onboarding",
+      "pass": true,
+      "message": "Home screen section visible after onboarding",
+      "selector": ".sec"
+    },
+    {
+      "flow": "2-home-chips",
+      "pass": true,
+      "message": "Hero changed from \"Dog Beach, Ocean Beach\" to \"Better Buzz Coffee — Hillcrest\""
+    },
+    {
+      "flow": "2-home-ready",
+      "pass": true,
+      "message": "Adventure Ready screen visible after 15 min",
+      "selector": ".adv-ready-place"
+    },
+    {
+      "flow": "2-home-timer-zero",
+      "pass": true,
+      "message": "Timer starts at 0:00 (got \"0:00 / 15 min\")"
+    },
+    {
+      "flow": "2-home-15min",
+      "pass": true,
+      "message": "Active Adventure timer visible after Start adventure",
+      "selector": ".clk-time"
+    },
+    {
+      "flow": "2-home-reset",
+      "pass": true,
+      "message": "Returned to shell after Finish",
+      "selector": ".alogo"
+    },
+    {
+      "flow": "3-plan-filter",
+      "pass": true,
+      "message": "Plan Beach filter active (4 all -> 7 beach)"
+    },
+    {
+      "flow": "3-plan-ready",
+      "pass": true,
+      "message": "Adventure Ready screen visible after Go",
+      "selector": ".adv-ready-place"
+    },
+    {
+      "flow": "3-plan-go",
+      "pass": true,
+      "message": "Active Adventure opened for \"Dog Beach, Ocean Beach\" (header: \"Dog Beach, Ocean Beach\")"
+    },
+    {
+      "flow": "4-curated-open",
+      "pass": true,
+      "message": "Curated Plan overlay opened",
+      "selector": ".curated-step-title"
+    },
+    {
+      "flow": "4-curated-result",
+      "pass": true,
+      "message": "Curated result screen visible",
+      "selector": ".curated-result-title"
+    },
+    {
+      "flow": "4-curated-save",
+      "pass": true,
+      "message": "Saved curated plan summary visible on Plan screen"
+    },
+    {
+      "flow": "5-journey-memory",
+      "pass": true,
+      "message": "Journey Memory overlay opened",
+      "selector": ".memory-place"
+    },
+    {
+      "flow": "5-journey-back",
+      "pass": true,
+      "message": "Returned to Journey list after Back"
+    },
+    {
+      "flow": "6-challenge-detail",
+      "pass": true,
+      "message": "Challenge Detail overlay opened",
+      "selector": ".chdetail-title"
+    },
+    {
+      "flow": "6-challenge-back",
+      "pass": true,
+      "message": "Returned to Milestones after Back"
+    },
+    {
+      "flow": "6-achievement-detail",
+      "pass": true,
+      "message": "Achievement Detail overlay opened",
+      "selector": ".achdetail-title"
+    },
+    {
+      "flow": "7-capture-input",
+      "pass": true,
+      "message": "Hidden file input present for Capture a moment"
+    },
+    {
+      "flow": "7-capture-preview",
+      "pass": true,
+      "message": "Captured photo preview rendered"
+    },
+    {
+      "flow": "7-finish-journey",
+      "pass": true,
+      "message": "Journey tab visible after Finish",
+      "selector": ".sec"
+    },
+    {
+      "flow": "7-finish-entry",
+      "pass": true,
+      "message": "New Today journey entry created after Finish"
+    }
+  ]
+}
