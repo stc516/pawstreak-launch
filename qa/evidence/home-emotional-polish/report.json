@@ -1,0 +1,60 @@
+{
+  "commit": "343fae91ba4813a0b63a53711433e447b60f9de9",
+  "testedAt": "2026-05-22T02:24:13.184Z",
+  "overallPass": true,
+  "errorMessage": null,
+  "evidenceDir": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/home-emotional-polish",
+  "videoPath": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/home-emotional-polish/video/run.webm",
+  "results": [
+    {
+      "flow": "demo-home-headline",
+      "pass": true,
+      "message": "Demo Home headline uses Bailey + Omi (\"What kind of day are we giving Bailey + Omi?\")"
+    },
+    {
+      "flow": "demo-home-curate",
+      "pass": true,
+      "message": "Demo hero curated line present (\"Popular with the pack right now.\")"
+    },
+    {
+      "flow": "demo-chip-change",
+      "pass": true,
+      "message": "Demo activity chip changes hero (\"Dog Beach, Ocean Beach\" -> \"Better Buzz Coffee — Hillcrest\")"
+    },
+    {
+      "flow": "demo-adventure-ready",
+      "pass": true,
+      "message": "Demo duration opens Adventure Ready screen"
+    },
+    {
+      "flow": "taco-home-headline",
+      "pass": true,
+      "message": "Taco Home headline uses Taco (\"What kind of day are we giving Taco?\")"
+    },
+    {
+      "flow": "taco-no-ghosts",
+      "pass": true,
+      "message": "Taco Home has no Bailey/Omi ghost names"
+    },
+    {
+      "flow": "taco-chip-change",
+      "pass": true,
+      "message": "Taco activity chip changes hero (\"Torrey Pines State Reserve\" -> \"Better Buzz Coffee — Hillcrest\")"
+    },
+    {
+      "flow": "taco-adventure-ready",
+      "pass": true,
+      "message": "Taco Adventure Ready uses Taco (\"DogsTaco\")"
+    },
+    {
+      "flow": "dog-pill-profile",
+      "pass": true,
+      "message": "Dog pill opens Profile with Taco"
+    },
+    {
+      "flow": "bottom-nav-plan",
+      "pass": true,
+      "message": "Bottom nav still works after Home polish"
+    }
+  ]
+}

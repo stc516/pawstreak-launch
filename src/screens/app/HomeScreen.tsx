@@ -1,5 +1,15 @@
 import type { AppState } from '../../data/demo'
 import { getDisplayDogLabel, getProfileDogs } from '../../lib/profileDisplay'
+import {
+  getHeroCuratedLabel,
+  getHeroEyebrow,
+  getHeroFitLine,
+  getHomeHeadline,
+  getHomeIntroSub,
+  getHomeKicker,
+  getMemoryWarmLabel,
+  getPackEnergyNote,
+} from '../../lib/homeCopy'
 import { CardImage } from '../../components/CardImage'
 import {
   formatHeroSubtitle,
@@ -27,6 +37,7 @@ export function HomeScreen({
   const heroBadge = getHeroBadge(heroPlace)
   const profileDogs = getProfileDogs(state)
   const dogLabel = getDisplayDogLabel(state)
+  const dogCount = profileDogs.length
 
   return (
     <>
@@ -45,11 +56,9 @@ export function HomeScreen({
       </div>
 
       <div className="home-intro detail-tint detail-tint--warm">
-        <div className="home-intro-kicker">Today with {dogLabel}</div>
-        <h1 className="home-intro-title">What kind of day are we giving them?</h1>
-        <p className="home-intro-sub">
-          Pick a vibe. We&apos;ll find somewhere worth getting out.
-        </p>
+        <div className="home-intro-kicker">{getHomeKicker(dogLabel, dogCount)}</div>
+        <h1 className="home-intro-title">{getHomeHeadline(dogLabel, dogCount)}</h1>
+        <p className="home-intro-sub">{getHomeIntroSub()}</p>
       </div>
 
       <div className="streak-bar">
@@ -67,6 +76,9 @@ export function HomeScreen({
         </div>
         <div className="home-pack-count">{state.communityLive.count}</div>
         <div className="home-pack-sub">{state.communityLive.subtitle}</div>
+        <div className="home-pack-note">
+          {getPackEnergyNote(state.locationLabel)}
+        </div>
       </div>
 
       {!state.locationSupported ? (
@@ -76,7 +88,7 @@ export function HomeScreen({
         </div>
       ) : null}
 
-      <div className="sec">Start with a vibe</div>
+      <div className="sec">Pick today&apos;s vibe</div>
 
       <div className="chips">
         {state.activities.map((activity) => (
@@ -101,15 +113,16 @@ export function HomeScreen({
         />
         <div className="hc-top">
           <div>
-            <div className="hc-eyebrow">Today&apos;s pick</div>
+            <div className="hc-curate">{getHeroCuratedLabel(heroPlace, profileDogs)}</div>
+            <div className="hc-eyebrow">{getHeroEyebrow(dogLabel, dogCount)}</div>
             <div className="hc-title">{heroPlace.name}</div>
             <div className="hc-sub">{formatHeroSubtitle(heroPlace, profileDogs)}</div>
             <div className="hc-magic">{getMagicLine(heroPlace)}</div>
           </div>
           {heroBadge ? <div className="hc-badge">{heroBadge}</div> : null}
         </div>
-        <div className="hc-why">{heroPlace.whyDogsLoveIt}</div>
-        <div className="hc-start-label">Start adventure</div>
+        <div className="hc-why">{getHeroFitLine(heroPlace, profileDogs)}</div>
+        <div className="hc-start-label">Pick a duration · start adventure</div>
         <div className="qbtns">
           {state.durations.map((duration) => (
             <button
@@ -125,10 +138,10 @@ export function HomeScreen({
       </div>
 
       <div className="sec">Worth remembering</div>
-      <p className="home-memories-sub">Recent outings — the small days that stick.</p>
+      <p className="home-memories-sub">Last good days out — small moments that stick.</p>
 
       <div className="mstrip">
-        {state.recentAdventures.map((adventure) => {
+        {state.recentAdventures.map((adventure, index) => {
           const place = getPlaceById(adventure.placeId)
 
           return (
@@ -142,10 +155,9 @@ export function HomeScreen({
                 />
               ) : null}
               <div className="mthumb-text">
+                <div className="mtwarm">{getMemoryWarmLabel(index)}</div>
                 <div className="mtlbl">{adventure.title}</div>
-                <div className="mttag">
-                  {place ? getMagicLine(place) : adventure.tag}
-                </div>
+                <div className="mttag">{place ? getMagicLine(place) : adventure.tag}</div>
                 {adventure.memoryLine ? (
                   <div className="mtmemory">{adventure.memoryLine}</div>
                 ) : null}
@@ -153,21 +165,6 @@ export function HomeScreen({
             </div>
           )
         })}
-      </div>
-
-      <div className="stats3">
-        <div className="sc">
-          <div className="sn">{state.streak}</div>
-          <div className="sl">day streak</div>
-        </div>
-        <div className="sc">
-          <div className="sn">{state.adventureCount}</div>
-          <div className="sl">adventures</div>
-        </div>
-        <div className="sc">
-          <div className="sn">{state.placeCount}</div>
-          <div className="sl">places</div>
-        </div>
       </div>
     </>
   )
