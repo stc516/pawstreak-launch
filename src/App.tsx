@@ -6,7 +6,11 @@ import {
   createJourneyEntryFromPlace,
   getPlaceById,
 } from './data/places'
-import { loadAppState, saveAppState, getAppModeFromPath } from './lib/storage'
+import { loadAppState, saveAppState, clearDemoState, saveSeededDemoState, saveDemoOnboardingState } from './lib/storage'
+import { getDemoRoute, navigateTo } from './lib/demoRoute'
+import { usePathname } from './lib/usePathname'
+import { DemoLauncher } from './screens/demo/DemoLauncher'
+import type { DemoRoute } from './lib/demoRoute'
 import { shouldPersonalizeContent } from './lib/profileDisplay'
 import { fillPhotoSlots } from './lib/imageUtils'
 import { AppShell } from './components/AppShell'
@@ -40,10 +44,10 @@ import {
   roleLabelForInvite,
 } from './data/packAccess'
 
-function App() {
-  const appMode = getAppModeFromPath()
-  const isDemoMode = appMode === 'demo'
-  const [state, setState] = useState<AppState>(() => loadAppState(appMode))
+function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
+  const appMode = demoRoute !== null ? 'demo' : 'app'
+  const isDemoMode = appMode === 'demo' && demoRoute === 'app'
+  const [state, setState] = useState<AppState>(() => loadAppState(appMode, demoRoute))
 
   useEffect(() => {
     saveAppState(state, appMode)
@@ -506,10 +510,19 @@ function App() {
   }
 
   const completeOnboarding = (result: OnboardingResult) => {
-    setState((current) => ({
-      ...current,
-      ...applyOnboardingToAppState(current, result),
-    }))
+    setState((current) => {
+      const nextState: AppState = {
+        ...current,
+        ...applyOnboardingToAppState(current, result),
+        demoEntry: appMode === 'demo' ? 'onboarding' : current.demoEntry,
+        mode: appMode,
+      }
+      saveAppState(nextState, appMode)
+      return nextState
+    })
+    if (appMode === 'demo') {
+      navigateTo('/demo/app')
+    }
   }
 
   const clearMemorySaveToast = () => {
@@ -753,6 +766,32 @@ function App() {
       ) : null}
     </AppShell>
   )
+}
+
+function App() {
+  const pathname = usePathname()
+  const demoRoute = getDemoRoute(pathname)
+
+  if (demoRoute === 'launcher') {
+    return (
+      <DemoLauncher
+        onOpenFullDemo={() => {
+          saveSeededDemoState()
+          navigateTo('/demo/app')
+        }}
+        onTryOnboarding={() => {
+          saveDemoOnboardingState()
+          navigateTo('/demo/onboarding')
+        }}
+        onResetDemo={() => {
+          clearDemoState()
+          navigateTo('/demo')
+        }}
+      />
+    )
+  }
+
+  return <AppExperience key={pathname} demoRoute={demoRoute} />
 }
 
 export default App

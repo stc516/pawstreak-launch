@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Demo Onboarding Launcher QA</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 24px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 16px; }
+    th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; }
+    tr.pass td:nth-child(2) { color: #0a7a32; font-weight: 600; }
+    tr.fail td:nth-child(2) { color: #b42318; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>Demo Onboarding Launcher QA</h1>
+  <p><strong>Commit:</strong> 971b18de322031995cb29e56ebe8aed42f853616</p>
+  <p><strong>Overall:</strong> PASS</p>
+  <table>
+    <thead><tr><th>Flow</th><th>Result</th><th>Message</th></tr></thead>
+    <tbody><tr class="pass"><td>demo-launcher</td><td>PASS</td><td>/demo shows launcher screen</td></tr>
+<tr class="pass"><td>full-demo-home</td><td>PASS</td><td>Open full demo loads Bailey + Omi app</td></tr>
+<tr class="pass"><td>demo-onboarding-start</td><td>PASS</td><td>Try onboarding opens demo onboarding flow</td></tr>
+<tr class="pass"><td>demo-taco-home</td><td>PASS</td><td>Demo app uses Taco ("What kind of day are we giving Taco?")</td></tr>
+<tr class="pass"><td>demo-feedback-visible</td><td>PASS</td><td>Feedback button visible in demo app</td></tr>
+<tr class="pass"><td>reset-demo</td><td>PASS</td><td>Reset demo clears demo state and returns to launcher</td></tr>
+<tr class="pass"><td>normal-root-onboarding</td><td>PASS</td><td>Normal / onboarding unaffected</td></tr>
+<tr class="pass"><td>normal-state-separate</td><td>PASS</td><td>Normal app state remains in pawstreak:app</td></tr></tbody>
+  </table>
+</body>
+</html>

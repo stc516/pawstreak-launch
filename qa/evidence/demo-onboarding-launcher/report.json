@@ -1,0 +1,50 @@
+{
+  "commit": "971b18de322031995cb29e56ebe8aed42f853616",
+  "testedAt": "2026-05-22T05:19:46.058Z",
+  "overallPass": true,
+  "results": [
+    {
+      "flow": "demo-launcher",
+      "pass": true,
+      "message": "/demo shows launcher screen"
+    },
+    {
+      "flow": "full-demo-home",
+      "pass": true,
+      "message": "Open full demo loads Bailey + Omi app"
+    },
+    {
+      "flow": "demo-onboarding-start",
+      "pass": true,
+      "message": "Try onboarding opens demo onboarding flow"
+    },
+    {
+      "flow": "demo-taco-home",
+      "pass": true,
+      "message": "Demo app uses Taco (\"What kind of day are we giving Taco?\")"
+    },
+    {
+      "flow": "demo-feedback-visible",
+      "pass": true,
+      "message": "Feedback button visible in demo app"
+    },
+    {
+      "flow": "reset-demo",
+      "pass": true,
+      "message": "Reset demo clears demo state and returns to launcher"
+    },
+    {
+      "flow": "normal-root-onboarding",
+      "pass": true,
+      "message": "Normal / onboarding unaffected"
+    },
+    {
+      "flow": "normal-state-separate",
+      "pass": true,
+      "message": "Normal app state remains in pawstreak:app"
+    }
+  ],
+  "evidenceDir": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/demo-onboarding-launcher",
+  "videoPath": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/demo-onboarding-launcher/video/run.webm",
+  "error": null
+}

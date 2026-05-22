@@ -6140,3 +6140,72 @@ select.field-input {
   font-weight: 400;
   color: var(--color-text-tertiary);
 }
+
+/* Demo launcher */
+
+.demo-launcher {
+  padding-top: 8px;
+}
+
+.demo-launcher-hero {
+  margin-bottom: 16px;
+}
+
+.demo-launcher-kicker {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+  margin-bottom: 6px;
+}
+
+.demo-launcher-title {
+  font-family: Literata, Georgia, serif;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #1c1410;
+  margin: 0 0 8px;
+}
+
+.demo-launcher-sub {
+  font-size: 13px;
+  line-height: 1.45;
+  color: #5c3d2e;
+  margin: 0;
+}
+
+.demo-launcher-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.demo-launcher-btn {
+  width: 100%;
+  padding: 13px 14px;
+  border-radius: 12px;
+  border: 0.5px solid var(--accent-border);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.demo-launcher-btn--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.demo-launcher-reset {
+  display: block;
+  margin: 0 auto;
+  padding: 6px 4px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-app-text-subtle);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

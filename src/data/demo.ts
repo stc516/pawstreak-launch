@@ -147,9 +147,11 @@ export interface FavoritePlace {
 }
 
 export type AppMode = 'app' | 'demo'
+export type DemoEntry = 'seeded' | 'onboarding'
 
 export interface AppState {
   mode?: AppMode
+  demoEntry?: DemoEntry
   onboardingComplete: boolean
   activeTab: TabId
   activeAdventure: ActiveAdventure | null
@@ -566,9 +568,34 @@ export function createSeededDemoState(): AppState {
   return {
     ...defaultAppState,
     mode: 'demo',
+    demoEntry: 'seeded',
     onboardingComplete: true,
     activeTab: 'home',
     hasUserDogProfile: false,
+  }
+}
+
+export function createDemoOnboardingState(): AppState {
+  return {
+    ...defaultAppState,
+    mode: 'demo',
+    demoEntry: 'onboarding',
+    onboardingComplete: false,
+    activeTab: 'home',
+    hasUserDogProfile: false,
+    dogs: [],
+    streak: 0,
+    adventureCount: 0,
+    placeCount: 0,
+    journeyEntries: [],
+    activeAdventure: null,
+    userName: '',
+    dogVibeNames: [],
+    onboardingCategoryIds: [],
+    zipCode: '',
+    locationQuery: '',
+    locationLabel: 'San Diego, CA',
+    locationSupported: true,
   }
 }
 

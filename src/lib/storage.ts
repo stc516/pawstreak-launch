@@ -1,4 +1,5 @@
 import {
+  createDemoOnboardingState,
   createSeededDemoState,
   defaultAppState,
   type ActiveAdventure,
@@ -11,6 +12,7 @@ import { EMPTY_CURATED_PLAN_DRAFT, type LegacyCuratedPlanDraft } from '../lib/cu
 import { DEFAULT_PACK_ACCESS_MEMBERS } from '../data/packAccess'
 import { isDefaultDemoDogs } from './dogLabels'
 import { personalizeAppContentForDogs } from './personalizeContent'
+import type { DemoRoute } from './demoRoute'
 
 const APP_STORAGE_KEY = 'pawstreak:app'
 const DEMO_STORAGE_KEY = 'pawstreak:demo'
@@ -118,33 +120,77 @@ function normalizeAppState(state: AppState, mode: AppMode): AppState {
   if (mode === 'demo') {
     normalized = {
       ...normalized,
-      onboardingComplete: true,
-      hasUserDogProfile: false,
+      mode: 'demo',
     }
+
+    if (
+      normalized.onboardingComplete &&
+      normalized.demoEntry === 'onboarding' &&
+      normalized.hasUserDogProfile &&
+      !isDefaultDemoDogs(normalized.dogs)
+    ) {
+      normalized = {
+        ...normalized,
+        ...personalizeAppContentForDogs(normalized, normalized.dogs),
+      }
+    }
+
+    return normalized
   }
 
   return normalized
 }
 
-export function loadAppState(mode: AppMode = getAppModeFromPath()): AppState {
+function demoBaseState(state: AppState, demoRoute?: DemoRoute | null): AppState {
+  if (state.demoEntry === 'onboarding') {
+    if (state.onboardingComplete) {
+      return { ...defaultAppState, mode: 'demo', demoEntry: 'onboarding' }
+    }
+    return createDemoOnboardingState()
+  }
+
+  if (demoRoute === 'onboarding') {
+    return createDemoOnboardingState()
+  }
+
+  return createSeededDemoState()
+}
+
+export function clearDemoState(): void {
+  localStorage.removeItem(DEMO_STORAGE_KEY)
+}
+
+export function saveSeededDemoState(): void {
+  saveAppState(createSeededDemoState(), 'demo')
+}
+
+export function saveDemoOnboardingState(): void {
+  saveAppState(createDemoOnboardingState(), 'demo')
+}
+
+export function loadAppState(
+  mode: AppMode = getAppModeFromPath(),
+  demoRoute?: DemoRoute | null,
+): AppState {
   const key = getStorageKey(mode)
 
   if (mode === 'demo') {
     try {
       const raw = localStorage.getItem(key)
-      if (!raw) {
-        return normalizeAppState(createSeededDemoState(), mode)
+      if (raw) {
+        const parsed = JSON.parse(raw) as AppState
+        const base = demoBaseState(parsed, demoRoute)
+        return normalizeAppState({ ...base, ...parsed, mode: 'demo' }, mode)
       }
-      return normalizeAppState(
-        {
-          ...createSeededDemoState(),
-          ...JSON.parse(raw),
-        } as AppState,
-        mode,
-      )
     } catch {
-      return normalizeAppState(createSeededDemoState(), mode)
+      // fall through to route defaults
     }
+
+    if (demoRoute === 'onboarding') {
+      return normalizeAppState(createDemoOnboardingState(), mode)
+    }
+
+    return normalizeAppState(createSeededDemoState(), mode)
   }
 
   try {
