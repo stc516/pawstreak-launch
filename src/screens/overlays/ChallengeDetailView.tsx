@@ -94,6 +94,7 @@ export function ChallengeDetailView({
           </div>
 
           <div className="sec">Challenge stats</div>
+          <div className="detail-card-warm">
           <div className="chdetail-stats">
             {detail.stats.map((stat) => (
               <div key={stat.label} className="chdetail-stat">
@@ -102,8 +103,10 @@ export function ChallengeDetailView({
               </div>
             ))}
           </div>
+          </div>
 
           <div className="sec">Memories from this challenge</div>
+          <div className="detail-card-warm">
           <div className="memory-photos chdetail-memories">
             {detail.memoryThumbnails.map((url) => (
               <div key={url} className="memory-photo">
@@ -111,8 +114,10 @@ export function ChallengeDetailView({
               </div>
             ))}
           </div>
+          </div>
 
           <div className="sec">Dogs from the pack doing this challenge</div>
+          <div className="detail-card-warm">
           <div className="chdetail-pack">
             {detail.packDogs.map((dog) => (
               <div key={dog.name} className="chdetail-pack-dog">
@@ -123,6 +128,7 @@ export function ChallengeDetailView({
                 </div>
               </div>
             ))}
+          </div>
           </div>
         </main>
       </div>

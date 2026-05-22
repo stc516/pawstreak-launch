@@ -1,0 +1,55 @@
+{
+  "commit": "8b717799dc36e3cfc4abdb4d8ec7c1ee5b68adeb",
+  "testedAt": "2026-05-22T03:33:14.602Z",
+  "overallPass": true,
+  "errorMessage": null,
+  "evidenceDir": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/detail-visual-polish",
+  "videoPath": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/detail-visual-polish/video/run.webm",
+  "results": [
+    {
+      "flow": "journey-memory-detail",
+      "pass": true,
+      "message": "Journey memory detail opens with warm surfaces (6)"
+    },
+    {
+      "flow": "challenge-detail",
+      "pass": true,
+      "message": "Challenge detail opens with warm surfaces (9)"
+    },
+    {
+      "flow": "achievement-detail",
+      "pass": true,
+      "message": "Achievement detail opens with warm surfaces (6)"
+    },
+    {
+      "flow": "curated-plan-step",
+      "pass": true,
+      "message": "Curated plan step shows warm guided header"
+    },
+    {
+      "flow": "curated-plan-result",
+      "pass": true,
+      "message": "Curated plan result shows rich warm blocks (10)"
+    },
+    {
+      "flow": "active-adventure-ready",
+      "pass": true,
+      "message": "Active adventure ready shows styled pre-start state (3)"
+    },
+    {
+      "flow": "active-adventure-live",
+      "pass": true,
+      "message": "Active adventure live screen keeps warm integration (2)"
+    },
+    {
+      "flow": "active-adventure-scroll",
+      "pass": true,
+      "message": "Active adventure scroll still works"
+    },
+    {
+      "flow": "return-to-shell",
+      "pass": true,
+      "message": "Main flow returns to app shell after finishing adventure"
+    }
+  ]
+}

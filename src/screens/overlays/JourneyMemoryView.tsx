@@ -146,7 +146,7 @@ export function JourneyMemoryView({
             ))}
           </div>
 
-          <div className="memory-section">
+          <div className="memory-section detail-card-warm">
             <div className="memory-section-title">Memory gallery</div>
             <div className="memory-gallery">
               {galleryPhotos.map((url, index) => (

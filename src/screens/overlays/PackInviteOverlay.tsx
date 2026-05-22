@@ -51,12 +51,15 @@ export function PackInviteOverlay({ onClose, onSubmit }: PackInviteOverlayProps)
             </button>
           </div>
 
-          <div className="pack-invite-intro">Pack Access</div>
-          <h1 className="pack-invite-title">Invite someone to your pack</h1>
-          <p className="pack-invite-sub">
-            So they never miss the little moments — even from far away.
-          </p>
+          <div className="pack-invite-header detail-tint detail-tint--warm">
+            <div className="pack-invite-intro">Pack Access</div>
+            <h1 className="pack-invite-title">Invite someone to your pack</h1>
+            <p className="pack-invite-sub">
+              So they never miss the little moments — even from far away.
+            </p>
+          </div>
 
+          <div className="pack-invite-form detail-card-warm">
           <label className="pack-invite-field">
             <span className="pack-invite-label">Name</span>
             <input
@@ -101,6 +104,7 @@ export function PackInviteOverlay({ onClose, onSubmit }: PackInviteOverlayProps)
                 )
               })}
             </div>
+          </div>
           </div>
 
           <button

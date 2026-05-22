@@ -70,6 +70,7 @@ export function CommunityComposeOverlay({
             </div>
           </div>
 
+          <div className="comm-compose-memories-wrap detail-card-warm">
           <div className="sec">Choose a memory</div>
           <div className="comm-compose-memories">
             {memoryOptions.map((entry) => {
@@ -93,7 +94,9 @@ export function CommunityComposeOverlay({
               )
             })}
           </div>
+          </div>
 
+          <div className="comm-compose-caption-wrap detail-card-warm">
           <div className="sec">Caption</div>
           <textarea
             className="comm-compose-caption"
@@ -102,6 +105,7 @@ export function CommunityComposeOverlay({
             value={caption}
             onChange={(event) => setCaption(event.target.value)}
           />
+          </div>
 
           <div className="sec">Preview</div>
           <div className="comm-compose-preview detail-card-warm">

@@ -146,8 +146,10 @@ export function CuratedPlanFlow({
 
           {step === 4 && result ? (
             <>
+              <div className="curated-result-hero detail-tint detail-tint--warm">
               <div className="curated-result-badge">Your plan</div>
               <h1 className="curated-result-title">{result.planName}</h1>
+              </div>
               <p className="curated-result-copy detail-quote-block detail-quote-block--compact">
                 <span className="detail-quote-text">{result.emotionalCopy}</span>
               </p>
@@ -168,6 +170,7 @@ export function CuratedPlanFlow({
               </div>
 
               <div className="sec">This week at a glance</div>
+              <div className="detail-card-warm curated-schedule-card">
               <div className="curated-schedule">
                 {result.weeklySchedule.map((item) => (
                   <div key={`${item.day}-${item.focus}`} className="curated-schedule-row">
@@ -178,6 +181,7 @@ export function CuratedPlanFlow({
                     </div>
                   </div>
                 ))}
+              </div>
               </div>
 
               <div className="sec">Recommended first adventure</div>
@@ -195,7 +199,7 @@ export function CuratedPlanFlow({
               </div>
 
               <div className="sec">Training & activity balance</div>
-              <div className="curated-balance">
+              <div className="detail-card-warm curated-balance">
                 {result.balance.map((item) => (
                   <div key={item.id} className="curated-balance-row">
                     <div className="curated-balance-label">{item.label}</div>
@@ -211,6 +215,7 @@ export function CuratedPlanFlow({
               </div>
 
               <div className="sec">Suggested adventure types</div>
+              <div className="detail-card-warm curated-tags-card">
               <div className="curated-tags">
                 {result.adventureTypes.map((type) => (
                   <span key={type} className="rc on curated-tag">
@@ -218,24 +223,30 @@ export function CuratedPlanFlow({
                   </span>
                 ))}
               </div>
+              </div>
 
               <div className="sec">Monthly goals</div>
+              <div className="detail-card-warm curated-goals-card">
               <ul className="curated-goals">
                 {result.monthlyGoals.map((goal) => (
                   <li key={goal}>{goal}</li>
                 ))}
               </ul>
+              </div>
 
               <div className="sec">Recommended spots</div>
+              <div className="detail-card-warm curated-spots-card">
               {result.recommendedSpots.map((spot) => (
                 <div key={spot.name} className="curated-spot">
                   <div className="curated-spot-name">{spot.name}</div>
                   <div className="curated-spot-reason">{spot.reason}</div>
                 </div>
               ))}
+              </div>
             </>
           ) : (
             <>
+              <div className="curated-step-header detail-tint detail-tint--warm">
               <div className="curated-intro">Curated for your dogs</div>
               <h1 className="curated-step-title">
                 {step === 3
@@ -243,6 +254,7 @@ export function CuratedPlanFlow({
                   : STEP_TITLES[step - 1]}
               </h1>
               <p className="curated-step-sub">{getStepSubtitle(step)}</p>
+              </div>
               <p className="curated-step-encourage">{getStepEncouragement(step)}</p>
 
               <div className="curated-options">
