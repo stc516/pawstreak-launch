@@ -1,0 +1,40 @@
+{
+  "commit": "2718b3db1a83b738937a76b7be1409a030d09ae4",
+  "testedAt": "2026-05-22T04:37:03.326Z",
+  "overallPass": true,
+  "results": [
+    {
+      "flow": "home-intro-readable",
+      "pass": true,
+      "message": "Home intro title uses dark readable color (rgb(28, 20, 16))"
+    },
+    {
+      "flow": "plan-options-readable",
+      "pass": true,
+      "message": "Plan options darker text (rgb(28, 20, 16), sub rgb(87, 83, 78))"
+    },
+    {
+      "flow": "feedback-pill-clear",
+      "pass": true,
+      "message": "Feedback pill does not overlap monthly plan cards"
+    },
+    {
+      "flow": "journey-distinct-images",
+      "pass": true,
+      "message": "Journey memories use distinct images (linear-gradient(to top, rgba(0, 0, 0, 0.52) 0%, rgba(0, 0, 0, 0.08) 58%), url(\"http://127.0.0.1:5177/sample-images/beach.jpg\") | linear-gradient(to top, rgba(0, 0, 0, 0.52) 0%, rgba(0, 0, 0, 0.08) 58%), url(\"http://127.0.0.1:5177/sample-images/road-trip.jpg\"))"
+    },
+    {
+      "flow": "achievements-readable",
+      "pass": true,
+      "message": "Achievement done title weight (600)"
+    },
+    {
+      "flow": "taco-onboarding",
+      "pass": true,
+      "message": "Taco onboarding Home readable (\"What kind of day are we giving Taco?\")"
+    }
+  ],
+  "evidenceDir": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/final-readability-polish",
+  "videoPath": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/final-readability-polish/video/run.webm",
+  "error": null
+}

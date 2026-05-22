@@ -389,7 +389,7 @@ export const defaultAppState: AppState = {
       date: 'Today',
       magicLine: 'Popular with the pack right now.',
       tags: ['Beach', 'Off-leash', 'Bailey + Omi', 'Loved it'],
-      photoUrls: ['/sample-images/dogs-outdoors.jpg', '/sample-images/beach.jpg'],
+      photoUrls: ['/sample-images/beach.jpg', '/sample-images/coastal.jpg'],
     },
     {
       id: 'julian-saturday',
@@ -398,7 +398,7 @@ export const defaultAppState: AppState = {
       date: 'Saturday',
       magicLine: 'Big adventure if they need to burn energy.',
       tags: ['Road trip', '62 mi', 'Both dogs', 'New place'],
-      photoUrls: ['/sample-images/dogs-outdoors.jpg', '/sample-images/road-trip.jpg'],
+      photoUrls: ['/sample-images/road-trip.jpg', '/sample-images/mountain.jpg'],
     },
   ],
   communityLive: {

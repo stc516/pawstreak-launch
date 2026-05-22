@@ -237,24 +237,24 @@ textarea {
 }
 
 .app-shell--demo .scroll {
-  padding-bottom: 72px;
+  padding-bottom: 84px;
 }
 
 .demo-feedback-trigger {
   position: absolute;
   right: 12px;
-  bottom: 62px;
+  bottom: 70px;
   left: auto;
   z-index: 4;
   width: auto;
-  padding: 5px 10px;
+  padding: 4px 9px;
   border-radius: 999px;
   border: 0.5px solid var(--accent-border);
-  background: rgba(255, 247, 237, 0.94);
-  box-shadow: 0 1px 8px rgba(154, 52, 18, 0.08);
-  font-size: 10px;
+  background: rgba(255, 247, 237, 0.88);
+  box-shadow: 0 1px 6px rgba(154, 52, 18, 0.07);
+  font-size: 9px;
   font-weight: 600;
-  color: var(--accent-brown);
+  color: #7c2d12;
   text-align: center;
 }
 
@@ -881,15 +881,16 @@ textarea {
 }
 
 .popt {
-  background: white;
-  border: 0.5px solid var(--accent-border);
+  background: rgba(255, 255, 255, 0.97);
+  border: 0.5px solid #fdba74;
   border-radius: 8px;
   padding: 7px 9px;
   display: flex;
   align-items: center;
   gap: 7px;
   font-size: 11px;
-  color: var(--color-text-primary);
+  font-weight: 600;
+  color: #1c1410;
   margin-bottom: 4px;
   width: 100%;
   text-align: left;
@@ -1001,7 +1002,8 @@ textarea {
 
 .popt-sub {
   font-size: 9px;
-  color: var(--color-text-secondary);
+  font-weight: 500;
+  color: #57534e;
 }
 
 .plan-confirm {
@@ -2156,18 +2158,18 @@ textarea {
 }
 
 .ach-item.done {
-  background: #f0fdf4;
-  border-color: #bbf7d0;
+  background: #ecfdf5;
+  border-color: #86efac;
 }
 
 .ach-item.active {
   background: var(--accent-light);
-  border-color: var(--accent-border);
+  border-color: #fb923c;
 }
 
 .ach-item.locked {
-  background: #fafafa;
-  border-color: #e4e4e7;
+  background: #f4f4f5;
+  border-color: #d4d4d8;
 }
 
 .ach-ico {
@@ -2201,15 +2203,17 @@ textarea {
 }
 
 .ach-item.done .ach-title {
-  color: #14532d;
+  color: #052e16;
+  font-weight: 600;
 }
 
 .ach-item.done .ach-sub {
-  color: #166534;
+  color: #14532d;
 }
 
 .ach-item.active .ach-title {
   color: #7c2d12;
+  font-weight: 600;
 }
 
 .ach-item.active .ach-sub {
@@ -2217,11 +2221,12 @@ textarea {
 }
 
 .ach-item.locked .ach-title {
-  color: #27272a;
+  color: #18181b;
+  font-weight: 600;
 }
 
 .ach-item.locked .ach-sub {
-  color: #52525b;
+  color: #3f3f46;
 }
 
 .ach-sub {
@@ -2238,15 +2243,18 @@ textarea {
 }
 
 .ach-badge.done {
-  color: #16a34a;
+  color: #15803d;
+  font-weight: 600;
 }
 
 .ach-badge.active {
   color: var(--accent-deep);
+  font-weight: 600;
 }
 
 .ach-badge.locked {
-  color: var(--color-text-tertiary);
+  color: #71717a;
+  font-weight: 600;
 }
 
 /* Profile */
@@ -4766,10 +4774,10 @@ select.field-input {
 
 .home-intro-kicker {
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--accent-deep);
+  color: #9a3412;
   margin-bottom: 6px;
 }
 
@@ -4778,14 +4786,15 @@ select.field-input {
   font-size: 24px;
   font-weight: 700;
   line-height: 1.2;
-  color: var(--color-text-primary);
+  color: #1c1410;
   margin: 0 0 8px;
 }
 
 .home-intro-sub {
   font-size: 13px;
   line-height: 1.45;
-  color: var(--color-text-secondary);
+  font-weight: 500;
+  color: #5c3d2e;
   margin: 0;
 }
 
@@ -4829,7 +4838,7 @@ select.field-input {
   font-size: 13px;
   font-weight: 600;
   line-height: 1.35;
-  color: rgba(255, 255, 255, 0.96);
+  color: var(--accent-brown);
   margin-bottom: 6px;
 }
 
@@ -4838,21 +4847,21 @@ select.field-input {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--accent-deep);
   margin-bottom: 4px;
 }
 
 .hc-magic {
   font-size: 12px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: #9a3412;
   margin-top: 6px;
 }
 
 .hc-why {
   font-size: 12px;
   line-height: 1.45;
-  color: var(--color-text-secondary);
+  color: #7c2d12;
   padding: 0 14px 10px;
 }
 
@@ -5581,12 +5590,10 @@ select.field-input {
 
 /* Dark app surface — screen backgrounds (Milestones reference) */
 
-.app-shell:not(.app-shell--onboarding) .home-intro-title,
 .app-shell:not(.app-shell--onboarding) .plan-title {
   color: var(--color-app-text);
 }
 
-.app-shell:not(.app-shell--onboarding) .home-intro-sub,
 .app-shell:not(.app-shell--onboarding) .home-pack-label {
   color: var(--color-app-text-muted);
 }
