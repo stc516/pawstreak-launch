@@ -25,6 +25,7 @@ interface HomeScreenProps {
   onSelectActivity: (activityId: string) => void
   onStartAdventure: (placeId: string, durationLabel: string) => void
   onOpenProfile: () => void
+  onOpenJourney: () => void
 }
 
 export function HomeScreen({
@@ -32,6 +33,7 @@ export function HomeScreen({
   onSelectActivity,
   onStartAdventure,
   onOpenProfile,
+  onOpenJourney,
 }: HomeScreenProps) {
   const heroPlace = getHeroPlace(state.selectedActivityId, getRecommendationPrefs(state))
   const heroBadge = getHeroBadge(heroPlace)
@@ -139,34 +141,46 @@ export function HomeScreen({
       </div>
       </div>
 
-      <div className="sec">Worth remembering</div>
-      <p className="home-memories-sub">Last good days out — small moments that stick.</p>
+      <div className="home-memory-value detail-card-warm">
+        <h2 className="home-memory-value-title">
+          Every good day becomes part of their story
+        </h2>
+        <p className="home-memory-value-copy">
+          Save the little moments now — the beach days, slow walks, muddy paws, and
+          places they loved most.
+        </p>
 
-      <div className="mstrip">
-        {state.recentAdventures.map((adventure, index) => {
-          const place = getPlaceById(adventure.placeId)
+        <div className="mstrip home-memory-value-strip">
+          {state.recentAdventures.map((adventure, index) => {
+            const place = getPlaceById(adventure.placeId)
 
-          return (
-            <div key={adventure.title} className="mthumb mthumb--warm">
-              {place ? (
-                <CardImage
-                  className="mthumb-img"
-                  imageUrl={place.imageUrl}
-                  imageAlt={place.imageAlt}
-                  imageTone={place.imageTone}
-                />
-              ) : null}
-              <div className="mthumb-text">
-                <div className="mtwarm">{getMemoryWarmLabel(index)}</div>
-                <div className="mtlbl">{adventure.title}</div>
-                <div className="mttag">{place ? getMagicLine(place) : adventure.tag}</div>
-                {adventure.memoryLine ? (
-                  <div className="mtmemory">{adventure.memoryLine}</div>
+            return (
+              <div key={adventure.title} className="mthumb mthumb--warm">
+                {place ? (
+                  <CardImage
+                    className="mthumb-img"
+                    imageUrl={place.imageUrl}
+                    imageAlt={place.imageAlt}
+                    imageTone={place.imageTone}
+                  />
                 ) : null}
+                <div className="mthumb-text">
+                  <div className="mtwarm">{getMemoryWarmLabel(index)}</div>
+                  <div className="mtlbl">{adventure.title}</div>
+                  <div className="mttag">{place ? getMagicLine(place) : adventure.tag}</div>
+                </div>
               </div>
-            </div>
-          )
-        })}
+            )
+          })}
+        </div>
+
+        <button
+          type="button"
+          className="home-memory-value-cta tap-target"
+          onClick={onOpenJourney}
+        >
+          Open Journey
+        </button>
       </div>
     </>
   )

@@ -168,6 +168,7 @@ export interface AppState {
   randomPlanResult: RandomPlanResult | null
   showPresetPlanOverlay: boolean
   showJourneyMapOverlay: boolean
+  showJourneyLevelOverlay: boolean
   adventurePhotos: string[]
   zipCode: string
   locationQuery: string
@@ -213,6 +214,15 @@ export interface AppState {
     rank: string
     fillWidth: string
     subtitle: string
+    nextRank: string
+    nextUnlock: string
+    favoriteCategory: string
+    beachDays: number
+    recentMoments: {
+      emoji: string
+      title: string
+      subtitle: string
+    }[]
   }
   challenges: Challenge[]
   achievements: Achievement[]
@@ -242,6 +252,7 @@ export const defaultAppState: AppState = {
   randomPlanResult: null,
   showPresetPlanOverlay: false,
   showJourneyMapOverlay: false,
+  showJourneyLevelOverlay: false,
   adventurePhotos: ['', '', ''],
   zipCode: '',
   locationQuery: '',
@@ -444,10 +455,31 @@ export const defaultAppState: AppState = {
     },
   ],
   bondLevel: {
-    label: 'Bond level',
+    label: 'Journey Level',
     rank: 'Trail Scout',
     fillWidth: '62%',
     subtitle: '47 adventures · 22 places · Bailey + Omi',
+    nextRank: 'Local Legend',
+    nextUnlock: '3 more trail adventures to reach Local Legend.',
+    favoriteCategory: 'Beach days',
+    beachDays: 8,
+    recentMoments: [
+      {
+        emoji: '🏖️',
+        title: 'First Beach Day',
+        subtitle: 'Dog Beach, OB · March 12',
+      },
+      {
+        emoji: '🌲',
+        title: 'Trail Scout progress',
+        subtitle: 'Torrey Pines · 6 visits',
+      },
+      {
+        emoji: '🚗',
+        title: 'Julian day trip saved',
+        subtitle: 'New place · both dogs',
+      },
+    ],
   },
   challenges: [
     {

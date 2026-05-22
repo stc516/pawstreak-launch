@@ -18,6 +18,7 @@ import { MilestonesScreen } from './screens/app/MilestonesScreen'
 import { ProfileScreen } from './screens/app/ProfileScreen'
 import { OnboardingFlow } from './screens/onboarding/OnboardingFlow'
 import { JourneyMemoryView } from './screens/overlays/JourneyMemoryView'
+import { JourneyLevelDetailView } from './screens/overlays/JourneyLevelDetailView'
 import { JourneyMapView } from './screens/overlays/JourneyMapView'
 import { ChallengeDetailView } from './screens/overlays/ChallengeDetailView'
 import { CuratedPlanFlow } from './screens/overlays/CuratedPlanFlow'
@@ -102,6 +103,7 @@ function App() {
       selectedAchievementId: null,
       showPresetPlanOverlay: false,
       showJourneyMapOverlay: false,
+      showJourneyLevelOverlay: false,
       showCommunityCompose: false,
     }))
   }
@@ -198,6 +200,22 @@ function App() {
 
   const closeAchievementDetail = () => {
     setState((current) => ({ ...current, selectedAchievementId: null }))
+  }
+
+  const openJourneyLevelDetail = () => {
+    setState((current) => ({
+      ...current,
+      showJourneyLevelOverlay: true,
+      selectedChallengeId: null,
+      selectedAchievementId: null,
+      selectedJourneyEntryId: null,
+      showPresetPlanOverlay: false,
+      showJourneyMapOverlay: false,
+    }))
+  }
+
+  const closeJourneyLevelDetail = () => {
+    setState((current) => ({ ...current, showJourneyLevelOverlay: false }))
   }
 
   const openCuratedPlanFlow = () => {
@@ -579,6 +597,10 @@ function App() {
     )
   }
 
+  if (state.showJourneyLevelOverlay) {
+    return <JourneyLevelDetailView state={state} onBack={closeJourneyLevelDetail} />
+  }
+
   if (state.showJourneyMapOverlay) {
     return (
       <JourneyMapView
@@ -663,6 +685,7 @@ function App() {
             onSelectActivity={setSelectedActivity}
             onStartAdventure={startAdventure}
             onOpenProfile={() => setActiveTab('profile')}
+            onOpenJourney={() => setActiveTab('journey')}
           />
         )
       case 'plan':
@@ -703,6 +726,7 @@ function App() {
             state={state}
             onOpenChallenge={openChallengeDetail}
             onOpenAchievement={openAchievementDetail}
+            onOpenJourneyLevel={openJourneyLevelDetail}
           />
         )
       case 'profile':

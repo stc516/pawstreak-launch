@@ -5,12 +5,14 @@ interface MilestonesScreenProps {
   state: AppState
   onOpenChallenge: (challengeId: string) => void
   onOpenAchievement: (achievementId: string) => void
+  onOpenJourneyLevel: () => void
 }
 
 export function MilestonesScreen({
   state,
   onOpenChallenge,
   onOpenAchievement,
+  onOpenJourneyLevel,
 }: MilestonesScreenProps) {
   return (
     <>
@@ -18,7 +20,11 @@ export function MilestonesScreen({
         <div className="alogo">Milestones</div>
       </div>
 
-      <div className="ms-bond">
+      <button
+        type="button"
+        className="ms-bond ms-bond--tap tap-target detail-card-warm"
+        onClick={onOpenJourneyLevel}
+      >
         <div className="msb-top">
           <div className="msb-label">{state.bondLevel.label}</div>
           <div className="msb-rank">{state.bondLevel.rank}</div>
@@ -30,7 +36,7 @@ export function MilestonesScreen({
           />
         </div>
         <div className="msb-sub">{getDisplayBondSubtitle(state)}</div>
-      </div>
+      </button>
 
       <div className="sec">Active challenges</div>
 

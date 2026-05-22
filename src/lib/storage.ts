@@ -79,6 +79,7 @@ function normalizeAppState(state: AppState, mode: AppMode): AppState {
     randomPlanResult: rest.randomPlanResult ?? null,
     showPresetPlanOverlay: rest.showPresetPlanOverlay ?? false,
     showJourneyMapOverlay: rest.showJourneyMapOverlay ?? false,
+    showJourneyLevelOverlay: rest.showJourneyLevelOverlay ?? false,
     adventurePhotos: normalizePhotoSlots(rest.adventurePhotos),
     activeAdventure: normalizeActiveAdventure(rest.activeAdventure),
     memorySaveToast: rest.memorySaveToast ?? null,

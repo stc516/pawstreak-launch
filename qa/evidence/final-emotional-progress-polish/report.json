@@ -1,0 +1,55 @@
+{
+  "commit": "61708b3948c109b06b2f23a9e4d29b0946ee4a52",
+  "testedAt": "2026-05-22T04:56:43.608Z",
+  "overallPass": true,
+  "results": [
+    {
+      "flow": "lighter-warm-bg",
+      "pass": true,
+      "message": "App shell uses lighter warm charcoal (rgb(37, 32, 25))"
+    },
+    {
+      "flow": "home-memory-value-section",
+      "pass": true,
+      "message": "Home memory/value section shows emotional copy and CTA"
+    },
+    {
+      "flow": "journey-level-renamed",
+      "pass": true,
+      "message": "Progress card renamed (\"Journey Level\")"
+    },
+    {
+      "flow": "progress-detail-opens",
+      "pass": true,
+      "message": "Journey Level detail overlay opens"
+    },
+    {
+      "flow": "progress-detail-back",
+      "pass": true,
+      "message": "Detail overlay back returns to Milestones"
+    },
+    {
+      "flow": "feedback-premium-question",
+      "pass": true,
+      "message": "Feedback overlay includes optional premium value question"
+    },
+    {
+      "flow": "journey-map-still-works",
+      "pass": true,
+      "message": "Journey Map overlay still opens"
+    },
+    {
+      "flow": "main-tabs-work",
+      "pass": true,
+      "message": "Main tabs still navigate"
+    },
+    {
+      "flow": "taco-onboarding",
+      "pass": true,
+      "message": "Taco onboarding still works (\"What kind of day are we giving Taco?\")"
+    }
+  ],
+  "evidenceDir": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/final-emotional-progress-polish",
+  "videoPath": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/final-emotional-progress-polish/video/run.webm",
+  "error": null
+}

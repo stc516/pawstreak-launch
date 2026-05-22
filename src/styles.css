@@ -88,10 +88,10 @@ button:disabled {
   --shell-frame-highlight: rgba(255, 255, 255, 0.05);
   --shell-frame-shadow: 0 32px 64px rgba(0, 0, 0, 0.58), 0 12px 28px rgba(0, 0, 0, 0.38);
 
-  /* Dark app surface (Milestones reference) */
-  --color-app-surface: #1a1816;
-  --color-app-surface-elevated: #242120;
-  --color-app-surface-nav: #141312;
+  /* Dark app surface (warm espresso charcoal) */
+  --color-app-surface: #252019;
+  --color-app-surface-elevated: #2e2824;
+  --color-app-surface-nav: #1e1b18;
   --color-app-text: #f5f2ef;
   --color-app-text-muted: rgba(245, 242, 239, 0.72);
   --color-app-text-subtle: rgba(245, 242, 239, 0.48);
@@ -5908,4 +5908,235 @@ select.field-input {
   line-height: 1.4;
   color: var(--accent-deep);
   text-align: center;
+}
+
+/* Home memory value section */
+
+.home-memory-value {
+  margin-top: 4px;
+  padding: 14px 13px 12px;
+}
+
+.home-memory-value-title {
+  font-family: Literata, Georgia, serif;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #1c1410;
+  margin: 0 0 8px;
+}
+
+.home-memory-value-copy {
+  font-size: 12px;
+  line-height: 1.45;
+  color: #5c3d2e;
+  margin: 0 0 12px;
+}
+
+.home-memory-value-strip {
+  margin-bottom: 12px;
+}
+
+.home-memory-value-cta {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 0.5px solid var(--accent-border);
+  background: rgba(255, 255, 255, 0.92);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-brown);
+}
+
+/* Journey Level progress card + detail */
+
+.ms-bond--tap {
+  display: block;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.jl-detail-hero {
+  margin-bottom: 12px;
+}
+
+.jl-detail-kicker {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+  margin-bottom: 6px;
+}
+
+.jl-detail-title {
+  font-family: Literata, Georgia, serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #1c1410;
+  margin: 0 0 8px;
+}
+
+.jl-detail-copy {
+  font-size: 12px;
+  line-height: 1.45;
+  color: #5c3d2e;
+  margin: 0 0 10px;
+}
+
+.jl-detail-rank-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.jl-detail-rank {
+  display: inline-flex;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 0.5px solid var(--accent-border);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--accent-brown);
+}
+
+.jl-detail-rank-note {
+  font-size: 9px;
+  color: var(--accent-deep);
+}
+
+.jl-detail-bar {
+  background: #ffe4ca;
+  border-radius: 10px;
+  height: 6px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.jl-detail-fill {
+  background: var(--accent);
+  border-radius: 10px;
+  height: 6px;
+}
+
+.jl-detail-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.jl-detail-stat {
+  text-align: center;
+  padding: 10px 8px;
+}
+
+.jl-detail-stat-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--accent-brown);
+}
+
+.jl-detail-stat-label {
+  font-size: 9px;
+  color: var(--accent-deep);
+  margin-top: 2px;
+}
+
+.jl-detail-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding: 11px 12px;
+}
+
+.jl-detail-meta-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.jl-detail-meta-row strong {
+  color: var(--accent-brown);
+  font-weight: 600;
+  text-align: right;
+}
+
+.jl-detail-unlock {
+  margin-bottom: 12px;
+  padding: 12px;
+}
+
+.jl-detail-unlock-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+  margin-bottom: 4px;
+}
+
+.jl-detail-unlock-rank {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent-brown);
+  margin-bottom: 4px;
+}
+
+.jl-detail-unlock-copy {
+  font-size: 11px;
+  line-height: 1.45;
+  color: #5c3d2e;
+  margin: 0;
+}
+
+.jl-detail-moments {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.jl-detail-moment {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+}
+
+.jl-detail-moment-emoji {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.jl-detail-moment-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.jl-detail-moment-sub {
+  font-size: 9px;
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
+
+.jl-detail-motivation {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--accent-deep);
+  font-style: italic;
+  margin: 0;
+}
+
+.demo-feedback-field--optional em {
+  font-style: normal;
+  font-weight: 400;
+  color: var(--color-text-tertiary);
 }

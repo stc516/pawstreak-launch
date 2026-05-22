@@ -176,6 +176,19 @@ export function DemoFeedbackCapture() {
                 />
               </label>
 
+              <label className="demo-feedback-field demo-feedback-field--optional">
+                <span>
+                  If PawStreak helped save your dog&apos;s memories, find better adventures,
+                  and keep family connected, what would make it worth paying for?{' '}
+                  <em>(optional)</em>
+                </span>
+                <textarea
+                  rows={3}
+                  value={draft.premiumValue}
+                  onChange={(event) => updateField('premiumValue', event.target.value)}
+                />
+              </label>
+
               <div className="demo-feedback-actions">
                 <button
                   type="button"

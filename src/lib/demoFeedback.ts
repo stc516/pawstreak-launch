@@ -7,6 +7,7 @@ export interface DemoFeedbackEntry {
   wouldUseWithDog: string
   whatConfused: string
   whatLikedMost: string
+  premiumValue: string
 }
 
 export interface DemoFeedbackDraft {
@@ -14,6 +15,7 @@ export interface DemoFeedbackDraft {
   wouldUseWithDog: string
   whatConfused: string
   whatLikedMost: string
+  premiumValue: string
 }
 
 export const EMPTY_DEMO_FEEDBACK_DRAFT: DemoFeedbackDraft = {
@@ -21,6 +23,7 @@ export const EMPTY_DEMO_FEEDBACK_DRAFT: DemoFeedbackDraft = {
   wouldUseWithDog: '',
   whatConfused: '',
   whatLikedMost: '',
+  premiumValue: '',
 }
 
 function parseStoredFeedback(raw: string | null): DemoFeedbackEntry[] {
