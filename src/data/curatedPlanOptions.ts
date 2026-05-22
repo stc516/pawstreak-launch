@@ -13,6 +13,7 @@ export const CURATED_OPTIMIZE_OPTIONS: CuratedPlanOption[] = [
   { id: 'bonding', label: 'Bonding time', emoji: '❤️' },
   { id: 'weight', label: 'Weight loss', emoji: '🏃' },
   { id: 'puppy', label: 'Puppy exposure', emoji: '🐾' },
+  { id: 'puppy-basics', label: 'Puppy basics', emoji: '🍼' },
   { id: 'weekend', label: 'Weekend adventures', emoji: '🗺️' },
   { id: 'training', label: 'Training consistency', emoji: '📅' },
 ]

@@ -167,6 +167,7 @@ export interface AppState {
   curatedPlanResult: CuratedPlanResult | null
   randomPlanResult: RandomPlanResult | null
   showPresetPlanOverlay: boolean
+  showJourneyMapOverlay: boolean
   adventurePhotos: string[]
   zipCode: string
   locationQuery: string
@@ -240,6 +241,7 @@ export const defaultAppState: AppState = {
   curatedPlanResult: null,
   randomPlanResult: null,
   showPresetPlanOverlay: false,
+  showJourneyMapOverlay: false,
   adventurePhotos: ['', '', ''],
   zipCode: '',
   locationQuery: '',
@@ -314,25 +316,26 @@ export const defaultAppState: AppState = {
     { id: 'dog-park', label: 'Dog park' },
     { id: 'road-trip', label: 'Road trip' },
     { id: 'gardens', label: 'Gardens' },
+    { id: 'training', label: 'Training' },
   ],
   monthlyPlanOptions: [
     {
       id: 'curated',
       icon: 'ti-sparkles',
-      title: 'Curated for your dogs',
-      subtitle: 'Based on what they love most',
+      title: 'Curated plan',
+      subtitle: 'Built around what your dog loves',
     },
     {
       id: 'random',
       icon: 'ti-dice',
-      title: 'Random adventure plan',
-      subtitle: 'Surprise them every time',
+      title: 'Surprise me',
+      subtitle: 'Fresh adventure ideas when you need an easy win',
     },
     {
       id: 'preset',
       icon: 'ti-calendar-event',
-      title: 'Preset plan → sync to calendar',
-      subtitle: 'Get reminders so you never miss a day',
+      title: 'Calendar plan',
+      subtitle: 'Pick days and reminders for your next adventures',
     },
   ],
   moodRecapOptions: [
@@ -363,8 +366,8 @@ export const defaultAppState: AppState = {
   ],
   journeyTitle: "Bailey + Omi's Journey",
   journeyMap: {
-    title: '47 adventures across SD + OC',
-    subtitle: '22 places · Tap any pin to see that day',
+    title: '47 adventures saved',
+    subtitle: '22 places discovered · Tap to open your map',
   },
   journeyFilters: [
     { id: 'all', label: 'All' },

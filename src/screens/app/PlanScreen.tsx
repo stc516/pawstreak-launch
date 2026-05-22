@@ -132,6 +132,10 @@ export function PlanScreen({
           </button>
         ))}
 
+        <p className="plan-calendar-note">
+          Calendar sync is mocked for now. Real reminders come later.
+        </p>
+
         {state.curatedPlanResult &&
         state.selectedMonthlyPlanId === 'curated' ? (
           <div className="plan-saved curated-saved detail-card-warm">

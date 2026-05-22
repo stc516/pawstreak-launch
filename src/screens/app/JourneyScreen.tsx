@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import type { AppState } from '../../data/demo'
 import { getDisplayFlashbackSubtitle, getDisplayJourneyTitle } from '../../lib/profileDisplay'
+import { filterJourneyEntries, getJourneyFilterEmptyMessage } from '../../lib/journeyFilter'
 import { CardImage } from '../../components/CardImage'
 import { getPlaceById } from '../../data/places'
 
@@ -8,6 +9,7 @@ interface JourneyScreenProps {
   state: AppState
   onSelectFilter: (filterId: string) => void
   onOpenMemory: (entryId: string) => void
+  onOpenMap: () => void
   onDismissToast: () => void
 }
 
@@ -15,6 +17,7 @@ export function JourneyScreen({
   state,
   onSelectFilter,
   onOpenMemory,
+  onOpenMap,
   onDismissToast,
 }: JourneyScreenProps) {
   useEffect(() => {
@@ -22,6 +25,12 @@ export function JourneyScreen({
     const timer = window.setTimeout(onDismissToast, 3200)
     return () => window.clearTimeout(timer)
   }, [state.memorySaveToast, onDismissToast])
+
+  const filteredEntries = filterJourneyEntries(
+    state.journeyEntries,
+    state.selectedJourneyFilterId,
+  )
+  const emptyMessage = getJourneyFilterEmptyMessage(state.selectedJourneyFilterId)
 
   return (
     <>
@@ -48,13 +57,13 @@ export function JourneyScreen({
         ))}
       </div>
 
-      <div className="jmap">
+      <button type="button" className="jmap jmap--tap tap-target detail-card-warm" onClick={onOpenMap}>
         <i className="ti ti-map-2" aria-hidden="true" />
         <div className="jmap-title">{state.journeyMap.title}</div>
         <div className="jmap-sub">{state.journeyMap.subtitle}</div>
-      </div>
+      </button>
 
-      <div className="flash">
+      <div className="flash detail-card-warm">
         <div className="flash-ico">✨</div>
         <div>
           <div className="flash-title">{state.flashback.title}</div>
@@ -64,7 +73,11 @@ export function JourneyScreen({
 
       <div className="sec">This week</div>
 
-      {state.journeyEntries.map((entry) => {
+      {filteredEntries.length === 0 && emptyMessage ? (
+        <div className="journey-empty detail-card-warm">{emptyMessage}</div>
+      ) : null}
+
+      {filteredEntries.map((entry) => {
         const place = entry.placeId ? getPlaceById(entry.placeId) : undefined
 
         return (

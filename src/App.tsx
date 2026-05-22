@@ -18,6 +18,7 @@ import { MilestonesScreen } from './screens/app/MilestonesScreen'
 import { ProfileScreen } from './screens/app/ProfileScreen'
 import { OnboardingFlow } from './screens/onboarding/OnboardingFlow'
 import { JourneyMemoryView } from './screens/overlays/JourneyMemoryView'
+import { JourneyMapView } from './screens/overlays/JourneyMapView'
 import { ChallengeDetailView } from './screens/overlays/ChallengeDetailView'
 import { CuratedPlanFlow } from './screens/overlays/CuratedPlanFlow'
 import { AchievementDetailView } from './screens/overlays/AchievementDetailView'
@@ -100,6 +101,7 @@ function App() {
       selectedChallengeId: null,
       selectedAchievementId: null,
       showPresetPlanOverlay: false,
+      showJourneyMapOverlay: false,
       showCommunityCompose: false,
     }))
   }
@@ -117,7 +119,43 @@ function App() {
   }
 
   const setSelectedJourneyFilter = (selectedJourneyFilterId: string) => {
-    setState((current) => ({ ...current, selectedJourneyFilterId }))
+    if (selectedJourneyFilterId === 'map-view') {
+      setState((current) => ({
+        ...current,
+        selectedJourneyFilterId: 'map-view',
+        showJourneyMapOverlay: true,
+        selectedJourneyEntryId: null,
+        selectedChallengeId: null,
+        showPresetPlanOverlay: false,
+      }))
+      return
+    }
+
+    setState((current) => ({
+      ...current,
+      selectedJourneyFilterId,
+      showJourneyMapOverlay: false,
+    }))
+  }
+
+  const openJourneyMap = () => {
+    setState((current) => ({
+      ...current,
+      showJourneyMapOverlay: true,
+      selectedJourneyFilterId: 'map-view',
+      selectedJourneyEntryId: null,
+      selectedChallengeId: null,
+      showPresetPlanOverlay: false,
+    }))
+  }
+
+  const closeJourneyMap = () => {
+    setState((current) => ({
+      ...current,
+      showJourneyMapOverlay: false,
+      selectedJourneyFilterId:
+        current.selectedJourneyFilterId === 'map-view' ? 'all' : current.selectedJourneyFilterId,
+    }))
   }
 
   const openJourneyMemory = (selectedJourneyEntryId: string) => {
@@ -126,6 +164,7 @@ function App() {
       selectedJourneyEntryId,
       selectedChallengeId: null,
       showPresetPlanOverlay: false,
+      showJourneyMapOverlay: false,
     }))
   }
 
@@ -540,6 +579,16 @@ function App() {
     )
   }
 
+  if (state.showJourneyMapOverlay) {
+    return (
+      <JourneyMapView
+        state={state}
+        onBack={closeJourneyMap}
+        onOpenMemory={openJourneyMemory}
+      />
+    )
+  }
+
   if (state.showPresetPlanOverlay) {
     return <PresetPlanOverlay onClose={closePresetPlanOverlay} />
   }
@@ -634,6 +683,7 @@ function App() {
             state={state}
             onSelectFilter={setSelectedJourneyFilter}
             onOpenMemory={openJourneyMemory}
+            onOpenMap={openJourneyMap}
             onDismissToast={clearMemorySaveToast}
           />
         )

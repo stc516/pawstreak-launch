@@ -1,0 +1,75 @@
+{
+  "commit": "2a779c551c0756c6db6a5b4429123c1848b13196",
+  "testedAt": "2026-05-22T04:27:03.958Z",
+  "overallPass": true,
+  "results": [
+    {
+      "flow": "home-dark-bg",
+      "pass": true,
+      "message": "App shell background is dark charcoal (rgb(26, 24, 22))"
+    },
+    {
+      "flow": "plan-dark-bg",
+      "pass": true,
+      "message": "App shell background is dark charcoal (rgb(26, 24, 22))"
+    },
+    {
+      "flow": "journey-dark-bg",
+      "pass": true,
+      "message": "App shell background is dark charcoal (rgb(26, 24, 22))"
+    },
+    {
+      "flow": "journey-filter-beach",
+      "pass": true,
+      "message": "Beach filter shows 1 beach entry"
+    },
+    {
+      "flow": "journey-map-overlay",
+      "pass": true,
+      "message": "Journey map opens with 7 pins"
+    },
+    {
+      "flow": "plan-training-category",
+      "pass": true,
+      "message": "Training category shows 5 activity cards"
+    },
+    {
+      "flow": "calendar-plan-overlay",
+      "pass": true,
+      "message": "Calendar overlay opens with training reminder option"
+    },
+    {
+      "flow": "achievement-readable",
+      "pass": true,
+      "message": "Completed achievement title contrast (rgb(20, 83, 45))"
+    },
+    {
+      "flow": "feedback-pill",
+      "pass": true,
+      "message": "Feedback pill compact label (\"Feedback\")"
+    },
+    {
+      "flow": "community-dark-bg",
+      "pass": true,
+      "message": "App shell background is dark charcoal (rgb(26, 24, 22))"
+    },
+    {
+      "flow": "milestones-dark-bg",
+      "pass": true,
+      "message": "App shell background is dark charcoal (rgb(26, 24, 22))"
+    },
+    {
+      "flow": "onboarding-still-works",
+      "pass": true,
+      "message": "Onboarding entry still loads"
+    },
+    {
+      "flow": "taco-home",
+      "pass": true,
+      "message": "Taco personalization on Home (\"What kind of day are we giving Taco?\")"
+    }
+  ],
+  "evidenceDir": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/background-map-plan-polish",
+  "videoPath": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/background-map-plan-polish/video/run.webm",
+  "error": null
+}
