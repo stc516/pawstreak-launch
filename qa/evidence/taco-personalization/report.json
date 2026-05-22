@@ -1,7 +1,8 @@
 {
-  "commit": "unknown",
-  "testedAt": "2026-05-22T01:26:55.889Z",
+  "commit": "b273103527096d7283995fa375ede2a5f80b02a6",
+  "testedAt": "2026-05-22T01:32:31.399Z",
   "overallPass": true,
+  "errorMessage": null,
   "evidenceDir": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/taco-personalization",
   "videoPath": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/taco-personalization/video/run.webm",
   "results": [
@@ -9,6 +10,11 @@
       "flow": "onboarding-next-enabled",
       "pass": true,
       "message": "Next is enabled after Taco name is filled"
+    },
+    {
+      "flow": "onboarding-dog-name-filled",
+      "pass": true,
+      "message": "Onboarding dog name field shows Taco (got \"Taco\")"
     },
     {
       "flow": "home-taco-label",
@@ -19,6 +25,21 @@
       "flow": "home-no-ghosts",
       "pass": true,
       "message": "Home has no Bailey/Omi ghost names"
+    },
+    {
+      "flow": "active-ready-taco",
+      "pass": true,
+      "message": "Active Adventure ready screen uses Taco (\"DogsTaco\")"
+    },
+    {
+      "flow": "active-state-taco",
+      "pass": true,
+      "message": "Active Adventure state uses Taco (\"TTaco is out\")"
+    },
+    {
+      "flow": "active-no-ghosts",
+      "pass": true,
+      "message": "Active Adventure has no Bailey/Omi ghost names"
     },
     {
       "flow": "plan-taco-label",
@@ -46,9 +67,24 @@
       "message": "Curated Plan step 3 has no Bailey/Omi ghost names"
     },
     {
+      "flow": "curated-result-taco",
+      "pass": true,
+      "message": "Curated result uses Taco (\"Taco · Built for burning energy\")"
+    },
+    {
+      "flow": "curated-result-no-ghosts",
+      "pass": true,
+      "message": "Curated Plan result has no Bailey/Omi ghost names"
+    },
+    {
       "flow": "journey-taco-title",
       "pass": true,
       "message": "Journey title personalized (\"Taco's Journey\")"
+    },
+    {
+      "flow": "journey-flashback-taco",
+      "pass": true,
+      "message": "Journey flashback uses Taco (\"Taco's first visit to Torrey Pines. You've been back 6 times since.\")"
     },
     {
       "flow": "journey-no-ghosts",
@@ -56,14 +92,39 @@
       "message": "Journey has no Bailey/Omi ghost names"
     },
     {
+      "flow": "journey-memory-no-ghosts",
+      "pass": true,
+      "message": "Journey memory detail has no Bailey/Omi ghost names"
+    },
+    {
       "flow": "milestones-taco-bond",
       "pass": true,
-      "message": "Milestones bond subtitle uses Taco (\"47 adventures · 22 places · Taco\")"
+      "message": "Milestones bond subtitle uses Taco (\"48 adventures · 22 places · Taco\")"
     },
     {
       "flow": "milestones-no-ghosts",
       "pass": true,
       "message": "Milestones has no Bailey/Omi ghost names"
+    },
+    {
+      "flow": "challenge-detail-no-ghosts",
+      "pass": true,
+      "message": "Challenge detail has no Bailey/Omi ghost names"
+    },
+    {
+      "flow": "achievement-detail-no-ghosts",
+      "pass": true,
+      "message": "Achievement detail has no Bailey/Omi ghost names"
+    },
+    {
+      "flow": "community-no-ghosts",
+      "pass": true,
+      "message": "Community has no Bailey/Omi ghost names"
+    },
+    {
+      "flow": "pack-access-persisted",
+      "pass": true,
+      "message": "Pack Access members persist in localStorage after onboarding"
     },
     {
       "flow": "profile-taco",

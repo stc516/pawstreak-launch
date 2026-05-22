@@ -2,13 +2,23 @@ import { chromium, devices } from 'playwright'
 import { copyFile, mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { execSync } from 'node:child_process'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const BASE_URL = process.env.QA_BASE_URL || 'http://localhost:5173'
 const OUT_DIR =
   process.env.QA_OUT_DIR || path.join(__dirname, 'evidence', 'taco-personalization')
-const COMMIT = process.env.QA_COMMIT || 'unknown'
 
+function resolveCommit() {
+  if (process.env.QA_COMMIT) return process.env.QA_COMMIT
+  try {
+    return execSync('git rev-parse HEAD', { cwd: path.join(__dirname, '..'), encoding: 'utf8' }).trim()
+  } catch {
+    return 'unknown'
+  }
+}
+
+const COMMIT = resolveCommit()
 const iPhone = devices['iPhone 13']
 const results = []
 
@@ -35,13 +45,28 @@ function hasGhostNames(text) {
 
 async function assertNoGhostNames(page, flow, label) {
   const text = await page.locator('body').innerText()
-  const ghosts = hasGhostNames(text)
-  await record(flow, !ghosts, `${label} has no Bailey/Omi ghost names`)
+  await record(flow, !hasGhostNames(text), `${label} has no Bailey/Omi ghost names`)
 }
 
 async function clickNav(page, label) {
   await page.getByRole('button', { name: label, exact: true }).click()
   await page.waitForTimeout(400)
+}
+
+async function exitCuratedFlow(page) {
+  const done = page.getByRole('button', { name: 'Done', exact: true })
+  if (await done.isVisible().catch(() => false)) {
+    await done.click()
+    await page.waitForTimeout(300)
+    return
+  }
+  for (let i = 0; i < 3; i += 1) {
+    const back = page.getByRole('button', { name: 'Back', exact: true })
+    if (await back.isVisible().catch(() => false)) {
+      await back.click()
+      await page.waitForTimeout(300)
+    }
+  }
 }
 
 async function completeOnboarding(page) {
@@ -63,6 +88,13 @@ async function completeOnboarding(page) {
   const nextEnabled = await page.getByRole('button', { name: /^Next$/ }).isEnabled()
   await record('onboarding-next-enabled', nextEnabled, 'Next is enabled after Taco name is filled')
 
+  const dogNameValue = await page.getByPlaceholder('e.g. Luna').inputValue()
+  await record(
+    'onboarding-dog-name-filled',
+    dogNameValue === 'Taco',
+    `Onboarding dog name field shows Taco (got "${dogNameValue}")`,
+  )
+
   await screenshot(page, '01-onboarding-taco')
 
   await page.getByRole('button', { name: /^Next$/ }).click()
@@ -76,6 +108,46 @@ async function completeOnboarding(page) {
   await page.getByRole('button', { name: /Create our world/i }).click()
   await page.getByRole('button', { name: /Start your first adventure/i }).click()
   await page.waitForTimeout(600)
+}
+
+function buildHtmlReport(report) {
+  const rows = report.results
+    .map(
+      (item) =>
+        `<tr class="${item.pass ? 'pass' : 'fail'}"><td>${item.flow}</td><td>${item.pass ? 'PASS' : 'FAIL'}</td><td>${item.message}</td></tr>`,
+    )
+    .join('\n')
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Taco Personalization QA</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 24px; color: #1a1a1a; }
+    h1 { font-size: 1.25rem; }
+    table { border-collapse: collapse; width: 100%; margin-top: 16px; }
+    th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; vertical-align: top; }
+    th { background: #f5f5f5; }
+    tr.pass td:nth-child(2) { color: #0a7a32; font-weight: 600; }
+    tr.fail td:nth-child(2) { color: #b42318; font-weight: 600; }
+    .meta { margin-top: 12px; line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <h1>Taco Personalization QA</h1>
+  <div class="meta">
+    <div><strong>Commit:</strong> ${report.commit}</div>
+    <div><strong>Tested:</strong> ${report.testedAt}</div>
+    <div><strong>Overall:</strong> ${report.overallPass ? 'PASS' : 'FAIL'}</div>
+    <div><strong>Video:</strong> ${report.videoPath}</div>
+  </div>
+  <table>
+    <thead><tr><th>Flow</th><th>Result</th><th>Message</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>
+</body>
+</html>`
 }
 
 async function main() {
@@ -92,6 +164,9 @@ async function main() {
   })
   const page = await context.newPage()
 
+  let overallPass = true
+  let errorMessage = null
+
   try {
     await completeOnboarding(page)
 
@@ -99,6 +174,34 @@ async function main() {
     await record('home-taco-label', homeIntro.includes('Taco'), `Home intro uses Taco ("${homeIntro}")`)
     await assertNoGhostNames(page, 'home-no-ghosts', 'Home')
     await screenshot(page, '02-home-taco')
+
+    await page.getByRole('button', { name: '15 min', exact: true }).click()
+    await page.waitForTimeout(500)
+    const readyDogs = (await page.locator('.adv-ready-row').filter({ hasText: 'Dogs' }).textContent()) ?? ''
+    await record(
+      'active-ready-taco',
+      readyDogs.includes('Taco') && !hasGhostNames(readyDogs),
+      `Active Adventure ready screen uses Taco ("${readyDogs.trim()}")`,
+    )
+    await page.getByRole('button', { name: 'Start adventure', exact: true }).click()
+    await page.waitForTimeout(500)
+    const activeDogs = (await page.locator('.clk-dogs').textContent())?.trim() || ''
+    await record(
+      'active-state-taco',
+      activeDogs.includes('Taco') && !hasGhostNames(activeDogs),
+      `Active Adventure state uses Taco ("${activeDogs}")`,
+    )
+    await assertNoGhostNames(page, 'active-no-ghosts', 'Active Adventure')
+    await screenshot(page, '09-active-adventure-taco')
+
+    const finish = page.getByRole('button', { name: 'Finish', exact: true })
+    if (await finish.isVisible().catch(() => false)) {
+      await finish.click()
+      await page.waitForTimeout(500)
+    } else {
+      await page.getByRole('button', { name: 'Back', exact: true }).click()
+      await page.waitForTimeout(400)
+    }
 
     await clickNav(page, 'Plan')
     const planCopy = (await page.locator('.plan-title').textContent())?.trim() || ''
@@ -131,13 +234,20 @@ async function main() {
     await assertNoGhostNames(page, 'curated-no-ghosts', 'Curated Plan step 3')
     await screenshot(page, '04-curated-plan-taco')
 
-    for (let i = 0; i < 3; i += 1) {
-      const back = page.getByRole('button', { name: 'Back', exact: true })
-      if (await back.isVisible().catch(() => false)) {
-        await back.click()
-        await page.waitForTimeout(300)
-      }
-    }
+    await page.locator('.curated-option').first().click()
+    await page.waitForTimeout(250)
+    await page.locator('.curated-next-btn').click()
+    await page.waitForTimeout(500)
+
+    const resultTitle = (await page.locator('.curated-result-title').textContent())?.trim() || ''
+    await record(
+      'curated-result-taco',
+      resultTitle.includes('Taco') && !hasGhostNames(resultTitle),
+      `Curated result uses Taco ("${resultTitle}")`,
+    )
+    await assertNoGhostNames(page, 'curated-result-no-ghosts', 'Curated Plan result')
+
+    await exitCuratedFlow(page)
 
     await clickNav(page, 'Journey')
     const journeyTitle = (await page.locator('.alogo').textContent())?.trim() || ''
@@ -146,8 +256,20 @@ async function main() {
       journeyTitle.includes("Taco's Journey"),
       `Journey title personalized ("${journeyTitle}")`,
     )
+    const flashSub = (await page.locator('.flash-sub').textContent())?.trim() || ''
+    await record(
+      'journey-flashback-taco',
+      flashSub.includes('Taco') && !hasGhostNames(flashSub),
+      `Journey flashback uses Taco ("${flashSub}")`,
+    )
     await assertNoGhostNames(page, 'journey-no-ghosts', 'Journey')
     await screenshot(page, '05-journey-taco')
+
+    await page.locator('.mcard').first().click()
+    await page.waitForTimeout(500)
+    await assertNoGhostNames(page, 'journey-memory-no-ghosts', 'Journey memory detail')
+    await page.getByRole('button', { name: 'Back', exact: true }).click()
+    await page.waitForTimeout(400)
 
     await clickNav(page, 'Milestones')
     const bondSub = (await page.locator('.msb-sub').textContent())?.trim() || ''
@@ -159,11 +281,36 @@ async function main() {
     await assertNoGhostNames(page, 'milestones-no-ghosts', 'Milestones')
     await screenshot(page, '06-milestones-taco')
 
+    await page.locator('.challenge').first().click()
+    await page.waitForTimeout(500)
+    await assertNoGhostNames(page, 'challenge-detail-no-ghosts', 'Challenge detail')
+    await page.getByRole('button', { name: 'Back', exact: true }).click()
+    await page.waitForTimeout(400)
+
+    await page.locator('.ach-item').first().click()
+    await page.waitForTimeout(500)
+    await assertNoGhostNames(page, 'achievement-detail-no-ghosts', 'Achievement detail')
+    await page.getByRole('button', { name: 'Back', exact: true }).click()
+    await page.waitForTimeout(400)
+
+    await clickNav(page, 'Community')
+    await assertNoGhostNames(page, 'community-no-ghosts', 'Community')
+    const packAccessPersisted = await page.evaluate(() => {
+      const raw = localStorage.getItem('pawstreak:app')
+      if (!raw) return false
+      const state = JSON.parse(raw)
+      return Array.isArray(state.packAccessMembers) && state.packAccessMembers.length > 0
+    })
+    await record(
+      'pack-access-persisted',
+      packAccessPersisted,
+      'Pack Access members persist in localStorage after onboarding',
+    )
+
     await clickNav(page, 'Home')
     await page.getByRole('button', { name: 'Taco' }).click()
     await page.waitForTimeout(400)
-    const profileHasTaco = await page.getByText('Taco').first().isVisible()
-    await record('profile-taco', profileHasTaco, 'Profile shows Taco')
+    await record('profile-taco', await page.getByText('Taco').first().isVisible(), 'Profile shows Taco')
     await assertNoGhostNames(page, 'profile-no-ghosts', 'Profile')
     await screenshot(page, '07-profile-taco')
 
@@ -171,32 +318,42 @@ async function main() {
     await page.waitForTimeout(300)
     await assertNoGhostNames(page, 'pack-access-no-ghosts', 'Pack Access')
     await screenshot(page, '08-pack-access-taco')
-
-    const report = {
-      commit: COMMIT,
-      testedAt: new Date().toISOString(),
-      overallPass: true,
-      evidenceDir: OUT_DIR,
-      videoPath: path.join(OUT_DIR, 'video', 'run.webm'),
-      results,
-    }
-    await writeFile(path.join(OUT_DIR, 'report.json'), JSON.stringify(report, null, 2))
-    console.log('\n--- TACO PERSONALIZATION QA ---')
-    console.log(JSON.stringify(report, null, 2))
-  } finally {
-    const video = page.video()
-    await page.close()
-    await context.close()
-
-    const videoPath = video ? await video.path() : null
-    if (videoPath) {
-      const runWebm = path.join(OUT_DIR, 'video', 'run.webm')
-      await copyFile(videoPath, runWebm)
-      console.log(`Video saved: ${runWebm}`)
-    }
-
-    await browser.close()
+  } catch (error) {
+    overallPass = false
+    errorMessage = error instanceof Error ? error.message : String(error)
+    await screenshot(page, '99-failure-state').catch(() => {})
+    console.error(errorMessage)
   }
+
+  const video = page.video()
+  await page.close()
+  await context.close()
+
+  const videoPath = video ? await video.path() : null
+  const runWebm = path.join(OUT_DIR, 'video', 'run.webm')
+  if (videoPath) {
+    await copyFile(videoPath, runWebm)
+    console.log(`Video saved: ${runWebm}`)
+  }
+
+  await browser.close()
+
+  const report = {
+    commit: COMMIT,
+    testedAt: new Date().toISOString(),
+    overallPass,
+    errorMessage,
+    evidenceDir: OUT_DIR,
+    videoPath: runWebm,
+    results,
+  }
+
+  await writeFile(path.join(OUT_DIR, 'report.json'), JSON.stringify(report, null, 2))
+  await writeFile(path.join(OUT_DIR, 'report.html'), buildHtmlReport(report))
+
+  console.log('\n--- TACO PERSONALIZATION QA ---')
+  console.log(JSON.stringify(report, null, 2))
+  process.exit(overallPass ? 0 : 1)
 }
 
 main().catch((error) => {

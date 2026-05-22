@@ -3,6 +3,7 @@ import {
   getDogPossessive,
   getPackDisplayName,
   isDefaultDemoDogs,
+  personalizeGhostText,
 } from './dogLabels'
 import { bondSubtitleFor, journeyTitleFor } from './onboardingProfile'
 
@@ -51,6 +52,11 @@ export function getDisplayDogsAreOutLabel(state: AppState): string {
   if (!state.onboardingComplete || state.dogs.length === 0) return 'Your pack is out'
   if (state.dogs.length === 1) return `${state.dogs[0].name} is out`
   return `${getPackDisplayName(state.dogs)} are out`
+}
+
+export function getDisplayFlashbackSubtitle(state: AppState): string {
+  if (!shouldPersonalizeContent(state)) return state.flashback.subtitle
+  return personalizeGhostText(state.flashback.subtitle, state.dogs)
 }
 
 export function shouldPersonalizeContent(state: AppState): boolean {

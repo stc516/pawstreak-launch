@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import type { AppState } from '../../data/demo'
-import { getDisplayJourneyTitle } from '../../lib/profileDisplay'
+import { getDisplayFlashbackSubtitle, getDisplayJourneyTitle } from '../../lib/profileDisplay'
 import { CardImage } from '../../components/CardImage'
 import { getPlaceById } from '../../data/places'
 
@@ -58,7 +58,7 @@ export function JourneyScreen({
         <div className="flash-ico">✨</div>
         <div>
           <div className="flash-title">{state.flashback.title}</div>
-          <div className="flash-sub">{state.flashback.subtitle}</div>
+          <div className="flash-sub">{getDisplayFlashbackSubtitle(state)}</div>
         </div>
       </div>
 
