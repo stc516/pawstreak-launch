@@ -9,8 +9,9 @@ import {
 import { loadAppState, saveAppState, clearDemoState, saveSeededDemoState, saveDemoOnboardingState } from './lib/storage'
 import { getDemoRoute, navigateTo } from './lib/demoRoute'
 import { usePathname } from './lib/usePathname'
-import { isContentStudioRoute } from './lib/internalRoute'
+import { isContentStudioRoute, isFeedbackDashboardRoute } from './lib/internalRoute'
 import { ContentStudio } from './screens/internal/ContentStudio'
+import { FeedbackDashboard } from './screens/internal/FeedbackDashboard'
 import { DemoLauncher } from './screens/demo/DemoLauncher'
 import type { DemoRoute } from './lib/demoRoute'
 import { shouldPersonalizeContent, getDisplayDogLabel } from './lib/profileDisplay'
@@ -806,6 +807,10 @@ function App() {
 
   if (isContentStudioRoute(pathname)) {
     return <ContentStudio />
+  }
+
+  if (isFeedbackDashboardRoute(pathname)) {
+    return <FeedbackDashboard />
   }
 
   if (demoRoute === 'launcher') {

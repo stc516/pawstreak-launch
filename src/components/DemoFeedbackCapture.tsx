@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import {
   EMPTY_DEMO_FEEDBACK_DRAFT,
   exportDemoFeedbackJson,
+  isSupabaseConfigured,
   loadDemoFeedback,
   saveDemoFeedback,
   type DemoFeedbackDraft,
@@ -13,6 +14,10 @@ export function DemoFeedbackCapture() {
   const [savedCount, setSavedCount] = useState(() => loadDemoFeedback().length)
   const [submitted, setSubmitted] = useState(false)
   const [actionMessage, setActionMessage] = useState<string | null>(null)
+  const supabaseReady = isSupabaseConfigured()
+  const helperCopy = supabaseReady
+    ? 'Short answers are perfect. Saved privately for the PawStreak team.'
+    : 'Short answers are perfect. Everything stays on this device.'
 
   const closeOverlay = () => {
     setOpen(false)
@@ -93,7 +98,9 @@ export function DemoFeedbackCapture() {
                 Thanks for the feedback
               </h2>
               <p className="demo-feedback-copy">
-                Saved locally ({savedCount} response{savedCount === 1 ? '' : 's'}).
+                {supabaseReady
+                  ? `Thanks — saved for the PawStreak team (${savedCount} response${savedCount === 1 ? '' : 's'} on this device).`
+                  : `Saved locally (${savedCount} response${savedCount === 1 ? '' : 's'}).`}
               </p>
               <div className="demo-feedback-actions">
                 <button
@@ -134,9 +141,7 @@ export function DemoFeedbackCapture() {
               <h2 id="demo-feedback-title" className="demo-feedback-title">
                 Quick demo feedback
               </h2>
-              <p className="demo-feedback-copy">
-                Short answers are perfect. Everything stays on this device.
-              </p>
+              <p className="demo-feedback-copy">{helperCopy}</p>
 
               <label className="demo-feedback-field">
                 <span>What do you think PawStreak is for?</span>
