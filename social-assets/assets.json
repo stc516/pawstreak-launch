@@ -1,0 +1,114 @@
+{
+  "version": 1,
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "coreLine": "Your dog's best days shouldn't disappear in your camera roll.",
+  "accounts": {
+    "PawStreakApp": "Product account — adventure map, memories, app value",
+    "BaileyHuskyCream": "Personal account — Bailey + Omi POV, emotional dog-parent tone"
+  },
+  "assets": [
+    {
+      "id": "01-today-home",
+      "type": "screenshot",
+      "path": "screenshots/01-today-home.png",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "01-today-home-story",
+      "type": "story",
+      "path": "stories/01-today-home.png",
+      "width": 390,
+      "height": 844,
+      "overlay": "subtle top/bottom gradient for Story/TikTok text safe zones"
+    },
+    {
+      "id": "02-plan-adventure",
+      "type": "screenshot",
+      "path": "screenshots/02-plan-adventure.png",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "02-plan-adventure-story",
+      "type": "story",
+      "path": "stories/02-plan-adventure.png",
+      "width": 390,
+      "height": 844,
+      "overlay": "subtle top/bottom gradient for Story/TikTok text safe zones"
+    },
+    {
+      "id": "03-journey-memory",
+      "type": "screenshot",
+      "path": "screenshots/03-journey-memory.png",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "03-journey-memory-story",
+      "type": "story",
+      "path": "stories/03-journey-memory.png",
+      "width": 390,
+      "height": 844,
+      "overlay": "subtle top/bottom gradient for Story/TikTok text safe zones"
+    },
+    {
+      "id": "04-map-path",
+      "type": "screenshot",
+      "path": "screenshots/04-map-path.png",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "04-map-path-story",
+      "type": "story",
+      "path": "stories/04-map-path.png",
+      "width": 390,
+      "height": 844,
+      "overlay": "subtle top/bottom gradient for Story/TikTok text safe zones"
+    },
+    {
+      "id": "05-profile",
+      "type": "screenshot",
+      "path": "screenshots/05-profile.png",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "05-profile-story",
+      "type": "story",
+      "path": "stories/05-profile.png",
+      "width": 390,
+      "height": 844,
+      "overlay": "subtle top/bottom gradient for Story/TikTok text safe zones"
+    },
+    {
+      "id": "06-early-access",
+      "type": "screenshot",
+      "path": "screenshots/06-early-access.png",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "06-early-access-story",
+      "type": "story",
+      "path": "stories/06-early-access.png",
+      "width": 390,
+      "height": 844,
+      "overlay": "subtle top/bottom gradient for Story/TikTok text safe zones"
+    },
+    {
+      "id": "pawstreak-demo-flow",
+      "type": "video",
+      "path": "videos/pawstreak-demo-flow.webm",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "generatedAt": "2026-05-26T21:08:06.708Z",
+  "commit": "41c618074ae6095e2128ca9daa60c792ea59a7fc",
+  "baseUrl": "http://127.0.0.1:5173"
+}

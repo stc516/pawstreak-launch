@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "social:capture": "node social-assets/capture.mjs",
+    "social:capture:screens": "node social-assets/capture.mjs --screens-only",
+    "social:capture:video": "node social-assets/capture.mjs --video-only"
   },
   "dependencies": {
     "react": "^19.2.6",
