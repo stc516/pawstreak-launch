@@ -1,0 +1,199 @@
+import type { Dog, JourneyEntry } from '../../data/demo'
+import type { Place } from '../../types/place'
+import {
+  buildEmotionalMemoryLine,
+  buildFavoriteMoment,
+} from '../adventureFinish'
+import { getMagicLine } from '../../data/places'
+import { getSupabaseClient } from '../supabase'
+import type { MemoryRow } from './types'
+
+async function dataUrlToBlob(dataUrl: string): Promise<Blob> {
+  const response = await fetch(dataUrl)
+  return response.blob()
+}
+
+export async function uploadMemoryPhotos(
+  userId: string,
+  memoryId: string,
+  photoDataUrls: string[],
+): Promise<string[]> {
+  const supabase = getSupabaseClient()
+  if (!supabase || photoDataUrls.length === 0) return []
+
+  const paths: string[] = []
+
+  for (let index = 0; index < photoDataUrls.length; index += 1) {
+    const blob = await dataUrlToBlob(photoDataUrls[index])
+    const path = `${userId}/${memoryId}/${index + 1}.jpg`
+    const { error } = await supabase.storage.from('memory-photos').upload(path, blob, {
+      contentType: 'image/jpeg',
+      upsert: true,
+    })
+    if (!error) paths.push(path)
+  }
+
+  return paths
+}
+
+export async function getSignedPhotoUrls(paths: string[]): Promise<string[]> {
+  const supabase = getSupabaseClient()
+  if (!supabase || paths.length === 0) return []
+
+  const urls = await Promise.all(
+    paths.map(async (path) => {
+      const { data } = await supabase.storage
+        .from('memory-photos')
+        .createSignedUrl(path, 60 * 60)
+      return data?.signedUrl ?? ''
+    }),
+  )
+
+  return urls.filter(Boolean)
+}
+
+function formatMemoryDate(iso: string): string {
+  return new Date(iso).toLocaleDateString(undefined, {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+  })
+}
+
+export function buildMemoryPayload(
+  place: Place,
+  dogs: Dog[],
+  options: {
+    durationLabel?: string
+    recapLabels?: string[]
+  } = {},
+) {
+  const recapLabels = options.recapLabels ?? []
+  const emotionalLine = buildEmotionalMemoryLine(recapLabels, dogs)
+  const favoriteMoment = buildFavoriteMoment(recapLabels, dogs)
+  const memoryMood =
+    recapLabels.includes('Needed a slower pace')
+      ? 'Calm + close'
+      : recapLabels.includes('Loved every second')
+        ? 'Joyful + tired'
+        : 'Warm + steady'
+
+  return {
+    magic_line: getMagicLine(place),
+    emotional_line: emotionalLine,
+    favorite_moment: favoriteMoment,
+    memory_mood: memoryMood,
+    tags: place.tags.slice(0, 3),
+    recap_labels: recapLabels,
+    duration_label: options.durationLabel ?? '',
+  }
+}
+
+export async function createMemory(input: {
+  userId: string
+  dogId: string
+  adventureId: string | null
+  place: Place
+  dogs: Dog[]
+  durationLabel?: string
+  recapLabels?: string[]
+  photoDataUrls?: string[]
+}): Promise<MemoryRow | null> {
+  const supabase = getSupabaseClient()
+  if (!supabase) return null
+
+  const payload = buildMemoryPayload(input.place, input.dogs, {
+    durationLabel: input.durationLabel,
+    recapLabels: input.recapLabels,
+  })
+
+  const { data, error } = await supabase
+    .from('memories')
+    .insert({
+      user_id: input.userId,
+      dog_id: input.dogId,
+      adventure_id: input.adventureId,
+      place_id: input.place.id,
+      place_name: input.place.name,
+      occurred_at: new Date().toISOString(),
+      ...payload,
+    })
+    .select('*')
+    .single()
+
+  if (error || !data) return null
+
+  const memory = data as MemoryRow
+  const photos = input.photoDataUrls?.filter(Boolean) ?? []
+  if (photos.length > 0) {
+    const photoPaths = await uploadMemoryPhotos(input.userId, memory.id, photos)
+    if (photoPaths.length > 0) {
+      const { data: updated } = await supabase
+        .from('memories')
+        .update({ photo_paths: photoPaths })
+        .eq('id', memory.id)
+        .select('*')
+        .single()
+      return (updated as MemoryRow) ?? memory
+    }
+  }
+
+  return memory
+}
+
+export async function memoryRowToJourneyEntry(row: MemoryRow): Promise<JourneyEntry> {
+  const photoUrls = row.photo_paths.length
+    ? await getSignedPhotoUrls(row.photo_paths)
+    : []
+
+  return {
+    id: row.id,
+    placeId: row.place_id,
+    place: row.place_name,
+    date: formatMemoryDate(row.occurred_at),
+    magicLine: row.magic_line,
+    tags: row.tags,
+    photoUrls,
+    durationLabel: row.duration_label,
+    recapLabels: row.recap_labels,
+    emotionalLine: row.emotional_line,
+    favoriteMoment: row.favorite_moment,
+    memoryMood: row.memory_mood,
+    dogTags: [],
+  }
+}
+
+export async function fetchMemoriesForUser(
+  userId: string,
+  dogId?: string | null,
+): Promise<JourneyEntry[]> {
+  const supabase = getSupabaseClient()
+  if (!supabase) return []
+
+  let query = supabase
+    .from('memories')
+    .select('*')
+    .eq('user_id', userId)
+    .order('occurred_at', { ascending: false })
+
+  if (dogId) {
+    query = query.eq('dog_id', dogId)
+  }
+
+  const { data, error } = await query
+  if (error || !data) return []
+
+  return Promise.all((data as MemoryRow[]).map((row) => memoryRowToJourneyEntry(row)))
+}
+
+export async function countDistinctPlaces(userId: string, dogId?: string | null): Promise<number> {
+  const supabase = getSupabaseClient()
+  if (!supabase) return 0
+
+  let query = supabase.from('memories').select('place_id').eq('user_id', userId)
+  if (dogId) query = query.eq('dog_id', dogId)
+
+  const { data, error } = await query
+  if (error || !data) return 0
+  return new Set(data.map((row) => row.place_id as string)).size
+}

@@ -7243,7 +7243,31 @@ select.field-input {
   margin: 0;
 }
 
-.fb-hint code {
+.dog-col--active {
+  outline: 2px solid rgba(var(--accent-rgb), 0.45);
+  outline-offset: 4px;
+  border-radius: 14px;
+}
+
+.dog-active-label {
   font-size: 10px;
-  color: rgba(255, 247, 237, 0.55);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--accent-deep);
+  margin-top: 4px;
+}
+
+.dog-edit-panel {
+  margin-top: 12px;
+}
+
+.early-access-page .early-access-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.early-access-success {
+  text-align: center;
 }

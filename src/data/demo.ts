@@ -53,6 +53,8 @@ export interface MonthlyPlanOption {
 }
 
 export interface ActiveAdventure {
+  serverId?: string
+  dogId?: string
   placeId: string
   location: string
   durationLabel: string
@@ -236,6 +238,7 @@ export interface AppState {
   packAccessMembers: PackAccessMember[]
   showPackInviteOverlay: boolean
   packAccessToast: string | null
+  activeDogId?: string | null
 }
 
 export const defaultAppState: AppState = {
@@ -623,6 +626,7 @@ export const defaultAppState: AppState = {
   packAccessMembers: DEFAULT_PACK_ACCESS_MEMBERS,
   showPackInviteOverlay: false,
   packAccessToast: null,
+  activeDogId: null,
 }
 
 export function createSeededDemoState(): AppState {

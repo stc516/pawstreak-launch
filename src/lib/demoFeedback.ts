@@ -123,13 +123,14 @@ export async function loadFeedbackForDashboard(): Promise<{
 
 export async function submitDemoFeedbackToSupabase(
   entry: DemoFeedbackEntry,
-  meta?: { pagePath?: string },
+  meta?: { pagePath?: string; userId?: string | null },
 ): Promise<void> {
   const supabase = getSupabaseClient()
   if (!supabase) return
 
-  const { error } = await supabase.from('demo_feedback').insert({
+  const row = {
     id: entry.id,
+    user_id: meta?.userId ?? null,
     submitted_at: entry.submittedAt,
     what_is_it_for: entry.whatIsItFor,
     would_use_with_dog: entry.wouldUseWithDog,
@@ -138,12 +139,16 @@ export async function submitDemoFeedbackToSupabase(
     premium_value: entry.premiumValue.trim() ? entry.premiumValue : null,
     user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : null,
     page_path: meta?.pagePath ?? (typeof window !== 'undefined' ? window.location.pathname : null),
+    source: 'app',
+  }
+
+  const productResult = await supabase.from('product_feedback').insert(row)
+  if (!productResult.error) return
+
+  await supabase.from('demo_feedback').insert({
+    ...row,
     source: 'demo',
   })
-
-  if (error) {
-    throw error
-  }
 }
 
 export function saveDemoFeedback(draft: DemoFeedbackDraft): DemoFeedbackEntry {

@@ -12,6 +12,7 @@ import { EMPTY_CURATED_PLAN_DRAFT, type LegacyCuratedPlanDraft } from '../lib/cu
 import { DEFAULT_PACK_ACCESS_MEMBERS } from '../data/packAccess'
 import { isDefaultDemoDogs } from './dogLabels'
 import { personalizeAppContentForDogs } from './personalizeContent'
+import { createProductionInitialState } from './appDataSync'
 import type { DemoRoute } from './demoRoute'
 
 const APP_STORAGE_KEY = 'pawstreak:app'
@@ -218,17 +219,17 @@ export function loadAppState(
   try {
     const raw = localStorage.getItem(key)
     if (!raw) {
-      return normalizeAppState(defaultAppState, mode)
+      return normalizeAppState(createProductionInitialState(), mode)
     }
     return normalizeAppState(
       {
-        ...defaultAppState,
+        ...createProductionInitialState(),
         ...JSON.parse(raw),
       } as AppState,
       mode,
     )
   } catch {
-    return normalizeAppState(defaultAppState, mode)
+    return normalizeAppState(createProductionInitialState(), mode)
   }
 }
 

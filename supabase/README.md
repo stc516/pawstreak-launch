@@ -1,40 +1,71 @@
-# Supabase — demo feedback
+# Supabase — PawStreak backend
 
 ## Setup
 
 1. Create a Supabase project at [supabase.com](https://supabase.com).
-2. Run the migration in **SQL Editor**:
+2. Enable **Email** auth and **Google** OAuth in Authentication → Providers.
+3. Set Site URL + redirect URLs to your app origin (e.g. `http://localhost:5173`, production domain).
+4. Run migrations **in order** in SQL Editor (or Supabase CLI):
 
-   `supabase/migrations/001_demo_feedback.sql`
+   ```
+   supabase/migrations/001_demo_feedback.sql
+   supabase/migrations/002_profiles.sql
+   supabase/migrations/003_dogs.sql
+   supabase/migrations/004_places.sql
+   supabase/migrations/005_adventures.sql
+   supabase/migrations/006_memories.sql
+   supabase/migrations/007_early_access_signups.sql
+   supabase/migrations/008_product_feedback.sql
+   supabase/migrations/009_user_events.sql
+   supabase/migrations/010_storage_memory_photos.sql
+   supabase/seed/places.sql
+   ```
 
-3. Copy project URL and anon key into `.env.local`:
+5. Add env vars to `.env.local`:
 
    ```bash
    VITE_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
    VITE_SUPABASE_ANON_KEY=YOUR_ANON_KEY
    ```
 
-4. Restart the dev server after adding env vars.
+6. Restart dev server.
 
-## Table: `demo_feedback`
+Regenerate places seed after catalog changes:
 
-| Column | Type | Notes |
-|---|---|---|
-| `id` | uuid PK | Matches client-generated id |
-| `submitted_at` | timestamptz | When tester submitted |
-| `what_is_it_for` | text | |
-| `would_use_with_dog` | text | |
-| `what_confused` | text | |
-| `what_liked_most` | text | |
-| `premium_value` | text nullable | Optional premium question |
-| `user_agent` | text nullable | Browser user agent |
-| `page_path` | text nullable | Path when submitted |
-| `source` | text | Default `demo` |
-| `created_at` | timestamptz | Server insert time |
+```bash
+npx tsx scripts/generate-places-seed.mjs
+```
 
-## View feedback
+## Tables
 
-- Internal dashboard: `/internal/feedback`
-- Supabase Table Editor: `public.demo_feedback`
+| Table | Purpose |
+|---|---|
+| `profiles` | User profile + onboarding prefs + active dog |
+| `dogs` | Dogs per user |
+| `places` | Read-only place catalog (seeded) |
+| `adventures` | Active/completed adventures |
+| `memories` | Journey memories + storage photo paths |
+| `early_access_signups` | Waitlist from `/early-access` + onboarding |
+| `product_feedback` | In-app product feedback |
+| `user_events` | Lightweight analytics events |
+| `demo_feedback` | Legacy demo tester feedback (unchanged) |
 
-Without env vars, feedback still saves to browser `localStorage` only.
+## Storage
+
+Bucket: `memory-photos`  
+Path pattern: `{user_id}/{memory_id}/{n}.jpg`
+
+## Routes
+
+| Route | Purpose |
+|---|---|
+| `/` | Production app (auth + real data) |
+| `/early-access` | Standalone waitlist form |
+| `/demo/*` | Internal demo (hidden, noindex) |
+| `/internal/*` | Internal tools (noindex) |
+
+## Product loop
+
+Sign up → onboarding → dog profile → start adventure → finish → memory in Journey.
+
+Without Supabase env vars, production app falls back to local-only state (dev only).

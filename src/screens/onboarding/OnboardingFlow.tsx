@@ -37,10 +37,28 @@ function StepsIndicator({ current }: { current: number }) {
 
 interface OnboardingFlowProps {
   onComplete: (result: OnboardingResult) => void
+  initialStep?: number
+  authConfigured?: boolean
+  authLoading?: boolean
+  authError?: string | null
+  onEmailAuth?: (
+    mode: 'signup' | 'signin',
+    input: { email: string; password: string; userName: string },
+  ) => Promise<void>
+  onGoogleAuth?: () => Promise<void>
 }
 
-export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
-  const [step, setStep] = useState(1)
+export function OnboardingFlow({
+  onComplete,
+  initialStep = 1,
+  authConfigured = false,
+  authLoading = false,
+  authError = null,
+  onEmailAuth,
+  onGoogleAuth,
+}: OnboardingFlowProps) {
+  const [step, setStep] = useState(initialStep)
+  const [authMode, setAuthMode] = useState<'signup' | 'signin'>('signup')
   const [userName, setUserName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -59,9 +77,9 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
   const [modalOpen, setModalOpen] = useState(false)
 
   const signupValid =
-    userName.trim().length > 0 &&
     email.includes('@') &&
-    password.trim().length >= 8
+    password.trim().length >= 8 &&
+    (authMode === 'signin' || userName.trim().length > 0)
   const dogValid = dogName.trim().length > 0
   const vibesValid = selectedVibes.length > 0
 
@@ -101,6 +119,25 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
       categoryIds: selectedCats,
       locationQuery,
     })
+  }
+
+  const handleAuthContinue = async () => {
+    try {
+      if (authConfigured && onEmailAuth) {
+        await onEmailAuth(authMode, { email, password, userName })
+      }
+      setStep(3)
+    } catch {
+      // Stay on auth step when sign-in/up fails.
+    }
+  }
+
+  const handleGoogleContinue = async () => {
+    if (authConfigured && onGoogleAuth) {
+      await onGoogleAuth()
+      return
+    }
+    setStep(3)
   }
 
   const toggleVibe = (name: string) => {
@@ -207,16 +244,22 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
           <StepsIndicator current={1} />
           <div className="screen-body onboarding-body--signup">
             <div className="onboarding-center-emoji">🐾</div>
-            <h2 className="h2 onboarding-center-title">Create your account</h2>
+            <h2 className="h2 onboarding-center-title">
+              {authMode === 'signup' ? 'Create your account' : 'Welcome back'}
+            </h2>
             <p className="body onboarding-center-copy">
-              Free to start. Your dog's story starts here.
+              {authConfigured
+                ? authMode === 'signup'
+                  ? 'Free to start. Your dog\'s story starts here.'
+                  : 'Sign in to pick up your pack\'s story.'
+                : 'Free to start. Your dog\'s story starts here.'}
             </p>
 
-            <button type="button" className="btn-google onboarding-google-gap" onClick={() => setStep(3)}>
+            <button type="button" className="btn-google onboarding-google-gap" onClick={handleGoogleContinue}>
               Continue with Google
             </button>
-            <button type="button" className="btn-google onboarding-google-bottom" onClick={() => setStep(3)}>
-              Continue with Apple
+            <button type="button" className="btn-google onboarding-google-bottom" disabled>
+              Continue with Apple (soon)
             </button>
 
             <div className="divider">
@@ -231,6 +274,7 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
                 placeholder="First name"
                 value={userName}
                 onChange={(event) => setUserName(event.target.value)}
+                disabled={authMode === 'signin'}
               />
             </div>
             <div className="field">
@@ -259,12 +303,32 @@ export function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
             <button
               type="button"
               className="btn-primary"
-              disabled={!signupValid}
-              onClick={() => setStep(3)}
+              disabled={!signupValid || authLoading}
+              onClick={handleAuthContinue}
             >
-              Create account
+              {authLoading
+                ? 'Working…'
+                : authMode === 'signup'
+                  ? 'Create account'
+                  : 'Sign in'}
               {arrowIcon}
             </button>
+            <button
+              type="button"
+              className="demo-feedback-link"
+              onClick={() =>
+                setAuthMode((current) => (current === 'signup' ? 'signin' : 'signup'))
+              }
+            >
+              {authMode === 'signup'
+                ? 'Already have an account? Sign in'
+                : 'Need an account? Create one'}
+            </button>
+            {authError ? (
+              <p className="demo-feedback-status" role="alert">
+                {authError}
+              </p>
+            ) : null}
             <p className="caption onboarding-legal">
               By joining you agree to our{' '}
               <a href="#" className="onboarding-link">

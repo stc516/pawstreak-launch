@@ -9,9 +9,14 @@ import {
 import { loadAppState, saveAppState, clearDemoState, saveSeededDemoState, saveDemoOnboardingState } from './lib/storage'
 import { getDemoRoute, navigateTo } from './lib/demoRoute'
 import { usePathname } from './lib/usePathname'
-import { isContentStudioRoute, isFeedbackDashboardRoute } from './lib/internalRoute'
+import {
+  isContentStudioRoute,
+  isEarlyAccessRoute,
+  isFeedbackDashboardRoute,
+} from './lib/internalRoute'
 import { ContentStudio } from './screens/internal/ContentStudio'
 import { FeedbackDashboard } from './screens/internal/FeedbackDashboard'
+import { EarlyAccessScreen } from './screens/EarlyAccessScreen'
 import { DemoLauncher } from './screens/demo/DemoLauncher'
 import type { DemoRoute } from './lib/demoRoute'
 import { shouldPersonalizeContent, getDisplayDogLabel } from './lib/profileDisplay'
@@ -47,11 +52,49 @@ import {
   accessDescriptionFor,
   roleLabelForInvite,
 } from './data/packAccess'
+import { useAuth } from './context/AuthContext'
+import {
+  cancelAdventureOnServer,
+  finishAdventureOnServer,
+  hydrateProductionState,
+  persistOnboardingToSupabase,
+  startAdventureOnServer,
+} from './lib/appDataSync'
+import { setActiveDog, updateDogForUser } from './lib/db/dogs'
+import { fetchMemoriesForUser, countDistinctPlaces, memoryRowToJourneyEntry } from './lib/db/memories'
+import { insertEarlyAccessSignup } from './lib/db/earlyAccess'
+import { trackUserEvent } from './lib/db/userEvents'
+import { ensureProfileShell } from './lib/db/profiles'
+import { signInWithEmail, signUpWithEmail } from './lib/auth'
 
 function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
+  const auth = useAuth()
   const appMode = demoRoute !== null ? 'demo' : 'app'
   const isDemoMode = appMode === 'demo' && demoRoute === 'app'
+  const useProductionBackend = appMode === 'app' && auth.configured
   const [state, setState] = useState<AppState>(() => loadAppState(appMode, demoRoute))
+  const [authError, setAuthError] = useState<string | null>(null)
+  const [authLoading, setAuthLoading] = useState(false)
+  const [dataHydrated, setDataHydrated] = useState(!useProductionBackend)
+
+  useEffect(() => {
+    if (!useProductionBackend || auth.loading) return
+    if (!auth.user) {
+      setDataHydrated(true)
+      return
+    }
+
+    let cancelled = false
+    void hydrateProductionState(auth.user.id, state).then((next) => {
+      if (cancelled) return
+      setState((current) => ({ ...current, ...next }))
+      setDataHydrated(true)
+    })
+
+    return () => {
+      cancelled = true
+    }
+  }, [auth.user?.id, auth.loading, useProductionBackend])
 
   useEffect(() => {
     saveAppState(state, appMode)
@@ -385,6 +428,10 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   }
 
   const cancelAdventure = () => {
+    if (useProductionBackend && auth.user && state.activeAdventure) {
+      void cancelAdventureOnServer(auth.user.id, state.activeAdventure)
+    }
+
     setState((current) => ({
       ...current,
       activeAdventure: null,
@@ -478,9 +525,33 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     })
   }
 
-  const startAdventure = (placeId: string, durationLabel = 'Open end') => {
+  const startAdventure = async (placeId: string, durationLabel = 'Open end') => {
     const place = getPlaceById(placeId)
     if (!place) return
+
+    const activeDogId = state.activeDogId ?? state.dogs[0]?.id
+
+    if (useProductionBackend && auth.user && activeDogId) {
+      const serverAdventure = await startAdventureOnServer({
+        userId: auth.user.id,
+        dogId: activeDogId,
+        placeId: place.id,
+        durationLabel,
+      })
+
+      if (serverAdventure) {
+        setState((current) => ({
+          ...current,
+          activeAdventure: serverAdventure,
+          adventurePhotos: ['', '', ''],
+          selectedJourneyEntryId: null,
+          selectedChallengeId: null,
+          showPresetPlanOverlay: false,
+          curatedPlanFlowStep: 0,
+        }))
+        return
+      }
+    }
 
     setState((current) => ({
       ...current,
@@ -509,14 +580,55 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     }))
   }
 
-  const finishAdventure = (payload: AdventureFinishPayload) => {
+  const finishAdventure = async (payload: AdventureFinishPayload) => {
+    if (!state.activeAdventure) {
+      setState((current) => ({ ...current, activeTab: 'journey', adventurePhotos: ['', '', ''] }))
+      return
+    }
+
+    const place = getPlaceById(state.activeAdventure.placeId)
+    const capturedPhotos = state.adventurePhotos.filter(Boolean)
+    const activeDogId = state.activeDogId ?? state.dogs[0]?.id
+
+    if (useProductionBackend && auth.user && activeDogId && place) {
+      try {
+        const memory = await finishAdventureOnServer({
+          userId: auth.user.id,
+          dogId: activeDogId,
+          activeAdventure: state.activeAdventure,
+          dogs: state.dogs,
+          photoDataUrls: capturedPhotos,
+          payload,
+        })
+        await memoryRowToJourneyEntry(memory)
+        const journeyEntries = await fetchMemoriesForUser(auth.user.id, activeDogId)
+        const placeCount = await countDistinctPlaces(auth.user.id, activeDogId)
+
+        setState((current) => ({
+          ...current,
+          activeAdventure: null,
+          activeTab: 'journey',
+          adventureCount: journeyEntries.length,
+          placeCount,
+          journeyEntries,
+          adventurePhotos: ['', '', ''],
+          memorySaveToast: 'Memory saved — worth remembering.',
+        }))
+        return
+      } catch {
+        setState((current) => ({
+          ...current,
+          memorySaveToast: 'Could not save memory. Check your connection and try again.',
+        }))
+        return
+      }
+    }
+
     setState((current) => {
       if (!current.activeAdventure) {
         return { ...current, activeTab: 'journey', adventurePhotos: ['', '', ''] }
       }
 
-      const place = getPlaceById(current.activeAdventure.placeId)
-      const capturedPhotos = current.adventurePhotos.filter(Boolean)
       const journeyEntries = place
         ? [
             createJourneyEntryFromPlace(place, current.dogs, {
@@ -540,7 +652,38 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     })
   }
 
-  const completeOnboarding = (result: OnboardingResult) => {
+  const completeOnboarding = async (result: OnboardingResult) => {
+    if (useProductionBackend && auth.user) {
+      await persistOnboardingToSupabase(auth.user.id, auth.user.email, result)
+      await insertEarlyAccessSignup({
+        email: auth.user.email ?? '',
+        name: result.userName,
+        dogName: result.dogs[0]?.name ?? '',
+        zipOrCity: result.locationQuery,
+        source: 'onboarding',
+        userId: auth.user.id,
+      })
+      await trackUserEvent('early_access_joined', { source: 'onboarding' }, auth.user.id)
+
+      const hydrated = await hydrateProductionState(auth.user.id, state)
+      setState((current) => ({
+        ...current,
+        ...hydrated,
+        ...applyOnboardingToAppState(current, result),
+        mode: appMode,
+      }))
+      saveAppState(
+        {
+          ...state,
+          ...hydrated,
+          ...applyOnboardingToAppState(state, result),
+          mode: appMode,
+        },
+        appMode,
+      )
+      return
+    }
+
     setState((current) => {
       const nextState: AppState = {
         ...current,
@@ -553,6 +696,80 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     })
     if (appMode === 'demo') {
       navigateTo('/demo/app')
+    }
+  }
+
+  const handleEmailAuth = async (
+    mode: 'signup' | 'signin',
+    input: { email: string; password: string; userName: string },
+  ) => {
+    setAuthLoading(true)
+    setAuthError(null)
+    try {
+      if (mode === 'signup') {
+        const data = await signUpWithEmail(input.email, input.password)
+        if (data.user) {
+          await ensureProfileShell(data.user.id, input.email)
+          await trackUserEvent('signup', { email: input.email }, data.user.id)
+        }
+      } else {
+        await signInWithEmail(input.email, input.password)
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Authentication failed'
+      setAuthError(message)
+      throw error
+    } finally {
+      setAuthLoading(false)
+    }
+  }
+
+  const handleGoogleAuth = async () => {
+    setAuthLoading(true)
+    setAuthError(null)
+    try {
+      await auth.signInWithGoogle()
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Google sign-in failed'
+      setAuthError(message)
+      throw error
+    } finally {
+      setAuthLoading(false)
+    }
+  }
+
+  const handleSetActiveDog = (dogId: string) => {
+    setState((current) => ({ ...current, activeDogId: dogId }))
+    if (useProductionBackend && auth.user) {
+      void setActiveDog(auth.user.id, dogId)
+      void fetchMemoriesForUser(auth.user.id, dogId).then((journeyEntries) => {
+        setState((current) => ({
+          ...current,
+          journeyEntries,
+          adventureCount: journeyEntries.length,
+        }))
+      })
+    }
+  }
+
+  const handleUpdateDog = (
+    dogId: string,
+    patch: { name?: string; breed?: string; profileEmoji?: string },
+  ) => {
+    setState((current) => ({
+      ...current,
+      dogs: current.dogs.map((dog) =>
+        dog.id === dogId
+          ? {
+              ...dog,
+              ...patch,
+              initial: patch.name ? patch.name.charAt(0).toUpperCase() : dog.initial,
+            }
+          : dog,
+      ),
+    }))
+    if (useProductionBackend && auth.user) {
+      void updateDogForUser(auth.user.id, dogId, patch)
     }
   }
 
@@ -600,8 +817,32 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     return () => window.clearTimeout(timer)
   }, [state.packAccessToast])
 
-  if (!state.onboardingComplete) {
-    return <OnboardingFlow onComplete={completeOnboarding} />
+  if (!dataHydrated && useProductionBackend) {
+    return (
+      <div className="content-studio">
+        <div className="cs-empty">Loading your pack…</div>
+      </div>
+    )
+  }
+
+  if (
+    !state.onboardingComplete ||
+    (useProductionBackend && auth.configured && !auth.user)
+  ) {
+    const initialStep =
+      useProductionBackend && auth.user && !state.onboardingComplete ? 3 : 1
+
+    return (
+      <OnboardingFlow
+        onComplete={completeOnboarding}
+        initialStep={initialStep}
+        authConfigured={useProductionBackend}
+        authLoading={authLoading}
+        authError={authError}
+        onEmailAuth={handleEmailAuth}
+        onGoogleAuth={handleGoogleAuth}
+      />
+    )
   }
 
   if (state.activeAdventure) {
@@ -777,7 +1018,13 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         )
       case 'profile':
         return (
-          <ProfileScreen state={state} onOpenPackInvite={openPackInvite} />
+          <ProfileScreen
+            state={state}
+            onOpenPackInvite={openPackInvite}
+            onSetActiveDog={handleSetActiveDog}
+            onUpdateDog={handleUpdateDog}
+            onSignOut={useProductionBackend ? auth.signOut : undefined}
+          />
         )
       default:
         return (
@@ -805,12 +1052,32 @@ function App() {
   const pathname = usePathname()
   const demoRoute = getDemoRoute(pathname)
 
+  useEffect(() => {
+    const shouldNoIndex =
+      pathname.startsWith('/demo') || pathname.startsWith('/internal')
+    let meta = document.querySelector('meta[name="robots"]')
+    if (shouldNoIndex) {
+      if (!meta) {
+        meta = document.createElement('meta')
+        meta.setAttribute('name', 'robots')
+        document.head.appendChild(meta)
+      }
+      meta.setAttribute('content', 'noindex, nofollow')
+    } else if (meta) {
+      meta.remove()
+    }
+  }, [pathname])
+
   if (isContentStudioRoute(pathname)) {
     return <ContentStudio />
   }
 
   if (isFeedbackDashboardRoute(pathname)) {
     return <FeedbackDashboard />
+  }
+
+  if (isEarlyAccessRoute(pathname)) {
+    return <EarlyAccessScreen />
   }
 
   if (demoRoute === 'launcher') {

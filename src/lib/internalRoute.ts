@@ -12,6 +12,10 @@ export function isFeedbackDashboardRoute(pathname = window.location.pathname): b
   )
 }
 
+export function isEarlyAccessRoute(pathname = window.location.pathname): boolean {
+  return pathname === '/early-access' || pathname.startsWith('/early-access/')
+}
+
 export function isInternalRoute(pathname = window.location.pathname): boolean {
   return isContentStudioRoute(pathname) || isFeedbackDashboardRoute(pathname)
 }
