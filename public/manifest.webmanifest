@@ -2,7 +2,7 @@
   "name": "PawStreak",
   "short_name": "PawStreak",
   "description": "Adventures, memories, and the life your dog deserves.",
-  "start_url": "/",
+  "start_url": "/app",
   "display": "standalone",
   "background_color": "#0a0908",
   "theme_color": "#0e0d0c",

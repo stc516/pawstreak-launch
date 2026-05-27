@@ -1,3 +1,4 @@
+import { getAuthRedirectUrl } from './routes'
 import { getSupabaseClient, isSupabaseConfigured } from './supabase'
 
 export { isSupabaseConfigured }
@@ -10,7 +11,7 @@ export async function signUpWithEmail(email: string, password: string) {
     email: email.trim(),
     password,
     options: {
-      emailRedirectTo: window.location.origin,
+      emailRedirectTo: getAuthRedirectUrl(),
     },
   })
   if (error) throw error
@@ -36,7 +37,7 @@ export async function signInWithGoogle() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: window.location.origin,
+      redirectTo: getAuthRedirectUrl(),
     },
   })
   if (error) throw error

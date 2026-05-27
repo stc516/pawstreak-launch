@@ -59,7 +59,7 @@ export function EarlyAccessScreen() {
         {submitted ? (
           <div className="cs-empty early-access-success">
             <p>You&apos;re on the list. We&apos;ll reach out when your spot opens.</p>
-            <button type="button" className="cs-copy tap-target" onClick={() => navigateTo('/')}>
+            <button type="button" className="cs-copy tap-target" onClick={() => navigateTo('/app')}>
               Open PawStreak
             </button>
           </div>

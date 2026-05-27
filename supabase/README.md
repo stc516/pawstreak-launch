@@ -18,6 +18,7 @@
    supabase/migrations/008_product_feedback.sql
    supabase/migrations/009_user_events.sql
    supabase/migrations/010_storage_memory_photos.sql
+   supabase/migrations/011_waitlist_signups.sql
    supabase/seed/places.sql
    ```
 
@@ -46,6 +47,7 @@ npx tsx scripts/generate-places-seed.mjs
 | `adventures` | Active/completed adventures |
 | `memories` | Journey memories + storage photo paths |
 | `early_access_signups` | Waitlist from `/early-access` + onboarding |
+| `waitlist_signups` | Marketing landing page waitlist at `/` |
 | `product_feedback` | In-app product feedback |
 | `user_events` | Lightweight analytics events |
 | `demo_feedback` | Legacy demo tester feedback (unchanged) |
@@ -59,9 +61,11 @@ Path pattern: `{user_id}/{memory_id}/{n}.jpg`
 
 | Route | Purpose |
 |---|---|
-| `/` | Production app (auth + real data) |
+| `/` | Marketing landing page + waitlist |
+| `/app` | Production app (auth + real data) |
 | `/early-access` | Standalone waitlist form |
-| `/demo/*` | Internal demo (hidden, noindex) |
+| `/demo` | Interactive demo app (Bailey + Omi) |
+| `/demo/launch` | Demo launcher (onboarding vs full demo) |
 | `/internal/*` | Internal tools (noindex) |
 
 ## Product loop

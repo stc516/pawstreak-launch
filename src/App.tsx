@@ -14,6 +14,8 @@ import {
   isEarlyAccessRoute,
   isFeedbackDashboardRoute,
 } from './lib/internalRoute'
+import { isLandingRoute, isProductionAppRoute, ROUTES } from './lib/routes'
+import { LandingPage } from './screens/landing/LandingPage'
 import { ContentStudio } from './screens/internal/ContentStudio'
 import { FeedbackDashboard } from './screens/internal/FeedbackDashboard'
 import { EarlyAccessScreen } from './screens/EarlyAccessScreen'
@@ -718,7 +720,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       return nextState
     })
     if (appMode === 'demo') {
-      navigateTo('/demo/app')
+      navigateTo(ROUTES.demoApp)
     }
   }
 
@@ -1103,23 +1105,32 @@ function App() {
     return <EarlyAccessScreen />
   }
 
+  if (isLandingRoute(pathname)) {
+    return <LandingPage />
+  }
+
   if (demoRoute === 'launcher') {
     return (
       <DemoLauncher
         onOpenFullDemo={() => {
           saveSeededDemoState()
-          navigateTo('/demo/app')
+          navigateTo(ROUTES.demoApp)
         }}
         onTryOnboarding={() => {
           saveDemoOnboardingState()
-          navigateTo('/demo/onboarding')
+          navigateTo(ROUTES.demoOnboarding)
         }}
         onResetDemo={() => {
           clearDemoState()
-          navigateTo('/demo')
+          navigateTo(ROUTES.demoLaunch)
         }}
       />
     )
+  }
+
+  // Production app at /app; demo sandbox at /demo and /demo/app
+  if (!isProductionAppRoute(pathname) && demoRoute === null) {
+    return <LandingPage />
   }
 
   return <AppExperience key={pathname} demoRoute={demoRoute} />

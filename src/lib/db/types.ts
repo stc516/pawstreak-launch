@@ -105,3 +105,11 @@ export interface EarlyAccessSignupInput {
   source?: string
   userId?: string | null
 }
+
+export interface WaitlistSignupInput {
+  email: string
+  name?: string
+  dogName?: string
+  zipCode?: string
+  source?: string
+}
