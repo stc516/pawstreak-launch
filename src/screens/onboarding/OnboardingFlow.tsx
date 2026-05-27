@@ -9,6 +9,14 @@ import {
 import { readImageFileAsDataUrl } from '../../lib/imageUtils'
 import type { OnboardingResult } from '../../lib/onboardingProfile'
 import { resolveLocationProfile } from '../../lib/onboardingProfile'
+import { BrandLogoCircle } from '../../components/BrandLogoCircle'
+import { LandingPhonePreview } from '../../components/LandingPhonePreview'
+import {
+  APP_ENTRY_SUBHEAD,
+  APP_ENTRY_TITLE,
+  BRAND_NAME,
+  CTA_LOGIN_SIGNUP,
+} from '../../lib/brand'
 
 const arrowIcon = (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
@@ -206,74 +214,49 @@ export function OnboardingFlow({
         <div className="onboarding-root">
       {step === 1 && (
         <div className="screen active">
-          <div className="blob b1" />
-          <div className="blob b2" />
-          <div className="screen-body onboarding-body--welcome">
-            <div className="welcome-hero">
-              <div className="hero-name">PawStreak</div>
-              <svg
-                className="welcome-hero-svg"
-                viewBox="0 0 380 230"
-                preserveAspectRatio="xMidYMid slice"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <rect width="380" height="230" fill="url(#sky)" />
-                <defs>
-                  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#87CEEB" />
-                    <stop offset="60%" stopColor="#98D4A3" />
-                    <stop offset="100%" stopColor="#7DB88A" />
-                  </linearGradient>
-                  <linearGradient id="hill1" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#5a9467" />
-                    <stop offset="100%" stopColor="#436444" />
-                  </linearGradient>
-                  <linearGradient id="hill2" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#6faa7a" />
-                    <stop offset="100%" stopColor="#5a9467" />
-                  </linearGradient>
-                </defs>
-                <circle cx="190" cy="72" r="34" fill="rgba(255,220,80,.18)" />
-                <circle cx="190" cy="72" r="22" fill="rgba(255,220,80,.3)" />
-                <circle cx="190" cy="72" r="14" fill="rgba(255,230,100,.9)" />
-                <ellipse cx="190" cy="200" rx="240" ry="80" fill="url(#hill2)" />
-                <ellipse cx="100" cy="220" rx="180" ry="70" fill="url(#hill1)" />
-                <ellipse cx="300" cy="225" rx="160" ry="65" fill="url(#hill1)" />
-                <path
-                  d="M160 230 Q180 190 190 170 Q200 190 220 230"
-                  fill="rgba(255,255,255,.15)"
-                />
-              </svg>
-              <div className="hero-chips">
-                <div className="hero-chip">Adventures built around your dog</div>
-                <div className="hero-chip">Memories that last</div>
-              </div>
+          <div className="blob b1 onboarding-blob--warm" />
+          <div className="blob b2 onboarding-blob--warm" />
+          <div className="screen-body onboarding-body--welcome onboarding-welcome-entry">
+            <div className="onboarding-welcome-header">
+              <BrandLogoCircle className="brand-logo-circle--nav" size={44} />
+              <span className="onboarding-welcome-brand">{BRAND_NAME}</span>
             </div>
 
-            <h1 className="h1 onboarding-welcome-title">
-              Your dog gives you
-              <br />
-              everything. Give them
-              <br />
-              their best day.
-            </h1>
-            <p className="body onboarding-welcome-copy">
-              Adventures, memories, and the life your dog deserves — all in one
-              place.
+            <h1 className="h1 onboarding-welcome-title">{APP_ENTRY_TITLE}</h1>
+            <p className="body onboarding-welcome-subhead">{APP_ENTRY_SUBHEAD}</p>
+
+            <div className="onboarding-welcome-phone" aria-hidden="true">
+              <LandingPhonePreview />
+            </div>
+
+            <p className="onboarding-welcome-install">
+              Add PawStreak to your home screen for one-tap access to every adventure.
             </p>
-            <div className="onboarding-spacer-20" />
           </div>
           <div className="bottom-bar">
-            <button type="button" className="btn-primary" onClick={() => setStep(2)}>
-              Get started
+            <button
+              type="button"
+              className="btn-primary"
+              onClick={() => {
+                setAuthMode('signup')
+                setStep(2)
+              }}
+            >
+              {CTA_LOGIN_SIGNUP}
               {arrowIcon}
             </button>
-            <div className="divider onboarding-divider">
-              <span>already have an account?</span>
-            </div>
-            <button type="button" className="btn-google" onClick={() => setStep(2)}>
-              Sign in
-            </button>
+            {authConfigured ? (
+              <button
+                type="button"
+                className="demo-feedback-link onboarding-welcome-signin"
+                onClick={() => {
+                  setAuthMode('signin')
+                  setStep(2)
+                }}
+              >
+                Already have an account? Sign in
+              </button>
+            ) : null}
           </div>
         </div>
       )}

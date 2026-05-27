@@ -2905,6 +2905,9 @@ textarea {
 }
 
 .onboarding-blob--soft { opacity: 0.3; }
+.onboarding-blob--warm { opacity: 0.22; }
+.onboarding-blob--warm.b1 { background: rgba(249, 115, 22, 0.35); }
+.onboarding-blob--warm.b2 { background: rgba(198, 237, 196, 0.45); }
 .onboarding-blob--faint { opacity: 0.28; }
 .onboarding-blob--lighter { opacity: 0.22; }
 .onboarding-blob--strong { opacity: 0.4; }
@@ -3598,7 +3601,77 @@ select.field-input {
 .onboarding-body--local { padding-top: 16px; }
 .onboarding-body--done { padding-top: 20px; }
 
-.onboarding-welcome-title { margin-bottom: 10px; }
+.onboarding-body--welcome { padding-top: 12px; }
+.onboarding-welcome-entry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-top: 8px;
+}
+
+.onboarding-welcome-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.onboarding-welcome-brand {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--on-surface);
+}
+
+.onboarding-welcome-title {
+  margin-bottom: 10px;
+  font-size: clamp(1.65rem, 6.4vw, 2rem);
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  max-width: 16ch;
+}
+
+.onboarding-welcome-subhead {
+  margin: 0 0 14px;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--on-surface-var);
+  max-width: 32ch;
+}
+
+.onboarding-welcome-phone {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 4px 0 12px;
+}
+
+.onboarding-welcome-phone .landing-phone {
+  width: min(236px, 84vw);
+}
+
+.onboarding-welcome-phone .landing-phone-screen--hero {
+  min-height: 340px;
+}
+
+.onboarding-welcome-phone .landing-phone-preview {
+  min-height: 340px;
+}
+
+.onboarding-welcome-install {
+  margin: 0 0 8px;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--on-surface-var);
+  max-width: 30ch;
+}
+
+.onboarding-welcome-signin {
+  margin-top: 10px;
+}
+
 .onboarding-welcome-copy { font-size: 15px; }
 .onboarding-spacer-20 { height: 20px; }
 .onboarding-spacer-24 { height: 24px; }

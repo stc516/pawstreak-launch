@@ -15,3 +15,8 @@ export const CTA_GET_STARTED = 'Get started now'
 export const CTA_ADD_TO_HOME_SCREEN = 'Add PawStreak to your home screen'
 
 export const CTA_LOGIN_SIGNUP = 'Log in or sign up'
+
+export const APP_ENTRY_TITLE = 'Start using PawStreak today'
+
+export const APP_ENTRY_SUBHEAD =
+  'Map adventures, save memories, and build streaks with your dog.'
