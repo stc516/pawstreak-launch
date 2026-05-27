@@ -5,7 +5,7 @@ import './styles/landing.css'
 import App from './App.tsx'
 import { AuthProvider } from './context/AuthContext.tsx'
 
-if (window.location.pathname === '/' || window.location.pathname === '') {
+if (window.location.pathname === '/' || window.location.pathname === '' || window.location.pathname === '/start') {
   document.documentElement.classList.add('landing-route')
 }
 

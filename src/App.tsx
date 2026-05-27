@@ -14,8 +14,9 @@ import {
   isEarlyAccessRoute,
   isFeedbackDashboardRoute,
 } from './lib/internalRoute'
-import { isLandingRoute, isProductionAppRoute, ROUTES } from './lib/routes'
+import { isLandingRoute, isMarketingRoute, isProductionAppRoute, isStartRoute, ROUTES } from './lib/routes'
 import { LandingPage } from './screens/landing/LandingPage'
+import { StartPage } from './screens/landing/StartPage'
 import { ContentStudio } from './screens/internal/ContentStudio'
 import { FeedbackDashboard } from './screens/internal/FeedbackDashboard'
 import { EarlyAccessScreen } from './screens/EarlyAccessScreen'
@@ -1094,7 +1095,7 @@ function App() {
   }, [pathname])
 
   useEffect(() => {
-    document.documentElement.classList.toggle('landing-route', isLandingRoute(pathname))
+    document.documentElement.classList.toggle('landing-route', isMarketingRoute(pathname))
     return () => {
       document.documentElement.classList.remove('landing-route')
     }
@@ -1114,6 +1115,10 @@ function App() {
 
   if (isLandingRoute(pathname)) {
     return <LandingPage />
+  }
+
+  if (isStartRoute(pathname)) {
+    return <StartPage />
   }
 
   if (demoRoute === 'launcher') {

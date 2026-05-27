@@ -166,20 +166,21 @@ async function main() {
     await page.getByRole('button', { name: 'Get started now', exact: true }).first().click()
     await page.waitForTimeout(QA_STEP_PAUSE_MS)
     await record(
-      'demo-cta-nav',
-      page.url().includes('/demo') &&
-        (await page.locator('.home-intro-kicker, .home-intro-title').first().isVisible()),
-      'Get started now navigates to /demo app experience',
+      'start-cta-nav',
+      page.url().includes('/start') &&
+        (await page.locator('.start-page-title').isVisible()),
+      'Get started now navigates to /start setup page',
     )
 
-    await page.goto(`${BASE_URL}/app`, { waitUntil: 'networkidle' })
-    await page.evaluate(() => localStorage.removeItem('pawstreak:app'))
-    await page.reload({ waitUntil: 'networkidle' })
+    await page.goto(`${BASE_URL}/start`, { waitUntil: 'networkidle' })
+    await page.waitForTimeout(QA_STEP_PAUSE_MS)
+    await page.getByRole('button', { name: 'Continue in browser', exact: true }).first().click()
     await page.waitForTimeout(QA_STEP_PAUSE_MS)
     await record(
-      'production-app-route',
-      await page.getByRole('button', { name: /Get started/i }).isVisible(),
-      'Production app onboarding loads at /app',
+      'start-continue-app',
+      page.url().includes('/app') &&
+        (await page.getByRole('button', { name: /Get started/i }).isVisible()),
+      'Continue in browser navigates to /app',
     )
   } catch (error) {
     overallPass = false

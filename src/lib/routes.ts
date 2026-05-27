@@ -2,6 +2,7 @@
 
 export const ROUTES = {
   landing: '/',
+  start: '/start',
   app: '/app',
   demo: '/demo',
   demoLaunch: '/demo/launch',
@@ -12,6 +13,15 @@ export const ROUTES = {
 
 export function isLandingRoute(pathname = window.location.pathname): boolean {
   return pathname === '/' || pathname === ''
+}
+
+export function isStartRoute(pathname = window.location.pathname): boolean {
+  return pathname === ROUTES.start || pathname.startsWith(`${ROUTES.start}/`)
+}
+
+/** Marketing pages that use landing layout + document scroll. */
+export function isMarketingRoute(pathname = window.location.pathname): boolean {
+  return isLandingRoute(pathname) || isStartRoute(pathname)
 }
 
 export function isProductionAppRoute(pathname = window.location.pathname): boolean {

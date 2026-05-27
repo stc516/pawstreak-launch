@@ -131,7 +131,7 @@ export function LandingPage() {
           <button
             type="button"
             className="landing-nav-cta tap-target"
-            onClick={() => navigateTo(ROUTES.demo)}
+            onClick={() => navigateTo(ROUTES.start)}
           >
             {CTA_GET_STARTED}
           </button>
@@ -160,7 +160,7 @@ export function LandingPage() {
             <button
               type="button"
               className="landing-btn landing-btn--secondary tap-target"
-              onClick={() => navigateTo(ROUTES.demo)}
+              onClick={() => navigateTo(ROUTES.start)}
             >
               {CTA_GET_STARTED}
             </button>
@@ -175,34 +175,40 @@ export function LandingPage() {
                   <BrandLogoCircle className="brand-logo-circle--phone" size={30} />
                   <span className="landing-phone-preview-title">{BRAND_NAME}</span>
                 </div>
-                <div className="landing-phone-preview-map">
-                  <div className="landing-phone-preview-map-panel jmap-overlay-panel-grid">
-                    <p className="jmap-overlay-panel-hint">Tap a pin to see its name</p>
-                    <span className="jmap-area-label" style={{ top: '32%', left: '22%' }}>
-                      Coast
-                    </span>
-                    <span className="jmap-area-label" style={{ top: '30%', left: '78%' }}>
-                      Trails
-                    </span>
-                    <div className="jmap-overlay-pin" style={{ top: '56%', left: '26%' }}>
-                      <span className="jmap-overlay-pin-dot" />
-                    </div>
+                <div className="landing-phone-preview-content">
+                  <p className="landing-phone-preview-kicker">Today&apos;s adventure</p>
+
+                  <article className="landing-phone-adventure-card">
                     <div
-                      className="jmap-overlay-pin jmap-overlay-pin--selected jmap-overlay-pin--labeled"
-                      style={{ top: '66%', left: '50%' }}
-                    >
-                      <span className="jmap-overlay-pin-dot" />
-                      <span className="jmap-overlay-pin-label">Trail</span>
+                      className="landing-phone-adventure-image"
+                      style={{ backgroundImage: `url(${SAMPLE_IMAGES.beach})` }}
+                    />
+                    <div className="landing-phone-adventure-body">
+                      <h3 className="landing-phone-adventure-title">Dog Beach morning</h3>
+                      <p className="landing-phone-adventure-meta">2.4 mi · Off-leash · San Diego</p>
                     </div>
-                    <div className="jmap-overlay-pin" style={{ top: '50%', left: '74%' }}>
-                      <span className="jmap-overlay-pin-dot" />
+                  </article>
+
+                  <article className="landing-phone-memory-card">
+                    <div
+                      className="landing-phone-memory-thumb"
+                      style={{ backgroundImage: `url(${SAMPLE_IMAGES.coastal})` }}
+                    />
+                    <div className="landing-phone-memory-copy">
+                      <p className="landing-phone-memory-label">Latest memory</p>
+                      <p className="landing-phone-memory-title">Sunny morning run</p>
+                    </div>
+                  </article>
+
+                  <div className="landing-phone-mini-map" aria-hidden="true">
+                    <span className="landing-phone-mini-map-label">Your places</span>
+                    <div className="landing-phone-mini-map-terrain">
+                      <span className="landing-phone-mini-map-pin" style={{ top: '58%', left: '32%' }} />
+                      <span className="landing-phone-mini-map-pin" style={{ top: '44%', left: '68%' }} />
                     </div>
                   </div>
-                </div>
-                <div className="landing-phone-overlay">
-                  <span className="landing-phone-chip">Your adventure map</span>
-                  <p className="landing-phone-title">Save the places you love</p>
-                  <p className="landing-phone-sub">Every pin becomes part of your dog&apos;s story.</p>
+
+                  <span className="landing-phone-preview-cta">Start adventure</span>
                 </div>
               </div>
             </div>
@@ -369,8 +375,8 @@ export function LandingPage() {
             <a href="https://tiktok.com/@pawstreakapp" target="_blank" rel="noopener noreferrer">
               TikTok
             </a>
-            <button type="button" className="landing-footer-link-btn tap-target" onClick={() => navigateTo(ROUTES.demo)}>
-              Demo
+            <button type="button" className="landing-footer-link-btn tap-target" onClick={() => navigateTo(ROUTES.start)}>
+              {CTA_GET_STARTED}
             </button>
             <a href="mailto:hello@pawstreakapp.com">Contact</a>
           </nav>

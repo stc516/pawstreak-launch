@@ -311,98 +311,140 @@ html.landing-route .landing {
   color: var(--on-surface);
 }
 
-.landing-phone-preview-map {
-  position: relative;
+.landing-phone-preview-content {
   flex: 1;
-  margin: 12px 14px 0;
-  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px 16px;
   overflow: hidden;
 }
 
-.landing-phone-preview-map-panel {
-  position: absolute;
-  inset: 0;
-  min-height: 100%;
-  border-radius: 18px;
-  overflow: hidden;
-}
-
-.landing-phone-preview-map-panel.jmap-overlay-panel-grid {
-  min-height: 100%;
-  border: 0.5px solid rgba(120, 90, 60, 0.22);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.16),
-    0 8px 24px rgba(92, 64, 35, 0.08);
-}
-
-.landing-phone-preview-map-panel .jmap-overlay-panel-hint {
-  top: 10px;
-  font-size: 0.58rem;
-  letter-spacing: 0.04em;
-  z-index: 2;
-}
-
-.landing-phone-preview-map-panel .jmap-area-label {
-  font-size: 0.56rem;
-  z-index: 1;
-}
-
-.landing-phone-preview-map-panel .jmap-overlay-pin-dot {
-  width: 12px;
-  height: 12px;
-}
-
-.landing-phone-preview-map-panel .jmap-overlay-pin--selected .jmap-overlay-pin-dot {
-  width: 13px;
-  height: 13px;
-}
-
-.landing-phone-preview-map-panel .jmap-overlay-pin-label {
-  max-width: 58px;
-  font-size: 0.56rem;
-  padding: 2px 6px;
-}
-
-.landing-phone-screen--preview .landing-phone-overlay {
-  position: relative;
-  inset: auto;
-  margin-top: auto;
-  background: linear-gradient(180deg, transparent 0%, rgba(14, 13, 12, 0.92) 100%);
-}
-
-.landing-phone-overlay {
-  position: absolute;
-  inset: auto 0 0;
-  padding: 20px 18px 22px;
-  background: linear-gradient(180deg, transparent 0%, rgba(14, 13, 12, 0.88) 100%);
-  color: #fff;
-  text-align: left;
-}
-
-.landing-phone-chip {
-  display: inline-block;
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.16);
-  border: 0.5px solid rgba(255, 255, 255, 0.28);
-  backdrop-filter: blur(8px);
-  margin-bottom: 10px;
-}
-
-.landing-phone-title {
-  font-family: var(--serif);
-  font-size: 1.35rem;
+.landing-phone-preview-kicker {
+  margin: 0;
+  font-size: 0.62rem;
   font-weight: 700;
-  margin-bottom: 4px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--secondary);
 }
 
-.landing-phone-sub {
-  font-size: 0.88rem;
-  opacity: 0.82;
+.landing-phone-adventure-card {
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fff;
+  border: 0.5px solid rgba(154, 52, 18, 0.12);
+  box-shadow: 0 8px 20px rgba(92, 64, 35, 0.08);
+}
+
+.landing-phone-adventure-image {
+  height: 72px;
+  background-size: cover;
+  background-position: center;
+}
+
+.landing-phone-adventure-body {
+  padding: 10px 12px 12px;
+}
+
+.landing-phone-adventure-title {
+  margin: 0 0 4px;
+  font-family: var(--serif);
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--on-surface);
+}
+
+.landing-phone-adventure-meta {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--on-surface-var);
+}
+
+.landing-phone-memory-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 0.5px solid rgba(154, 52, 18, 0.1);
+}
+
+.landing-phone-memory-thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.landing-phone-memory-label {
+  margin: 0 0 2px;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--secondary);
+}
+
+.landing-phone-memory-title {
+  margin: 0;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--on-surface);
+}
+
+.landing-phone-mini-map {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 0.5px solid rgba(120, 90, 60, 0.18);
+  background:
+    radial-gradient(circle at 18% 78%, rgba(56, 189, 248, 0.18) 0%, transparent 34%),
+    radial-gradient(circle at 76% 28%, rgba(34, 197, 94, 0.14) 0%, transparent 32%),
+    linear-gradient(180deg, rgba(228, 210, 184, 0.96) 0%, rgba(214, 232, 210, 0.94) 100%);
+}
+
+.landing-phone-mini-map-label {
+  display: block;
+  padding: 6px 10px 0;
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(92, 64, 35, 0.72);
+}
+
+.landing-phone-mini-map-terrain {
+  position: relative;
+  height: 52px;
+}
+
+.landing-phone-mini-map-pin {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 1.5px solid #fff;
+  box-shadow: 0 1px 6px rgba(154, 52, 18, 0.24);
+  transform: translate(-50%, -50%);
+}
+
+.landing-phone-preview-cta {
+  display: block;
+  margin-top: auto;
+  padding: 10px 12px;
+  border-radius: 999px;
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--primary);
+  box-shadow: 0 4px 14px rgba(67, 100, 68, 0.24);
 }
 
 .landing-section {
@@ -713,6 +755,11 @@ html.landing-route .landing {
   color: #fff;
 }
 
+.landing-footer-note {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.45);
+}
+
 @media (min-width: 640px) {
   .landing-hero-actions {
     flex-direction: row;
@@ -778,5 +825,106 @@ html.landing-route .landing {
   .landing-nav {
     padding-left: 40px;
     padding-right: 40px;
+  }
+}
+
+.start-page-main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 28px 20px 56px;
+}
+
+.start-page-hero {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.start-page-title {
+  font-family: var(--serif);
+  font-size: clamp(1.85rem, 6vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  color: var(--on-surface);
+  margin-bottom: 14px;
+}
+
+.start-page-lead {
+  margin: 0;
+  font-size: 1.02rem;
+  line-height: 1.6;
+  color: var(--on-surface-var);
+}
+
+.start-page-cards {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.start-card {
+  padding: 18px 18px 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 0.5px solid rgba(154, 52, 18, 0.1);
+  box-shadow: 0 8px 24px rgba(92, 64, 35, 0.06);
+}
+
+.start-card-title {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--on-surface);
+}
+
+.start-card-copy {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--on-surface-var);
+}
+
+.start-card-copy--mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.82rem;
+  letter-spacing: -0.01em;
+}
+
+.start-page-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.start-page-note {
+  margin: 0;
+  text-align: center;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--on-surface-var);
+}
+
+.start-page-note a {
+  color: var(--secondary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.start-page-footer {
+  margin-top: auto;
+}
+
+@media (min-width: 640px) {
+  .start-page-main {
+    padding: 40px 40px 72px;
+  }
+
+  .start-page-hero {
+    text-align: left;
+  }
+
+  .start-page-note {
+    text-align: left;
   }
 }
