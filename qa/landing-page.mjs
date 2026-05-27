@@ -117,6 +117,29 @@ async function main() {
     )
     await screenshot(page, '01-home')
 
+    const scrollWorks = await page.evaluate(async () => {
+      const root = document.documentElement
+      root.scrollTop = 0
+      await new Promise((resolve) => setTimeout(resolve, 120))
+      const before = root.scrollTop
+      root.scrollTop = before + 420
+      await new Promise((resolve) => setTimeout(resolve, 120))
+      const canScroll = root.scrollHeight > window.innerHeight + 8
+      return {
+        ok: canScroll && root.scrollTop > before + 100,
+        canScroll,
+        before,
+        after: root.scrollTop,
+        scrollHeight: root.scrollHeight,
+        innerHeight: window.innerHeight,
+      }
+    })
+    await record(
+      'landing-scroll',
+      scrollWorks.ok,
+      `Landing scroll works (overflow: ${scrollWorks.canScroll}, ${scrollWorks.before} -> ${scrollWorks.after})`,
+    )
+
     await page.evaluate(() => {
       document.querySelector('.landing-preview')?.scrollIntoView({ behavior: 'instant', block: 'start' })
     })
@@ -136,30 +159,6 @@ async function main() {
       'landing-waitlist-form',
       await page.locator('.landing-waitlist-form').isVisible(),
       'Waitlist form visible',
-    )
-
-    const scrollWorks = await page.evaluate(async () => {
-      const container = document.querySelector('.landing')
-      if (!container) return { ok: false, reason: 'no container' }
-      const canScroll = container.scrollHeight > container.clientHeight + 8
-      container.scrollTop = 0
-      await new Promise((resolve) => setTimeout(resolve, 50))
-      const before = container.scrollTop
-      container.scrollTop = 320
-      await new Promise((resolve) => setTimeout(resolve, 50))
-      return {
-        ok: canScroll && container.scrollTop > before,
-        canScroll,
-        before,
-        after: container.scrollTop,
-        scrollHeight: container.scrollHeight,
-        clientHeight: container.clientHeight,
-      }
-    })
-    await record(
-      'landing-scroll',
-      scrollWorks.ok,
-      `Landing scroll works (overflow: ${scrollWorks.canScroll}, ${scrollWorks.before} -> ${scrollWorks.after})`,
     )
 
     await screenshot(page, '03-invite-flow')

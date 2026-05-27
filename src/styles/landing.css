@@ -1,25 +1,27 @@
 /* Landing page — marketing site at / */
-/* Global body/#root use position:fixed for the phone app shell.
-   Landing scrolls inside a fixed full-viewport .landing container. */
+/* html stays viewport-height and scrolls; body/#root grow with content. */
 
-html.landing-route,
-html.landing-route body {
-  overflow: hidden;
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  height: 100dvh;
-  height: 100svh;
-}
-
-html.landing-route #root {
-  display: block;
-  height: 100%;
-  overflow: hidden;
+html.landing-route {
+  overflow-x: hidden !important;
+  overflow-y: scroll !important;
+  position: static !important;
+  inset: auto !important;
+  width: 100% !important;
+  height: 100% !important;
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  scroll-behavior: smooth;
 }
 
 html.landing-route body {
+  overflow: visible !important;
+  position: static !important;
+  inset: auto !important;
+  width: 100% !important;
+  height: auto !important;
+  max-height: none !important;
+  min-height: 100dvh;
+  overscroll-behavior: auto;
   background:
     radial-gradient(ellipse 120% 80% at 50% -20%, rgba(249, 115, 22, 0.18) 0%, transparent 55%),
     radial-gradient(ellipse 80% 50% at 100% 50%, rgba(67, 100, 68, 0.12) 0%, transparent 50%),
@@ -28,15 +30,18 @@ html.landing-route body {
   font-family: var(--sans);
 }
 
+html.landing-route #root {
+  display: block !important;
+  overflow: visible !important;
+  height: auto !important;
+  max-height: none !important;
+}
+
 html.landing-route .landing {
-  position: fixed;
-  inset: 0;
+  position: relative;
   width: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior-y: contain;
-  touch-action: pan-y;
+  min-height: 100dvh;
+  overflow: visible;
   display: flex;
   flex-direction: column;
 }
@@ -233,7 +238,9 @@ html.landing-route .landing {
   text-transform: uppercase;
   padding: 4px 10px;
   border-radius: 999px;
-  background: rgba(249, 115, 22, 0.35);
+  background: rgba(255, 255, 255, 0.16);
+  border: 0.5px solid rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(8px);
   margin-bottom: 10px;
 }
 

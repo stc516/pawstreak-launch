@@ -56,6 +56,7 @@ const HOW_IT_WORKS = [
 ] as const
 
 export function LandingPage() {
+  const landingRef = useRef<HTMLDivElement>(null)
   const waitlistRef = useRef<HTMLElement>(null)
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -116,7 +117,7 @@ export function LandingPage() {
   }
 
   return (
-    <div className="landing">
+    <div className="landing" ref={landingRef}>
       <header className="landing-nav">
         <a className="landing-logo tap-target" href={ROUTES.landing}>
           <img src="/paw-icon.svg" alt="" width={28} height={28} />
@@ -174,7 +175,7 @@ export function LandingPage() {
               <div className="landing-phone-overlay">
                 <span className="landing-phone-chip">San Diego · Today</span>
                 <p className="landing-phone-title">Morning trail run</p>
-                <p className="landing-phone-sub">Bailey &amp; Meiomi · 2.4 mi</p>
+                <p className="landing-phone-sub">Your pack · 2.4 mi</p>
               </div>
             </div>
           </div>
