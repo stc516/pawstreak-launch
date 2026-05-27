@@ -112,19 +112,30 @@ export function JourneyMapView({ state, onBack, onOpenMemory }: JourneyMapViewPr
               </div>
             ) : (
               <div className="jmap-overlay-panel-grid">
-                {pins.map((pin) => (
-                  <button
-                    key={pin.id}
-                    id={pin.id}
-                    type="button"
-                    className={`jmap-overlay-pin tap-target${selectedPinId === pin.id ? ' jmap-overlay-pin--selected' : ''}`}
-                    style={{ top: pin.top, left: pin.left }}
-                    onClick={() => setSelectedPinId(pin.id)}
-                  >
-                    <span className="jmap-overlay-pin-dot" />
-                    <span className="jmap-overlay-pin-label">{pin.label}</span>
-                  </button>
-                ))}
+                {pins.length > 3 ? (
+                  <div className="jmap-overlay-panel-hint">Tap a pin to see its name</div>
+                ) : null}
+                {pins.map((pin) => {
+                  const isSelected = selectedPinId === pin.id
+                  const showLabel = isSelected || pins.length <= 3
+
+                  return (
+                    <button
+                      key={pin.id}
+                      id={pin.id}
+                      type="button"
+                      className={`jmap-overlay-pin tap-target${isSelected ? ' jmap-overlay-pin--selected' : ''}${showLabel ? ' jmap-overlay-pin--labeled' : ''}`}
+                      style={{ top: pin.top, left: pin.left }}
+                      aria-label={pin.label}
+                      onClick={() => setSelectedPinId(isSelected ? null : pin.id)}
+                    >
+                      <span className="jmap-overlay-pin-dot" />
+                      {showLabel ? (
+                        <span className="jmap-overlay-pin-label">{pin.shortLabel}</span>
+                      ) : null}
+                    </button>
+                  )
+                })}
               </div>
             )}
           </div>

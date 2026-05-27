@@ -12,10 +12,63 @@ export type JourneyMapFilterId =
 export interface JourneyMapPin {
   id: string
   label: string
+  shortLabel: string
   category: JourneyMapFilterId
   top: string
   left: string
   entryId: string
+}
+
+const PIN_MIN_DISTANCE = 14
+
+function shortLabelFor(label: string): string {
+  const primary = label.split(',')[0]?.trim() ?? label
+  if (primary.length <= 16) return primary
+  return `${primary.slice(0, 14).trim()}…`
+}
+
+function parsePercent(value: string): number {
+  return Number.parseFloat(value)
+}
+
+function clampPinPosition(value: number): number {
+  return Math.min(86, Math.max(14, value))
+}
+
+function layoutMapPins(pins: JourneyMapPin[]): JourneyMapPin[] {
+  if (pins.length <= 1) return pins
+
+  const positions = pins.map((pin) => ({
+    top: parsePercent(pin.top),
+    left: parsePercent(pin.left),
+  }))
+
+  for (let pass = 0; pass < 4; pass += 1) {
+    for (let i = 0; i < positions.length; i += 1) {
+      for (let j = i + 1; j < positions.length; j += 1) {
+        const a = positions[i]
+        const b = positions[j]
+        const dx = a.left - b.left
+        const dy = a.top - b.top
+        const distance = Math.hypot(dx, dy)
+
+        if (distance >= PIN_MIN_DISTANCE || distance === 0) continue
+
+        const push = (PIN_MIN_DISTANCE - distance) / 2
+        const angle = Math.atan2(dy, dx)
+        a.left = clampPinPosition(a.left + Math.cos(angle) * push)
+        a.top = clampPinPosition(a.top + Math.sin(angle) * push)
+        b.left = clampPinPosition(b.left - Math.cos(angle) * push)
+        b.top = clampPinPosition(b.top - Math.sin(angle) * push)
+      }
+    }
+  }
+
+  return pins.map((pin, index) => ({
+    ...pin,
+    top: `${positions[index].top.toFixed(1)}%`,
+    left: `${positions[index].left.toFixed(1)}%`,
+  }))
 }
 
 const MAP_BOUNDS = {
@@ -53,15 +106,17 @@ function categoryForEntry(entry: JourneyEntry): JourneyMapFilterId {
 }
 
 export function buildJourneyMapPins(entries: JourneyEntry[]): JourneyMapPin[] {
-  return entries.flatMap((entry) => {
+  const pins = entries.flatMap((entry) => {
     const place = entry.placeId ? getPlaceById(entry.placeId) : undefined
     if (!place?.lat || !place?.lng) return []
 
     const position = latLngToMapPosition(place.lat, place.lng)
+    const label = entry.place
     return [
       {
         id: `entry-${entry.id}`,
-        label: entry.place,
+        label,
+        shortLabel: shortLabelFor(label),
         category: categoryForEntry(entry),
         top: position.top,
         left: position.left,
@@ -69,6 +124,8 @@ export function buildJourneyMapPins(entries: JourneyEntry[]): JourneyMapPin[] {
       },
     ]
   })
+
+  return layoutMapPins(pins)
 }
 
 export function filterJourneyMapPins(
