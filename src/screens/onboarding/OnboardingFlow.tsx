@@ -21,6 +21,13 @@ const arrowIcon = (
   </svg>
 )
 
+function formatOnboardingDoneNames(names: string[]): string {
+  if (names.length === 0) return 'friend'
+  if (names.length === 1) return names[0]
+  if (names.length === 2) return `${names[0]} & ${names[1]}`
+  return `${names.slice(0, -1).join(', ')} & ${names[names.length - 1]}`
+}
+
 function StepsIndicator({ current }: { current: number }) {
   return (
     <div className="steps">
@@ -92,6 +99,15 @@ export function OnboardingFlow({
     () => (selectedVibes.length ? selectedVibes.join(', ') : '—'),
     [selectedVibes],
   )
+  const onboardingDogNames = useMemo(() => {
+    const names: string[] = []
+    if (dogName.trim()) names.push(dogName.trim())
+    if (secondDogOn && secondDogName.trim()) names.push(secondDogName.trim())
+    return names
+  }, [dogName, secondDogOn, secondDogName])
+  const onboardingDoneNames = formatOnboardingDoneNames(onboardingDogNames)
+  const onboardingDogSummary =
+    onboardingDogNames.length > 0 ? onboardingDogNames.join(', ') : '—'
 
   const handleComplete = () => {
     const dogs = [
@@ -675,7 +691,7 @@ export function OnboardingFlow({
                 You're all set,
                 <br />
                 <span className="onboarding-done-name">
-                  {dogName.trim() || 'friend'}!
+                  {onboardingDoneNames}!
                 </span>
               </h1>
               <p className="body onboarding-done-copy">
@@ -687,8 +703,10 @@ export function OnboardingFlow({
 
             <div className="confirm-card">
               <div className="confirm-row">
-                <span className="confirm-key">Dog</span>
-                <span className="confirm-val">{dogName.trim() || '—'}</span>
+                <span className="confirm-key">
+                  {onboardingDogNames.length === 1 ? 'Dog' : 'Dogs'}
+                </span>
+                <span className="confirm-val">{onboardingDogSummary}</span>
               </div>
               <div className="confirm-row">
                 <span className="confirm-key">Adventure styles</span>
