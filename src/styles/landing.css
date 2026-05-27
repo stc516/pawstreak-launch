@@ -658,6 +658,14 @@ html.landing-route .landing {
   font-weight: 600;
 }
 
+.landing-waitlist-success-note {
+  margin-top: 10px;
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.78);
+}
+
 .landing-footer {
   margin-top: auto;
   padding: 32px 20px max(28px, env(safe-area-inset-bottom));

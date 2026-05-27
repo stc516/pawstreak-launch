@@ -6,7 +6,7 @@ import { ROUTES } from '../../lib/routes'
 import { isSupabaseConfigured } from '../../lib/supabase'
 import { SAMPLE_IMAGES } from '../../data/sampleImages'
 import { BrandLogoCircle, BrandLogoFull } from '../../components/BrandLogoCircle'
-import { BRAND_DESCRIPTION, BRAND_NAME, BRAND_TAGLINE } from '../../lib/brand'
+import { BRAND_DESCRIPTION, BRAND_NAME, BRAND_TAGLINE, CTA_ADD_TO_HOME_SCREEN, CTA_GET_STARTED, CTA_JOIN_WAITLIST } from '../../lib/brand'
 
 const PREVIEW_FEATURES = [
   {
@@ -133,7 +133,7 @@ export function LandingPage() {
             className="landing-nav-cta tap-target"
             onClick={() => navigateTo(ROUTES.demo)}
           >
-            See demo
+            {CTA_GET_STARTED}
           </button>
         </nav>
       </header>
@@ -155,14 +155,14 @@ export function LandingPage() {
           <p className="landing-subhead">{BRAND_DESCRIPTION}</p>
           <div className="landing-hero-actions">
             <button type="button" className="landing-btn landing-btn--primary tap-target" onClick={scrollToWaitlist}>
-              Join the waitlist
+              {CTA_JOIN_WAITLIST}
             </button>
             <button
               type="button"
               className="landing-btn landing-btn--secondary tap-target"
               onClick={() => navigateTo(ROUTES.demo)}
             >
-              See the demo
+              {CTA_GET_STARTED}
             </button>
           </div>
         </div>
@@ -282,8 +282,8 @@ export function LandingPage() {
           <div className="landing-waitlist-copy">
             <h2 className="landing-section-title">Be first on the trail.</h2>
             <p className="landing-section-lead">
-              Join the waitlist for early access to PawStreak — we&apos;re starting in San Diego and
-              expanding from there.
+              {CTA_JOIN_WAITLIST} — early access to PawStreak starts in San Diego and expands from
+              there.
             </p>
           </div>
 
@@ -291,6 +291,7 @@ export function LandingPage() {
             <div className="landing-waitlist-success" role="status">
               <i className="ti ti-circle-check landing-waitlist-success-icon" aria-hidden="true" />
               <p>You&apos;re on the PawStreak waitlist.</p>
+              <p className="landing-waitlist-success-note">{CTA_ADD_TO_HOME_SCREEN}</p>
             </div>
           ) : (
             <form className="landing-waitlist-form" onSubmit={handleSubmit} noValidate>
@@ -349,7 +350,7 @@ export function LandingPage() {
                 className="landing-btn landing-btn--primary landing-btn--full tap-target"
                 disabled={loading}
               >
-                {loading ? 'Joining…' : 'Join the waitlist'}
+                {loading ? 'Joining…' : CTA_JOIN_WAITLIST}
               </button>
             </form>
           )}

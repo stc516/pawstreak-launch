@@ -163,13 +163,13 @@ async function main() {
 
     await screenshot(page, '03-invite-flow')
 
-    await page.getByRole('button', { name: 'See the demo', exact: true }).first().click()
+    await page.getByRole('button', { name: 'Get started now', exact: true }).first().click()
     await page.waitForTimeout(QA_STEP_PAUSE_MS)
     await record(
       'demo-cta-nav',
       page.url().includes('/demo') &&
         (await page.locator('.home-intro-kicker, .home-intro-title').first().isVisible()),
-      'See the demo navigates to /demo app experience',
+      'Get started now navigates to /demo app experience',
     )
 
     await page.goto(`${BASE_URL}/app`, { waitUntil: 'networkidle' })
