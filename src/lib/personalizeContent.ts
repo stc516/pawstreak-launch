@@ -5,6 +5,7 @@ import {
   personalizeGhostText,
 } from './dogLabels'
 import { buildAdventureRecapOptions, bondSubtitleFor, journeyTitleFor } from './onboardingProfile'
+import { getFlashbackForState } from './productionState'
 
 function buildMoodRecapOptions(dogs: Dog[]): RecapChip[] {
   const options: RecapChip[] = [
@@ -71,17 +72,11 @@ export function personalizeAppContentForDogs(
     adventureRecapOptions: buildAdventureRecapOptions(dogs),
     moodRecapOptions: buildMoodRecapOptions(dogs),
     dogModeOptions: buildDogModeOptions(dogs),
-    flashback: {
-      title: current.flashback.title,
-      subtitle: personalizeGhostText(
-        dogs.length === 1
-          ? `${lead}'s first visit to Torrey Pines. You've been back 6 times since.`
-          : dogs.length >= 2
-            ? current.flashback.subtitle
-            : 'Your first visit to Torrey Pines. You have been back 6 times since.',
-        dogs,
-      ),
-    },
+    flashback: getFlashbackForState({
+      ...current,
+      dogs,
+      journeyEntries: current.journeyEntries,
+    }),
     journeyEntries: current.journeyEntries.map((entry) => ({
       ...entry,
       tags: entry.tags.map((tag) => {

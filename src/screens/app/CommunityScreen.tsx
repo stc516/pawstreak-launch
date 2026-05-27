@@ -122,7 +122,9 @@ export function CommunityScreen({
           </button>
         </div>
         <div className="comm-quick-share-note">
-          Quick posts are saved locally in this demo.
+          {state.mode === 'demo'
+            ? 'Quick posts are saved locally in this demo.'
+            : 'Quick posts are saved on this device for now.'}
         </div>
       </div>
 
@@ -133,6 +135,15 @@ export function CommunityScreen({
       ) : null}
 
       <div className="sec sec--warm">Stories from the pack</div>
+
+      {state.communityPosts.length === 0 ? (
+        <div className="journey-empty detail-card-warm">
+          <div className="journey-empty-title">Community is getting started</div>
+          <div className="journey-empty-body">
+            Share your first adventure when you are ready — your pack will see it here.
+          </div>
+        </div>
+      ) : null}
 
       <div className="comm-feed">
         {state.communityPosts.map((post) => {

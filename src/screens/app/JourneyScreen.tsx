@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import type { AppState } from '../../data/demo'
 import { getDisplayFlashbackSubtitle, getDisplayJourneyTitle } from '../../lib/profileDisplay'
+import { getJourneyMapSummary } from '../../lib/productionState'
 import {
   filterJourneyEntries,
   getJourneyFilterEmptyState,
@@ -36,6 +37,8 @@ export function JourneyScreen({
     state.selectedJourneyFilterId,
   )
   const emptyState = getJourneyFilterEmptyState(state.selectedJourneyFilterId)
+  const journeyMap = getJourneyMapSummary(state)
+  const hasMemories = state.journeyEntries.length > 0
 
   return (
     <>
@@ -64,19 +67,23 @@ export function JourneyScreen({
 
       <button type="button" className="jmap jmap--tap tap-target detail-card-warm" onClick={onOpenMap}>
         <i className="ti ti-map-2" aria-hidden="true" />
-        <div className="jmap-title">{state.journeyMap.title}</div>
-        <div className="jmap-sub">{state.journeyMap.subtitle}</div>
+        <div className="jmap-title">{journeyMap.title}</div>
+        <div className="jmap-sub">{journeyMap.subtitle}</div>
       </button>
 
-      <div className="flash detail-card-warm">
-        <div className="flash-ico">✨</div>
-        <div>
-          <div className="flash-title">{state.flashback.title}</div>
-          <div className="flash-sub">{getDisplayFlashbackSubtitle(state)}</div>
+      {hasMemories ? (
+        <div className="flash detail-card-warm">
+          <div className="flash-ico">✨</div>
+          <div>
+            <div className="flash-title">{state.flashback.title}</div>
+            <div className="flash-sub">{getDisplayFlashbackSubtitle(state)}</div>
+          </div>
         </div>
-      </div>
+      ) : null}
 
-      <div className="sec sec--warm">This week&apos;s adventures</div>
+      <div className="sec sec--warm">
+        {hasMemories ? "This week's adventures" : 'Your memories'}
+      </div>
 
       {filteredEntries.length === 0 && emptyState ? (
         <div className="journey-empty detail-card-warm">

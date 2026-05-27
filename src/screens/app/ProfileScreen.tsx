@@ -41,25 +41,34 @@ export function ProfileScreen({
   return (
     <>
       <div className="prof-top">
-        <div className="dogs-row">
-          {profileDogs.map((dog) => (
-            <button
-              key={dog.id}
-              type="button"
-              className={`dog-col tap-target${state.activeDogId === dog.id ? ' dog-col--active' : ''}`}
-              onClick={() => onSetActiveDog?.(dog.id)}
-            >
-              <div className={`dog-circle ${dog.circleClass}`}>
-                {dog.profileEmoji}
-              </div>
-              <div className="dog-dname">{dog.name}</div>
-              <div className="dog-breed">{dog.breed}</div>
-              {state.activeDogId === dog.id ? (
-                <div className="dog-active-label">Active</div>
-              ) : null}
-            </button>
-          ))}
-        </div>
+        {profileDogs.length === 0 ? (
+          <div className="journey-empty detail-card-warm">
+            <div className="journey-empty-title">Add your dog</div>
+            <div className="journey-empty-body">
+              Your pack profile will show up here once you add your dog.
+            </div>
+          </div>
+        ) : (
+          <div className="dogs-row">
+            {profileDogs.map((dog) => (
+              <button
+                key={dog.id}
+                type="button"
+                className={`dog-col tap-target${state.activeDogId === dog.id ? ' dog-col--active' : ''}`}
+                onClick={() => onSetActiveDog?.(dog.id)}
+              >
+                <div className={`dog-circle ${dog.circleClass}`}>
+                  {dog.profileEmoji}
+                </div>
+                <div className="dog-dname">{dog.name}</div>
+                <div className="dog-breed">{dog.breed}</div>
+                {state.activeDogId === dog.id ? (
+                  <div className="dog-active-label">Active</div>
+                ) : null}
+              </button>
+            ))}
+          </div>
+        )}
         {profileDogs.map((dog) =>
           editingDogId === dog.id ? (
             <div key={`edit-${dog.id}`} className="dog-edit-panel detail-card-warm">

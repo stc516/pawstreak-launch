@@ -64,10 +64,10 @@ const MEMORY_BY_ENTRY: Record<string, Partial<JourneyMemoryDetail>> = {
 const DEFAULT_MEMORY: JourneyMemoryDetail = {
   memorySubtitle: 'Worth remembering.',
   visitCount: 1,
-  dogLoveLine: 'Bailey loved this place.',
+  dogLoveLine: 'Your dog loved this place.',
   emotionalRecaps: [
     'One of those small days that becomes a favorite.',
-    'Both dogs came home tired and happy.',
+    'A good outing worth keeping.',
   ],
   favoriteMoment: 'The quiet middle of the outing — when everything felt easy.',
   whatDogsLoved: ['New smells', 'Being together', 'A familiar route done differently'],
@@ -75,7 +75,7 @@ const DEFAULT_MEMORY: JourneyMemoryDetail = {
   photoUrls: ['/sample-images/park.jpg', '/sample-images/dogs-outdoors.jpg'],
   memoryMood: 'Warm + steady',
   adventureType: 'Adventure',
-  dogTags: ['Bailey + Omi'],
+  dogTags: ['Your pack'],
 }
 
 export function getJourneyMemoryDetail(

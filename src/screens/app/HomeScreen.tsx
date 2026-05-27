@@ -89,7 +89,7 @@ export function HomeScreen({
 
       {!state.locationSupported ? (
         <div className="home-area-fallback detail-card-warm">
-          We&apos;re still building your area. You can request it, but here are sample
+          We&apos;re still building your area. You can request it, but here are suggested
           adventures for now.
         </div>
       ) : null}
@@ -155,27 +155,35 @@ export function HomeScreen({
         </p>
 
         <div className="mstrip home-memory-value-strip">
-          {state.recentAdventures.map((adventure, index) => {
-            const place = getPlaceById(adventure.placeId)
-
-            return (
-              <div key={adventure.title} className="mthumb mthumb--warm">
-                {place ? (
-                  <CardImage
-                    className="mthumb-img"
-                    imageUrl={place.imageUrl}
-                    imageAlt={place.imageAlt}
-                    imageTone={place.imageTone}
-                  />
-                ) : null}
-                <div className="mthumb-text">
-                  <div className="mtwarm">{getMemoryWarmLabel(index)}</div>
-                  <div className="mtlbl">{adventure.title}</div>
-                  <div className="mttag">{place ? getMagicLine(place) : adventure.tag}</div>
-                </div>
+          {state.recentAdventures.length === 0 ? (
+            <div className="journey-empty detail-card-warm">
+              <div className="journey-empty-body">
+                Your first memory will appear here after an adventure.
               </div>
-            )
-          })}
+            </div>
+          ) : (
+            state.recentAdventures.map((adventure, index) => {
+              const place = getPlaceById(adventure.placeId)
+
+              return (
+                <div key={adventure.title} className="mthumb mthumb--warm">
+                  {place ? (
+                    <CardImage
+                      className="mthumb-img"
+                      imageUrl={place.imageUrl}
+                      imageAlt={place.imageAlt}
+                      imageTone={place.imageTone}
+                    />
+                  ) : null}
+                  <div className="mthumb-text">
+                    <div className="mtwarm">{getMemoryWarmLabel(index)}</div>
+                    <div className="mtlbl">{adventure.title}</div>
+                    <div className="mttag">{place ? getMagicLine(place) : adventure.tag}</div>
+                  </div>
+                </div>
+              )
+            })
+          )}
         </div>
 
         <button

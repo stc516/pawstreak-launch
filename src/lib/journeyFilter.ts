@@ -59,6 +59,13 @@ export function getJourneyFilterEmptyState(
       cta: 'Find an adventure',
     }
   }
+  if (filterId === 'all') {
+    return {
+      title: 'Your first memory will appear here',
+      body: 'Your first memory will appear here after an adventure.',
+      cta: 'Find an adventure',
+    }
+  }
   return null
 }
 

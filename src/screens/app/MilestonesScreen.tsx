@@ -43,50 +43,58 @@ export function MilestonesScreen({
 
       <div className="sec">Active challenges</div>
 
-      {state.challenges.map((challenge) => (
-        <button
-          key={challenge.id}
-          type="button"
-          className="challenge challenge--tap tap-target"
-          onClick={() => onOpenChallenge(challenge.id)}
-        >
-          <div className="ch-top">
-            <div className="ch-name">{challenge.name}</div>
-            <div className="ch-prog">{challenge.progress}</div>
-          </div>
-          <div className="ch-bar">
-            <div
-              className="ch-fill"
-              style={{ width: challenge.fillWidth }}
-            />
-          </div>
-          <div className="ch-sub">{challenge.subtitle}</div>
-          <div className="ch-prize">
-            <i className="ti ti-gift" aria-hidden="true" />
-            {challenge.prize}
-          </div>
-        </button>
-      ))}
+      {state.challenges.length === 0 ? (
+        <p className="pack-access-copy">Challenges unlock as you save adventures.</p>
+      ) : (
+        state.challenges.map((challenge) => (
+          <button
+            key={challenge.id}
+            type="button"
+            className="challenge challenge--tap tap-target"
+            onClick={() => onOpenChallenge(challenge.id)}
+          >
+            <div className="ch-top">
+              <div className="ch-name">{challenge.name}</div>
+              <div className="ch-prog">{challenge.progress}</div>
+            </div>
+            <div className="ch-bar">
+              <div
+                className="ch-fill"
+                style={{ width: challenge.fillWidth }}
+              />
+            </div>
+            <div className="ch-sub">{challenge.subtitle}</div>
+            <div className="ch-prize">
+              <i className="ti ti-gift" aria-hidden="true" />
+              {challenge.prize}
+            </div>
+          </button>
+        ))
+      )}
 
       <div className="sec">Achievements</div>
 
-      {state.achievements.map((achievement) => (
-        <button
-          key={achievement.id}
-          type="button"
-          className={`ach-item ach-item--tap tap-target ${achievement.status}`}
-          onClick={() => onOpenAchievement(achievement.id)}
-        >
-          <div className="ach-ico">{achievement.emoji}</div>
-          <div>
-            <div className="ach-title">{achievement.title}</div>
-            <div className="ach-sub">{achievement.subtitle}</div>
-          </div>
-          <div className={`ach-badge ${achievement.status}`}>
-            {achievement.badge}
-          </div>
-        </button>
-      ))}
+      {state.achievements.length === 0 ? (
+        <p className="pack-access-copy">Achievements appear after your first saved memories.</p>
+      ) : (
+        state.achievements.map((achievement) => (
+          <button
+            key={achievement.id}
+            type="button"
+            className={`ach-item ach-item--tap tap-target ${achievement.status}`}
+            onClick={() => onOpenAchievement(achievement.id)}
+          >
+            <div className="ach-ico">{achievement.emoji}</div>
+            <div>
+              <div className="ach-title">{achievement.title}</div>
+              <div className="ach-sub">{achievement.subtitle}</div>
+            </div>
+            <div className={`ach-badge ${achievement.status}`}>
+              {achievement.badge}
+            </div>
+          </button>
+        ))
+      )}
     </>
   )
 }

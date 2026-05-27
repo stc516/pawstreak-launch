@@ -160,9 +160,9 @@ export function resolveLocationProfile(query: string): LocationProfile {
     zipCode: zipCode,
     label: trimmed || 'Your area',
     supported: false,
-    mapTitle: 'Sample adventures for now',
+    mapTitle: 'Suggested adventures for now',
     mapSubtitle:
-      "We're still building your area. You can request it, but here are sample adventures for now.",
+      "We're still building your area. You can request it, but here are suggested adventures for now.",
     communityLabel: 'Dogs out right now',
   }
 }

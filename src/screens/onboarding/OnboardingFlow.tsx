@@ -245,11 +245,8 @@ export function OnboardingFlow({
                 />
               </svg>
               <div className="hero-chips">
-                <div className="hero-chip">
-                  <div className="live-dot" />
-                  247 dogs out right now
-                </div>
-                <div className="hero-chip">🔥 14 day streak</div>
+                <div className="hero-chip">Adventures built around your dog</div>
+                <div className="hero-chip">Memories that last</div>
               </div>
             </div>
 
@@ -790,12 +787,12 @@ export function OnboardingFlow({
               <div className="confirm-row">
                 <span className="confirm-key">Spots ready</span>
                 <span className="confirm-val onboarding-spots-ready">
-                  {locationProfile.supported ? '200+ nearby' : 'Sample adventures for now'}
+                  {locationProfile.supported ? '200+ nearby' : 'Suggested adventures for now'}
                 </span>
               </div>
               {!locationProfile.supported ? (
                 <div className="confirm-note">
-                  We&apos;re still building your area. You can request it, but sample
+                  We&apos;re still building your area. You can request it, but suggested
                   adventures will show for now.
                 </div>
               ) : null}
