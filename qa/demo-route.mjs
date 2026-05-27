@@ -96,14 +96,14 @@ async function main() {
 
   try {
     // Test 1: root shows onboarding when app storage is empty
-    await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' })
+    await page.goto(`${BASE_URL}/app`, { waitUntil: 'networkidle' })
     await clearStorage(page, ['pawstreak:app', 'pawstreak:demo'])
     await page.reload({ waitUntil: 'networkidle' })
 
     const onboardingVisible = await page
       .getByRole('button', { name: /Get started/i })
       .isVisible()
-    await record('root-onboarding', onboardingVisible, 'Root route shows onboarding for new users')
+    await record('root-onboarding', onboardingVisible, 'Production /app route shows onboarding for new users')
     await screenshot(page, '01-root-onboarding')
 
     // Test 2: demo route loads full app with Bailey + Omi
@@ -222,8 +222,8 @@ async function main() {
       'Demo route does not modify pawstreak:app while browsing /demo',
     )
 
-    // Test 3: root still shows onboarding after demo session
-    await page.goto(`${BASE_URL}/`, { waitUntil: 'networkidle' })
+    // Test 3: production app still shows onboarding after demo session
+    await page.goto(`${BASE_URL}/app`, { waitUntil: 'networkidle' })
     await clearStorage(page, ['pawstreak:app'])
     await page.reload({ waitUntil: 'networkidle' })
 
@@ -233,7 +233,7 @@ async function main() {
     await record(
       'root-onboarding-after-demo',
       rootOnboardingAgain,
-      'Root route still shows onboarding when app storage is cleared',
+      'Production /app route still shows onboarding when app storage is cleared',
     )
 
     const demoStorageStillExists = await page.evaluate(() =>

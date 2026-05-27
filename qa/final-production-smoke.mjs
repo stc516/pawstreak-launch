@@ -6,7 +6,7 @@ import { execSync } from 'node:child_process'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const DEMO_URL = process.env.QA_DEMO_URL || 'https://pawstreak-launch.vercel.app/demo'
-const APP_URL = process.env.QA_APP_URL || 'https://pawstreak-launch.vercel.app'
+const APP_URL = process.env.QA_APP_URL || 'https://pawstreak-launch.vercel.app/app'
 const OUT_DIR =
   process.env.QA_OUT_DIR || path.join(__dirname, 'evidence', 'final-production-smoke')
 

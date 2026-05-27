@@ -85,14 +85,14 @@ async function main() {
   let errorMessage = null
 
   try {
-    await page.goto(`${BASE_URL}/demo`, { waitUntil: 'networkidle' })
+    await page.goto(`${BASE_URL}/demo/launch`, { waitUntil: 'networkidle' })
     await page.evaluate(() => localStorage.clear())
     await page.reload({ waitUntil: 'networkidle' })
 
     await record(
       'demo-launcher',
       await page.locator('.demo-launcher-title').isVisible(),
-      '/demo shows launcher screen',
+      '/demo/launch shows launcher screen',
     )
     await screenshot(page, '01-demo-launcher')
 
@@ -108,7 +108,7 @@ async function main() {
     )
     await screenshot(page, '02-full-demo-home')
 
-    await page.goto(`${BASE_URL}/demo`, { waitUntil: 'networkidle' })
+    await page.goto(`${BASE_URL}/demo/launch`, { waitUntil: 'networkidle' })
     await page.getByRole('button', { name: 'Try onboarding' }).click()
     await page.waitForTimeout(500)
     await record(
@@ -152,7 +152,7 @@ async function main() {
     )
     await screenshot(page, '06-demo-feedback-visible')
 
-    await page.goto(`${BASE_URL}/demo`, { waitUntil: 'networkidle' })
+    await page.goto(`${BASE_URL}/demo/launch`, { waitUntil: 'networkidle' })
     await page.getByRole('button', { name: 'Reset demo' }).click()
     await page.waitForTimeout(400)
     const demoCleared = await page.evaluate(() => !localStorage.getItem('pawstreak:demo'))
@@ -162,7 +162,7 @@ async function main() {
       'Reset demo clears demo state and returns to launcher',
     )
 
-    await page.goto(BASE_URL, { waitUntil: 'networkidle' })
+    await page.goto(`${BASE_URL}/app`, { waitUntil: 'networkidle' })
     await page.evaluate(() => {
       localStorage.setItem('pawstreak:app', JSON.stringify({ marker: 'normal-app-state' }))
     })
@@ -170,7 +170,7 @@ async function main() {
     await record(
       'normal-root-onboarding',
       await page.getByRole('button', { name: /Get started/i }).isVisible(),
-      'Normal / onboarding unaffected',
+      'Production /app onboarding unaffected',
     )
     await screenshot(page, '07-normal-root-onboarding')
 

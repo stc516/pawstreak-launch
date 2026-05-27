@@ -1093,6 +1093,13 @@ function App() {
     }
   }, [pathname])
 
+  useEffect(() => {
+    document.documentElement.classList.toggle('landing-route', isLandingRoute(pathname))
+    return () => {
+      document.documentElement.classList.remove('landing-route')
+    }
+  }, [pathname])
+
   if (isContentStudioRoute(pathname)) {
     return <ContentStudio />
   }

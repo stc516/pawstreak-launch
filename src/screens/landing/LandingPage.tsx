@@ -66,10 +66,8 @@ export function LandingPage() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    document.documentElement.classList.add('landing-route')
     document.title = 'PawStreak — Adventures & memories with your dog'
     return () => {
-      document.documentElement.classList.remove('landing-route')
       document.title = 'PawStreak'
     }
   }, [])
