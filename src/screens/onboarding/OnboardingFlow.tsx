@@ -10,7 +10,7 @@ import { readImageFileAsDataUrl } from '../../lib/imageUtils'
 import type { OnboardingResult } from '../../lib/onboardingProfile'
 import { resolveLocationProfile } from '../../lib/onboardingProfile'
 import { BrandLogoCircle } from '../../components/BrandLogoCircle'
-import { LandingPhonePreview } from '../../components/LandingPhonePreview'
+import { OnboardingEntryPreview } from '../../components/OnboardingEntryPreview'
 import {
   APP_ENTRY_SUBHEAD,
   APP_ENTRY_TITLE,
@@ -225,13 +225,7 @@ export function OnboardingFlow({
             <h1 className="h1 onboarding-welcome-title">{APP_ENTRY_TITLE}</h1>
             <p className="body onboarding-welcome-subhead">{APP_ENTRY_SUBHEAD}</p>
 
-            <div className="onboarding-welcome-phone" aria-hidden="true">
-              <LandingPhonePreview />
-            </div>
-
-            <p className="onboarding-welcome-install">
-              Add PawStreak to your home screen for one-tap access to every adventure.
-            </p>
+            <OnboardingEntryPreview />
           </div>
           <div className="bottom-bar">
             <button

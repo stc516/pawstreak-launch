@@ -3594,20 +3594,25 @@ select.field-input {
   margin-top: 12px;
 }
 
-.onboarding-body--welcome { padding-top: 12px; }
+.onboarding-body--welcome {
+  padding-top: 12px;
+  overflow: hidden;
+}
 .onboarding-body--signup { padding-top: 20px; }
 .onboarding-body--dog { padding-top: 16px; }
 .onboarding-body--vibes { padding-top: 16px; }
 .onboarding-body--local { padding-top: 16px; }
 .onboarding-body--done { padding-top: 20px; }
 
-.onboarding-body--welcome { padding-top: 12px; }
 .onboarding-welcome-entry {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   padding-top: 8px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .onboarding-welcome-header {
@@ -3626,46 +3631,134 @@ select.field-input {
 }
 
 .onboarding-welcome-title {
-  margin-bottom: 10px;
-  font-size: clamp(1.65rem, 6.4vw, 2rem);
-  line-height: 1.12;
+  margin-bottom: 8px;
+  font-size: clamp(1.55rem, 5.8vw, 1.95rem);
+  line-height: 1.18;
   letter-spacing: -0.03em;
-  max-width: 16ch;
+  max-width: 22ch;
 }
 
 .onboarding-welcome-subhead {
-  margin: 0 0 14px;
-  font-size: 0.95rem;
-  line-height: 1.55;
-  color: var(--on-surface-var);
-  max-width: 32ch;
-}
-
-.onboarding-welcome-phone {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin: 4px 0 12px;
-}
-
-.onboarding-welcome-phone .landing-phone {
-  width: min(236px, 84vw);
-}
-
-.onboarding-welcome-phone .landing-phone-screen--hero {
-  min-height: 340px;
-}
-
-.onboarding-welcome-phone .landing-phone-preview {
-  min-height: 340px;
-}
-
-.onboarding-welcome-install {
-  margin: 0 0 8px;
-  font-size: 0.82rem;
+  margin: 0 0 12px;
+  font-size: 0.92rem;
   line-height: 1.5;
   color: var(--on-surface-var);
-  max-width: 30ch;
+  max-width: 34ch;
+}
+
+.onboarding-entry-preview {
+  width: min(100%, 300px);
+  margin: 0 auto;
+  padding: 14px;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 18% 78%, rgba(56, 189, 248, 0.12) 0%, transparent 34%),
+    radial-gradient(circle at 76% 28%, rgba(34, 197, 94, 0.1) 0%, transparent 32%),
+    linear-gradient(180deg, #fff9f4 0%, #f0fdf4 52%, #e8f5e9 100%);
+  border: 0.5px solid rgba(154, 52, 18, 0.12);
+  box-shadow: 0 12px 28px rgba(92, 64, 35, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 1;
+  min-height: 0;
+}
+
+.onboarding-entry-kicker {
+  margin: 0;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--secondary);
+  text-align: left;
+}
+
+.onboarding-entry-adventure {
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fff;
+  border: 0.5px solid rgba(154, 52, 18, 0.12);
+  box-shadow: 0 6px 16px rgba(92, 64, 35, 0.06);
+}
+
+.onboarding-entry-adventure-image {
+  height: 64px;
+  background-size: cover;
+  background-position: center;
+}
+
+.onboarding-entry-adventure-title {
+  margin: 0;
+  padding: 9px 12px 10px;
+  font-family: var(--serif);
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--on-surface);
+  text-align: left;
+}
+
+.onboarding-entry-memory {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 0.5px solid rgba(154, 52, 18, 0.1);
+}
+
+.onboarding-entry-memory-thumb {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.onboarding-entry-memory-label {
+  margin: 0 0 2px;
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--secondary);
+  text-align: left;
+}
+
+.onboarding-entry-memory-title {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--on-surface);
+  text-align: left;
+}
+
+.onboarding-entry-places {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 0.5px solid rgba(120, 90, 60, 0.18);
+  background:
+    radial-gradient(circle at 18% 78%, rgba(56, 189, 248, 0.16) 0%, transparent 34%),
+    radial-gradient(circle at 76% 28%, rgba(34, 197, 94, 0.12) 0%, transparent 32%),
+    linear-gradient(180deg, rgba(228, 210, 184, 0.96) 0%, rgba(214, 232, 210, 0.94) 100%);
+}
+
+.onboarding-entry-places-label {
+  display: block;
+  padding: 6px 10px 0;
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(92, 64, 35, 0.72);
+  text-align: left;
+}
+
+.onboarding-entry-places-panel {
+  height: 40px;
 }
 
 .onboarding-welcome-signin {
