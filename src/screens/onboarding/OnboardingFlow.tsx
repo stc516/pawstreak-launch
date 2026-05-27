@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import {
   dogAges,
   dogBreeds,
@@ -6,6 +6,7 @@ import {
   onboardingPlaces,
   onboardingVibes,
 } from '../../data/demo'
+import { readImageFileAsDataUrl } from '../../lib/imageUtils'
 import type { OnboardingResult } from '../../lib/onboardingProfile'
 import { resolveLocationProfile } from '../../lib/onboardingProfile'
 
@@ -82,6 +83,9 @@ export function OnboardingFlow({
   const [selectedCats, setSelectedCats] = useState<string[]>(['park'])
   const [locationQuery, setLocationQuery] = useState('92123')
   const [modalOpen, setModalOpen] = useState(false)
+  const [dogPhotoPreview, setDogPhotoPreview] = useState<string | null>(null)
+  const [dogPhotoError, setDogPhotoError] = useState<string | null>(null)
+  const dogPhotoInputRef = useRef<HTMLInputElement>(null)
 
   const signupValid =
     email.includes('@') &&
@@ -170,6 +174,30 @@ export function OnboardingFlow({
         ? current.filter((chip) => chip !== id)
         : [...current, id],
     )
+  }
+
+  const handleDogPhotoPick = () => {
+    setDogPhotoError(null)
+    dogPhotoInputRef.current?.click()
+  }
+
+  const handleDogPhotoSelected = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file) return
+
+    try {
+      const dataUrl = await readImageFileAsDataUrl(file)
+      setDogPhotoPreview(dataUrl)
+      setDogPhotoError(null)
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Could not load that photo'
+      console.warn('Onboarding dog photo failed:', message)
+      setDogPhotoError('Could not load that photo. Try another image.')
+    }
   }
 
   return (
@@ -377,16 +405,59 @@ export function OnboardingFlow({
             <p className="body onboarding-center-copy">Tell us about your companion.</p>
 
             <div className="photo-wrap">
-              <div className="photo-circle">
-                <div className="photo-placeholder">
-                  <span className="photo-upload-label">UPLOAD</span>
-                </div>
-              </div>
-              <div className="photo-edit">
+              <input
+                ref={dogPhotoInputRef}
+                className="cam-input"
+                type="file"
+                accept="image/*"
+                onChange={handleDogPhotoSelected}
+                tabIndex={-1}
+                aria-hidden="true"
+              />
+              <button
+                type="button"
+                className="photo-circle"
+                onClick={handleDogPhotoPick}
+                aria-label="Upload dog photo"
+                style={{ overflow: 'hidden', padding: 0, cursor: 'pointer' }}
+              >
+                {dogPhotoPreview ? (
+                  <img
+                    src={dogPhotoPreview}
+                    alt=""
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      display: 'block',
+                    }}
+                  />
+                ) : (
+                  <div className="photo-placeholder">
+                    <span className="photo-upload-label">UPLOAD</span>
+                  </div>
+                )}
+              </button>
+              <button
+                type="button"
+                className="photo-edit"
+                onClick={handleDogPhotoPick}
+                aria-label="Change dog photo"
+                style={{ border: 'none', padding: 0, cursor: 'pointer' }}
+              >
                 <svg viewBox="0 0 14 14" stroke="white" fill="none" strokeWidth="1.5">
                   <path d="M9.5 2.5l2 2-7 7H2.5v-2l7-7z" />
                 </svg>
-              </div>
+              </button>
+              {dogPhotoError ? (
+                <p
+                  className="caption"
+                  role="alert"
+                  style={{ textAlign: 'center', marginTop: 8 }}
+                >
+                  {dogPhotoError}
+                </p>
+              ) : null}
             </div>
 
             <div className="field">
