@@ -6,6 +6,11 @@ import {
   getPlanMagicMeta,
 } from '../../data/places'
 import { getRecommendationPrefs } from '../../lib/onboardingProfile'
+import {
+  getRoadTripDriveTime,
+  getRoadTripWhyToday,
+  openRoadTripDirections,
+} from '../../lib/roadTrip'
 
 interface PlanScreenProps {
   state: AppState
@@ -96,12 +101,54 @@ export function PlanScreen({
         ))}
       </div>
 
-      {places.map((place) => (
-        <div key={place.id} className="pcard">
+      {places.map((place) => {
+        const isRoadTrip = place.category === 'Road trip'
+        const driveTime = isRoadTrip
+          ? getRoadTripDriveTime(place, state.locationSupported)
+          : null
+
+        return (
+        <div key={place.id} className={`pcard${isRoadTrip ? ' pcard--road-trip' : ''}`}>
           <div className="pico">{getPlaceEmoji(place.category)}</div>
           <div className="pinfo">
             <div className="pname">{place.name}</div>
-            <div className="pmeta">{getPlanMagicMeta(place)}</div>
+            {isRoadTrip ? (
+              <div className="road-trip-details">
+                <div className="road-trip-row">
+                  <span className="road-trip-key">Destination</span>
+                  <span>{place.city}{place.addressLabel ? ` · ${place.addressLabel}` : ''}</span>
+                </div>
+                {driveTime ? (
+                  <div className="road-trip-row">
+                    <span className="road-trip-key">Drive time</span>
+                    <span>{driveTime}</span>
+                  </div>
+                ) : null}
+                <div className="road-trip-row">
+                  <span className="road-trip-key">Distance</span>
+                  <span>{place.distanceLabel}</span>
+                </div>
+                <div className="road-trip-row">
+                  <span className="road-trip-key">Dog rules</span>
+                  <span>{place.leashInfo}</span>
+                </div>
+                <div className="road-trip-why">{getRoadTripWhyToday(place)}</div>
+                {place.suggestedStops?.length ? (
+                  <div className="road-trip-stops">
+                    Suggested stops: {place.suggestedStops.join(' · ')}
+                  </div>
+                ) : null}
+                <button
+                  type="button"
+                  className="road-trip-directions tap-target"
+                  onClick={() => openRoadTripDirections(place)}
+                >
+                  Open directions
+                </button>
+              </div>
+            ) : (
+              <div className="pmeta">{getPlanMagicMeta(place)}</div>
+            )}
           </div>
           <button
             type="button"
@@ -111,7 +158,8 @@ export function PlanScreen({
             Go
           </button>
         </div>
-      ))}
+        )
+      })}
 
       <div className="plan-box">
         <div className="plan-title">

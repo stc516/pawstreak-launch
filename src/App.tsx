@@ -60,6 +60,7 @@ import {
   persistOnboardingToSupabase,
   startAdventureOnServer,
 } from './lib/appDataSync'
+import { applyRealUserContent } from './lib/productionState'
 import { setActiveDog, updateDogForUser } from './lib/db/dogs'
 import { fetchMemoriesForUser, countDistinctPlaces, memoryRowToJourneyEntry } from './lib/db/memories'
 import { insertEarlyAccessSignup } from './lib/db/earlyAccess'
@@ -420,9 +421,15 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   const startAdventureSession = () => {
     setState((current) => {
       if (!current.activeAdventure) return current
+      const startedAt = current.activeAdventure.startedAt ?? new Date().toISOString()
       return {
         ...current,
-        activeAdventure: { ...current.activeAdventure, started: true },
+        activeAdventure: {
+          ...current.activeAdventure,
+          started: true,
+          startedAt,
+          status: 'active',
+        },
       }
     })
   }
@@ -537,6 +544,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         dogId: activeDogId,
         placeId: place.id,
         durationLabel,
+        selectedDogIds: state.dogs.map((dog) => dog.id),
       })
 
       if (serverAdventure) {
@@ -559,6 +567,10 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         place.id,
         place.name,
         durationLabel,
+        {
+          dogId: activeDogId,
+          selectedDogIds: current.dogs.map((dog) => dog.id),
+        },
       ),
       adventurePhotos: ['', '', ''],
       selectedJourneyEntryId: null,
@@ -575,7 +587,10 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     setState((current) => ({
       ...current,
       selectedJourneyEntryId: null,
-      activeAdventure: createActiveAdventure(place.id, place.name, 'Open end'),
+      activeAdventure: createActiveAdventure(place.id, place.name, 'Open end', {
+        dogId: current.activeDogId ?? current.dogs[0]?.id,
+        selectedDogIds: current.dogs.map((dog) => dog.id),
+      }),
       adventurePhotos: ['', '', ''],
     }))
   }
@@ -604,16 +619,18 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         const journeyEntries = await fetchMemoriesForUser(auth.user.id, activeDogId)
         const placeCount = await countDistinctPlaces(auth.user.id, activeDogId)
 
-        setState((current) => ({
-          ...current,
-          activeAdventure: null,
-          activeTab: 'journey',
-          adventureCount: journeyEntries.length,
-          placeCount,
-          journeyEntries,
-          adventurePhotos: ['', '', ''],
-          memorySaveToast: 'Memory saved — worth remembering.',
-        }))
+        setState((current) =>
+          applyRealUserContent({
+            ...current,
+            activeAdventure: null,
+            activeTab: 'journey',
+            adventureCount: journeyEntries.length,
+            placeCount,
+            journeyEntries,
+            adventurePhotos: ['', '', ''],
+            memorySaveToast: 'Memory saved — worth remembering.',
+          }),
+        )
         return
       } catch {
         setState((current) => ({
@@ -640,15 +657,21 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
           ]
         : current.journeyEntries
 
-      return {
+      const adventureCount = journeyEntries.length
+      const placeCount = new Set(
+        journeyEntries.map((entry) => entry.placeId).filter(Boolean),
+      ).size
+
+      return applyRealUserContent({
         ...current,
         activeAdventure: null,
         activeTab: 'journey',
-        adventureCount: current.adventureCount + 1,
+        adventureCount,
+        placeCount,
         journeyEntries,
         adventurePhotos: ['', '', ''],
         memorySaveToast: 'Memory saved — worth remembering.',
-      }
+      })
     })
   }
 

@@ -11,31 +11,17 @@ import { createMemory } from './db/memories'
 import { getPlaceById } from '../data/places'
 import type { AdventureFinishPayload } from './adventureFinish'
 import type { ActiveAdventure, Dog } from '../data/demo'
+import { createActiveAdventure } from '../data/demo'
 
-const EMPTY_COMMUNITY_LIVE: AppState['communityLive'] = {
-  label: 'Community',
-  count: '0',
-  countLabel: 'pack members nearby',
-  tagline: 'Share adventures when you are ready.',
-  topSpot: 'Your neighborhood',
-  topSpotNote: 'Community launches soon.',
-  chips: [{ label: 'Coming soon' }],
-}
-
-const EMPTY_BOND_LEVEL: AppState['bondLevel'] = {
-  label: 'Bond level',
-  rank: 'Getting started',
-  fillWidth: '8%',
-  subtitle: 'Every adventure builds your story together.',
-  nextRank: 'Adventure buddy',
-  nextUnlock: 'Save your first memory',
-  favoriteCategory: '—',
-  beachDays: 0,
-  recentMoments: [],
-}
+import {
+  EMPTY_BOND_LEVEL,
+  EMPTY_COMMUNITY_LIVE,
+  EMPTY_FLASHBACK,
+  applyRealUserContent,
+} from './productionState'
 
 export function createProductionInitialState(): AppState {
-  return {
+  return applyRealUserContent({
     ...defaultAppState,
     mode: 'app',
     dogs: [],
@@ -52,13 +38,10 @@ export function createProductionInitialState(): AppState {
     hasUserDogProfile: false,
     communityLive: EMPTY_COMMUNITY_LIVE,
     bondLevel: EMPTY_BOND_LEVEL,
-    flashback: {
-      title: 'Your first memory is waiting',
-      subtitle: 'Finish an adventure to start your journey.',
-    },
+    flashback: EMPTY_FLASHBACK,
     activeAdventure: null,
     adventurePhotos: ['', '', ''],
-  }
+  })
 }
 
 export async function hydrateProductionState(
@@ -71,7 +54,7 @@ export async function hydrateProductionState(
   const journeyEntries = await fetchMemoriesForUser(userId, activeDog?.id ?? null)
   const placeCount = await countDistinctPlaces(userId, activeDog?.id ?? null)
 
-  return {
+  const hydrated = {
     ...base,
     onboardingComplete: profile?.onboarding_complete ?? false,
     userName: profile?.display_name ?? base.userName,
@@ -88,6 +71,8 @@ export async function hydrateProductionState(
     placeCount,
     activeDogId: activeDog?.id ?? null,
   }
+
+  return applyRealUserContent(hydrated)
 }
 
 export async function persistOnboardingToSupabase(
@@ -113,6 +98,7 @@ export async function startAdventureOnServer(input: {
   dogId: string
   placeId: string
   durationLabel: string
+  selectedDogIds?: string[]
 }): Promise<ActiveAdventure | null> {
   const adventure = await createAdventure(input)
   if (!adventure) return null
@@ -126,14 +112,12 @@ export async function startAdventureOnServer(input: {
     input.userId,
   )
 
-  return {
+  return createActiveAdventure(place.id, place.name, input.durationLabel, {
     serverId: adventure.id,
     dogId: input.dogId,
-    placeId: place.id,
-    location: place.name,
-    durationLabel: input.durationLabel,
+    selectedDogIds: input.selectedDogIds ?? [input.dogId],
     started: false,
-  }
+  })
 }
 
 export async function finishAdventureOnServer(input: {

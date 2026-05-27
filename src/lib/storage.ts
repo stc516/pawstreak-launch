@@ -13,6 +13,10 @@ import { DEFAULT_PACK_ACCESS_MEMBERS } from '../data/packAccess'
 import { isDefaultDemoDogs } from './dogLabels'
 import { personalizeAppContentForDogs } from './personalizeContent'
 import { createProductionInitialState } from './appDataSync'
+import {
+  EMPTY_COMMUNITY_LIVE,
+  sanitizeProductionAppState,
+} from './productionState'
 import type { DemoRoute } from './demoRoute'
 
 const APP_STORAGE_KEY = 'pawstreak:app'
@@ -27,12 +31,32 @@ function getStorageKey(mode: AppMode): string {
 }
 
 function normalizeActiveAdventure(
-  adventure: ActiveAdventure | { location: string; placeId?: string; started?: boolean } | null,
+  adventure:
+    | ActiveAdventure
+    | {
+        id?: string
+        serverId?: string
+        dogId?: string
+        selectedDogIds?: string[]
+        location: string
+        placeId?: string
+        started?: boolean
+        startedAt?: string
+        durationLabel?: string
+        status?: 'active'
+      }
+    | null,
 ): ActiveAdventure | null {
   if (!adventure) return null
 
   const place = resolvePlaceFromAdventure(adventure)
+  const serverId = 'serverId' in adventure ? adventure.serverId : undefined
   return {
+    id: adventure.id ?? serverId ?? crypto.randomUUID(),
+    serverId,
+    dogId: 'dogId' in adventure ? adventure.dogId : undefined,
+    selectedDogIds:
+      'selectedDogIds' in adventure ? adventure.selectedDogIds : undefined,
     placeId: place.id,
     location: place.name,
     durationLabel:
@@ -40,6 +64,8 @@ function normalizeActiveAdventure(
         ? adventure.durationLabel
         : 'Open end',
     started: adventure.started ?? false,
+    startedAt: 'startedAt' in adventure ? adventure.startedAt : undefined,
+    status: 'active',
   }
 }
 
@@ -63,8 +89,10 @@ function normalizeCuratedDraft(
 
 function normalizeCommunityLive(
   live: AppState['communityLive'] | undefined,
+  mode: AppMode,
 ): AppState['communityLive'] {
-  const defaults = defaultAppState.communityLive
+  const defaults =
+    mode === 'app' ? EMPTY_COMMUNITY_LIVE : defaultAppState.communityLive
   const legacy = live as AppState['communityLive'] & { subtitle?: string }
 
   return {
@@ -118,14 +146,17 @@ function normalizeAppState(state: AppState, mode: AppMode): AppState {
     packAccessMembers: rest.packAccessMembers ?? DEFAULT_PACK_ACCESS_MEMBERS,
     showPackInviteOverlay: rest.showPackInviteOverlay ?? false,
     packAccessToast: rest.packAccessToast ?? null,
-    communityPosts: (rest.communityPosts ?? defaultAppState.communityPosts).map(
+    communityPosts: (mode === 'app'
+      ? rest.communityPosts ?? []
+      : rest.communityPosts ?? defaultAppState.communityPosts
+    ).map(
       (post) => ({
         ...post,
         likedByUser: post.likedByUser ?? false,
         commentList: post.commentList ?? [],
       }),
     ),
-    communityLive: normalizeCommunityLive(rest.communityLive),
+    communityLive: normalizeCommunityLive(rest.communityLive, mode),
   }
 
   if (
@@ -161,7 +192,7 @@ function normalizeAppState(state: AppState, mode: AppMode): AppState {
     return normalized
   }
 
-  return normalized
+  return sanitizeProductionAppState(normalized)
 }
 
 function demoBaseState(state: AppState, demoRoute?: DemoRoute | null): AppState {

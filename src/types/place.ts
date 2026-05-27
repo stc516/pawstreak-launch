@@ -38,6 +38,9 @@ export interface Place {
   addressLabel?: string
   lat?: number
   lng?: number
+  driveTimeEstimate?: string
+  directionsDestination?: string
+  suggestedStops?: string[]
   featured: boolean
   popularNow: boolean
   imageUrl?: string

@@ -3,7 +3,6 @@ import type { AppState } from '../../data/demo'
 import {
   buildJourneyMapPins,
   filterJourneyMapPins,
-  getGhostPinPreview,
   type JourneyMapFilterId,
 } from '../../data/journeyMapPins'
 import { getJourneyMapStats } from '../../lib/journeyMapStats'
@@ -19,14 +18,6 @@ const MAP_FILTERS: { id: JourneyMapFilterId; label: string }[] = [
   { id: 'cafes', label: 'Cafes' },
 ]
 
-const MAP_AREA_LABELS = [
-  { label: 'Coast', top: '84%', left: '12%' },
-  { label: 'Coronado', top: '76%', left: '30%' },
-  { label: 'Balboa', top: '46%', left: '30%' },
-  { label: 'North Park', top: '58%', left: '52%' },
-  { label: 'Julian', top: '12%', left: '74%' },
-]
-
 interface JourneyMapViewProps {
   state: AppState
   onBack: () => void
@@ -36,7 +27,8 @@ interface JourneyMapViewProps {
 export function JourneyMapView({ state, onBack, onOpenMemory }: JourneyMapViewProps) {
   const [filterId, setFilterId] = useState<JourneyMapFilterId>('all')
   const [selectedPinId, setSelectedPinId] = useState<string | null>(null)
-  const pins = filterJourneyMapPins(buildJourneyMapPins(state.journeyEntries), filterId)
+  const allPins = buildJourneyMapPins(state.journeyEntries)
+  const pins = filterJourneyMapPins(allPins, filterId)
   const stats = getJourneyMapStats(state)
 
   const selectedPreview = useMemo(() => {
@@ -44,26 +36,14 @@ export function JourneyMapView({ state, onBack, onOpenMemory }: JourneyMapViewPr
     const pin = pins.find((item) => item.id === selectedPinId)
     if (!pin) return null
 
-    if (pin.entryId) {
-      const entry = state.journeyEntries.find((item) => item.id === pin.entryId)
-      if (entry) {
-        return {
-          entryId: entry.id,
-          place: entry.place,
-          date: entry.date,
-          magicLine: entry.magicLine ?? 'A day worth remembering.',
-          isExample: false,
-        }
-      }
-    }
+    const entry = state.journeyEntries.find((item) => item.id === pin.entryId)
+    if (!entry) return null
 
-    const ghost = getGhostPinPreview(pin.id)
     return {
-      entryId: pin.entryId,
-      place: ghost.place,
-      date: ghost.date,
-      magicLine: ghost.magicLine,
-      isExample: true,
+      entryId: entry.id,
+      place: entry.place,
+      date: entry.date,
+      magicLine: entry.magicLine ?? 'A day worth remembering.',
     }
   }, [pins, selectedPinId, state.journeyEntries])
 
@@ -91,7 +71,7 @@ export function JourneyMapView({ state, onBack, onOpenMemory }: JourneyMapViewPr
             <div className="jmap-overlay-stats jmap-overlay-stats--empty detail-card-warm">
               <div className="jmap-overlay-empty-title">Your map is waiting</div>
               <div className="jmap-overlay-empty-copy">
-                Finish an adventure and your first pins will land here.
+                Your map starts with your first saved adventure.
               </div>
             </div>
           ) : (
@@ -113,7 +93,10 @@ export function JourneyMapView({ state, onBack, onOpenMemory }: JourneyMapViewPr
                 key={filter.id}
                 type="button"
                 className={`jf tap-target${filterId === filter.id ? ' on' : ''}`}
-                onClick={() => setFilterId(filter.id)}
+                onClick={() => {
+                  setFilterId(filter.id)
+                  setSelectedPinId(null)
+                }}
               >
                 {filter.label}
               </button>
@@ -121,56 +104,44 @@ export function JourneyMapView({ state, onBack, onOpenMemory }: JourneyMapViewPr
           </div>
 
           <div className="jmap-overlay-panel">
-            <div className="jmap-overlay-panel-grid">
-              {MAP_AREA_LABELS.map((area) => (
-                <span
-                  key={area.label}
-                  className="jmap-area-label"
-                  style={{ top: area.top, left: area.left }}
-                >
-                  {area.label}
-                </span>
-              ))}
-              {pins.map((pin) => (
-                <button
-                  key={pin.id}
-                  id={pin.id}
-                  type="button"
-                  className={`jmap-overlay-pin tap-target${selectedPinId === pin.id ? ' jmap-overlay-pin--selected' : ''}${pin.entryId ? '' : ' jmap-overlay-pin--example'}`}
-                  style={{ top: pin.top, left: pin.left }}
-                  onClick={() => setSelectedPinId(pin.id)}
-                >
-                  <span className="jmap-overlay-pin-dot" />
-                  <span className="jmap-overlay-pin-label">
-                    {pin.label}
-                    {!pin.entryId ? ' · example' : ''}
-                  </span>
-                </button>
-              ))}
-            </div>
+            {pins.length === 0 ? (
+              <div className="jmap-overlay-empty-list detail-card-warm">
+                {allPins.length === 0
+                  ? 'Your map starts with your first saved adventure.'
+                  : 'No saved adventures match this filter yet.'}
+              </div>
+            ) : (
+              <div className="jmap-overlay-panel-grid">
+                {pins.map((pin) => (
+                  <button
+                    key={pin.id}
+                    id={pin.id}
+                    type="button"
+                    className={`jmap-overlay-pin tap-target${selectedPinId === pin.id ? ' jmap-overlay-pin--selected' : ''}`}
+                    style={{ top: pin.top, left: pin.left }}
+                    onClick={() => setSelectedPinId(pin.id)}
+                  >
+                    <span className="jmap-overlay-pin-dot" />
+                    <span className="jmap-overlay-pin-label">{pin.label}</span>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {selectedPreview ? (
             <div className="jmap-pin-preview detail-card-warm">
-              <div className="jmap-pin-preview-kicker">
-                {selectedPreview.isExample ? 'Example pin' : 'Pinned memory'}
-              </div>
+              <div className="jmap-pin-preview-kicker">Pinned memory</div>
               <div className="jmap-pin-preview-place">{selectedPreview.place}</div>
               <div className="jmap-pin-preview-date">{selectedPreview.date}</div>
               <div className="jmap-pin-preview-line">{selectedPreview.magicLine}</div>
-              {selectedPreview.entryId ? (
-                <button
-                  type="button"
-                  className="jmap-pin-preview-cta tap-target"
-                  onClick={() => onOpenMemory(selectedPreview.entryId!)}
-                >
-                  Open memory
-                </button>
-              ) : (
-                <div className="jmap-pin-preview-note">
-                  Save a real outing to unlock this memory.
-                </div>
-              )}
+              <button
+                type="button"
+                className="jmap-pin-preview-cta tap-target"
+                onClick={() => onOpenMemory(selectedPreview.entryId)}
+              >
+                Open memory
+              </button>
             </div>
           ) : null}
 
@@ -178,7 +149,7 @@ export function JourneyMapView({ state, onBack, onOpenMemory }: JourneyMapViewPr
           <div className="jmap-overlay-list">
             {state.journeyEntries.length === 0 ? (
               <div className="jmap-overlay-empty-list detail-card-warm">
-                Tap the example pins to see how your map will feel once adventures stack up.
+                Your map starts with your first saved adventure.
               </div>
             ) : (
               state.journeyEntries.slice(0, 4).map((entry) => {

@@ -53,12 +53,16 @@ export interface MonthlyPlanOption {
 }
 
 export interface ActiveAdventure {
+  id: string
   serverId?: string
   dogId?: string
+  selectedDogIds?: string[]
   placeId: string
   location: string
   durationLabel: string
   started: boolean
+  startedAt?: string
+  status: 'active'
 }
 
 export type DogMode = 'both' | 'bailey' | 'omi'
@@ -688,9 +692,34 @@ export function createActiveAdventure(
   placeId: string,
   location: string,
   durationLabel = 'Open end',
-  started = false,
+  options: {
+    started?: boolean
+    startedAt?: string
+    serverId?: string
+    dogId?: string
+    selectedDogIds?: string[]
+  } = {},
 ): ActiveAdventure {
-  return { placeId, location, durationLabel, started }
+  const serverId = options.serverId
+  return {
+    id: serverId ?? crypto.randomUUID(),
+    serverId,
+    dogId: options.dogId,
+    selectedDogIds: options.selectedDogIds,
+    placeId,
+    location,
+    durationLabel,
+    started: options.started ?? false,
+    startedAt: options.startedAt,
+    status: 'active',
+  }
+}
+
+export function getActiveAdventureElapsedSeconds(adventure: ActiveAdventure): number {
+  if (!adventure.started || !adventure.startedAt) return 0
+  const startedMs = new Date(adventure.startedAt).getTime()
+  if (Number.isNaN(startedMs)) return 0
+  return Math.max(0, Math.floor((Date.now() - startedMs) / 1000))
 }
 
 export function formatTimerWithTarget(

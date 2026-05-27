@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import type { AppState } from '../../data/demo'
-import { formatTimerWithTarget } from '../../data/demo'
+import {
+  formatTimerWithTarget,
+  getActiveAdventureElapsedSeconds,
+} from '../../data/demo'
 import { getDisplayDogLabel, getDisplayDogsAreOutLabel, getProfileDogs } from '../../lib/profileDisplay'
 import type { AdventureFinishPayload } from '../../lib/adventureFinish'
 import { readImageFileAsDataUrl } from '../../lib/imageUtils'
@@ -28,8 +31,9 @@ export function ActiveAdventureScreen({
   onAddPhoto,
 }: ActiveAdventureScreenProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const [elapsedSeconds, setElapsedSeconds] = useState(0)
+  const [, setTick] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
+  const [pausedElapsed, setPausedElapsed] = useState<number | null>(null)
   const [selectedRecaps, setSelectedRecaps] = useState<string[]>([
     'Loved every second',
   ])
@@ -38,18 +42,24 @@ export function ActiveAdventureScreen({
   const place = getPlaceById(adventure?.placeId ?? '')
   const hasPhotos = state.adventurePhotos.some(Boolean)
   const isStarted = adventure?.started ?? false
+  const elapsedSeconds =
+    adventure && isStarted
+      ? isPaused && pausedElapsed !== null
+        ? pausedElapsed
+        : getActiveAdventureElapsedSeconds(adventure)
+      : 0
 
   useEffect(() => {
-    if (!isStarted || isPaused) {
+    if (!isStarted || isPaused || !adventure?.startedAt) {
       return
     }
 
     const interval = window.setInterval(() => {
-      setElapsedSeconds((current) => current + 1)
+      setTick((current) => current + 1)
     }, 1000)
 
     return () => window.clearInterval(interval)
-  }, [isPaused, isStarted])
+  }, [adventure?.startedAt, isPaused, isStarted])
 
   const handleCaptureClick = () => {
     fileInputRef.current?.click()
@@ -145,7 +155,7 @@ export function ActiveAdventureScreen({
                 Start adventure
               </button>
               <button type="button" className="adv-ready-back tap-target" onClick={onCancel}>
-                Back
+                Cancel adventure
               </button>
             </div>
           </main>
@@ -255,14 +265,27 @@ export function ActiveAdventureScreen({
             <button
               type="button"
               className="cbtn tap-target"
-              onClick={() => setIsPaused((current) => !current)}
+              onClick={() => {
+                if (!adventure) return
+                setIsPaused((current) => {
+                  if (current) {
+                    setPausedElapsed(null)
+                    return false
+                  }
+                  setPausedElapsed(getActiveAdventureElapsedSeconds(adventure))
+                  return true
+                })
+              }}
             >
-              Pause
+              {isPaused ? 'Resume' : 'Pause'}
             </button>
             <button type="button" className="cbtn pri tap-target" onClick={handleFinish}>
-              Finish
+              Finish adventure
             </button>
           </div>
+          <button type="button" className="adv-cancel-btn tap-target" onClick={onCancel}>
+            Cancel adventure
+          </button>
         </main>
 
         <BottomNav

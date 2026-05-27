@@ -1,0 +1,222 @@
+import type { AppState, Dog, DogMode, RecapChip } from '../data/demo'
+import { isDefaultDemoDogs } from './dogLabels'
+import {
+  buildAdventureRecapOptions,
+  bondSubtitleFor,
+  journeyTitleFor,
+} from './onboardingProfile'
+
+function buildMoodRecapOptions(dogs: Dog[]): RecapChip[] {
+  const options: RecapChip[] = [
+    { id: 'loved-every-second', label: 'Loved every second' },
+    { id: 'needed-a-break', label: 'Needed a break' },
+    { id: 'met-new-friends', label: 'Met new friends' },
+    { id: 'found-a-new-spot', label: 'Found a new spot' },
+  ]
+
+  if (dogs.length >= 2) {
+    options.push({
+      id: 'dog2-pace',
+      label: `${dogs[1].name} set the pace`,
+    })
+  } else if (dogs.length === 1) {
+    options.push({
+      id: 'dog-pace',
+      label: `${dogs[0].name} set the pace`,
+    })
+  } else {
+    options.push({ id: 'pace', label: 'They set the pace' })
+  }
+
+  return options
+}
+
+function buildDogModeOptions(dogs: Dog[]): { id: DogMode; label: string }[] {
+  if (dogs.length <= 1) {
+    return [{ id: 'both', label: dogs.length === 1 ? dogs[0].name : 'Your dog' }]
+  }
+
+  return [
+    { id: 'both', label: 'Both' },
+    { id: 'bailey', label: `${dogs[0].name} only` },
+    { id: 'omi', label: `${dogs[1].name} only` },
+  ]
+}
+
+export const DEMO_SEEDED_JOURNEY_ENTRY_IDS = new Set([
+  'dog-beach-today',
+  'torrey-pines-tuesday',
+  'julian-saturday',
+  'balboa-park-sunday',
+  'lestats-coffee-monday',
+])
+
+export const DEMO_SEEDED_COMMUNITY_POST_IDS = new Set([
+  'sophie-mango',
+  'jake-luna-biscuit',
+  'maria-cooper',
+  'bailey-omi-patio',
+])
+
+export const DEMO_SEEDED_CHALLENGE_IDS = new Set([
+  'socal-beach',
+  'morning-crew',
+  'road-tripper',
+])
+
+export const DEMO_SEEDED_ACHIEVEMENT_IDS = new Set([
+  'first-beach',
+  'trail-scout',
+  'road-tripper-ach',
+])
+
+export const DEMO_SEEDED_FAVORITE_IDS = new Set([
+  'fav-dog-beach',
+  'fav-torrey',
+  'fav-julian',
+])
+
+export const EMPTY_COMMUNITY_LIVE: AppState['communityLive'] = {
+  label: 'Community',
+  count: '0',
+  countLabel: 'pack members nearby',
+  tagline: 'Share adventures when you are ready.',
+  topSpot: 'Your neighborhood',
+  topSpotNote: 'Community launches soon.',
+  chips: [{ label: 'Coming soon' }],
+}
+
+export const EMPTY_BOND_LEVEL: AppState['bondLevel'] = {
+  label: 'Bond level',
+  rank: 'Getting started',
+  fillWidth: '8%',
+  subtitle: 'Every adventure builds your story together.',
+  nextRank: 'Adventure buddy',
+  nextUnlock: 'Save your first memory',
+  favoriteCategory: '—',
+  beachDays: 0,
+  recentMoments: [],
+}
+
+export const EMPTY_FLASHBACK: AppState['flashback'] = {
+  title: 'Your first memory is waiting',
+  subtitle: 'Finish an adventure to start your journey.',
+}
+
+function countDistinctPlaces(entries: AppState['journeyEntries']): number {
+  const ids = new Set(
+    entries.map((entry) => entry.placeId).filter((id): id is string => Boolean(id)),
+  )
+  return ids.size
+}
+
+export function getJourneyMapSummary(state: AppState): AppState['journeyMap'] {
+  if (state.adventureCount === 0) {
+    return {
+      title: 'Your map is waiting',
+      subtitle: 'Your map starts with your first saved adventure.',
+    }
+  }
+
+  const adventureLabel = `${state.adventureCount} adventure${state.adventureCount === 1 ? '' : 's'} saved`
+  const placeLabel = `${state.placeCount} place${state.placeCount === 1 ? '' : 's'} discovered`
+
+  return {
+    title: adventureLabel,
+    subtitle: `${placeLabel} · Tap to open your map`,
+  }
+}
+
+export function getFlashbackForState(state: AppState): AppState['flashback'] {
+  if (state.journeyEntries.length === 0) {
+    return EMPTY_FLASHBACK
+  }
+
+  const latest = state.journeyEntries[0]
+  const title =
+    latest.date.toLowerCase() === 'today'
+      ? 'Saved today'
+      : `Remember ${latest.date.toLowerCase()}`
+
+  return {
+    title,
+    subtitle: latest.magicLine ?? `A day at ${latest.place}.`,
+  }
+}
+
+function looksLikeDemoCommunityLive(live: AppState['communityLive']): boolean {
+  return live.count === '247' || live.countLabel.toLowerCase().includes('dogs out now')
+}
+
+export function applyRealUserContent(state: AppState): AppState {
+  const dogs = state.dogs
+  const journeyTitle =
+    dogs.length > 0 ? journeyTitleFor(dogs) : 'Your Journey'
+
+  return {
+    ...state,
+    journeyTitle,
+    journeyMap: getJourneyMapSummary(state),
+    flashback: getFlashbackForState(state),
+    bondLevel: {
+      ...EMPTY_BOND_LEVEL,
+      subtitle:
+        state.adventureCount === 0
+          ? EMPTY_BOND_LEVEL.subtitle
+          : bondSubtitleFor(dogs, state.adventureCount, state.placeCount),
+    },
+    adventureRecapOptions: buildAdventureRecapOptions(dogs),
+    moodRecapOptions: buildMoodRecapOptions(dogs),
+    dogModeOptions: buildDogModeOptions(dogs),
+  }
+}
+
+export function sanitizeProductionAppState(state: AppState): AppState {
+  let next: AppState = { ...state }
+
+  if (isDefaultDemoDogs(next.dogs)) {
+    next = {
+      ...next,
+      dogs: [],
+      hasUserDogProfile: false,
+      activeDogId: null,
+    }
+  }
+
+  const journeyEntries = next.journeyEntries.filter(
+    (entry) => !DEMO_SEEDED_JOURNEY_ENTRY_IDS.has(entry.id),
+  )
+  const communityPosts = next.communityPosts.filter(
+    (post) => !DEMO_SEEDED_COMMUNITY_POST_IDS.has(post.id),
+  )
+
+  const adventureCount = journeyEntries.length
+  const placeCount =
+    adventureCount === 0 ? 0 : Math.max(next.placeCount, countDistinctPlaces(journeyEntries))
+
+  const stripDemoHistory = adventureCount === 0
+
+  next = {
+    ...next,
+    journeyEntries,
+    communityPosts,
+    adventureCount,
+    placeCount,
+    streak: stripDemoHistory ? 0 : next.streak,
+    recentAdventures: stripDemoHistory ? [] : next.recentAdventures,
+    challenges: stripDemoHistory
+      ? []
+      : next.challenges.filter((item) => !DEMO_SEEDED_CHALLENGE_IDS.has(item.id)),
+    achievements: stripDemoHistory
+      ? []
+      : next.achievements.filter((item) => !DEMO_SEEDED_ACHIEVEMENT_IDS.has(item.id)),
+    favoritePlaces: stripDemoHistory
+      ? []
+      : next.favoritePlaces.filter((item) => !DEMO_SEEDED_FAVORITE_IDS.has(item.id)),
+    communityLive: looksLikeDemoCommunityLive(next.communityLive)
+      ? EMPTY_COMMUNITY_LIVE
+      : next.communityLive,
+  }
+
+  return applyRealUserContent(next)
+}
