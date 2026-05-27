@@ -4,20 +4,20 @@
   "description": "Adventures, memories, and the life your dog deserves.",
   "start_url": "/app",
   "display": "standalone",
-  "background_color": "#0a0908",
-  "theme_color": "#0e0d0c",
+  "background_color": "#fff9f4",
+  "theme_color": "#161a32",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/paw-icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/pawstreak-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/paw-icon.svg",
+      "src": "/pawstreak-logo.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "maskable"
     }
   ]

@@ -5,6 +5,7 @@ import { trackUserEvent } from '../../lib/db/userEvents'
 import { ROUTES } from '../../lib/routes'
 import { isSupabaseConfigured } from '../../lib/supabase'
 import { SAMPLE_IMAGES } from '../../data/sampleImages'
+import { BRAND_DESCRIPTION, BRAND_LOGO, BRAND_NAME, BRAND_TAGLINE } from '../../lib/brand'
 
 const PREVIEW_FEATURES = [
   {
@@ -25,7 +26,7 @@ const PREVIEW_FEATURES = [
     icon: 'ti-compass',
     title: 'Local adventures',
     copy: 'Dog-friendly beaches, trails, patios, and parks near you.',
-    image: SAMPLE_IMAGES.dogsOutdoors,
+    image: SAMPLE_IMAGES.trail,
     tone: 'local',
   },
   {
@@ -119,9 +120,8 @@ export function LandingPage() {
   return (
     <div className="landing" ref={landingRef}>
       <header className="landing-nav">
-        <a className="landing-logo tap-target" href={ROUTES.landing}>
-          <img src="/paw-icon.svg" alt="" width={28} height={28} />
-          <span>PawStreak</span>
+        <a className="landing-logo tap-target" href={ROUTES.landing} aria-label={BRAND_NAME}>
+          <img src={BRAND_LOGO} alt="" width={56} height={56} className="landing-logo-mark" />
         </a>
         <nav className="landing-nav-links" aria-label="Site">
           <button type="button" className="landing-nav-link tap-target" onClick={scrollToWaitlist}>
@@ -140,6 +140,7 @@ export function LandingPage() {
       <section className="landing-hero">
         <div className="landing-hero-glow" aria-hidden="true" />
         <div className="landing-hero-inner">
+          <img src={BRAND_LOGO} alt="" className="landing-hero-mark" aria-hidden="true" />
           <p className="landing-kicker">For dogs who make life better</p>
           <h1 className="landing-headline">
             More adventures.
@@ -148,10 +149,7 @@ export function LandingPage() {
             <br />
             More life together.
           </h1>
-          <p className="landing-subhead">
-            Discover dog-friendly places, save your favorite moments, and build your dog&apos;s story
-            with PawStreak.
-          </p>
+          <p className="landing-subhead">{BRAND_DESCRIPTION}</p>
           <div className="landing-hero-actions">
             <button type="button" className="landing-btn landing-btn--primary tap-target" onClick={scrollToWaitlist}>
               Join the waitlist
@@ -168,14 +166,29 @@ export function LandingPage() {
         <div className="landing-hero-visual" aria-hidden="true">
           <div className="landing-phone">
             <div className="landing-phone-notch" />
-            <div
-              className="landing-phone-screen landing-phone-screen--hero"
-              style={{ backgroundImage: `url(${SAMPLE_IMAGES.dogsOutdoors})` }}
-            >
-              <div className="landing-phone-overlay">
-                <span className="landing-phone-chip">San Diego · Today</span>
-                <p className="landing-phone-title">Morning trail run</p>
-                <p className="landing-phone-sub">Your pack · 2.4 mi</p>
+            <div className="landing-phone-screen landing-phone-screen--hero landing-phone-screen--preview">
+              <div className="landing-phone-preview">
+                <div className="landing-phone-preview-header">
+                  <img src={BRAND_LOGO} alt="" className="landing-phone-preview-mark" />
+                  <span className="landing-phone-preview-title">{BRAND_NAME}</span>
+                </div>
+                <div className="landing-phone-preview-map">
+                  <p className="landing-phone-preview-map-hint">Tap a pin to see its name</p>
+                  <div className="landing-phone-preview-pins">
+                    <span className="landing-phone-preview-pin" style={{ top: '54%', left: '22%' }} />
+                    <span
+                      className="landing-phone-preview-pin landing-phone-preview-pin--active"
+                      style={{ top: '64%', left: '50%' }}
+                    />
+                    <span className="landing-phone-preview-pin" style={{ top: '58%', left: '76%' }} />
+                  </div>
+                  <span className="landing-phone-preview-map-glow" aria-hidden="true" />
+                </div>
+                <div className="landing-phone-overlay">
+                  <span className="landing-phone-chip">Your adventure map</span>
+                  <p className="landing-phone-title">Save the places you love</p>
+                  <p className="landing-phone-sub">Every pin becomes part of your dog&apos;s story.</p>
+                </div>
               </div>
             </div>
           </div>
@@ -241,10 +254,10 @@ export function LandingPage() {
             <p className="landing-founder-sign">— Stephen, Bailey &amp; Meiomi</p>
           </div>
           <div className="landing-founder-visual" aria-hidden="true">
-            <div
-              className="landing-founder-photo"
-              style={{ backgroundImage: `url(${SAMPLE_IMAGES.beach})` }}
-            />
+            <div className="landing-founder-brand">
+              <img src={BRAND_LOGO} alt="" className="landing-founder-logo" />
+              <p className="landing-founder-tagline">{BRAND_TAGLINE}</p>
+            </div>
           </div>
         </div>
       </section>
@@ -331,8 +344,7 @@ export function LandingPage() {
       <footer className="landing-footer">
         <div className="landing-footer-inner">
           <div className="landing-footer-brand">
-            <img src="/paw-icon.svg" alt="" width={24} height={24} />
-            <span>PawStreak</span>
+            <img src={BRAND_LOGO} alt="" width={48} height={48} className="landing-footer-logo" />
           </div>
           <nav className="landing-footer-links" aria-label="Footer">
             <a href="https://instagram.com/pawstreakapp" target="_blank" rel="noopener noreferrer">
