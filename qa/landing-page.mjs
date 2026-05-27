@@ -174,13 +174,13 @@ async function main() {
 
     await page.goto(`${BASE_URL}/start`, { waitUntil: 'networkidle' })
     await page.waitForTimeout(QA_STEP_PAUSE_MS)
-    await page.getByRole('button', { name: 'Continue in browser', exact: true }).first().click()
+    await page.getByRole('button', { name: 'Log in or sign up', exact: true }).first().click()
     await page.waitForTimeout(QA_STEP_PAUSE_MS)
     await record(
       'start-continue-app',
       page.url().includes('/app') &&
         (await page.getByRole('button', { name: /Get started/i }).isVisible()),
-      'Continue in browser navigates to /app',
+      'Log in or sign up navigates to /app',
     )
   } catch (error) {
     overallPass = false

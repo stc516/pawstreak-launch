@@ -15,5 +15,3 @@ export const CTA_GET_STARTED = 'Get started now'
 export const CTA_ADD_TO_HOME_SCREEN = 'Add PawStreak to your home screen'
 
 export const CTA_LOGIN_SIGNUP = 'Log in or sign up'
-
-export const CTA_CONTINUE_BROWSER = 'Continue in browser'

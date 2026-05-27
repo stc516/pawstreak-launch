@@ -47,10 +47,10 @@ async function main() {
     path: path.join(OUT_DIR, '05-start-desktop.png'),
   })
 
-  await desktopPage.getByRole('button', { name: 'Continue in browser', exact: true }).first().click()
+  await desktopPage.getByRole('button', { name: 'Log in or sign up', exact: true }).first().click()
   await desktopPage.waitForTimeout(800)
   const onApp = desktopPage.url().includes('/app')
-  console.log(`Continue in browser -> /app: ${onApp ? 'PASS' : 'FAIL'} (${desktopPage.url()})`)
+  console.log(`Log in or sign up -> /app: ${onApp ? 'PASS' : 'FAIL'} (${desktopPage.url()})`)
 
   await browser.close()
   console.log(`Saved screenshots to ${OUT_DIR}`)
