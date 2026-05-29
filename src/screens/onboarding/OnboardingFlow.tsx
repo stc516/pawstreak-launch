@@ -337,16 +337,17 @@ export function OnboardingFlow({
                 : 'Free to start. Your dog\'s story starts here.'}
             </p>
 
-            <button type="button" className="btn-google onboarding-google-gap" onClick={handleGoogleContinue}>
-              Continue with Google
-            </button>
-            <button type="button" className="btn-google onboarding-google-bottom" disabled>
-              Continue with Apple (soon)
-            </button>
+            {authConfigured ? (
+              <button type="button" className="btn-google onboarding-google-gap" onClick={handleGoogleContinue}>
+                Continue with Google
+              </button>
+            ) : null}
 
-            <div className="divider">
-              <span>or sign up with email</span>
-            </div>
+            {authConfigured ? (
+              <div className="divider">
+                <span>or sign up with email</span>
+              </div>
+            ) : null}
 
             <div className="field">
               <span className="field-label">Your Name</span>
@@ -462,15 +463,7 @@ export function OnboardingFlow({
               </p>
             ) : null}
             <p className="caption onboarding-legal">
-              By joining you agree to our{' '}
-              <a href="#" className="onboarding-link">
-                Privacy Policy
-              </a>{' '}
-              and{' '}
-              <a href="#" className="onboarding-link">
-                Terms
-              </a>
-              .
+              By joining you agree to our Privacy Policy and Terms.
             </p>
           </div>
         </div>
@@ -492,66 +485,53 @@ export function OnboardingFlow({
             </h2>
             <p className="body onboarding-center-copy">Tell us about your companion.</p>
 
-            <div className="photo-wrap">
-              {dogPhotoUploadEnabled ? (
-                <>
-                  <input
-                    ref={dogPhotoInputRef}
-                    className="cam-input"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleDogPhotoSelected}
-                    tabIndex={-1}
-                    aria-hidden="true"
-                  />
-                  <button
-                    type="button"
-                    className="photo-circle"
-                    onClick={handleDogPhotoPick}
-                    aria-label="Upload dog photo"
-                    style={{ overflow: 'hidden', padding: 0, cursor: 'pointer' }}
-                  >
-                    {dogPhotoPreview ? (
-                      <img
-                        src={dogPhotoPreview}
-                        alt=""
-                        className="photo-circle-img"
-                      />
-                    ) : (
-                      <div className="photo-placeholder">
-                        <span className="photo-upload-label">UPLOAD</span>
-                      </div>
-                    )}
-                  </button>
-                  <button
-                    type="button"
-                    className="photo-edit"
-                    onClick={handleDogPhotoPick}
-                    aria-label="Change dog photo"
-                    style={{ border: 'none', padding: 0, cursor: 'pointer' }}
-                  >
-                    <svg viewBox="0 0 14 14" stroke="white" fill="none" strokeWidth="1.5">
-                      <path d="M9.5 2.5l2 2-7 7H2.5v-2l7-7z" />
-                    </svg>
-                  </button>
-                  {dogPhotoError ? (
-                    <p className="caption onboarding-photo-error" role="alert">
-                      {dogPhotoError}
-                    </p>
-                  ) : null}
-                </>
-              ) : (
-                <div className="photo-circle photo-circle--soon" aria-hidden="true">
-                  <div className="photo-placeholder">
-                    <span className="photo-upload-label">SOON</span>
-                  </div>
-                </div>
-              )}
-            </div>
-            {!dogPhotoUploadEnabled ? (
-              <p className="caption onboarding-photo-soon-copy">
-                Profile photos are coming soon.
-              </p>
+            {dogPhotoUploadEnabled ? (
+              <div className="photo-wrap">
+                <input
+                  ref={dogPhotoInputRef}
+                  className="cam-input"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleDogPhotoSelected}
+                  tabIndex={-1}
+                  aria-hidden="true"
+                />
+                <button
+                  type="button"
+                  className="photo-circle"
+                  onClick={handleDogPhotoPick}
+                  aria-label="Upload dog photo"
+                  style={{ overflow: 'hidden', padding: 0, cursor: 'pointer' }}
+                >
+                  {dogPhotoPreview ? (
+                    <img
+                      src={dogPhotoPreview}
+                      alt=""
+                      className="photo-circle-img"
+                    />
+                  ) : (
+                    <div className="photo-placeholder">
+                      <span className="photo-upload-label">UPLOAD</span>
+                    </div>
+                  )}
+                </button>
+                <button
+                  type="button"
+                  className="photo-edit"
+                  onClick={handleDogPhotoPick}
+                  aria-label="Change dog photo"
+                  style={{ border: 'none', padding: 0, cursor: 'pointer' }}
+                >
+                  <svg viewBox="0 0 14 14" stroke="white" fill="none" strokeWidth="1.5">
+                    <path d="M9.5 2.5l2 2-7 7H2.5v-2l7-7z" />
+                  </svg>
+                </button>
+                {dogPhotoError ? (
+                  <p className="caption onboarding-photo-error" role="alert">
+                    {dogPhotoError}
+                  </p>
+                ) : null}
+              </div>
             ) : null}
 
             <div className="field">
@@ -789,13 +769,10 @@ export function OnboardingFlow({
               />
             </div>
 
-            <div className="map-mock">
-              <div className="map-you">
-                <span className="map-you-dot" />
-                You're here
-              </div>
-              <div className="map-count">
-                {locationProfile.supported ? 'Curated nearby picks' : 'Suggested for now'}
+            <div className="onboarding-location-summary detail-card-warm">
+              <div className="onboarding-location-label">{locationProfile.label}</div>
+              <div className="onboarding-location-note">
+                {getSpotsReadyLabel(locationProfile)}
               </div>
             </div>
 

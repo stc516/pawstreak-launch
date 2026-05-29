@@ -294,11 +294,13 @@ export function ActiveAdventureScreen({
           </div>
         </main>
 
-        <BottomNav
-          activeTab="plan"
-          onTabChange={onTabChange}
-          className="bnav bnav--white"
-        />
+        <footer className="app-shell-footer">
+          <BottomNav
+            activeTab="plan"
+            onTabChange={onTabChange}
+            className="bnav bnav--white"
+          />
+        </footer>
       </div>
     </div>
   )

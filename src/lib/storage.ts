@@ -13,6 +13,8 @@ import { DEFAULT_PACK_ACCESS_MEMBERS } from '../data/packAccess'
 import { isDefaultDemoDogs } from './dogLabels'
 import { personalizeAppContentForDogs } from './personalizeContent'
 import { createProductionInitialState } from './appDataSync'
+import { resolveAchievements } from './achievementEngine'
+import { computeBondLevel } from './bondLevel'
 import {
   EMPTY_COMMUNITY_LIVE,
   sanitizeProductionAppState,
@@ -110,6 +112,24 @@ function normalizeCommunityLive(
   }
 }
 
+/** Reset navigation UI on cold start — always land on Home after splash. */
+export function applyLaunchSessionState(state: AppState): AppState {
+  return {
+    ...state,
+    activeTab: 'home',
+    selectedJourneyEntryId: null,
+    selectedChallengeId: null,
+    selectedAchievementId: null,
+    selectedTrainingProgramId: null,
+    showJourneyMapOverlay: false,
+    showJourneyLevelOverlay: false,
+    showPresetPlanOverlay: false,
+    showCommunityCompose: false,
+    showPackInviteOverlay: false,
+    curatedPlanFlowStep: 0,
+  }
+}
+
 function normalizeAppState(state: AppState, mode: AppMode): AppState {
   const { heroSpot: _heroSpot, planPlaces: _planPlaces, ...rest } =
     state as AppState & {
@@ -124,6 +144,7 @@ function normalizeAppState(state: AppState, mode: AppMode): AppState {
     selectedJourneyEntryId: rest.selectedJourneyEntryId ?? null,
     selectedChallengeId: rest.selectedChallengeId ?? null,
     selectedAchievementId: rest.selectedAchievementId ?? null,
+    selectedTrainingProgramId: rest.selectedTrainingProgramId ?? null,
     showCommunityCompose: rest.showCommunityCompose ?? false,
     curatedPlanFlowStep: rest.curatedPlanFlowStep ?? 0,
     curatedPlanDraft: normalizeCuratedDraft(rest.curatedPlanDraft),
@@ -143,6 +164,9 @@ function normalizeAppState(state: AppState, mode: AppMode): AppState {
     dogVibeNames: rest.dogVibeNames ?? [],
     onboardingCategoryIds: rest.onboardingCategoryIds ?? [],
     hasUserDogProfile: rest.hasUserDogProfile ?? false,
+    joinedChallenges: rest.joinedChallenges ?? [],
+    trainingLessonCompletions: rest.trainingLessonCompletions ?? [],
+    trainingRewardUnlocks: rest.trainingRewardUnlocks ?? [],
     packAccessMembers: rest.packAccessMembers ?? DEFAULT_PACK_ACCESS_MEMBERS,
     showPackInviteOverlay: rest.showPackInviteOverlay ?? false,
     packAccessToast: rest.packAccessToast ?? null,
@@ -189,10 +213,14 @@ function normalizeAppState(state: AppState, mode: AppMode): AppState {
       }
     }
 
-    return normalized
+    return applyLaunchSessionState({
+      ...normalized,
+      achievements: resolveAchievements(normalized),
+      bondLevel: computeBondLevel(normalized),
+    })
   }
 
-  return sanitizeProductionAppState(normalized)
+  return applyLaunchSessionState(sanitizeProductionAppState(normalized))
 }
 
 function demoBaseState(state: AppState, demoRoute?: DemoRoute | null): AppState {

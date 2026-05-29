@@ -56,6 +56,7 @@ async function dogRowToDog(row: DogRow): Promise<Dog> {
     avatarClass: row.avatar_class as Dog['avatarClass'],
     profileEmoji: row.profile_emoji,
     breed: row.breed,
+    age: row.age || undefined,
     circleClass: row.circle_class as Dog['circleClass'],
     photoUrl: photoUrl || undefined,
   }
@@ -83,7 +84,7 @@ export async function createDogsForUser(userId: string, dogs: Dog[]): Promise<Do
     user_id: userId,
     name: dog.name,
     breed: dog.breed,
-    age: '',
+    age: dog.age ?? '',
     initial: dog.initial,
     avatar_class: dog.avatarClass,
     profile_emoji: dog.profileEmoji,
@@ -99,7 +100,7 @@ export async function createDogsForUser(userId: string, dogs: Dog[]): Promise<Do
 export async function updateDogForUser(
   userId: string,
   dogId: string,
-  patch: Partial<Pick<Dog, 'name' | 'breed' | 'profileEmoji'>>,
+  patch: Partial<Pick<Dog, 'name' | 'breed' | 'age' | 'profileEmoji'>>,
 ) {
   const supabase = getSupabaseClient()
   if (!supabase) return
@@ -110,9 +111,18 @@ export async function updateDogForUser(
     update.initial = patch.name.charAt(0).toUpperCase()
   }
   if (patch.breed !== undefined) update.breed = patch.breed
+  if (patch.age !== undefined) update.age = patch.age
   if (patch.profileEmoji !== undefined) update.profile_emoji = patch.profileEmoji
 
   await supabase.from('dogs').update(update).eq('id', dogId).eq('user_id', userId)
+}
+
+export async function deleteDogForUser(userId: string, dogId: string): Promise<boolean> {
+  const supabase = getSupabaseClient()
+  if (!supabase) return false
+
+  const { error } = await supabase.from('dogs').delete().eq('id', dogId).eq('user_id', userId)
+  return !error
 }
 
 export async function setActiveDog(userId: string, dogId: string | null) {

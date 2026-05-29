@@ -9,7 +9,28 @@ import { bondSubtitleFor, journeyTitleFor } from './onboardingProfile'
 
 export function getProfileDogs(state: AppState): Dog[] {
   if (!state.onboardingComplete) return []
-  return state.dogs
+  const seen = new Set<string>()
+  return state.dogs.filter((dog) => {
+    if (seen.has(dog.id)) return false
+    seen.add(dog.id)
+    return true
+  })
+}
+
+/** Breed label without legacy age suffix baked into breed string. */
+export function getDogBreedLabel(dog: Dog): string {
+  if (dog.age) return dog.breed
+  const separator = dog.breed.lastIndexOf(' · ')
+  if (separator === -1) return dog.breed
+  return dog.breed.slice(0, separator)
+}
+
+/** Age from dedicated field or legacy breed suffix. */
+export function getDogAgeLabel(dog: Dog): string {
+  if (dog.age) return dog.age
+  const separator = dog.breed.lastIndexOf(' · ')
+  if (separator === -1) return ''
+  return dog.breed.slice(separator + 3)
 }
 
 export function usesDemoDogNames(state: AppState): boolean {

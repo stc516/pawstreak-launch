@@ -5,6 +5,9 @@ import { EMPTY_CURATED_PLAN_DRAFT } from '../lib/curatedPlan'
 import type { RandomPlanResult } from '../lib/randomPlan'
 import type { PackAccessMember } from './packAccess'
 import { DEFAULT_PACK_ACCESS_MEMBERS } from './packAccess'
+import type { Achievement } from './achievements'
+import type { JoinedChallengeRecord } from './challenges'
+import type { TrainingLessonCompletion, TrainingRewardUnlock } from './training'
 
 export type {
   PackAccessMember,
@@ -24,6 +27,7 @@ export interface Dog {
   avatarClass: 'da-b' | 'da-o'
   profileEmoji: string
   breed: string
+  age?: string
   circleClass: 'dc-b' | 'dc-o'
   photoUrl?: string
 }
@@ -129,23 +133,9 @@ export interface CommunityPost {
   isUserPost?: boolean
 }
 
-export interface Challenge {
-  id: string
-  name: string
-  progress: string
-  fillWidth: string
-  subtitle: string
-  prize: string
-}
-
-export interface Achievement {
-  id: string
-  emoji: string
-  title: string
-  subtitle: string
-  status: 'done' | 'active' | 'locked'
-  badge: string
-}
+export type { Achievement } from './achievements'
+export type { JoinedChallengeRecord } from './challenges'
+export type { TrainingLessonCompletion, TrainingRewardUnlock } from './training'
 
 export interface FavoritePlace {
   id: string
@@ -171,6 +161,7 @@ export interface AppState {
   selectedJourneyEntryId: string | null
   selectedChallengeId: string | null
   selectedAchievementId: string | null
+  selectedTrainingProgramId: string | null
   showCommunityCompose: boolean
   memorySaveToast: string | null
   curatedPlanFlowStep: number
@@ -238,7 +229,9 @@ export interface AppState {
       subtitle: string
     }[]
   }
-  challenges: Challenge[]
+  joinedChallenges: JoinedChallengeRecord[]
+  trainingLessonCompletions: TrainingLessonCompletion[]
+  trainingRewardUnlocks: TrainingRewardUnlock[]
   achievements: Achievement[]
   favoritePlaces: FavoritePlace[]
   hasUserDogProfile: boolean
@@ -259,6 +252,7 @@ export const defaultAppState: AppState = {
   selectedJourneyEntryId: null,
   selectedChallengeId: null,
   selectedAchievementId: null,
+  selectedTrainingProgramId: null,
   showCommunityCompose: false,
   memorySaveToast: null,
   curatedPlanFlowStep: 0,
@@ -284,6 +278,7 @@ export const defaultAppState: AppState = {
       avatarClass: 'da-b',
       profileEmoji: '🐕',
       breed: 'Siberian Husky',
+      age: '4 years',
       circleClass: 'dc-b',
     },
     {
@@ -292,7 +287,8 @@ export const defaultAppState: AppState = {
       initial: 'O',
       avatarClass: 'da-o',
       profileEmoji: '🐾',
-      breed: 'Lab Mix · Senior',
+      breed: 'Lab Mix',
+      age: 'Senior',
       circleClass: 'dc-o',
     },
   ],
@@ -554,58 +550,10 @@ export const defaultAppState: AppState = {
       },
     ],
   },
-  challenges: [
-    {
-      id: 'socal-beach',
-      name: 'SoCal Beach Challenge',
-      progress: '4 of 6',
-      fillWidth: '66%',
-      subtitle: '6 different SoCal dog beaches this month',
-      prize: 'Win: PawStreak collar tag · Ends in 12 days',
-    },
-    {
-      id: 'morning-crew',
-      name: 'Morning Crew',
-      progress: '12 of 20',
-      fillWidth: '60%',
-      subtitle: '20 walks before 9am',
-      prize: 'Win: PawStreak bandana set',
-    },
-    {
-      id: 'road-tripper',
-      name: 'Road Tripper',
-      progress: '1 of 3',
-      fillWidth: '33%',
-      subtitle: '3 day trips outside your home city',
-      prize: 'Win: custom adventure patch',
-    },
-  ],
-  achievements: [
-    {
-      id: 'first-beach',
-      emoji: '🏖️',
-      title: 'First Beach Day',
-      subtitle: 'Dog Beach, OB · March 12',
-      status: 'done',
-      badge: 'Done',
-    },
-    {
-      id: 'trail-scout',
-      emoji: '🌲',
-      title: 'Trail Scout',
-      subtitle: '3 more trail walks',
-      status: 'active',
-      badge: 'In progress',
-    },
-    {
-      id: 'road-tripper-ach',
-      emoji: '🚗',
-      title: 'Road Tripper',
-      subtitle: 'Take 3 day trips',
-      status: 'locked',
-      badge: 'Locked',
-    },
-  ],
+  joinedChallenges: [],
+  trainingLessonCompletions: [],
+  trainingRewardUnlocks: [],
+  achievements: [],
   favoritePlaces: [
     {
       id: 'fav-dog-beach',
@@ -633,7 +581,7 @@ export const defaultAppState: AppState = {
   packAccessMembers: DEFAULT_PACK_ACCESS_MEMBERS,
   showPackInviteOverlay: false,
   packAccessToast: null,
-  activeDogId: null,
+  activeDogId: 'bailey',
 }
 
 export function createSeededDemoState(): AppState {

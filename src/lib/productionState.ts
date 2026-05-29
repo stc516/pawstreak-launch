@@ -1,10 +1,11 @@
 import type { AppState, Dog, DogMode, RecapChip } from '../data/demo'
 import { isDefaultDemoDogs } from './dogLabels'
 import { calculateAdventureStreak } from './adventureStreak'
+import { computeBondLevel } from './bondLevel'
+import { resolveAchievements } from './achievementEngine'
 import { buildRecentAdventuresFromJourney } from './recentAdventures'
 import {
   buildAdventureRecapOptions,
-  bondSubtitleFor,
   journeyTitleFor,
 } from './onboardingProfile'
 
@@ -60,17 +61,7 @@ export const DEMO_SEEDED_COMMUNITY_POST_IDS = new Set([
   'bailey-omi-patio',
 ])
 
-export const DEMO_SEEDED_CHALLENGE_IDS = new Set([
-  'socal-beach',
-  'morning-crew',
-  'road-tripper',
-])
-
-export const DEMO_SEEDED_ACHIEVEMENT_IDS = new Set([
-  'first-beach',
-  'trail-scout',
-  'road-tripper-ach',
-])
+export const DEMO_SEEDED_CHALLENGE_IDS = new Set<string>()
 
 export const DEMO_SEEDED_FAVORITE_IDS = new Set([
   'fav-dog-beach',
@@ -177,16 +168,15 @@ export function applyRealUserContent(state: AppState): AppState {
     flashback: getFlashbackForState(state),
     streak,
     recentAdventures,
-    bondLevel: {
-      ...EMPTY_BOND_LEVEL,
-      subtitle:
-        state.adventureCount === 0
-          ? EMPTY_BOND_LEVEL.subtitle
-          : bondSubtitleFor(dogs, state.adventureCount, state.placeCount),
-    },
+    bondLevel: computeBondLevel({
+      ...state,
+      streak,
+      recentAdventures,
+    }),
     adventureRecapOptions: buildAdventureRecapOptions(dogs),
     moodRecapOptions: buildMoodRecapOptions(dogs),
     dogModeOptions: buildDogModeOptions(dogs),
+    achievements: resolveAchievements(state),
   }
 }
 
@@ -236,12 +226,9 @@ export function sanitizeProductionAppState(state: AppState): AppState {
     placeCount,
     streak: stripDemoHistory ? 0 : next.streak,
     recentAdventures: stripDemoHistory ? [] : next.recentAdventures,
-    challenges: stripDemoHistory
-      ? []
-      : next.challenges.filter((item) => !DEMO_SEEDED_CHALLENGE_IDS.has(item.id)),
-    achievements: stripDemoHistory
-      ? []
-      : next.achievements.filter((item) => !DEMO_SEEDED_ACHIEVEMENT_IDS.has(item.id)),
+    joinedChallenges: stripDemoHistory ? [] : (next.joinedChallenges ?? []),
+    trainingLessonCompletions: stripDemoHistory ? [] : (next.trainingLessonCompletions ?? []),
+    trainingRewardUnlocks: stripDemoHistory ? [] : (next.trainingRewardUnlocks ?? []),
     favoritePlaces: stripDemoHistory
       ? []
       : next.favoritePlaces.filter((item) => !DEMO_SEEDED_FAVORITE_IDS.has(item.id)),

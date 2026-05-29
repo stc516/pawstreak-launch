@@ -1,38 +1,31 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import type { AppState } from '../../data/demo'
-import { SAN_DIEGO_BEACH_QUEST_PATH } from '../../data/challengePaths'
 import { getDisplayFlashbackSubtitle, getDisplayJourneyTitle } from '../../lib/profileDisplay'
 import { getJourneyMapSummary } from '../../lib/productionState'
-import {
-  filterJourneyEntries,
-  getJourneyFilterEmptyState,
-} from '../../lib/journeyFilter'
+import { getFeaturedChallenge } from '../../lib/challengeEngine'
+import { JourneyStoryPath } from '../../components/JourneyStoryPath'
 import { ChallengePathExperience } from '../../components/ChallengePathExperience'
-import { CardImage } from '../../components/CardImage'
-import { getPlaceById } from '../../data/places'
-import { getJourneyEntryDisplayImageUrl } from '../../lib/adventureDisplayImage'
 
 interface JourneyScreenProps {
   state: AppState
   isDemoMode?: boolean
-  onSelectFilter: (filterId: string) => void
   onOpenMemory: (entryId: string) => void
   onOpenMap: () => void
   onGoToPlan: () => void
   onStartAdventure: (placeId: string) => void
   onStartNeighborhoodWalk?: () => void
+  onOpenChallenge?: (challengeId: string) => void
   onDismissToast: () => void
 }
 
 export function JourneyScreen({
   state,
-  isDemoMode = false,
-  onSelectFilter,
   onOpenMemory,
   onOpenMap,
   onGoToPlan,
   onStartAdventure,
   onStartNeighborhoodWalk,
+  onOpenChallenge,
   onDismissToast,
 }: JourneyScreenProps) {
   useEffect(() => {
@@ -41,13 +34,10 @@ export function JourneyScreen({
     return () => window.clearTimeout(timer)
   }, [state.memorySaveToast, onDismissToast])
 
-  const filteredEntries = filterJourneyEntries(
-    state.journeyEntries,
-    state.selectedJourneyFilterId,
-  )
-  const emptyState = getJourneyFilterEmptyState(state.selectedJourneyFilterId)
   const journeyMap = getJourneyMapSummary(state)
   const hasMemories = state.journeyEntries.length > 0
+  const featuredChallenge = useMemo(() => getFeaturedChallenge(state), [state])
+  const activeChallenge = featuredChallenge?.progress.joined ? featuredChallenge : undefined
 
   return (
     <>
@@ -57,31 +47,50 @@ export function JourneyScreen({
         </div>
       ) : null}
 
-      <div className="aheader">
+      <div className="aheader journey-story-hero">
         <div className="alogo">{getDisplayJourneyTitle(state)}</div>
+        <p className="journey-story-hero-copy">
+          {hasMemories
+            ? 'Every chapter is a real adventure — photos, dates, and memories that add up to a life together.'
+            : 'Your story starts with one adventure. Save it here and watch the path grow.'}
+        </p>
       </div>
 
-      <ChallengePathExperience
-        path={SAN_DIEGO_BEACH_QUEST_PATH}
-        journeyEntries={state.journeyEntries}
-        isDemoMode={isDemoMode}
-        onStartAdventure={onStartAdventure}
-        onStartNeighborhoodWalk={onStartNeighborhoodWalk}
+      <JourneyStoryPath
+        state={state}
         onOpenMemory={onOpenMemory}
+        onStartAdventure={() => onGoToPlan()}
+        onGoToPlan={onGoToPlan}
       />
 
-      <div className="jfilters">
-        {state.journeyFilters.map((filter) => (
-          <button
-            key={filter.id}
-            type="button"
-            className={`jf tap-target${state.selectedJourneyFilterId === filter.id ? ' on' : ''}`}
-            onClick={() => onSelectFilter(filter.id)}
-          >
-            {filter.label}
-          </button>
-        ))}
-      </div>
+      {activeChallenge ? (
+        <section className="journey-challenge-path detail-card-warm">
+          <div className="journey-challenge-path-header">
+            <div>
+              <div className="journey-challenge-path-kicker">Challenge path</div>
+              <h2 className="journey-challenge-path-title">{activeChallenge.title}</h2>
+              <p className="journey-challenge-path-sub">{activeChallenge.subtitle}</p>
+            </div>
+            {onOpenChallenge ? (
+              <button
+                type="button"
+                className="journey-challenge-path-link tap-target"
+                onClick={() => onOpenChallenge(activeChallenge.id)}
+              >
+                Details
+              </button>
+            ) : null}
+          </div>
+          <ChallengePathExperience
+            challenge={activeChallenge}
+            state={state}
+            onStartAdventure={onStartAdventure}
+            onStartNeighborhoodWalk={onStartNeighborhoodWalk}
+            onGoToPlan={onGoToPlan}
+            onOpenMemory={onOpenMemory}
+          />
+        </section>
+      ) : null}
 
       <button type="button" className="jmap jmap--tap tap-target detail-card-warm" onClick={onOpenMap}>
         <i className="ti ti-map-2" aria-hidden="true" />
@@ -98,61 +107,6 @@ export function JourneyScreen({
           </div>
         </div>
       ) : null}
-
-      <div className="sec sec--warm">
-        {hasMemories ? "This week's adventures" : 'Your memories'}
-      </div>
-
-      {filteredEntries.length === 0 && emptyState && (!hasMemories || state.selectedJourneyFilterId !== 'all') ? (
-        <div className="journey-empty detail-card-warm">
-          <div className="journey-empty-title">{emptyState.title}</div>
-          <div className="journey-empty-body">{emptyState.body}</div>
-          <button
-            type="button"
-            className="journey-empty-cta tap-target"
-            onClick={onGoToPlan}
-          >
-            {emptyState.cta}
-          </button>
-        </div>
-      ) : null}
-
-      <div className="journey-grid">
-        {filteredEntries.map((entry) => {
-          const place = entry.placeId ? getPlaceById(entry.placeId) : undefined
-          const tagLine = entry.tags.slice(0, 2).join(' · ')
-          const cardImageUrl = getJourneyEntryDisplayImageUrl(state.journeyEntries, entry)
-
-          return (
-            <button
-              key={entry.id}
-              type="button"
-              className="mcard mcard--grid mcard--tap tap-target"
-              onClick={() => onOpenMemory(entry.id)}
-            >
-              <div className="mcard-media">
-                <CardImage
-                  className="mcard-img"
-                  imageUrl={cardImageUrl}
-                  imageAlt={place?.imageAlt ?? entry.place}
-                  imageTone={place?.imageTone ?? 'warm'}
-                />
-              </div>
-              <div className="mcard-body">
-                <div className="mcard-place">{entry.place}</div>
-                {entry.magicLine ? (
-                  <div className="mcard-magic">{entry.magicLine}</div>
-                ) : null}
-                {tagLine ? <div className="mcard-tagline">{tagLine}</div> : null}
-                <div className="mcard-date">
-                  {entry.date}
-                  {entry.durationLabel ? ` · ${entry.durationLabel}` : ''}
-                </div>
-              </div>
-            </button>
-          )
-        })}
-      </div>
     </>
   )
 }

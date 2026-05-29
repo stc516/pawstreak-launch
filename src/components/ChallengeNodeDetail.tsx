@@ -1,10 +1,11 @@
 import { CardImage } from './CardImage'
-import type { ResolvedChallengeNode } from '../lib/challengePathProgress'
+import type { ResolvedChallengeNode } from '../lib/challengeEngine'
 
 interface ChallengeNodeDetailProps {
   node: ResolvedChallengeNode | null
   onClose: () => void
   onStartAdventure: (placeId: string) => void
+  onGoToPlan?: () => void
   onOpenMemory?: (entryId: string) => void
 }
 
@@ -12,12 +13,12 @@ export function ChallengeNodeDetail({
   node,
   onClose,
   onStartAdventure,
+  onGoToPlan,
   onOpenMemory,
 }: ChallengeNodeDetailProps) {
   if (!node) return null
 
   const photos = node.journeyEntry?.photoUrls?.filter(Boolean) ?? []
-  const canStart = node.state === 'current' || node.state === 'locked'
 
   return (
     <div className={`challenge-node-detail${node ? ' challenge-node-detail--open' : ''}`}>
@@ -33,7 +34,7 @@ export function ChallengeNodeDetail({
         <CardImage
           className="challenge-node-detail-img"
           imageUrl={node.imageUrl}
-          imageAlt={node.name}
+          imageAlt={node.title}
           imageTone="coastal"
         />
 
@@ -41,7 +42,8 @@ export function ChallengeNodeDetail({
           <div className={`challenge-node-detail-status challenge-node-detail-status--${node.state}`}>
             {node.statusLabel}
           </div>
-          <h3 className="challenge-node-detail-title">{node.name}</h3>
+          <h3 className="challenge-node-detail-title">{node.title}</h3>
+          <p className="challenge-node-detail-copy">{node.description}</p>
 
           {node.state === 'completed' && node.journeyEntry ? (
             <>
@@ -71,22 +73,27 @@ export function ChallengeNodeDetail({
               ) : null}
             </>
           ) : node.state === 'current' ? (
-            <p className="challenge-node-detail-copy">
-              This beach is up next on your quest. Start an adventure when you are ready.
-            </p>
+            <p className="challenge-node-detail-copy">{node.planHint}</p>
           ) : (
             <p className="challenge-node-detail-copy">
-              Finish the previous beaches to unlock this stop on your path.
+              Complete earlier milestones to unlock this step.
             </p>
           )}
 
-          {canStart && node.state === 'current' ? (
+          {node.state === 'current' ? (
             <button
               type="button"
               className="challenge-node-detail-cta tap-target"
-              onClick={() => onStartAdventure(node.placeId)}
+              onClick={() => {
+                if (onGoToPlan) {
+                  onGoToPlan()
+                  onClose()
+                  return
+                }
+                onStartAdventure('')
+              }}
             >
-              Start this adventure
+              {onGoToPlan ? 'Go to Plan' : 'Start an adventure'}
             </button>
           ) : null}
 

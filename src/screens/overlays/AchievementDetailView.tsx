@@ -1,4 +1,4 @@
-import type { Achievement } from '../../data/demo'
+import type { Achievement } from '../../data/achievements'
 import { getAchievementDetail } from '../../data/achievementDetails'
 import { CardImage } from '../../components/CardImage'
 import { StatusBar } from '../../components/StatusBar'
@@ -14,8 +14,7 @@ export function AchievementDetailView({
   dogs = [],
   onBack,
 }: AchievementDetailViewProps) {
-  const detail = getAchievementDetail(achievement.id, dogs)
-  if (!detail) return null
+  const detail = getAchievementDetail(achievement, dogs)
 
   const statusClass =
     achievement.status === 'done'
@@ -37,6 +36,12 @@ export function AchievementDetailView({
           </div>
 
           <div className="achdetail-hero detail-tint detail-tint--warm">
+            <CardImage
+              className="achdetail-hero-badge"
+              imageUrl={achievement.badgeImageUrl}
+              imageAlt=""
+              imageTone="warm"
+            />
             <div className="achdetail-hero-emoji">{achievement.emoji}</div>
             <div className="achdetail-title">{achievement.title}</div>
             <div className={`achdetail-status ${statusClass}`}>
@@ -50,7 +55,7 @@ export function AchievementDetailView({
 
           {detail.dateEarned ? (
             <div className="detail-card-warm achdetail-meta">
-              <div className="detail-section-label">Date earned</div>
+              <div className="detail-section-label">Unlock date</div>
               <div className="achdetail-meta-value">{detail.dateEarned}</div>
             </div>
           ) : null}

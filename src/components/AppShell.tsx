@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import type { TabId } from '../data/demo'
+import { LIVE_PRODUCT } from '../lib/liveProductFeatures'
 import { BottomNav } from './BottomNav'
 import { DemoFeedbackCapture } from './DemoFeedbackCapture'
 import { StatusBar } from './StatusBar'
@@ -20,15 +21,25 @@ export function AppShell({
   return (
     <div className="app-viewport">
       <div className={`app-shell${isDemoMode ? ' app-shell--demo' : ''}`}>
-        <StatusBar />
+        {LIVE_PRODUCT.statusBarChrome ? <StatusBar /> : null}
         {isDemoMode ? (
           <div className="demo-mode-bar" aria-label="Demo preview mode">
             <span className="demo-pill">Demo</span>
           </div>
         ) : null}
         <main className={`scroll${activeTab === 'home' ? ' scroll--home' : ''}`}>{children}</main>
-        {isDemoMode ? <DemoFeedbackCapture /> : null}
-        <BottomNav activeTab={activeTab} onTabChange={onTabChange} />
+        <footer className="app-shell-footer">
+          {isDemoMode ? (
+            <div className="demo-feedback-bar">
+              <DemoFeedbackCapture />
+            </div>
+          ) : null}
+          <BottomNav
+            activeTab={activeTab}
+            onTabChange={onTabChange}
+            mode={isDemoMode ? 'demo' : 'app'}
+          />
+        </footer>
       </div>
     </div>
   )

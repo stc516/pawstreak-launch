@@ -118,15 +118,14 @@ export function buildDogsFromOnboarding(inputs: OnboardingDogInput[]): Dog[] {
     .map((input, index) => {
       const name = input.name.trim()
       const breed = formatBreedLabel(input.breed, input.otherBreed)
-      const ageSuffix = input.age ? ` · ${input.age}` : ''
-
       return {
         id: `dog-${index}-${name.toLowerCase().replace(/\s+/g, '-')}`,
         name,
         initial: name.charAt(0).toUpperCase(),
         avatarClass: AVATAR_CLASSES[index % AVATAR_CLASSES.length],
         profileEmoji: PROFILE_EMOJIS[index % PROFILE_EMOJIS.length],
-        breed: `${breed}${ageSuffix}`,
+        breed,
+        age: input.age.trim() || undefined,
         circleClass: CIRCLE_CLASSES[index % CIRCLE_CLASSES.length],
       }
     })

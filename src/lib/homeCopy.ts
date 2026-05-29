@@ -16,14 +16,18 @@ function namedTarget(dogLabel: string, dogCount: number): string {
   return 'them'
 }
 
-export function getHomeHeroQuestion(dogLabel: string, dogCount: number): string {
+export function getHomeDogActivityLine(
+  dogLabel: string,
+  dogCount: number,
+  activityLabel: string,
+): string {
   if (dogCount >= 2 && dogLabel !== 'your pack' && dogLabel !== 'your dog') {
-    return `What adventure are ${dogLabel} going on today?`
+    return `${dogLabel} · ${activityLabel}`
   }
   if (dogCount === 1 && dogLabel !== 'your dog') {
-    return `What adventure is ${dogLabel} going on today?`
+    return `${dogLabel} · ${activityLabel}`
   }
-  return 'What adventure are you going on today?'
+  return activityLabel
 }
 
 export function getHomeKicker(dogLabel: string, dogCount: number): string {

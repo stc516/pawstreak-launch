@@ -28,8 +28,7 @@ import { FeedbackDashboard } from './screens/internal/FeedbackDashboard'
 import { EarlyAccessScreen } from './screens/EarlyAccessScreen'
 import { DemoLauncher } from './screens/demo/DemoLauncher'
 import type { DemoRoute } from './lib/demoRoute'
-import { shouldPersonalizeContent, getDisplayDogLabel } from './lib/profileDisplay'
-import { SAMPLE_IMAGES } from './data/sampleImages'
+import { shouldPersonalizeContent } from './lib/profileDisplay'
 import { fillPhotoSlots } from './lib/imageUtils'
 import { AppShell } from './components/AppShell'
 import { ActiveAdventureScreen } from './screens/app/ActiveAdventureScreen'
@@ -39,11 +38,22 @@ import { JourneyScreen } from './screens/app/JourneyScreen'
 import { MilestonesScreen } from './screens/app/MilestonesScreen'
 import { ProfileScreen } from './screens/app/ProfileScreen'
 import { OnboardingFlow } from './screens/onboarding/OnboardingFlow'
+import { SplashScreen } from './screens/SplashScreen'
 import { JourneyMemoryView } from './screens/overlays/JourneyMemoryView'
 import { JourneyLevelDetailView } from './screens/overlays/JourneyLevelDetailView'
 import { JourneyMapView } from './screens/overlays/JourneyMapView'
 import { ChallengePathDetailView } from './screens/overlays/ChallengePathDetailView'
-import { getChallengePathById, isChallengePathId } from './data/challengePaths'
+import { getChallengeById, isCuratedChallengeId } from './data/challenges'
+import { getTrainingProgramById, isTrainingProgramId } from './data/training'
+import {
+  joinChallengeState,
+  leaveChallengeState,
+} from './lib/challengeEngine'
+import {
+  completeTrainingLessonState,
+  resetTrainingLessonState,
+} from './lib/trainingEngine'
+import { TrainingProgramDetailView } from './screens/overlays/TrainingProgramDetailView'
 import { CuratedPlanFlow } from './screens/overlays/CuratedPlanFlow'
 import { AchievementDetailView } from './screens/overlays/AchievementDetailView'
 import { CommunityComposeOverlay } from './screens/overlays/CommunityComposeOverlay'
@@ -71,7 +81,12 @@ import {
   startAdventureOnServer,
 } from './lib/appDataSync'
 import { applyRealUserContent } from './lib/productionState'
-import { setActiveDog, updateDogForUser } from './lib/db/dogs'
+import {
+  getDefaultNavTab,
+  isNavTabVisible,
+  LIVE_PRODUCT,
+} from './lib/liveProductFeatures'
+import { deleteDogForUser, setActiveDog, updateDogForUser } from './lib/db/dogs'
 import { fetchMemoriesForUser, countDistinctPlaces, memoryRowToJourneyEntry } from './lib/db/memories'
 import { insertEarlyAccessSignup } from './lib/db/earlyAccess'
 import { trackUserEvent } from './lib/db/userEvents'
@@ -93,6 +108,12 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   const [authError, setAuthError] = useState<string | null>(null)
   const [authLoading, setAuthLoading] = useState(false)
   const [dataHydrated, setDataHydrated] = useState(!useProductionBackend)
+  const [splashComplete, setSplashComplete] = useState(false)
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setSplashComplete(true), 1000)
+    return () => window.clearTimeout(timer)
+  }, [])
 
   useEffect(() => {
     if (!useProductionBackend || auth.loading) return
@@ -132,7 +153,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
 
       if (
         current.selectedChallengeId &&
-        !isChallengePathId(current.selectedChallengeId)
+        !isCuratedChallengeId(current.selectedChallengeId)
       ) {
         patch.selectedChallengeId = null
       }
@@ -146,6 +167,13 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         patch.selectedAchievementId = null
       }
 
+      if (
+        current.selectedTrainingProgramId &&
+        !isTrainingProgramId(current.selectedTrainingProgramId)
+      ) {
+        patch.selectedTrainingProgramId = null
+      }
+
       if (Object.keys(patch).length === 0) {
         return current
       }
@@ -154,10 +182,11 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     })
   }, [
     state.journeyEntries,
-    state.challenges,
+    state.joinedChallenges,
     state.selectedJourneyEntryId,
     state.selectedChallengeId,
     state.selectedAchievementId,
+    state.selectedTrainingProgramId,
   ])
 
   const setActiveTab = (activeTab: TabId) => {
@@ -167,6 +196,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       selectedJourneyEntryId: null,
       selectedChallengeId: null,
       selectedAchievementId: null,
+      selectedTrainingProgramId: null,
       showPresetPlanOverlay: false,
       showJourneyMapOverlay: false,
       showJourneyLevelOverlay: false,
@@ -218,26 +248,6 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     }
   }
 
-  const setSelectedJourneyFilter = (selectedJourneyFilterId: string) => {
-    if (selectedJourneyFilterId === 'map-view') {
-      setState((current) => ({
-        ...current,
-        selectedJourneyFilterId: 'map-view',
-        showJourneyMapOverlay: true,
-        selectedJourneyEntryId: null,
-        selectedChallengeId: null,
-        showPresetPlanOverlay: false,
-      }))
-      return
-    }
-
-    setState((current) => ({
-      ...current,
-      selectedJourneyFilterId,
-      showJourneyMapOverlay: false,
-    }))
-  }
-
   const openJourneyMap = () => {
     setState((current) => ({
       ...current,
@@ -278,6 +288,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       selectedChallengeId,
       selectedJourneyEntryId: null,
       selectedAchievementId: null,
+      selectedTrainingProgramId: null,
       showPresetPlanOverlay: false,
     }))
   }
@@ -286,11 +297,49 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     setState((current) => ({ ...current, selectedChallengeId: null }))
   }
 
+  const joinChallenge = (challengeId: string) => {
+    setState((current) => joinChallengeState(current, challengeId))
+  }
+
+  const leaveChallenge = (challengeId: string) => {
+    setState((current) => ({
+      ...leaveChallengeState(current, challengeId),
+      selectedChallengeId:
+        current.selectedChallengeId === challengeId
+          ? null
+          : current.selectedChallengeId,
+    }))
+  }
+
+  const openTrainingProgram = (selectedTrainingProgramId: string) => {
+    setState((current) => ({
+      ...current,
+      selectedTrainingProgramId,
+      selectedChallengeId: null,
+      selectedAchievementId: null,
+      selectedJourneyEntryId: null,
+      showPresetPlanOverlay: false,
+    }))
+  }
+
+  const closeTrainingProgram = () => {
+    setState((current) => ({ ...current, selectedTrainingProgramId: null }))
+  }
+
+  const completeTrainingLesson = (lessonId: string) => {
+    setState((current) => completeTrainingLessonState(current, lessonId))
+  }
+
+  const resetTrainingLesson = (lessonId: string) => {
+    setState((current) => resetTrainingLessonState(current, lessonId))
+  }
+
   const openAchievementDetail = (selectedAchievementId: string) => {
     setState((current) => ({
       ...current,
       selectedAchievementId,
       selectedChallengeId: null,
+      selectedTrainingProgramId: null,
       selectedJourneyEntryId: null,
       showPresetPlanOverlay: false,
     }))
@@ -306,6 +355,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       showJourneyLevelOverlay: true,
       selectedChallengeId: null,
       selectedAchievementId: null,
+      selectedTrainingProgramId: null,
       selectedJourneyEntryId: null,
       showPresetPlanOverlay: false,
       showJourneyMapOverlay: false,
@@ -443,6 +493,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   }
 
   const openPresetPlanOverlay = () => {
+    if (!LIVE_PRODUCT.calendarPresetPlan) return
     setState((current) => ({
       ...current,
       activeTab: 'plan',
@@ -492,53 +543,6 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     }))
   }
 
-  const toggleCommunityLike = (postId: string) => {
-    setState((current) => ({
-      ...current,
-      communityPosts: current.communityPosts.map((post) => {
-        if (post.id !== postId) return post
-        const likedByUser = !post.likedByUser
-        return {
-          ...post,
-          likedByUser,
-          likes: Math.max(0, post.likes + (likedByUser ? 1 : -1)),
-        }
-      }),
-    }))
-  }
-
-  const addCommunityComment = (postId: string, text: string) => {
-    setState((current) => ({
-      ...current,
-      communityPosts: current.communityPosts.map((post) => {
-        if (post.id !== postId) return post
-        const comment = {
-          id: `comment-${Date.now()}`,
-          author: 'You',
-          initial: current.dogs[0]?.initial ?? 'Y',
-          text,
-        }
-        return {
-          ...post,
-          comments: post.comments + 1,
-          commentList: [...(post.commentList ?? []), comment],
-        }
-      }),
-    }))
-  }
-
-  const openCommunityCompose = () => {
-    if (isDemoMode) {
-      setState((current) => ({
-        ...current,
-        showCommunityCompose: true,
-        selectedJourneyEntryId: null,
-        selectedChallengeId: null,
-        selectedAchievementId: null,
-      }))
-    }
-  }
-
   const closeCommunityCompose = () => {
     setState((current) => ({ ...current, showCommunityCompose: false }))
   }
@@ -551,33 +555,6 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       communityPosts: [post, ...current.communityPosts],
       memorySaveToast: 'Shared with the pack — your post is live locally.',
     }))
-  }
-
-  const addQuickCommunityPost = (caption: string) => {
-    setState((current) => {
-      const post: CommunityPost = {
-        id: `quick-post-${Date.now()}`,
-        photoUrl: SAMPLE_IMAGES.beach,
-        avatarClass: 'cp-av1',
-        initial: current.dogs[0]?.initial ?? 'Y',
-        name: getDisplayDogLabel(current),
-        meta: 'Just now · quick share',
-        caption,
-        location: 'San Diego · out with the pack',
-        likes: 0,
-        comments: 0,
-        likedByUser: false,
-        commentList: [],
-        isUserPost: true,
-      }
-
-      return {
-        ...current,
-        activeTab: 'community',
-        communityPosts: [post, ...current.communityPosts],
-        memorySaveToast: 'Posted to the pack — saved locally.',
-      }
-    })
   }
 
   const startNeighborhoodWalk = () => {
@@ -913,7 +890,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
 
   const handleUpdateDog = (
     dogId: string,
-    patch: { name?: string; breed?: string; profileEmoji?: string },
+    patch: { name?: string; breed?: string; age?: string; profileEmoji?: string },
   ) => {
     setState((current) => ({
       ...current,
@@ -932,13 +909,36 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     }
   }
 
-  const clearMemorySaveToast = () => {
-    setState((current) => ({ ...current, memorySaveToast: null }))
+  const handleRemoveDog = (dogId: string) => {
+    setState((current) => {
+      const dogs = current.dogs.filter((dog) => dog.id !== dogId)
+      const activeDogId =
+        current.activeDogId === dogId ? (dogs[0]?.id ?? null) : current.activeDogId
+
+      if (useProductionBackend && auth.user) {
+        void deleteDogForUser(auth.user.id, dogId).then((ok) => {
+          if (ok) void setActiveDog(auth.user!.id, activeDogId ?? null)
+        })
+      }
+
+      return applyRealUserContent({
+        ...current,
+        dogs,
+        activeDogId,
+        hasUserDogProfile: dogs.length > 0,
+      })
+    })
   }
 
-  const openPackInvite = () => {
-    if (!isDemoMode) return
-    setState((current) => ({ ...current, showPackInviteOverlay: true }))
+  useEffect(() => {
+    if (state.activeTab === 'profile') return
+    const mode = isDemoMode ? 'demo' : 'app'
+    if (isNavTabVisible(state.activeTab, mode)) return
+    setState((current) => ({ ...current, activeTab: getDefaultNavTab() }))
+  }, [state.activeTab, isDemoMode])
+
+  const clearMemorySaveToast = () => {
+    setState((current) => ({ ...current, memorySaveToast: null }))
   }
 
   const closePackInvite = () => {
@@ -985,6 +985,10 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     }, 3200)
     return () => window.clearTimeout(timer)
   }, [state.packAccessToast])
+
+  if (!splashComplete) {
+    return <SplashScreen />
+  }
 
   if (!dataHydrated && useProductionBackend) {
     return (
@@ -1047,7 +1051,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     )
   }
 
-  if (state.showPackInviteOverlay && isDemoMode) {
+  if (state.showPackInviteOverlay && isDemoMode && LIVE_PRODUCT.packAccess) {
     return (
       <PackInviteOverlay onClose={closePackInvite} onSubmit={submitPackInvite} />
     )
@@ -1067,11 +1071,11 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     )
   }
 
-  if (state.showPresetPlanOverlay) {
+  if (state.showPresetPlanOverlay && LIVE_PRODUCT.calendarPresetPlan) {
     return <PresetPlanOverlay onClose={closePresetPlanOverlay} isDemoMode={isDemoMode} />
   }
 
-  if (state.showCommunityCompose && isDemoMode) {
+  if (state.showCommunityCompose && isDemoMode && LIVE_PRODUCT.communityTab) {
     return (
       <CommunityComposeOverlay
         state={state}
@@ -1081,18 +1085,37 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     )
   }
 
+  if (state.selectedTrainingProgramId) {
+    const program = getTrainingProgramById(state.selectedTrainingProgramId)
+    if (program) {
+      return (
+        <AppShell activeTab={state.activeTab} onTabChange={setActiveTab} isDemoMode={isDemoMode}>
+          <TrainingProgramDetailView
+            program={program}
+            state={state}
+            onBack={closeTrainingProgram}
+            onCompleteLesson={completeTrainingLesson}
+            onResetLesson={resetTrainingLesson}
+          />
+        </AppShell>
+      )
+    }
+  }
+
   if (state.selectedChallengeId) {
-    const path = getChallengePathById(state.selectedChallengeId)
-    if (path) {
+    const challenge = getChallengeById(state.selectedChallengeId)
+    if (challenge) {
       return (
         <AppShell activeTab={state.activeTab} onTabChange={setActiveTab} isDemoMode={isDemoMode}>
           <ChallengePathDetailView
-            path={path}
-            journeyEntries={state.journeyEntries}
-            isDemoMode={isDemoMode}
+            challenge={challenge}
+            state={state}
             onBack={closeChallengeDetail}
+            onJoinChallenge={joinChallenge}
+            onLeaveChallenge={leaveChallenge}
             onStartAdventure={startAdventure}
             onStartNeighborhoodWalk={startNeighborhoodWalk}
+            onGoToPlan={() => setActiveTab('plan')}
             onOpenMemory={openJourneyMemory}
           />
         </AppShell>
@@ -1136,27 +1159,36 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   }
 
   const renderScreen = () => {
-    switch (state.activeTab) {
+    const screenTab =
+      state.activeTab === 'profile'
+        ? 'profile'
+        : isNavTabVisible(state.activeTab, isDemoMode ? 'demo' : 'app')
+          ? state.activeTab
+          : getDefaultNavTab()
+
+    switch (screenTab) {
       case 'home':
         return (
           <HomeScreen
             state={state}
+            isDemoMode={isDemoMode}
             onSelectActivity={setSelectedActivity}
             onStartAdventure={startAdventure}
             onStartNeighborhoodWalk={startNeighborhoodWalk}
             onOpenProfile={() => setActiveTab('profile')}
             onOpenChallenge={openChallengeDetail}
+            onOpenMemory={openJourneyMemory}
           />
         )
       case 'plan':
         return (
           <PlanScreen
             state={state}
-            isDemoMode={isDemoMode}
             onSelectCategory={setSelectedPlanCategory}
             onZipChange={setZipCode}
             onApplyLocation={applyLocationFromZip}
             onStartAdventure={startAdventure}
+            onStartNeighborhoodWalk={startNeighborhoodWalk}
             onOpenCuratedPlanFlow={openCuratedPlanFlow}
             onGenerateRandomPlan={generateRandomPlanForDogs}
             onOpenPresetPlan={openPresetPlanOverlay}
@@ -1167,24 +1199,24 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
           <JourneyScreen
             state={state}
             isDemoMode={isDemoMode}
-            onSelectFilter={setSelectedJourneyFilter}
             onOpenMemory={openJourneyMemory}
             onOpenMap={openJourneyMap}
             onGoToPlan={() => setActiveTab('plan')}
             onStartAdventure={startAdventure}
             onStartNeighborhoodWalk={startNeighborhoodWalk}
+            onOpenChallenge={openChallengeDetail}
             onDismissToast={clearMemorySaveToast}
           />
         )
       case 'community':
+        if (!isNavTabVisible('community', isDemoMode ? 'demo' : 'app')) {
+          return null
+        }
         return (
           <CommunityScreen
             state={state}
-            onToggleLike={toggleCommunityLike}
-            onAddComment={addCommunityComment}
-            onQuickShare={addQuickCommunityPost}
-            onOpenCompose={openCommunityCompose}
-            onDismissToast={clearMemorySaveToast}
+            onOpenChallenge={openChallengeDetail}
+            onOpenMemory={openJourneyMemory}
           />
         )
       case 'milestones':
@@ -1192,7 +1224,9 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
           <MilestonesScreen
             state={state}
             isDemoMode={isDemoMode}
-            onOpenChallengePath={openChallengeDetail}
+            onOpenChallenge={openChallengeDetail}
+            onJoinChallenge={joinChallenge}
+            onOpenTrainingProgram={openTrainingProgram}
             onOpenAchievement={openAchievementDetail}
             onOpenJourneyLevel={openJourneyLevelDetail}
           />
@@ -1201,27 +1235,21 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         return (
           <ProfileScreen
             state={state}
-            packInviteEnabled={isDemoMode}
-            onOpenPackInvite={openPackInvite}
             onSetActiveDog={handleSetActiveDog}
             onUpdateDog={handleUpdateDog}
+            onRemoveDog={handleRemoveDog}
             onSignOut={useProductionBackend ? handleSignOut : undefined}
           />
         )
       default:
-        return (
-          <div className="placeholder-screen">
-            <div className="sec">Coming soon</div>
-            <p className="placeholder-copy">This screen is not built yet.</p>
-          </div>
-        )
+        return null
     }
   }
 
   return (
     <AppShell activeTab={state.activeTab} onTabChange={setActiveTab} isDemoMode={isDemoMode}>
       {renderScreen()}
-      {state.packAccessToast ? (
+      {LIVE_PRODUCT.packAccess && state.packAccessToast ? (
         <div className="memory-toast memory-toast--shell" role="status">
           {state.packAccessToast}
         </div>

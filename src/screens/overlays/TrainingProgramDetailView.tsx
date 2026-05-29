@@ -1,0 +1,130 @@
+import type { AppState } from '../../data/demo'
+import type { TrainingProgram } from '../../data/training'
+import { CardImage } from '../../components/CardImage'
+import { resolveTrainingProgram } from '../../lib/trainingEngine'
+
+interface TrainingProgramDetailViewProps {
+  program: TrainingProgram
+  state: AppState
+  onBack: () => void
+  onCompleteLesson: (lessonId: string) => void
+  onResetLesson: (lessonId: string) => void
+}
+
+export function TrainingProgramDetailView({
+  program,
+  state,
+  onBack,
+  onCompleteLesson,
+  onResetLesson,
+}: TrainingProgramDetailViewProps) {
+  const resolved = resolveTrainingProgram(program, state)
+  const { progress, reward } = resolved
+
+  return (
+    <>
+      <div className="overlay-topbar">
+        <button type="button" className="overlay-back tap-target" onClick={onBack}>
+          <i className="ti ti-arrow-left" aria-hidden="true" />
+          Back
+        </button>
+      </div>
+
+      <div className="training-detail-intro detail-tint detail-tint--warm">
+        <div className="training-detail-kicker">Training program</div>
+        <h1 className="training-detail-title">
+          <span aria-hidden="true">{resolved.emoji}</span> {resolved.title}
+        </h1>
+        <p className="training-detail-copy">{resolved.description}</p>
+
+        <div className="training-detail-meta">
+          <div className="training-detail-meta-item">
+            <span className="training-detail-meta-label">Progress</span>
+            <span>
+              {progress.lessonsCompleted}/{progress.lessonsTotal} lessons
+            </span>
+          </div>
+          <div className="training-detail-meta-item">
+            <span className="training-detail-meta-label">Reward</span>
+            <span>{reward.title}</span>
+          </div>
+        </div>
+
+        <div className="training-detail-bar">
+          <div
+            className="training-detail-bar-fill"
+            style={{ width: progress.fillWidth }}
+          />
+        </div>
+      </div>
+
+      <div className="sec">Lessons</div>
+
+      <div className="training-lesson-list">
+        {progress.lessons.map((item) => (
+          <article
+            key={item.lessonId}
+            className={`training-lesson-card detail-card-warm${item.completed ? ' training-lesson-card--done' : ''}`}
+          >
+            <div className="training-lesson-top">
+              <span className="training-lesson-emoji" aria-hidden="true">
+                {item.lesson.emoji}
+              </span>
+              <div>
+                <h2 className="training-lesson-title">{item.lesson.title}</h2>
+                <p className="training-lesson-desc">{item.lesson.description}</p>
+                <p className="training-lesson-hint">{item.lesson.practiceHint}</p>
+              </div>
+            </div>
+
+            {item.completed ? (
+              <div className="training-lesson-actions">
+                <span className="training-lesson-done">Completed</span>
+                <button
+                  type="button"
+                  className="training-lesson-reset tap-target"
+                  onClick={() => onResetLesson(item.lessonId)}
+                >
+                  Mark incomplete
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                className="training-lesson-complete tap-target"
+                onClick={() => onCompleteLesson(item.lessonId)}
+              >
+                Mark lesson complete
+              </button>
+            )}
+          </article>
+        ))}
+      </div>
+
+      <div className="sec">Completion reward</div>
+
+      <div
+        className={`training-reward-card detail-card-warm${progress.rewardUnlocked ? ' training-reward-card--unlocked' : ''}`}
+      >
+        <CardImage
+          className="training-reward-badge"
+          imageUrl={reward.badgeImageUrl}
+          imageAlt=""
+          imageTone="warm"
+        />
+        <div className="training-reward-copy">
+          <div className="training-reward-emoji" aria-hidden="true">
+            {reward.emoji}
+          </div>
+          <div className="training-reward-title">{reward.title}</div>
+          <div className="training-reward-desc">{reward.description}</div>
+          <div className="training-reward-status">
+            {progress.rewardUnlocked
+              ? `Unlocked${progress.rewardUnlockedAt ? ` · ${new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' }).format(Date.parse(progress.rewardUnlockedAt))}` : ''}`
+              : `Complete all ${progress.lessonsTotal} lessons to unlock`}
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}

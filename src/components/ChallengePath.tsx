@@ -1,24 +1,24 @@
-import type { ChallengePathDefinition } from '../data/challengePaths'
-import type { ResolvedChallengeNode } from '../lib/challengePathProgress'
-import { getChallengePathProgressSummary } from '../lib/challengePathProgress'
+import type { Challenge } from '../data/challenges'
+import type { ResolvedChallengeNode } from '../lib/challengeEngine'
+import { getChallengeProgressSummary } from '../lib/challengeEngine'
 import { ChallengeNode } from './ChallengeNode'
 
 interface ChallengePathProps {
-  path: ChallengePathDefinition
+  challenge: Challenge & { progress?: { metricValue: number; metricTarget: number } }
   nodes: ResolvedChallengeNode[]
   onNodeSelect: (node: ResolvedChallengeNode) => void
 }
 
-export function ChallengePath({ path, nodes, onNodeSelect }: ChallengePathProps) {
-  const progress = getChallengePathProgressSummary(nodes)
+export function ChallengePath({ challenge, nodes, onNodeSelect }: ChallengePathProps) {
+  const progress = getChallengeProgressSummary(nodes)
 
   return (
-    <section className={`challenge-path challenge-path--${path.accent} detail-card-warm`}>
+    <section className={`challenge-path challenge-path--${challenge.accent} detail-card-warm`}>
       <div className="challenge-path-header">
         <div>
           <div className="challenge-path-kicker">Challenge path</div>
-          <h2 className="challenge-path-title">{path.title}</h2>
-          <p className="challenge-path-sub">{path.subtitle}</p>
+          <h2 className="challenge-path-title">{challenge.title}</h2>
+          <p className="challenge-path-sub">{challenge.subtitle}</p>
         </div>
         <div className="challenge-path-count">
           {progress.completed}/{progress.total}

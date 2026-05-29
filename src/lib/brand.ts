@@ -5,6 +5,8 @@ export const BRAND_NAME = 'PawStreak'
 
 export const BRAND_TAGLINE = 'Adventures. Memories. Together.'
 
+export const SPLASH_TAGLINE = "Build your dog's adventure story"
+
 export const BRAND_DESCRIPTION =
   'Start building your dog\'s adventure story today. Plan walks, save memories, and build your dog\'s journey.'
 

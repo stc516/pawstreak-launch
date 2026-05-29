@@ -1,5 +1,6 @@
 import type { AppState } from '../../data/demo'
 import { getDisplayBondSubtitle, getDisplayDogLabel } from '../../lib/profileDisplay'
+import { LIVE_PRODUCT } from '../../lib/liveProductFeatures'
 import { StatusBar } from '../../components/StatusBar'
 
 interface JourneyLevelDetailViewProps {
@@ -17,7 +18,7 @@ export function JourneyLevelDetailView({ state, onBack }: JourneyLevelDetailView
   return (
     <div className="app-viewport">
       <div className="app-shell">
-        <StatusBar />
+        {LIVE_PRODUCT.statusBarChrome ? <StatusBar /> : null}
         <main className="scroll scroll--overlay">
           <div className="overlay-topbar">
             <button type="button" className="overlay-back tap-target" onClick={onBack}>
@@ -38,12 +39,14 @@ export function JourneyLevelDetailView({ state, onBack }: JourneyLevelDetailView
             </div>
           </div>
 
-          <div className="jl-detail-bar">
-            <div
-              className="jl-detail-fill"
-              style={{ width: state.bondLevel.fillWidth }}
-            />
-          </div>
+          {LIVE_PRODUCT.bondProgressBar ? (
+            <div className="jl-detail-bar">
+              <div
+                className="jl-detail-fill"
+                style={{ width: state.bondLevel.fillWidth }}
+              />
+            </div>
+          ) : null}
 
           <div className="jl-detail-stats detail-card-warm">
             <div className="jl-detail-stat">
@@ -85,20 +88,24 @@ export function JourneyLevelDetailView({ state, onBack }: JourneyLevelDetailView
             <p className="jl-detail-unlock-copy">{state.bondLevel.nextUnlock}</p>
           </div>
 
-          <div className="sec">Recent milestone moments</div>
-          <div className="jl-detail-moments">
-            {state.bondLevel.recentMoments.map((moment) => (
-              <div key={moment.title} className="jl-detail-moment detail-card-warm">
-                <div className="jl-detail-moment-emoji" aria-hidden="true">
-                  {moment.emoji}
-                </div>
-                <div>
-                  <div className="jl-detail-moment-title">{moment.title}</div>
-                  <div className="jl-detail-moment-sub">{moment.subtitle}</div>
-                </div>
+          {state.bondLevel.recentMoments.length > 0 ? (
+            <>
+              <div className="sec">Recent milestone moments</div>
+              <div className="jl-detail-moments">
+                {state.bondLevel.recentMoments.map((moment) => (
+                  <div key={moment.title} className="jl-detail-moment detail-card-warm">
+                    <div className="jl-detail-moment-emoji" aria-hidden="true">
+                      {moment.emoji}
+                    </div>
+                    <div>
+                      <div className="jl-detail-moment-title">{moment.title}</div>
+                      <div className="jl-detail-moment-sub">{moment.subtitle}</div>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </>
+          ) : null}
 
           <p className="jl-detail-motivation detail-quote-block">
             Small adventures add up. You&apos;re building a story worth keeping.
