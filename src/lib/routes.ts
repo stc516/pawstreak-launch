@@ -33,6 +33,12 @@ export function isDemoPath(pathname = window.location.pathname): boolean {
 }
 
 /** OAuth and email redirects should return users to the production app shell. */
+function getSiteOrigin(): string {
+  const fromEnv = import.meta.env.VITE_SITE_URL?.trim().replace(/\/$/, '')
+  if (fromEnv) return fromEnv
+  return window.location.origin
+}
+
 export function getAuthRedirectUrl(): string {
-  return `${window.location.origin}${ROUTES.app}`
+  return `${getSiteOrigin()}${ROUTES.app}`
 }
