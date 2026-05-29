@@ -4,8 +4,16 @@
 
 1. Create a Supabase project at [supabase.com](https://supabase.com).
 2. Enable **Email** auth and **Google** OAuth in Authentication → Providers.
-3. Set Site URL + redirect URLs to your app origin (e.g. `http://localhost:5173`, production domain).
-4. Run migrations **in order** in SQL Editor (or Supabase CLI):
+3. Set **Authentication → URL Configuration**:
+   - **Site URL:** `https://pawstreakapp.com` (not localhost — localhost breaks mobile OAuth)
+   - **Redirect URLs:**
+     - `http://localhost:5173/app`
+     - `https://pawstreakapp.com/app`
+     - `https://pawstreak-launch.vercel.app/app`
+4. **Google Cloud Console** (OAuth client used by Supabase):
+   - **Authorized redirect URI:** `https://YOUR_PROJECT.supabase.co/auth/v1/callback`
+   - Do not put `localhost` or `/app` in Google — only the Supabase callback URL
+5. Run migrations **in order** in SQL Editor (or Supabase CLI):
 
    ```
    supabase/migrations/001_demo_feedback.sql
@@ -22,14 +30,16 @@
    supabase/seed/places.sql
    ```
 
-5. Add env vars to `.env.local`:
+6. Add env vars to `.env.local`:
 
    ```bash
    VITE_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
    VITE_SUPABASE_ANON_KEY=YOUR_ANON_KEY
+   # Vercel Production only:
+   # VITE_SITE_URL=https://pawstreakapp.com
    ```
 
-6. Restart dev server.
+7. Restart dev server.
 
 Regenerate places seed after catalog changes:
 
