@@ -1,90 +1,85 @@
 import type { AppState } from '../../data/demo'
 import { getDisplayDogLabel, getProfileDogs } from '../../lib/profileDisplay'
+import { getHomeHeroQuestion } from '../../lib/homeCopy'
 import {
-  getHeroCuratedLabel,
-  getHeroEyebrow,
-  getHeroFitLine,
-  getHomeHeadline,
-  getHomeIntroSub,
-  getHomeKicker,
-  getMemoryWarmLabel,
-  getPackEnergyNote,
-} from '../../lib/homeCopy'
+  getBeachQuestProgress,
+  getHomeProgressStats,
+  SAN_DIEGO_BEACH_QUEST,
+} from '../../lib/homeStats'
 import { CardImage } from '../../components/CardImage'
-import {
-  formatHeroSubtitle,
-  getHeroBadge,
-  getHeroPlace,
-  getMagicLine,
-  getPlaceById,
-} from '../../data/places'
+import { getHeroPlace } from '../../data/places'
 import { getRecommendationPrefs } from '../../lib/onboardingProfile'
+import { getAdventureDisplayImageUrl } from '../../lib/adventureDisplayImage'
 
 interface HomeScreenProps {
   state: AppState
   onSelectActivity: (activityId: string) => void
   onStartAdventure: (placeId: string, durationLabel: string) => void
+  onStartNeighborhoodWalk: () => void
   onOpenProfile: () => void
-  onOpenJourney: () => void
+  onOpenChallenge: (challengeId: string) => void
 }
+
+const QUICK_ACTIONS = [
+  { id: 'neighborhood', label: 'Neighborhood Walk', emoji: '🏘️', kind: 'neighborhood' as const },
+  { id: 'beach', label: 'Beach Day', emoji: '🏖️', kind: 'activity' as const, activityId: 'beach' },
+  { id: 'dog-park', label: 'Dog Park', emoji: '🐕', kind: 'activity' as const, activityId: 'dog-park' },
+  { id: 'trail', label: 'Trail Adventure', emoji: '🌲', kind: 'activity' as const, activityId: 'trail' },
+  { id: 'coffee', label: 'Coffee Run', emoji: '☕', kind: 'activity' as const, activityId: 'coffee' },
+] as const
 
 export function HomeScreen({
   state,
   onSelectActivity,
   onStartAdventure,
+  onStartNeighborhoodWalk,
   onOpenProfile,
-  onOpenJourney,
+  onOpenChallenge,
 }: HomeScreenProps) {
-  const heroPlace = getHeroPlace(state.selectedActivityId, getRecommendationPrefs(state))
-  const heroBadge = getHeroBadge(heroPlace)
   const profileDogs = getProfileDogs(state)
   const dogLabel = getDisplayDogLabel(state)
   const dogCount = profileDogs.length
+  const heroActivityId = state.selectedActivityId || 'beach'
+  const heroPlace = getHeroPlace(heroActivityId, getRecommendationPrefs(state))
+  const progress = getHomeProgressStats(state)
+  const beachQuest = getBeachQuestProgress(state)
+
+  const handleStartHeroAdventure = () => {
+    onSelectActivity(heroActivityId)
+    onStartAdventure(heroPlace.id, 'Open end')
+  }
+
+  const handleQuickAction = (action: (typeof QUICK_ACTIONS)[number]) => {
+    if (action.kind === 'neighborhood') {
+      onStartNeighborhoodWalk()
+      return
+    }
+
+    onSelectActivity(action.activityId)
+    const place = getHeroPlace(action.activityId, getRecommendationPrefs(state))
+    onStartAdventure(place.id, 'Open end')
+  }
+
+  const heroImageUrl = getAdventureDisplayImageUrl(state.journeyEntries, heroPlace)
 
   return (
-    <>
-      <div className="aheader">
-        <div className="alogo">
+    <div className="home-screen">
+      <div className="aheader home-screen-header">
+        <div className="alogo home-logo">
           Paw<span>Streak</span>
         </div>
-        <button type="button" className="two-dogs tap-target" onClick={onOpenProfile}>
+        <button type="button" className="two-dogs tap-target home-dog-pill" onClick={onOpenProfile}>
           {profileDogs.map((dog) => (
             <div key={dog.id} className={`dog-av ${dog.avatarClass}`}>
-              {dog.initial}
+              {dog.photoUrl ? (
+                <img src={dog.photoUrl} alt="" className="dog-av-img" />
+              ) : (
+                dog.initial
+              )}
             </div>
           ))}
           <span className="dog-names">{dogLabel}</span>
         </button>
-      </div>
-
-      <div className="home-intro detail-tint detail-tint--warm">
-        <div className="home-intro-kicker">{getHomeKicker(dogLabel, dogCount)}</div>
-        <h1 className="home-intro-title">{getHomeHeadline(dogLabel, dogCount)}</h1>
-        <p className="home-intro-sub">{getHomeIntroSub(state.locationLabel)}</p>
-      </div>
-
-      <div className="streak-bar">
-        <div>
-          <div className="snum">{state.streak}</div>
-          <div className="slabel">day streak</div>
-        </div>
-        <div className="snudge">Small adventures count — keep it going</div>
-      </div>
-
-      <div className="home-pack detail-card-warm">
-        <div className="home-pack-top">
-          <div className="live-dot" />
-          <div className="home-pack-label">{state.communityLive.label}</div>
-        </div>
-        <div className="home-pack-count">
-          {state.communityLive.count} {state.communityLive.countLabel}
-        </div>
-        <div className="home-pack-sub">
-          Top spot: {state.communityLive.topSpot} · {state.communityLive.tagline}
-        </div>
-        <div className="home-pack-note">
-          {getPackEnergyNote(state.locationLabel)}
-        </div>
       </div>
 
       {!state.locationSupported ? (
@@ -94,106 +89,95 @@ export function HomeScreen({
         </div>
       ) : null}
 
-      <div className="home-vibe-panel">
-      <div className="sec home-vibe-label">Pick today&apos;s vibe</div>
-
-      <div className="chips">
-        {state.activities.map((activity) => (
-          <button
-            key={activity.id}
-            type="button"
-            className={`chip tap-target${state.selectedActivityId === activity.id ? ' on' : ''}`}
-            onClick={() => onSelectActivity(activity.id)}
-          >
-            <span className="cico">{activity.emoji}</span>
-            <span className="clbl">{activity.label}</span>
-          </button>
-        ))}
-      </div>
-
-      <div key={heroPlace.id} className="hero-card hero-card--interactive">
+      <section className="home-hero detail-card-warm">
         <CardImage
-          className="hero-card-img"
-          imageUrl={heroPlace.imageUrl}
-          imageAlt={heroPlace.imageAlt}
-          imageTone={heroPlace.imageTone}
+          className="home-hero-img"
+          imageUrl={heroImageUrl}
+          imageAlt={heroPlace.imageAlt ?? heroPlace.name}
+          imageTone={heroPlace.imageTone ?? 'warm'}
         />
-        <div className="hc-top">
-          <div>
-            <div className="hc-curate">{getHeroCuratedLabel(heroPlace, profileDogs)}</div>
-            <div className="hc-eyebrow">{getHeroEyebrow(dogLabel, dogCount)}</div>
-            <div className="hc-title">{heroPlace.name}</div>
-            <div className="hc-sub">{formatHeroSubtitle(heroPlace, profileDogs)}</div>
-            <div className="hc-magic">{getMagicLine(heroPlace)}</div>
-          </div>
-          {heroBadge ? <div className="hc-badge">{heroBadge}</div> : null}
+        <div className="home-hero-body">
+          <div className="home-hero-kicker">Today&apos;s Adventure</div>
+          <p className="home-hero-copy">{getHomeHeroQuestion(dogLabel, dogCount)}</p>
+          <div className="home-hero-place">{heroPlace.name}</div>
+          <button
+            type="button"
+            className="home-hero-cta tap-target"
+            onClick={handleStartHeroAdventure}
+          >
+            Start Adventure
+          </button>
         </div>
-        <div className="hc-why">{getHeroFitLine(heroPlace, profileDogs)}</div>
-        <div className="hc-start-label">Pick a duration · start adventure</div>
-        <div className="qbtns">
-          {state.durations.map((duration) => (
+      </section>
+
+      <section className="home-quick">
+        <div className="home-quick-label">Quick actions</div>
+        <div className="home-quick-grid">
+          {QUICK_ACTIONS.map((action) => (
             <button
-              key={duration}
+              key={action.id}
               type="button"
-              className="qb tap-target"
-              onClick={() => onStartAdventure(heroPlace.id, duration)}
+              className="home-quick-btn tap-target"
+              onClick={() => handleQuickAction(action)}
             >
-              {duration}
+              <span className="home-quick-emoji" aria-hidden="true">
+                {action.emoji}
+              </span>
+              <span className="home-quick-label-text">{action.label}</span>
             </button>
           ))}
         </div>
-      </div>
-      </div>
+      </section>
 
-      <div className="home-memory-value detail-card-warm">
-        <h2 className="home-memory-value-title">
-          Every good day becomes part of their story
-        </h2>
-        <p className="home-memory-value-copy">
-          Save the little moments now — the beach days, slow walks, muddy paws, and
-          places they loved most.
-        </p>
-
-        <div className="mstrip home-memory-value-strip">
-          {state.recentAdventures.length === 0 ? (
-            <div className="journey-empty detail-card-warm">
-              <div className="journey-empty-body">
-                Your first memory will appear here after an adventure.
-              </div>
-            </div>
-          ) : (
-            state.recentAdventures.map((adventure, index) => {
-              const place = getPlaceById(adventure.placeId)
-
-              return (
-                <div key={adventure.title} className="mthumb mthumb--warm">
-                  {place ? (
-                    <CardImage
-                      className="mthumb-img"
-                      imageUrl={place.imageUrl}
-                      imageAlt={place.imageAlt}
-                      imageTone={place.imageTone}
-                    />
-                  ) : null}
-                  <div className="mthumb-text">
-                    <div className="mtwarm">{getMemoryWarmLabel(index)}</div>
-                    <div className="mtlbl">{adventure.title}</div>
-                    <div className="mttag">{place ? getMagicLine(place) : adventure.tag}</div>
-                  </div>
-                </div>
-              )
-            })
-          )}
+      <section className="home-progress detail-card-warm">
+        <div className="home-progress-stat">
+          <div className="home-progress-value">{progress.streak}</div>
+          <div className="home-progress-label">day streak</div>
         </div>
+        <div className="home-progress-stat">
+          <div className="home-progress-value">{progress.adventuresCompleted}</div>
+          <div className="home-progress-label">adventures</div>
+        </div>
+        <div className="home-progress-stat">
+          <div className="home-progress-value">{progress.memoriesSaved}</div>
+          <div className="home-progress-label">memories saved</div>
+        </div>
+      </section>
 
-        <button
-          type="button"
-          className="home-memory-value-cta tap-target"
-          onClick={onOpenJourney}
-        >
-          Open Journey
-        </button>
-      </div>
-    </>
+      <section className="home-challenge detail-card-warm">
+        <CardImage
+          className="home-challenge-img"
+          imageUrl={SAN_DIEGO_BEACH_QUEST.imageUrl}
+          imageAlt="San Diego beach adventure"
+          imageTone="coastal"
+        />
+        <div className="home-challenge-body">
+          <div className="home-challenge-kicker">Featured challenge</div>
+          <div className="home-challenge-title">{SAN_DIEGO_BEACH_QUEST.title}</div>
+          <div className="home-challenge-sub">{SAN_DIEGO_BEACH_QUEST.subtitle}</div>
+          <div className="home-challenge-progress-row">
+            <span className="home-challenge-count">
+              {beachQuest.completed}/{beachQuest.total} complete
+            </span>
+            <span className="home-challenge-percent">
+              {Math.round((beachQuest.completed / beachQuest.total) * 100)}%
+            </span>
+          </div>
+          <div className="home-challenge-bar">
+            <div
+              className="home-challenge-bar-fill"
+              style={{ width: beachQuest.fillWidth }}
+            />
+          </div>
+          <button
+            type="button"
+            className="home-challenge-cta tap-target"
+            onClick={() => onOpenChallenge(SAN_DIEGO_BEACH_QUEST.challengeId)}
+          >
+            View path
+          </button>
+        </div>
+      </section>
+    </div>
   )
 }

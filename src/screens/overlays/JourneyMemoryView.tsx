@@ -4,6 +4,7 @@ import { getPackDisplayName } from '../../lib/dogLabels'
 import { CardImage } from '../../components/CardImage'
 import { getJourneyMemoryDetail } from '../../data/journeyMemories'
 import { getPlaceById } from '../../data/places'
+import { buildMemoryShareText, shareContent } from '../../lib/shareContent'
 import { StatusBar } from '../../components/StatusBar'
 
 interface JourneyMemoryViewProps {
@@ -24,20 +25,37 @@ export function JourneyMemoryView({
   onGoAgain,
 }: JourneyMemoryViewProps) {
   const [shareNote, setShareNote] = useState<string | null>(null)
+  const [shareIsError, setShareIsError] = useState(false)
   const place = entry.placeId ? getPlaceById(entry.placeId) : undefined
   const contentDogs = hasUserDogProfile ? dogs : []
   const memory = getJourneyMemoryDetail(entry, contentDogs)
   const dogLabel =
     contentDogs.length > 0 ? getPackDisplayName(contentDogs) : 'your dog'
   const familyMember = packAccessMembers.find((member) => member.name === 'Dog Mom')
-  const heroUrl = place?.imageUrl ?? memory.photoUrls[0]
-  const galleryPhotos = [
-    ...(entry.photoUrls ?? []),
-    ...memory.photoUrls,
-  ].slice(0, 6)
+  const savedPhotos = entry.photoUrls ?? []
+  const heroPhoto = savedPhotos[0]
 
-  const handleShare = () => {
-    setShareNote('Memory link copied — ready to share when you want.')
+  const handleShare = async () => {
+    setShareNote(null)
+    setShareIsError(false)
+
+    const result = await shareContent({
+      title: `${entry.place} · PawStreak memory`,
+      text: buildMemoryShareText({
+        place: entry.place,
+        date: entry.date,
+        magicLine: entry.magicLine ?? memory.favoriteMoment,
+      }),
+    })
+
+    if (result.ok) {
+      setShareNote(result.message)
+      setShareIsError(false)
+    } else {
+      setShareNote(result.message)
+      setShareIsError(true)
+    }
+
     window.setTimeout(() => setShareNote(null), 2800)
   }
 
@@ -55,25 +73,35 @@ export function JourneyMemoryView({
               type="button"
               className="overlay-action tap-target"
               aria-label="Share memory"
-              onClick={handleShare}
+              onClick={() => void handleShare()}
             >
               <i className="ti ti-share" aria-hidden="true" />
             </button>
           </div>
 
           {shareNote ? (
-            <div className="memory-toast" role="status">
+            <div
+              className={`memory-toast${shareIsError ? ' memory-toast--error' : ''}`}
+              role={shareIsError ? 'alert' : 'status'}
+            >
               {shareNote}
             </div>
           ) : null}
 
           <div className="memory-hero memory-hero--rich">
-            <CardImage
-              className="memory-hero-img"
-              imageUrl={heroUrl}
-              imageAlt={place?.imageAlt ?? entry.place}
-              imageTone={place?.imageTone ?? 'warm'}
-            />
+            {heroPhoto ? (
+              <CardImage
+                className="memory-hero-img"
+                imageUrl={heroPhoto}
+                imageAlt={entry.place}
+                imageTone={place?.imageTone ?? 'warm'}
+              />
+            ) : (
+              <div className="memory-hero-empty">
+                <i className="ti ti-camera-off" aria-hidden="true" />
+                <p>No photos saved for this memory yet.</p>
+              </div>
+            )}
             <div className="memory-hero-badge">Memory saved</div>
             <div className="memory-hero-text">
               <div className="memory-place">{entry.place}</div>
@@ -148,13 +176,19 @@ export function JourneyMemoryView({
 
           <div className="memory-section detail-card-warm">
             <div className="memory-section-title">Memory gallery</div>
-            <div className="memory-gallery">
-              {galleryPhotos.map((url, index) => (
-                <div key={`${url}-${index}`} className="memory-gallery-item">
-                  <img src={url} alt="" className="memory-gallery-img" />
-                </div>
-              ))}
-            </div>
+            {savedPhotos.length > 0 ? (
+              <div className="memory-gallery">
+                {savedPhotos.map((url, index) => (
+                  <div key={`${url}-${index}`} className="memory-gallery-item">
+                    <img src={url} alt="" className="memory-gallery-img" />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="memory-gallery-empty">
+                Photos you capture during adventures will show up here.
+              </div>
+            )}
           </div>
 
           <div className="memory-actions">
@@ -171,7 +205,7 @@ export function JourneyMemoryView({
             <button
               type="button"
               className="memory-btn memory-btn--ghost tap-target"
-              onClick={handleShare}
+              onClick={() => void handleShare()}
             >
               <i className="ti ti-share" aria-hidden="true" />
               Share this memory

@@ -151,6 +151,7 @@ export async function memoryRowToJourneyEntry(row: MemoryRow): Promise<JourneyEn
     placeId: row.place_id,
     place: row.place_name,
     date: formatMemoryDate(row.occurred_at),
+    occurredAt: row.occurred_at,
     magicLine: row.magic_line,
     tags: row.tags,
     photoUrls,

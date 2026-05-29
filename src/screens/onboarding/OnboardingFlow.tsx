@@ -8,7 +8,7 @@ import {
 } from '../../data/demo'
 import { readImageFileAsDataUrl } from '../../lib/imageUtils'
 import type { OnboardingResult } from '../../lib/onboardingProfile'
-import { resolveLocationProfile } from '../../lib/onboardingProfile'
+import { getSpotsReadyLabel, resolveLocationProfile } from '../../lib/onboardingProfile'
 import { BrandLogoCircle } from '../../components/BrandLogoCircle'
 import { OnboardingEntryPreview } from '../../components/OnboardingEntryPreview'
 import {
@@ -17,6 +17,11 @@ import {
   BRAND_NAME,
   CTA_LOGIN_SIGNUP,
 } from '../../lib/brand'
+import type { EmailAuthResult } from '../../lib/auth'
+import {
+  AUTH_EMAIL_CONFIRMATION_MESSAGE,
+  AUTH_PASSWORD_RESET_SENT_MESSAGE,
+} from '../../lib/auth'
 
 const arrowIcon = (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
@@ -52,32 +57,39 @@ function StepsIndicator({ current }: { current: number }) {
 }
 
 interface OnboardingFlowProps {
-  onComplete: (result: OnboardingResult) => void
+  onComplete: (result: OnboardingResult) => void | Promise<void>
   initialStep?: number
   authConfigured?: boolean
+  authUserId?: string | null
   authLoading?: boolean
   authError?: string | null
   onEmailAuth?: (
     mode: 'signup' | 'signin',
     input: { email: string; password: string; userName: string },
-  ) => Promise<void>
+  ) => Promise<EmailAuthResult>
   onGoogleAuth?: () => Promise<void>
+  onPasswordReset?: (email: string) => Promise<void>
 }
 
 export function OnboardingFlow({
   onComplete,
   initialStep = 1,
   authConfigured = false,
+  authUserId = null,
   authLoading = false,
   authError = null,
   onEmailAuth,
   onGoogleAuth,
+  onPasswordReset,
 }: OnboardingFlowProps) {
   const [step, setStep] = useState(initialStep)
   const [authMode, setAuthMode] = useState<'signup' | 'signin'>('signup')
   const [userName, setUserName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [authNotice, setAuthNotice] = useState<string | null>(null)
+  const [showForgotPassword, setShowForgotPassword] = useState(false)
+  const [passwordResetSent, setPasswordResetSent] = useState(false)
   const [dogName, setDogName] = useState('')
   const [dogBreed, setDogBreed] = useState('')
   const [dogOtherBreed, setDogOtherBreed] = useState('')
@@ -93,7 +105,11 @@ export function OnboardingFlow({
   const [modalOpen, setModalOpen] = useState(false)
   const [dogPhotoPreview, setDogPhotoPreview] = useState<string | null>(null)
   const [dogPhotoError, setDogPhotoError] = useState<string | null>(null)
+  const [isCompleting, setIsCompleting] = useState(false)
+  const [completeError, setCompleteError] = useState<string | null>(null)
   const dogPhotoInputRef = useRef<HTMLInputElement>(null)
+
+  const dogPhotoUploadEnabled = authConfigured && Boolean(authUserId)
 
   const signupValid =
     email.includes('@') &&
@@ -121,7 +137,12 @@ export function OnboardingFlow({
   const onboardingDogSummary =
     onboardingDogNames.length > 0 ? onboardingDogNames.join(', ') : '—'
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
+    if (authConfigured && !authUserId) {
+      setStep(2)
+      return
+    }
+
     const dogs = [
       {
         name: dogName,
@@ -140,19 +161,43 @@ export function OnboardingFlow({
       })
     }
 
-    onComplete({
-      userName,
-      dogs,
-      vibeNames: selectedVibes,
-      categoryIds: selectedCats,
-      locationQuery,
-    })
+    setCompleteError(null)
+    setIsCompleting(true)
+
+    try {
+      await onComplete({
+        userName,
+        dogs,
+        vibeNames: selectedVibes,
+        categoryIds: selectedCats,
+        locationQuery,
+        dogPhotoDataUrl: dogPhotoUploadEnabled ? dogPhotoPreview : null,
+      })
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : 'Could not finish setup. Please try again.'
+      setCompleteError(message)
+    } finally {
+      setIsCompleting(false)
+    }
   }
 
   const handleAuthContinue = async () => {
+    setAuthNotice(null)
+    setPasswordResetSent(false)
     try {
       if (authConfigured && onEmailAuth) {
-        await onEmailAuth(authMode, { email, password, userName })
+        const result = await onEmailAuth(authMode, { email, password, userName })
+        if (result === 'email_confirmation_required') {
+          setAuthNotice(AUTH_EMAIL_CONFIRMATION_MESSAGE)
+          setAuthMode('signin')
+          setPassword('')
+          return
+        }
+        setStep(3)
+        return
       }
       setStep(3)
     } catch {
@@ -161,11 +206,30 @@ export function OnboardingFlow({
   }
 
   const handleGoogleContinue = async () => {
+    setAuthNotice(null)
     if (authConfigured && onGoogleAuth) {
       await onGoogleAuth()
       return
     }
     setStep(3)
+  }
+
+  const handlePasswordReset = async () => {
+    if (!email.includes('@')) {
+      setAuthNotice(null)
+      return
+    }
+    setAuthNotice(null)
+    setPasswordResetSent(false)
+    try {
+      if (authConfigured && onPasswordReset) {
+        await onPasswordReset(email)
+        setPasswordResetSent(true)
+        setAuthNotice(AUTH_PASSWORD_RESET_SENT_MESSAGE)
+      }
+    } catch {
+      // Error surfaced via authError from App.
+    }
   }
 
   const toggleVibe = (name: string) => {
@@ -313,35 +377,85 @@ export function OnboardingFlow({
                 placeholder="Min. 8 characters"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
+                disabled={showForgotPassword}
               />
             </div>
+            {authConfigured && authMode === 'signin' && !showForgotPassword ? (
+              <button
+                type="button"
+                className="demo-feedback-link onboarding-forgot-link"
+                onClick={() => {
+                  setShowForgotPassword(true)
+                  setAuthNotice(null)
+                  setPasswordResetSent(false)
+                }}
+              >
+                Forgot password?
+              </button>
+            ) : null}
+            {showForgotPassword ? (
+              <div className="onboarding-forgot-panel">
+                <p className="body onboarding-center-copy">
+                  Enter your email and we&apos;ll send a reset link.
+                </p>
+                <button
+                  type="button"
+                  className="btn-primary onboarding-forgot-submit"
+                  disabled={!email.includes('@') || authLoading || passwordResetSent}
+                  onClick={() => void handlePasswordReset()}
+                >
+                  {authLoading ? 'Sending…' : passwordResetSent ? 'Email sent' : 'Send reset link'}
+                </button>
+                <button
+                  type="button"
+                  className="demo-feedback-link"
+                  onClick={() => {
+                    setShowForgotPassword(false)
+                    setPasswordResetSent(false)
+                    setAuthNotice(null)
+                  }}
+                >
+                  Back to sign in
+                </button>
+              </div>
+            ) : null}
             <div className="onboarding-spacer-8" />
           </div>
           <div className="bottom-bar">
-            <button
-              type="button"
-              className="btn-primary"
-              disabled={!signupValid || authLoading}
-              onClick={handleAuthContinue}
-            >
-              {authLoading
-                ? 'Working…'
-                : authMode === 'signup'
-                  ? 'Create account'
-                  : 'Sign in'}
-              {arrowIcon}
-            </button>
+            {!showForgotPassword ? (
+              <button
+                type="button"
+                className="btn-primary"
+                disabled={!signupValid || authLoading}
+                onClick={handleAuthContinue}
+              >
+                {authLoading
+                  ? 'Working…'
+                  : authMode === 'signup'
+                    ? 'Create account'
+                    : 'Sign in'}
+                {arrowIcon}
+              </button>
+            ) : null}
             <button
               type="button"
               className="demo-feedback-link"
-              onClick={() =>
+              onClick={() => {
                 setAuthMode((current) => (current === 'signup' ? 'signin' : 'signup'))
-              }
+                setShowForgotPassword(false)
+                setPasswordResetSent(false)
+                setAuthNotice(null)
+              }}
             >
               {authMode === 'signup'
                 ? 'Already have an account? Sign in'
                 : 'Need an account? Create one'}
             </button>
+            {authNotice ? (
+              <p className="demo-feedback-status demo-feedback-status--success" role="status">
+                {authNotice}
+              </p>
+            ) : null}
             {authError ? (
               <p className="demo-feedback-status" role="alert">
                 {authError}
@@ -379,60 +493,66 @@ export function OnboardingFlow({
             <p className="body onboarding-center-copy">Tell us about your companion.</p>
 
             <div className="photo-wrap">
-              <input
-                ref={dogPhotoInputRef}
-                className="cam-input"
-                type="file"
-                accept="image/*"
-                onChange={handleDogPhotoSelected}
-                tabIndex={-1}
-                aria-hidden="true"
-              />
-              <button
-                type="button"
-                className="photo-circle"
-                onClick={handleDogPhotoPick}
-                aria-label="Upload dog photo"
-                style={{ overflow: 'hidden', padding: 0, cursor: 'pointer' }}
-              >
-                {dogPhotoPreview ? (
-                  <img
-                    src={dogPhotoPreview}
-                    alt=""
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      display: 'block',
-                    }}
+              {dogPhotoUploadEnabled ? (
+                <>
+                  <input
+                    ref={dogPhotoInputRef}
+                    className="cam-input"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleDogPhotoSelected}
+                    tabIndex={-1}
+                    aria-hidden="true"
                   />
-                ) : (
+                  <button
+                    type="button"
+                    className="photo-circle"
+                    onClick={handleDogPhotoPick}
+                    aria-label="Upload dog photo"
+                    style={{ overflow: 'hidden', padding: 0, cursor: 'pointer' }}
+                  >
+                    {dogPhotoPreview ? (
+                      <img
+                        src={dogPhotoPreview}
+                        alt=""
+                        className="photo-circle-img"
+                      />
+                    ) : (
+                      <div className="photo-placeholder">
+                        <span className="photo-upload-label">UPLOAD</span>
+                      </div>
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    className="photo-edit"
+                    onClick={handleDogPhotoPick}
+                    aria-label="Change dog photo"
+                    style={{ border: 'none', padding: 0, cursor: 'pointer' }}
+                  >
+                    <svg viewBox="0 0 14 14" stroke="white" fill="none" strokeWidth="1.5">
+                      <path d="M9.5 2.5l2 2-7 7H2.5v-2l7-7z" />
+                    </svg>
+                  </button>
+                  {dogPhotoError ? (
+                    <p className="caption onboarding-photo-error" role="alert">
+                      {dogPhotoError}
+                    </p>
+                  ) : null}
+                </>
+              ) : (
+                <div className="photo-circle photo-circle--soon" aria-hidden="true">
                   <div className="photo-placeholder">
-                    <span className="photo-upload-label">UPLOAD</span>
+                    <span className="photo-upload-label">SOON</span>
                   </div>
-                )}
-              </button>
-              <button
-                type="button"
-                className="photo-edit"
-                onClick={handleDogPhotoPick}
-                aria-label="Change dog photo"
-                style={{ border: 'none', padding: 0, cursor: 'pointer' }}
-              >
-                <svg viewBox="0 0 14 14" stroke="white" fill="none" strokeWidth="1.5">
-                  <path d="M9.5 2.5l2 2-7 7H2.5v-2l7-7z" />
-                </svg>
-              </button>
-              {dogPhotoError ? (
-                <p
-                  className="caption"
-                  role="alert"
-                  style={{ textAlign: 'center', marginTop: 8 }}
-                >
-                  {dogPhotoError}
-                </p>
-              ) : null}
+                </div>
+              )}
             </div>
+            {!dogPhotoUploadEnabled ? (
+              <p className="caption onboarding-photo-soon-copy">
+                Profile photos are coming soon.
+              </p>
+            ) : null}
 
             <div className="field">
               <span className="field-label">Dog Name</span>
@@ -674,7 +794,9 @@ export function OnboardingFlow({
                 <span className="map-you-dot" />
                 You're here
               </div>
-              <div className="map-count">200+ spots</div>
+              <div className="map-count">
+                {locationProfile.supported ? 'Curated nearby picks' : 'Suggested for now'}
+              </div>
             </div>
 
             <div className="cat-chips">
@@ -764,7 +886,7 @@ export function OnboardingFlow({
               <div className="confirm-row">
                 <span className="confirm-key">Spots ready</span>
                 <span className="confirm-val onboarding-spots-ready">
-                  {locationProfile.supported ? '200+ nearby' : 'Suggested adventures for now'}
+                  {getSpotsReadyLabel(locationProfile)}
                 </span>
               </div>
               {!locationProfile.supported ? (
@@ -808,9 +930,19 @@ export function OnboardingFlow({
             </div>
           </div>
           <div className="bottom-bar">
-            <button type="button" className="btn-primary" onClick={handleComplete}>
-              Start your first adventure
-              {arrowIcon}
+            {completeError ? (
+              <p className="caption onboarding-complete-error" role="alert">
+                {completeError}
+              </p>
+            ) : null}
+            <button
+              type="button"
+              className="btn-primary"
+              disabled={isCompleting}
+              onClick={() => void handleComplete()}
+            >
+              {isCompleting ? 'Saving your pack…' : 'Start your first adventure'}
+              {!isCompleting ? arrowIcon : null}
             </button>
           </div>
         </div>

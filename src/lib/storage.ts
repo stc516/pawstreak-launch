@@ -214,6 +214,15 @@ export function clearDemoState(): void {
   localStorage.removeItem(DEMO_STORAGE_KEY)
 }
 
+export function clearProductionAppState(): void {
+  localStorage.removeItem(APP_STORAGE_KEY)
+}
+
+export function resetProductionAppState(): AppState {
+  clearProductionAppState()
+  return normalizeAppState(createProductionInitialState(), 'app')
+}
+
 export function saveSeededDemoState(): void {
   saveAppState(createSeededDemoState(), 'demo')
 }

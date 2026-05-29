@@ -1,5 +1,7 @@
 import type { AppState, Dog, DogMode, RecapChip } from '../data/demo'
 import { isDefaultDemoDogs } from './dogLabels'
+import { calculateAdventureStreak } from './adventureStreak'
+import { buildRecentAdventuresFromJourney } from './recentAdventures'
 import {
   buildAdventureRecapOptions,
   bondSubtitleFor,
@@ -148,16 +150,33 @@ function looksLikeDemoCommunityLive(live: AppState['communityLive']): boolean {
   return live.count === '247' || live.countLabel.toLowerCase().includes('dogs out now')
 }
 
+function computeStreakForState(state: AppState): number {
+  const realEntries = state.journeyEntries.filter(
+    (entry) => !DEMO_SEEDED_JOURNEY_ENTRY_IDS.has(entry.id),
+  )
+
+  if (state.mode === 'demo' && realEntries.length === 0 && state.journeyEntries.length > 0) {
+    return state.streak
+  }
+
+  const source = realEntries.length > 0 ? realEntries : state.journeyEntries
+  return calculateAdventureStreak(source)
+}
+
 export function applyRealUserContent(state: AppState): AppState {
   const dogs = state.dogs
   const journeyTitle =
     dogs.length > 0 ? journeyTitleFor(dogs) : 'Your Journey'
+  const streak = computeStreakForState(state)
+  const recentAdventures = buildRecentAdventuresFromJourney(state.journeyEntries)
 
   return {
     ...state,
     journeyTitle,
     journeyMap: getJourneyMapSummary(state),
     flashback: getFlashbackForState(state),
+    streak,
+    recentAdventures,
     bondLevel: {
       ...EMPTY_BOND_LEVEL,
       subtitle:
@@ -173,6 +192,19 @@ export function applyRealUserContent(state: AppState): AppState {
 
 export function sanitizeProductionAppState(state: AppState): AppState {
   let next: AppState = { ...state }
+
+  // Drop legacy prototype persistence-prompt fields from older local saves.
+  const legacy = next as AppState & Record<string, unknown>
+  for (const key of [
+    'showSaveProgressBanner',
+    'saveProgressDismissed',
+    'showLocalOnlyBadge',
+    'showSaveStoryBanner',
+    'saveStoryDismissed',
+    'showAccountPrompt',
+  ]) {
+    delete legacy[key]
+  }
 
   if (isDefaultDemoDogs(next.dogs)) {
     next = {
@@ -213,9 +245,12 @@ export function sanitizeProductionAppState(state: AppState): AppState {
     favoritePlaces: stripDemoHistory
       ? []
       : next.favoritePlaces.filter((item) => !DEMO_SEEDED_FAVORITE_IDS.has(item.id)),
+    packAccessMembers: next.mode === 'app' ? [] : next.packAccessMembers,
     communityLive: looksLikeDemoCommunityLive(next.communityLive)
       ? EMPTY_COMMUNITY_LIVE
-      : next.communityLive,
+      : next.mode === 'app'
+        ? EMPTY_COMMUNITY_LIVE
+        : next.communityLive,
   }
 
   return applyRealUserContent(next)

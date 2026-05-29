@@ -26,6 +26,7 @@ export interface OnboardingResult {
   vibeNames: string[]
   categoryIds: string[]
   locationQuery: string
+  dogPhotoDataUrl?: string | null
 }
 
 export interface LocationProfile {
@@ -131,6 +132,13 @@ export function buildDogsFromOnboarding(inputs: OnboardingDogInput[]): Dog[] {
     })
 }
 
+export function getSpotsReadyLabel(location: LocationProfile): string {
+  if (!location.supported) return 'Suggested adventures for now'
+  return location.label.includes('Orange County')
+    ? 'Curated Orange County picks'
+    : 'Curated San Diego & OC picks'
+}
+
 export function resolveLocationProfile(query: string): LocationProfile {
   const trimmed = query.trim()
   const zipMatch = trimmed.match(/\b(\d{5})\b/)
@@ -150,7 +158,7 @@ export function resolveLocationProfile(query: string): LocationProfile {
       label,
       supported: true,
       mapTitle: isOc ? 'Orange County spots' : 'San Diego + OC spots',
-      mapSubtitle: '200+ dog-friendly places mapped · Tap a pin to explore',
+      mapSubtitle: 'Curated dog-friendly picks in your area · Tap a pin to explore',
       communityLabel: isOc ? 'Right now in Orange County' : 'Right now in San Diego',
     }
   }

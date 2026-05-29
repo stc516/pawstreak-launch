@@ -1,12 +1,18 @@
 import { useEffect, useState } from 'react'
 import type { AppState, CommunityPost, TabId } from './data/demo'
-import { createActiveAdventure } from './data/demo'
+import {
+  createActiveAdventure,
+  getFinishedDurationLabel,
+} from './data/demo'
 import type { AdventureFinishPayload } from './lib/adventureFinish'
 import {
+  createJourneyEntryFromNeighborhoodWalk,
   createJourneyEntryFromPlace,
   getPlaceById,
+  isNeighborhoodWalkPlace,
+  NEIGHBORHOOD_WALK_PLACE_ID,
 } from './data/places'
-import { loadAppState, saveAppState, clearDemoState, saveSeededDemoState, saveDemoOnboardingState } from './lib/storage'
+import { loadAppState, saveAppState, clearDemoState, resetProductionAppState, saveSeededDemoState, saveDemoOnboardingState } from './lib/storage'
 import { getDemoRoute, navigateTo } from './lib/demoRoute'
 import { usePathname } from './lib/usePathname'
 import {
@@ -36,7 +42,8 @@ import { OnboardingFlow } from './screens/onboarding/OnboardingFlow'
 import { JourneyMemoryView } from './screens/overlays/JourneyMemoryView'
 import { JourneyLevelDetailView } from './screens/overlays/JourneyLevelDetailView'
 import { JourneyMapView } from './screens/overlays/JourneyMapView'
-import { ChallengeDetailView } from './screens/overlays/ChallengeDetailView'
+import { ChallengePathDetailView } from './screens/overlays/ChallengePathDetailView'
+import { getChallengePathById, isChallengePathId } from './data/challengePaths'
 import { CuratedPlanFlow } from './screens/overlays/CuratedPlanFlow'
 import { AchievementDetailView } from './screens/overlays/AchievementDetailView'
 import { CommunityComposeOverlay } from './screens/overlays/CommunityComposeOverlay'
@@ -50,7 +57,7 @@ import {
 } from './lib/curatedPlan'
 import { generateRandomPlan } from './lib/randomPlan'
 import type { OnboardingResult } from './lib/onboardingProfile'
-import { applyOnboardingToAppState } from './lib/onboardingProfile'
+import { applyOnboardingToAppState, resolveLocationProfile } from './lib/onboardingProfile'
 import {
   accessDescriptionFor,
   roleLabelForInvite,
@@ -68,8 +75,14 @@ import { setActiveDog, updateDogForUser } from './lib/db/dogs'
 import { fetchMemoriesForUser, countDistinctPlaces, memoryRowToJourneyEntry } from './lib/db/memories'
 import { insertEarlyAccessSignup } from './lib/db/earlyAccess'
 import { trackUserEvent } from './lib/db/userEvents'
-import { ensureProfileShell } from './lib/db/profiles'
-import { signInWithEmail, signUpWithEmail } from './lib/auth'
+import { ensureProfileShell, updateProfileLocation } from './lib/db/profiles'
+import {
+  resetPasswordForEmail,
+  signInWithEmail,
+  signUpWithEmail,
+  signupRequiresEmailConfirmation,
+  type EmailAuthResult,
+} from './lib/auth'
 
 function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   const auth = useAuth()
@@ -119,9 +132,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
 
       if (
         current.selectedChallengeId &&
-        !current.challenges.some(
-          (challenge) => challenge.id === current.selectedChallengeId,
-        )
+        !isChallengePathId(current.selectedChallengeId)
       ) {
         patch.selectedChallengeId = null
       }
@@ -173,6 +184,38 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
 
   const setZipCode = (zipCode: string) => {
     setState((current) => ({ ...current, zipCode }))
+  }
+
+  const applyLocationFromZip = () => {
+    const query = state.zipCode.trim() || state.locationQuery
+    const location = resolveLocationProfile(query)
+
+    setState((current) =>
+      applyRealUserContent({
+        ...current,
+        zipCode: location.zipCode,
+        locationQuery: location.query,
+        locationLabel: location.label,
+        locationSupported: location.supported,
+        mapRegion: {
+          title: location.mapTitle,
+          subtitle: location.mapSubtitle,
+        },
+        communityLive: {
+          ...current.communityLive,
+          label: location.communityLabel,
+        },
+      }),
+    )
+
+    if (useProductionBackend && auth.user) {
+      void updateProfileLocation(auth.user.id, {
+        zipCode: location.zipCode,
+        locationQuery: location.query,
+        locationLabel: location.label,
+        locationSupported: location.supported,
+      })
+    }
   }
 
   const setSelectedJourneyFilter = (selectedJourneyFilterId: string) => {
@@ -485,13 +528,15 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   }
 
   const openCommunityCompose = () => {
-    setState((current) => ({
-      ...current,
-      showCommunityCompose: true,
-      selectedJourneyEntryId: null,
-      selectedChallengeId: null,
-      selectedAchievementId: null,
-    }))
+    if (isDemoMode) {
+      setState((current) => ({
+        ...current,
+        showCommunityCompose: true,
+        selectedJourneyEntryId: null,
+        selectedChallengeId: null,
+        selectedAchievementId: null,
+      }))
+    }
   }
 
   const closeCommunityCompose = () => {
@@ -533,6 +578,29 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         memorySaveToast: 'Posted to the pack — saved locally.',
       }
     })
+  }
+
+  const startNeighborhoodWalk = () => {
+    const startedAt = new Date().toISOString()
+    setState((current) => ({
+      ...current,
+      activeAdventure: createActiveAdventure(
+        NEIGHBORHOOD_WALK_PLACE_ID,
+        'Neighborhood Walk',
+        'Open end',
+        {
+          started: true,
+          startedAt,
+          dogId: current.activeDogId ?? current.dogs[0]?.id,
+          selectedDogIds: current.dogs.map((dog) => dog.id),
+        },
+      ),
+      adventurePhotos: ['', '', ''],
+      selectedJourneyEntryId: null,
+      selectedChallengeId: null,
+      showPresetPlanOverlay: false,
+      curatedPlanFlowStep: 0,
+    }))
   }
 
   const startAdventure = async (placeId: string, durationLabel = 'Open end') => {
@@ -607,8 +675,10 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     const place = getPlaceById(state.activeAdventure.placeId)
     const capturedPhotos = state.adventurePhotos.filter(Boolean)
     const activeDogId = state.activeDogId ?? state.dogs[0]?.id
+    const isNeighborhoodWalk = isNeighborhoodWalkPlace(state.activeAdventure.placeId)
+    const durationLabel = getFinishedDurationLabel(state.activeAdventure)
 
-    if (useProductionBackend && auth.user && activeDogId && place) {
+    if (useProductionBackend && auth.user && activeDogId && place && !isNeighborhoodWalk) {
       try {
         const memory = await finishAdventureOnServer({
           userId: auth.user.id,
@@ -649,16 +719,25 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         return { ...current, activeTab: 'journey', adventurePhotos: ['', '', ''] }
       }
 
-      const journeyEntries = place
+      const journeyEntries = isNeighborhoodWalk
         ? [
-            createJourneyEntryFromPlace(place, current.dogs, {
+            createJourneyEntryFromNeighborhoodWalk(current.dogs, {
               photoUrls: capturedPhotos,
-              durationLabel: current.activeAdventure.durationLabel,
+              durationLabel,
               recapLabels: payload.recapLabels,
             }),
             ...current.journeyEntries,
           ]
-        : current.journeyEntries
+        : place
+          ? [
+              createJourneyEntryFromPlace(place, current.dogs, {
+                photoUrls: capturedPhotos,
+                durationLabel,
+                recapLabels: payload.recapLabels,
+              }),
+              ...current.journeyEntries,
+            ]
+          : current.journeyEntries
 
       const adventureCount = journeyEntries.length
       const placeCount = new Set(
@@ -679,6 +758,11 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   }
 
   const completeOnboarding = async (result: OnboardingResult) => {
+    if (useProductionBackend && auth.configured && !auth.user) {
+      setAuthError('Sign in to continue.')
+      return
+    }
+
     if (useProductionBackend && auth.user) {
       await persistOnboardingToSupabase(auth.user.id, auth.user.email, result)
       await insertEarlyAccessSignup({
@@ -692,17 +776,24 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       await trackUserEvent('early_access_joined', { source: 'onboarding' }, auth.user.id)
 
       const hydrated = await hydrateProductionState(auth.user.id, state)
+      const onboardingPatch = applyOnboardingToAppState(state, result)
       setState((current) => ({
         ...current,
         ...hydrated,
-        ...applyOnboardingToAppState(current, result),
+        ...onboardingPatch,
+        dogs: hydrated.dogs,
+        hasUserDogProfile: hydrated.hasUserDogProfile,
+        activeDogId: hydrated.activeDogId,
         mode: appMode,
       }))
       saveAppState(
         {
           ...state,
           ...hydrated,
-          ...applyOnboardingToAppState(state, result),
+          ...onboardingPatch,
+          dogs: hydrated.dogs,
+          hasUserDogProfile: hydrated.hasUserDogProfile,
+          activeDogId: hydrated.activeDogId,
           mode: appMode,
         },
         appMode,
@@ -728,7 +819,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   const handleEmailAuth = async (
     mode: 'signup' | 'signin',
     input: { email: string; password: string; userName: string },
-  ) => {
+  ): Promise<EmailAuthResult> => {
     setAuthLoading(true)
     setAuthError(null)
     try {
@@ -738,13 +829,55 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
           await ensureProfileShell(data.user.id, input.email)
           await trackUserEvent('signup', { email: input.email }, data.user.id)
         }
-      } else {
-        await signInWithEmail(input.email, input.password)
+        if (signupRequiresEmailConfirmation(data)) {
+          return 'email_confirmation_required'
+        }
+        if (!data.session) {
+          throw new Error('Could not create your account. Please try again.')
+        }
+        return 'authenticated'
       }
+
+      const data = await signInWithEmail(input.email, input.password)
+      if (!data.session) {
+        throw new Error('Sign in failed. Please try again.')
+      }
+      return 'authenticated'
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Authentication failed'
       setAuthError(message)
       throw error
+    } finally {
+      setAuthLoading(false)
+    }
+  }
+
+  const handlePasswordReset = async (email: string) => {
+    setAuthLoading(true)
+    setAuthError(null)
+    try {
+      await resetPasswordForEmail(email)
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Could not send password reset email'
+      setAuthError(message)
+      throw error
+    } finally {
+      setAuthLoading(false)
+    }
+  }
+
+  const handleSignOut = async () => {
+    setAuthLoading(true)
+    setAuthError(null)
+    try {
+      await auth.signOut()
+      const fresh = resetProductionAppState()
+      setState(fresh)
+      setDataHydrated(true)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Sign out failed'
+      setAuthError(message)
     } finally {
       setAuthLoading(false)
     }
@@ -804,6 +937,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   }
 
   const openPackInvite = () => {
+    if (!isDemoMode) return
     setState((current) => ({ ...current, showPackInviteOverlay: true }))
   }
 
@@ -812,6 +946,15 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   }
 
   const submitPackInvite = (payload: PackInvitePayload) => {
+    if (!isDemoMode) {
+      setState((current) => ({
+        ...current,
+        showPackInviteOverlay: false,
+        packAccessToast: 'Pack invites are coming soon.',
+      }))
+      return
+    }
+
     setState((current) => ({
       ...current,
       showPackInviteOverlay: false,
@@ -863,10 +1006,12 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         onComplete={completeOnboarding}
         initialStep={initialStep}
         authConfigured={useProductionBackend}
+        authUserId={auth.user?.id ?? null}
         authLoading={authLoading}
         authError={authError}
         onEmailAuth={handleEmailAuth}
         onGoogleAuth={handleGoogleAuth}
+        onPasswordReset={handlePasswordReset}
       />
     )
   }
@@ -902,7 +1047,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     )
   }
 
-  if (state.showPackInviteOverlay) {
+  if (state.showPackInviteOverlay && isDemoMode) {
     return (
       <PackInviteOverlay onClose={closePackInvite} onSubmit={submitPackInvite} />
     )
@@ -923,10 +1068,10 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   }
 
   if (state.showPresetPlanOverlay) {
-    return <PresetPlanOverlay onClose={closePresetPlanOverlay} />
+    return <PresetPlanOverlay onClose={closePresetPlanOverlay} isDemoMode={isDemoMode} />
   }
 
-  if (state.showCommunityCompose) {
+  if (state.showCommunityCompose && isDemoMode) {
     return (
       <CommunityComposeOverlay
         state={state}
@@ -937,17 +1082,20 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   }
 
   if (state.selectedChallengeId) {
-    const challenge = state.challenges.find(
-      (item) => item.id === state.selectedChallengeId,
-    )
-    const personalize = shouldPersonalizeContent(state)
-    if (challenge) {
+    const path = getChallengePathById(state.selectedChallengeId)
+    if (path) {
       return (
-        <ChallengeDetailView
-          challenge={challenge}
-          dogs={personalize ? state.dogs : []}
-          onBack={closeChallengeDetail}
-        />
+        <AppShell activeTab={state.activeTab} onTabChange={setActiveTab} isDemoMode={isDemoMode}>
+          <ChallengePathDetailView
+            path={path}
+            journeyEntries={state.journeyEntries}
+            isDemoMode={isDemoMode}
+            onBack={closeChallengeDetail}
+            onStartAdventure={startAdventure}
+            onStartNeighborhoodWalk={startNeighborhoodWalk}
+            onOpenMemory={openJourneyMemory}
+          />
+        </AppShell>
       )
     }
   }
@@ -995,16 +1143,19 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             state={state}
             onSelectActivity={setSelectedActivity}
             onStartAdventure={startAdventure}
+            onStartNeighborhoodWalk={startNeighborhoodWalk}
             onOpenProfile={() => setActiveTab('profile')}
-            onOpenJourney={() => setActiveTab('journey')}
+            onOpenChallenge={openChallengeDetail}
           />
         )
       case 'plan':
         return (
           <PlanScreen
             state={state}
+            isDemoMode={isDemoMode}
             onSelectCategory={setSelectedPlanCategory}
             onZipChange={setZipCode}
+            onApplyLocation={applyLocationFromZip}
             onStartAdventure={startAdventure}
             onOpenCuratedPlanFlow={openCuratedPlanFlow}
             onGenerateRandomPlan={generateRandomPlanForDogs}
@@ -1015,10 +1166,13 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         return (
           <JourneyScreen
             state={state}
+            isDemoMode={isDemoMode}
             onSelectFilter={setSelectedJourneyFilter}
             onOpenMemory={openJourneyMemory}
             onOpenMap={openJourneyMap}
             onGoToPlan={() => setActiveTab('plan')}
+            onStartAdventure={startAdventure}
+            onStartNeighborhoodWalk={startNeighborhoodWalk}
             onDismissToast={clearMemorySaveToast}
           />
         )
@@ -1037,7 +1191,8 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         return (
           <MilestonesScreen
             state={state}
-            onOpenChallenge={openChallengeDetail}
+            isDemoMode={isDemoMode}
+            onOpenChallengePath={openChallengeDetail}
             onOpenAchievement={openAchievementDetail}
             onOpenJourneyLevel={openJourneyLevelDetail}
           />
@@ -1046,10 +1201,11 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         return (
           <ProfileScreen
             state={state}
+            packInviteEnabled={isDemoMode}
             onOpenPackInvite={openPackInvite}
             onSetActiveDog={handleSetActiveDog}
             onUpdateDog={handleUpdateDog}
-            onSignOut={useProductionBackend ? auth.signOut : undefined}
+            onSignOut={useProductionBackend ? handleSignOut : undefined}
           />
         )
       default:

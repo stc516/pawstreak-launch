@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react'
 import type { AppState, CommunityComment } from '../../data/demo'
 import { CardImage } from '../../components/CardImage'
 import { getMagicLine, getPlaceById } from '../../data/places'
+import { navigateTo } from '../../lib/demoRoute'
+import { ROUTES } from '../../lib/routes'
+import { shareContent } from '../../lib/shareContent'
 
 interface CommunityScreenProps {
   state: AppState
@@ -10,6 +13,37 @@ interface CommunityScreenProps {
   onQuickShare: (caption: string) => void
   onOpenCompose: () => void
   onDismissToast: () => void
+}
+
+function CommunityComingSoon() {
+  return (
+    <>
+      <div className="aheader">
+        <div className="alogo">Community</div>
+      </div>
+
+      <div className="community-soon detail-card-warm">
+        <p className="community-soon-kicker">Coming soon</p>
+        <h2 className="community-soon-title">Pack sharing is on the way.</h2>
+        <p className="community-soon-copy">
+          Community sharing is coming soon — a warm place to cheer on other dog parents,
+          swap adventure ideas, and celebrate the good days together.
+        </p>
+        <div className="community-soon-actions">
+          <button
+            type="button"
+            className="community-soon-btn tap-target"
+            onClick={() => navigateTo(`${ROUTES.landing}#waitlist`)}
+          >
+            Join the waitlist
+          </button>
+          <a className="community-soon-link" href="mailto:hello@pawstreakapp.com">
+            Share feedback
+          </a>
+        </div>
+      </div>
+    </>
+  )
 }
 
 export function CommunityScreen({
@@ -23,6 +57,7 @@ export function CommunityScreen({
   const [commentsPostId, setCommentsPostId] = useState<string | null>(null)
   const [commentDraft, setCommentDraft] = useState('')
   const [shareNote, setShareNote] = useState<string | null>(null)
+  const [shareIsError, setShareIsError] = useState(false)
   const [quickShareDraft, setQuickShareDraft] = useState('')
 
   useEffect(() => {
@@ -31,11 +66,30 @@ export function CommunityScreen({
     return () => window.clearTimeout(timer)
   }, [state.memorySaveToast, onDismissToast])
 
+  if (state.mode === 'app') {
+    return <CommunityComingSoon />
+  }
+
   const activePost = state.communityPosts.find((post) => post.id === commentsPostId)
   const live = state.communityLive
 
-  const handleShare = () => {
-    setShareNote('Post link copied — ready to share when you want.')
+  const handleShare = async (post: AppState['communityPosts'][number]) => {
+    setShareNote(null)
+    setShareIsError(false)
+
+    const result = await shareContent({
+      title: `${post.name} on PawStreak`,
+      text: post.caption,
+    })
+
+    if (result.ok) {
+      setShareNote(result.message)
+      setShareIsError(false)
+    } else {
+      setShareNote(result.message)
+      setShareIsError(true)
+    }
+
     window.setTimeout(() => setShareNote(null), 2800)
   }
 
@@ -122,14 +176,15 @@ export function CommunityScreen({
           </button>
         </div>
         <div className="comm-quick-share-note">
-          {state.mode === 'demo'
-            ? 'Quick posts are saved locally in this demo.'
-            : 'Quick posts are saved on this device for now.'}
+          Quick posts are saved locally in this demo.
         </div>
       </div>
 
       {shareNote || state.memorySaveToast ? (
-        <div className="memory-toast" role="status">
+        <div
+          className={`memory-toast${shareIsError ? ' memory-toast--error' : ''}`}
+          role={shareIsError ? 'alert' : 'status'}
+        >
           {shareNote ?? state.memorySaveToast}
         </div>
       ) : null}
@@ -199,7 +254,11 @@ export function CommunityScreen({
                     <i className="ti ti-message-circle" aria-hidden="true" />
                     {post.comments}
                   </button>
-                  <button type="button" className="cpa tap-target" onClick={handleShare}>
+                  <button
+                    type="button"
+                    className="cpa tap-target"
+                    onClick={() => void handleShare(post)}
+                  >
                     <i className="ti ti-share" aria-hidden="true" />
                     Share
                   </button>

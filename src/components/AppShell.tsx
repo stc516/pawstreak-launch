@@ -26,7 +26,7 @@ export function AppShell({
             <span className="demo-pill">Demo</span>
           </div>
         ) : null}
-        <main className="scroll">{children}</main>
+        <main className={`scroll${activeTab === 'home' ? ' scroll--home' : ''}`}>{children}</main>
         {isDemoMode ? <DemoFeedbackCapture /> : null}
         <BottomNav activeTab={activeTab} onTabChange={onTabChange} />
       </div>

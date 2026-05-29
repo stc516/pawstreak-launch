@@ -1,29 +1,38 @@
 import { useEffect } from 'react'
 import type { AppState } from '../../data/demo'
+import { SAN_DIEGO_BEACH_QUEST_PATH } from '../../data/challengePaths'
 import { getDisplayFlashbackSubtitle, getDisplayJourneyTitle } from '../../lib/profileDisplay'
 import { getJourneyMapSummary } from '../../lib/productionState'
 import {
   filterJourneyEntries,
   getJourneyFilterEmptyState,
 } from '../../lib/journeyFilter'
+import { ChallengePathExperience } from '../../components/ChallengePathExperience'
 import { CardImage } from '../../components/CardImage'
 import { getPlaceById } from '../../data/places'
+import { getJourneyEntryDisplayImageUrl } from '../../lib/adventureDisplayImage'
 
 interface JourneyScreenProps {
   state: AppState
+  isDemoMode?: boolean
   onSelectFilter: (filterId: string) => void
   onOpenMemory: (entryId: string) => void
   onOpenMap: () => void
   onGoToPlan: () => void
+  onStartAdventure: (placeId: string) => void
+  onStartNeighborhoodWalk?: () => void
   onDismissToast: () => void
 }
 
 export function JourneyScreen({
   state,
+  isDemoMode = false,
   onSelectFilter,
   onOpenMemory,
   onOpenMap,
   onGoToPlan,
+  onStartAdventure,
+  onStartNeighborhoodWalk,
   onDismissToast,
 }: JourneyScreenProps) {
   useEffect(() => {
@@ -51,6 +60,15 @@ export function JourneyScreen({
       <div className="aheader">
         <div className="alogo">{getDisplayJourneyTitle(state)}</div>
       </div>
+
+      <ChallengePathExperience
+        path={SAN_DIEGO_BEACH_QUEST_PATH}
+        journeyEntries={state.journeyEntries}
+        isDemoMode={isDemoMode}
+        onStartAdventure={onStartAdventure}
+        onStartNeighborhoodWalk={onStartNeighborhoodWalk}
+        onOpenMemory={onOpenMemory}
+      />
 
       <div className="jfilters">
         {state.journeyFilters.map((filter) => (
@@ -85,7 +103,7 @@ export function JourneyScreen({
         {hasMemories ? "This week's adventures" : 'Your memories'}
       </div>
 
-      {filteredEntries.length === 0 && emptyState ? (
+      {filteredEntries.length === 0 && emptyState && (!hasMemories || state.selectedJourneyFilterId !== 'all') ? (
         <div className="journey-empty detail-card-warm">
           <div className="journey-empty-title">{emptyState.title}</div>
           <div className="journey-empty-body">{emptyState.body}</div>
@@ -103,6 +121,7 @@ export function JourneyScreen({
         {filteredEntries.map((entry) => {
           const place = entry.placeId ? getPlaceById(entry.placeId) : undefined
           const tagLine = entry.tags.slice(0, 2).join(' · ')
+          const cardImageUrl = getJourneyEntryDisplayImageUrl(state.journeyEntries, entry)
 
           return (
             <button
@@ -114,7 +133,7 @@ export function JourneyScreen({
               <div className="mcard-media">
                 <CardImage
                   className="mcard-img"
-                  imageUrl={entry.photoUrls?.[0] ?? place?.imageUrl}
+                  imageUrl={cardImageUrl}
                   imageAlt={place?.imageAlt ?? entry.place}
                   imageTone={place?.imageTone ?? 'warm'}
                 />
@@ -125,7 +144,10 @@ export function JourneyScreen({
                   <div className="mcard-magic">{entry.magicLine}</div>
                 ) : null}
                 {tagLine ? <div className="mcard-tagline">{tagLine}</div> : null}
-                <div className="mcard-date">{entry.date}</div>
+                <div className="mcard-date">
+                  {entry.date}
+                  {entry.durationLabel ? ` · ${entry.durationLabel}` : ''}
+                </div>
               </div>
             </button>
           )

@@ -1,19 +1,34 @@
+import { useMemo } from 'react'
 import type { AppState } from '../../data/demo'
+import { CHALLENGE_PATHS } from '../../data/challengePaths'
 import { getDisplayBondSubtitle } from '../../lib/profileDisplay'
+import { resolveChallengePathNodes, getChallengePathProgressSummary } from '../../lib/challengePathProgress'
 
 interface MilestonesScreenProps {
   state: AppState
-  onOpenChallenge: (challengeId: string) => void
+  isDemoMode?: boolean
+  onOpenChallengePath: (pathId: string) => void
   onOpenAchievement: (achievementId: string) => void
   onOpenJourneyLevel: () => void
 }
 
 export function MilestonesScreen({
   state,
-  onOpenChallenge,
+  isDemoMode = false,
+  onOpenChallengePath,
   onOpenAchievement,
   onOpenJourneyLevel,
 }: MilestonesScreenProps) {
+  const challengeCards = useMemo(
+    () =>
+      CHALLENGE_PATHS.map((path) => {
+        const nodes = resolveChallengePathNodes(path, state.journeyEntries, isDemoMode)
+        const progress = getChallengePathProgressSummary(nodes)
+        return { path, nodes, progress }
+      }),
+    [state.journeyEntries, isDemoMode],
+  )
+
   return (
     <>
       <div className="aheader">
@@ -43,34 +58,38 @@ export function MilestonesScreen({
 
       <div className="sec">Active challenges</div>
 
-      {state.challenges.length === 0 ? (
-        <p className="pack-access-copy">Challenges unlock as you save adventures.</p>
-      ) : (
-        state.challenges.map((challenge) => (
-          <button
-            key={challenge.id}
-            type="button"
-            className="challenge challenge--tap tap-target"
-            onClick={() => onOpenChallenge(challenge.id)}
-          >
-            <div className="ch-top">
-              <div className="ch-name">{challenge.name}</div>
-              <div className="ch-prog">{challenge.progress}</div>
+      <div className="ms-challenge-list">
+        {challengeCards.map(({ path, progress }) => (
+          <article key={path.id} className={`ms-challenge-card ms-challenge-card--${path.accent} detail-card-warm`}>
+            <div className="ms-challenge-card-top">
+              <div>
+                <h2 className="ms-challenge-card-title">{path.title}</h2>
+                <p className="ms-challenge-card-desc">{path.description}</p>
+              </div>
+              <div className="ms-challenge-card-count">
+                {progress.completed}/{progress.total}
+              </div>
             </div>
-            <div className="ch-bar">
+
+            <div className="ms-challenge-card-bar">
               <div
-                className="ch-fill"
-                style={{ width: challenge.fillWidth }}
+                className="ms-challenge-card-bar-fill"
+                style={{ width: progress.fillWidth }}
               />
             </div>
-            <div className="ch-sub">{challenge.subtitle}</div>
-            <div className="ch-prize">
-              <i className="ti ti-gift" aria-hidden="true" />
-              {challenge.prize}
-            </div>
-          </button>
-        ))
-      )}
+
+            <div className="ms-challenge-card-sub">{path.subtitle}</div>
+
+            <button
+              type="button"
+              className="ms-challenge-card-cta tap-target"
+              onClick={() => onOpenChallengePath(path.id)}
+            >
+              View path
+            </button>
+          </article>
+        ))}
+      </div>
 
       <div className="sec">Achievements</div>
 

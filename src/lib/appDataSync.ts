@@ -2,7 +2,7 @@ import type { AppState } from '../data/demo'
 import { defaultAppState } from '../data/demo'
 import type { OnboardingResult } from './onboardingProfile'
 import { resolveLocationProfile, buildDogsFromOnboarding } from './onboardingProfile'
-import { createDogsForUser, fetchDogsForUser, getActiveDog } from './db/dogs'
+import { createDogsForUser, fetchDogsForUser, getActiveDog, updateDogPhotoPath, uploadDogPhoto } from './db/dogs'
 import { fetchMemoriesForUser, countDistinctPlaces } from './db/memories'
 import { fetchProfile, upsertProfileFromOnboarding } from './db/profiles'
 import { trackUserEvent } from './db/userEvents'
@@ -89,8 +89,25 @@ export async function persistOnboardingToSupabase(
   })
 
   const localDogs = buildDogsFromOnboarding(result.dogs)
-  await createDogsForUser(userId, localDogs)
-  await trackUserEvent('onboarding_complete', { dogCount: localDogs.length }, userId)
+  const createdDogs = await createDogsForUser(userId, localDogs)
+
+  if (result.dogPhotoDataUrl && createdDogs[0]) {
+    const photoPath = await uploadDogPhoto(
+      userId,
+      createdDogs[0].id,
+      result.dogPhotoDataUrl,
+    )
+    if (!photoPath) {
+      throw new Error('Could not save dog photo. Try again or remove the photo to continue.')
+    }
+
+    const saved = await updateDogPhotoPath(userId, createdDogs[0].id, photoPath)
+    if (!saved) {
+      throw new Error('Could not save dog photo. Try again or remove the photo to continue.')
+    }
+  }
+
+  await trackUserEvent('onboarding_complete', { dogCount: createdDogs.length }, userId)
 }
 
 export async function startAdventureOnServer(input: {

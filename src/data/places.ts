@@ -105,6 +105,60 @@ const RAW_PLACES: Place[] = [
     popularNow: false,
   },
   {
+    id: 'mission-bay',
+    name: 'Mission Bay',
+    city: 'San Diego',
+    region: 'San Diego',
+    category: 'Beach',
+    tags: ['on-leash', 'water', 'bay'],
+    distanceLabel: '5.5 mi',
+    leashInfo: 'On-leash',
+    dogFriendlyNotes: 'Shoreline paths and grassy park edges around Mission Bay.',
+    whyDogsLoveIt: 'Flat bay walks, breeze, and room to sniff without steep hills.',
+    bestTime: 'Sunset shoreline loop',
+    energyLevel: 'Moderate',
+    lat: 32.7648,
+    lng: -117.2268,
+    featured: false,
+    popularNow: false,
+  },
+  {
+    id: 'pacific-beach',
+    name: 'Pacific Beach',
+    city: 'San Diego',
+    region: 'San Diego',
+    category: 'Beach',
+    tags: ['on-leash', 'water', 'boardwalk'],
+    distanceLabel: '7.2 mi',
+    leashInfo: 'On-leash',
+    dogFriendlyNotes: 'Boardwalk and beach strand — busy on weekends, calmer at sunrise.',
+    whyDogsLoveIt: 'Boardwalk energy, sand, and a classic San Diego beach day.',
+    bestTime: 'Early morning before crowds',
+    energyLevel: 'Moderate',
+    lat: 32.7990,
+    lng: -117.2540,
+    featured: false,
+    popularNow: false,
+  },
+  {
+    id: 'cardiff-dog-beach',
+    name: 'Cardiff Dog Beach',
+    city: 'Encinitas',
+    region: 'San Diego',
+    category: 'Beach',
+    tags: ['off-leash', 'water', 'north-county'],
+    distanceLabel: '24 mi',
+    leashInfo: 'Off-leash',
+    dogFriendlyNotes: 'North County off-leash stretch at the south end of Cardiff State Beach.',
+    whyDogsLoveIt: 'Wide sand, steady surf, and a north-county change of pace.',
+    bestTime: 'Weekday mornings',
+    energyLevel: 'High',
+    lat: 33.0102,
+    lng: -117.2794,
+    featured: false,
+    popularNow: false,
+  },
+  {
     id: 'huntington-dog-beach',
     name: 'Huntington Dog Beach',
     city: 'Huntington Beach',
@@ -764,6 +818,24 @@ const RAW_PLACES: Place[] = [
     popularNow: false,
   },
   {
+    id: 'dark-horse-coffee',
+    name: 'Dark Horse Coffee Roasters',
+    city: 'San Diego',
+    region: 'San Diego',
+    category: 'Coffee',
+    tags: ['patio', 'local', 'north-park'],
+    distanceLabel: '3.8 mi',
+    leashInfo: 'Patio dogs welcome',
+    dogFriendlyNotes: 'North Park roastery with sidewalk tables and a relaxed patio vibe.',
+    whyDogsLoveIt: 'Patio hangs, new smells, and a short walk through the neighborhood.',
+    bestTime: 'Slow weekend morning',
+    energyLevel: 'Low',
+    lat: 32.7398,
+    lng: -117.1294,
+    featured: false,
+    popularNow: false,
+  },
+  {
     id: 'training-puppy-basics',
     name: 'Puppy basics session',
     city: 'Near you',
@@ -804,7 +876,32 @@ function applyPlaceImages(place: Place): Place {
   }
 }
 
+export const NEIGHBORHOOD_WALK_PLACE_ID = 'neighborhood-walk'
+
+const NEIGHBORHOOD_WALK_PLACE_RAW: Place = {
+  id: NEIGHBORHOOD_WALK_PLACE_ID,
+  name: 'Neighborhood Walk',
+  city: 'Home',
+  region: 'San Diego',
+  category: 'Neighborhood',
+  tags: ['neighborhood', 'everyday', 'walk'],
+  distanceLabel: '0 mi',
+  leashInfo: 'On-leash',
+  dogFriendlyNotes: 'Your everyday loop — sniff stops, slow corners, and familiar routes.',
+  whyDogsLoveIt: 'Around the neighborhood — the route they know by heart.',
+  bestTime: 'Anytime',
+  energyLevel: 'Low',
+  featured: false,
+  popularNow: false,
+}
+
+export const NEIGHBORHOOD_WALK_PLACE = applyPlaceImages(NEIGHBORHOOD_WALK_PLACE_RAW)
+
 export const PLACES: Place[] = RAW_PLACES.map(applyPlaceImages)
+
+export function isNeighborhoodWalkPlace(placeId: string | undefined): boolean {
+  return placeId === NEIGHBORHOOD_WALK_PLACE_ID
+}
 
 const PLAN_CATEGORY_MAP: Record<string, PlaceCategory | null> = {
   all: null,
@@ -846,6 +943,7 @@ function regionShort(region: Place['region']): string {
 }
 
 export function getPlaceById(id: string): Place | undefined {
+  if (id === NEIGHBORHOOD_WALK_PLACE_ID) return NEIGHBORHOOD_WALK_PLACE
   return PLACES.find((place) => place.id === id)
 }
 
@@ -929,6 +1027,42 @@ export function getHeroPlace(activityId: string, prefs?: RecommendationPrefs): P
   return PLACES[0]
 }
 
+export function createJourneyEntryFromNeighborhoodWalk(
+  dogs: Dog[],
+  options: {
+    photoUrls?: string[]
+    durationLabel?: string
+    recapLabels?: string[]
+  } = {},
+): JourneyEntry {
+  const recapLabels = options.recapLabels ?? []
+  const emotionalLine = buildEmotionalMemoryLine(recapLabels, dogs)
+  const favoriteMoment = buildFavoriteMoment(recapLabels, dogs)
+  const memoryMood =
+    recapLabels.includes('Needed a slower pace') ? 'Calm + close' :
+    recapLabels.includes('Loved every second') ? 'Joyful + tired' :
+    'Warm + steady'
+
+  return {
+    id: `neighborhood-walk-${Date.now()}`,
+    placeId: NEIGHBORHOOD_WALK_PLACE_ID,
+    place: 'Neighborhood Walk',
+    date: 'Today',
+    occurredAt: new Date().toISOString(),
+    magicLine: 'Around the neighborhood',
+    tags: ['Neighborhood', 'Around the neighborhood', dogNamesLabel(dogs), 'Loved it'],
+    photoUrls: options.photoUrls?.length ? options.photoUrls : undefined,
+    durationLabel: options.durationLabel,
+    recapLabels: recapLabels.length > 0 ? recapLabels : undefined,
+    emotionalLine,
+    favoriteMoment,
+    memoryMood,
+    dogTags: dogs.map(
+      (dog) => `${dog.name} · ${dog.breed.split('·')[0]?.trim() ?? 'companion'}`,
+    ),
+  }
+}
+
 export function createJourneyEntryFromPlace(
   place: Place,
   dogs: Dog[],
@@ -951,6 +1085,7 @@ export function createJourneyEntryFromPlace(
     placeId: place.id,
     place: place.name,
     date: 'Today',
+    occurredAt: new Date().toISOString(),
     magicLine: getMagicLine(place),
     tags: [place.category, place.leashInfo, dogNamesLabel(dogs), 'Loved it'],
     photoUrls: options.photoUrls?.length ? options.photoUrls : undefined,

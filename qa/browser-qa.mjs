@@ -54,7 +54,7 @@ async function clickNav(page, label) {
 }
 
 async function exitActiveAdventure(page) {
-  const finish = page.getByRole('button', { name: 'Finish', exact: true })
+  const finish = page.getByRole('button', { name: 'Finish adventure', exact: true })
   if (await finish.isVisible().catch(() => false)) {
     await finish.click()
     await page.waitForTimeout(500)
@@ -200,7 +200,7 @@ async function runFlows(page) {
   await screenshot(page, step(17, 'journey-memory'))
   await page.getByRole('button', { name: 'Back', exact: true }).click()
   await page.waitForTimeout(400)
-  const backOnJourney = await page.getByText('This week').isVisible()
+  const backOnJourney = await page.getByText(/Your memories|This week's adventures/i).isVisible()
   await record('5-journey-back', backOnJourney, 'Returned to Journey list after Back')
   await screenshot(page, step(18, 'journey-list'))
   if (!backOnJourney) throw new Error('Journey Back did not return to list')
@@ -255,7 +255,7 @@ async function runFlows(page) {
     return Array.isArray(state.journeyEntries) ? state.journeyEntries.length : 0
   })
 
-  await page.getByRole('button', { name: 'Finish', exact: true }).click()
+  await page.getByRole('button', { name: 'Finish adventure', exact: true }).click()
   await page.waitForTimeout(600)
   await expectVisible(page, '.sec', '7-finish-journey', 'Journey tab visible after Finish')
 

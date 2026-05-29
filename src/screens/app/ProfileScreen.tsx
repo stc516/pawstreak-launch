@@ -6,6 +6,7 @@ import { getMagicLine, getPlaceById } from '../../data/places'
 
 interface ProfileScreenProps {
   state: AppState
+  packInviteEnabled?: boolean
   onOpenPackInvite: () => void
   onSetActiveDog?: (dogId: string) => void
   onUpdateDog?: (
@@ -17,6 +18,7 @@ interface ProfileScreenProps {
 
 export function ProfileScreen({
   state,
+  packInviteEnabled = false,
   onOpenPackInvite,
   onSetActiveDog,
   onUpdateDog,
@@ -58,7 +60,11 @@ export function ProfileScreen({
                 onClick={() => onSetActiveDog?.(dog.id)}
               >
                 <div className={`dog-circle ${dog.circleClass}`}>
-                  {dog.profileEmoji}
+                  {dog.photoUrl ? (
+                    <img src={dog.photoUrl} alt="" className="dog-circle-img" />
+                  ) : (
+                    dog.profileEmoji
+                  )}
                 </div>
                 <div className="dog-dname">{dog.name}</div>
                 <div className="dog-breed">{dog.breed}</div>
@@ -141,39 +147,54 @@ export function ProfileScreen({
               Let the people who love your dog stay close, even when they&apos;re far
               away.
             </p>
-            <p className="pack-access-copy">
-              Perfect for family, walkers, sitters, or someone stationed far away.
-              They can follow the memories, suggest adventures, and stay part of the
-              pack.
-            </p>
+            {packInviteEnabled ? (
+              <p className="pack-access-copy">
+                Perfect for family, walkers, sitters, or someone stationed far away.
+                They can follow the memories, suggest adventures, and stay part of the
+                pack.
+              </p>
+            ) : (
+              <p className="pack-access-copy">
+                Pack invites are coming soon — a simple way to share memories with
+                family, walkers, and sitters.
+              </p>
+            )}
           </div>
-          <button
-            type="button"
-            className="pack-invite-btn tap-target"
-            onClick={onOpenPackInvite}
-          >
-            Invite someone
-          </button>
+          {packInviteEnabled ? (
+            <button
+              type="button"
+              className="pack-invite-btn tap-target"
+              onClick={onOpenPackInvite}
+            >
+              Invite someone
+            </button>
+          ) : null}
         </div>
 
-        {state.packAccessMembers.length === 0 ? (
-          <p className="pack-access-copy">No pack members yet — invites coming soon.</p>
-        ) : (
-          <div className="pack-access-list">
-            {state.packAccessMembers.map((member) => (
-              <div key={member.id} className="pack-access-card detail-card-warm">
-                <div className="pack-access-card-top">
-                  <div>
-                    <div className="pack-access-name">{member.name}</div>
-                    <div className="pack-access-role">{member.role}</div>
+        {packInviteEnabled ? (
+          state.packAccessMembers.length === 0 ? (
+            <p className="pack-access-copy">
+              No pack members yet — save a demo invite to preview how this will work.
+            </p>
+          ) : (
+            <div className="pack-access-list">
+              {state.packAccessMembers.map((member) => (
+                <div key={member.id} className="pack-access-card detail-card-warm">
+                  <div className="pack-access-card-top">
+                    <div>
+                      <div className="pack-access-name">{member.name}</div>
+                      <div className="pack-access-role">{member.role}</div>
+                    </div>
+                    <div className="pack-access-level">{member.accessLevel}</div>
                   </div>
-                  <div className="pack-access-level">{member.accessLevel}</div>
+                  <div className="pack-access-desc">{member.accessDescription}</div>
+                  <div className="pack-access-last">{member.lastActivity}</div>
                 </div>
-                <div className="pack-access-desc">{member.accessDescription}</div>
-                <div className="pack-access-last">{member.lastActivity}</div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )
+        ) : (
+          <p className="pack-access-copy">Pack invites are coming soon.</p>
         )}
       </div>
 

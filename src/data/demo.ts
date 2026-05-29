@@ -25,6 +25,7 @@ export interface Dog {
   profileEmoji: string
   breed: string
   circleClass: 'dc-b' | 'dc-o'
+  photoUrl?: string
 }
 
 export interface ActivityChip {
@@ -38,6 +39,7 @@ export interface RecentAdventure {
   title: string
   tag: string
   memoryLine?: string
+  photoUrl?: string
 }
 
 export interface PlanCategory {
@@ -82,6 +84,7 @@ export interface JourneyEntry {
   placeId?: string
   place: string
   date: string
+  occurredAt?: string
   magicLine?: string
   tags: string[]
   photoUrls?: string[]
@@ -329,7 +332,7 @@ export const defaultAppState: AppState = {
   ],
   mapRegion: {
     title: 'San Diego + OC spots',
-    subtitle: '200+ dog-friendly places mapped · Tap a pin to explore',
+    subtitle: 'Curated dog-friendly picks in your area · Tap a pin to explore',
   },
   planCategories: [
     { id: 'all', label: 'All' },
@@ -720,6 +723,14 @@ export function getActiveAdventureElapsedSeconds(adventure: ActiveAdventure): nu
   const startedMs = new Date(adventure.startedAt).getTime()
   if (Number.isNaN(startedMs)) return 0
   return Math.max(0, Math.floor((Date.now() - startedMs) / 1000))
+}
+
+export function getFinishedDurationLabel(adventure: ActiveAdventure): string {
+  if (adventure.started && adventure.startedAt) {
+    const elapsedSeconds = getActiveAdventureElapsedSeconds(adventure)
+    if (elapsedSeconds > 0) return formatTimer(elapsedSeconds)
+  }
+  return adventure.durationLabel
 }
 
 export function formatTimerWithTarget(

@@ -72,7 +72,7 @@ const DEFAULT_MEMORY: JourneyMemoryDetail = {
   favoriteMoment: 'The quiet middle of the outing — when everything felt easy.',
   whatDogsLoved: ['New smells', 'Being together', 'A familiar route done differently'],
   adventureChips: ['Loved every second', 'Just being together'],
-  photoUrls: ['/sample-images/park.jpg', '/sample-images/dogs-outdoors.jpg'],
+  photoUrls: [],
   memoryMood: 'Warm + steady',
   adventureType: 'Adventure',
   dogTags: ['Your pack'],
@@ -125,7 +125,9 @@ export function getJourneyMemoryDetail(
   }
 
   if (entry.photoUrls?.length) {
-    base.photoUrls = [...entry.photoUrls, ...base.photoUrls].slice(0, 6)
+    base.photoUrls = [...entry.photoUrls]
+  } else {
+    base.photoUrls = []
   }
 
   base.dogTags = entry.dogTags ?? base.dogTags

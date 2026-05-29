@@ -3,6 +3,7 @@ import { StatusBar } from '../../components/StatusBar'
 
 interface PresetPlanOverlayProps {
   onClose: () => void
+  isDemoMode?: boolean
 }
 
 const REMINDER_OPTIONS = [
@@ -11,7 +12,7 @@ const REMINDER_OPTIONS = [
   { id: 'training', label: 'Training reminder', defaultOn: false },
 ]
 
-export function PresetPlanOverlay({ onClose }: PresetPlanOverlayProps) {
+export function PresetPlanOverlay({ onClose, isDemoMode = false }: PresetPlanOverlayProps) {
   const [selected, setSelected] = useState<string[]>(
     REMINDER_OPTIONS.filter((option) => option.defaultOn).map((option) => option.id),
   )
@@ -24,7 +25,11 @@ export function PresetPlanOverlay({ onClose }: PresetPlanOverlayProps) {
   }
 
   const handleSave = () => {
-    setSavedMessage('Calendar plan saved locally — reminders are mocked for now.')
+    setSavedMessage(
+      isDemoMode
+        ? 'Calendar plan saved locally — reminders are mocked for now.'
+        : 'Calendar reminders saved.',
+    )
     window.setTimeout(() => {
       setSavedMessage(null)
       onClose()
@@ -71,9 +76,11 @@ export function PresetPlanOverlay({ onClose }: PresetPlanOverlayProps) {
             })}
           </div>
 
-          <p className="preset-overlay-note">
-            Calendar sync is mocked for now. Real reminders come later.
-          </p>
+          {isDemoMode ? (
+            <p className="preset-overlay-note">
+              Calendar sync is mocked for now. Real reminders come later.
+            </p>
+          ) : null}
 
           <button type="button" className="preset-overlay-btn tap-target" onClick={handleSave}>
             Save calendar plan

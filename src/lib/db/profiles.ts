@@ -65,3 +65,28 @@ export async function ensureProfileShell(userId: string, email?: string | null) 
     { onConflict: 'id' },
   )
 }
+
+export async function updateProfileLocation(
+  userId: string,
+  location: {
+    zipCode: string
+    locationQuery: string
+    locationLabel: string
+    locationSupported: boolean
+  },
+): Promise<boolean> {
+  const supabase = getSupabaseClient()
+  if (!supabase) return false
+
+  const { error } = await supabase
+    .from('profiles')
+    .update({
+      zip_code: location.zipCode,
+      location_query: location.locationQuery,
+      location_label: location.locationLabel,
+      location_supported: location.locationSupported,
+    })
+    .eq('id', userId)
+
+  return !error
+}

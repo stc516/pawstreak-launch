@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="PawStreak">
+  <rect width="1024" height="1024" fill="#fff9f4"/>
+  <!-- Map pin: single solid shape, ~88% canvas height -->
+  <path
+    fill="#161a32"
+    d="M512 96c-158 0-286 128-286 286 0 42 10 82 28 118 36 72 128 198 228 318 24 28 46 54 66 78 8 10 16 10 24 0 20-24 42-50 66-78 100-120 192-246 228-318 18-36 28-76 28-118C798 224 670 96 512 96z"
+  />
+  <!-- Paw mark inside pin head (orange, geometric) -->
+  <g fill="#f97316">
+    <ellipse cx="512" cy="318" rx="88" ry="72"/>
+    <circle cx="404" cy="206" r="46"/>
+    <circle cx="512" cy="168" r="52"/>
+    <circle cx="620" cy="206" r="46"/>
+  </g>
+</svg>

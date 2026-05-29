@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="PawStreak">
+  <!-- Maskable: full-bleed cream; symbol in ~80% safe zone -->
+  <rect width="1024" height="1024" fill="#fff9f4"/>
+  <path
+    fill="#161a32"
+    d="M512 168c-132 0-240 108-240 240 0 36 8 70 24 100 30 60 108 166 192 266 20 24 38 46 54 66 7 9 14 9 21 0 16-20 34-42 54-66 84-100 162-206 192-266 16-30 24-64 24-100 0-132-108-240-240-240z"
+  />
+  <g fill="#f97316">
+    <ellipse cx="512" cy="352" rx="74" ry="60"/>
+    <circle cx="428" cy="268" r="38"/>
+    <circle cx="512" cy="236" r="44"/>
+    <circle cx="596" cy="268" r="38"/>
+  </g>
+</svg>

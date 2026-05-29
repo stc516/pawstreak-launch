@@ -186,7 +186,11 @@ export function ActiveAdventureScreen({
                   key={dog.id}
                   className={`dog-av dog-av--sm ${dog.avatarClass}`}
                 >
-                  {dog.initial}
+                  {dog.photoUrl ? (
+                    <img src={dog.photoUrl} alt="" className="dog-av-img" />
+                  ) : (
+                    dog.initial
+                  )}
                 </div>
               ))}
               <span>{getDisplayDogsAreOutLabel(state)}</span>
@@ -261,31 +265,33 @@ export function ActiveAdventureScreen({
             ))}
           </div>
 
-          <div className="clk-btns">
-            <button
-              type="button"
-              className="cbtn tap-target"
-              onClick={() => {
-                if (!adventure) return
-                setIsPaused((current) => {
-                  if (current) {
-                    setPausedElapsed(null)
-                    return false
-                  }
-                  setPausedElapsed(getActiveAdventureElapsedSeconds(adventure))
-                  return true
-                })
-              }}
-            >
-              {isPaused ? 'Resume' : 'Pause'}
-            </button>
-            <button type="button" className="cbtn pri tap-target" onClick={handleFinish}>
-              Finish adventure
+          <div className="adv-action-footer">
+            <div className="clk-btns">
+              <button
+                type="button"
+                className="cbtn tap-target"
+                onClick={() => {
+                  if (!adventure) return
+                  setIsPaused((current) => {
+                    if (current) {
+                      setPausedElapsed(null)
+                      return false
+                    }
+                    setPausedElapsed(getActiveAdventureElapsedSeconds(adventure))
+                    return true
+                  })
+                }}
+              >
+                {isPaused ? 'Resume' : 'Pause'}
+              </button>
+              <button type="button" className="cbtn pri tap-target" onClick={handleFinish}>
+                Finish adventure
+              </button>
+            </div>
+            <button type="button" className="adv-cancel-btn tap-target" onClick={onCancel}>
+              Cancel adventure
             </button>
           </div>
-          <button type="button" className="adv-cancel-btn tap-target" onClick={onCancel}>
-            Cancel adventure
-          </button>
         </main>
 
         <BottomNav

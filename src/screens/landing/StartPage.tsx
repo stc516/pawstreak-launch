@@ -1,12 +1,16 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { BrandLogoCircle } from '../../components/BrandLogoCircle'
 import { LandingPhonePreview } from '../../components/LandingPhonePreview'
 import { navigateTo } from '../../lib/demoRoute'
 import { BRAND_NAME, BRAND_TAGLINE, CTA_LOGIN_SIGNUP } from '../../lib/brand'
+import { isStandaloneDisplayMode } from '../../lib/pwa'
 import { ROUTES } from '../../lib/routes'
 
 export function StartPage() {
+  const [installed, setInstalled] = useState(false)
+
   useEffect(() => {
+    setInstalled(isStandaloneDisplayMode())
     document.title = 'Start using PawStreak — PawStreak'
     return () => {
       document.title = 'PawStreak'
@@ -62,27 +66,52 @@ export function StartPage() {
 
         <section className="start-page-install" aria-label="Install PawStreak">
           <div className="start-page-install-head">
-            <h2 className="start-page-install-title">Make it feel like a real app</h2>
+            <h2 className="start-page-install-title">
+              {installed ? 'PawStreak is on your home screen' : 'Make it feel like a real app'}
+            </h2>
             <p className="start-page-install-lead">
-              Add PawStreak to your home screen for one-tap access, full-screen adventures, and the
-              warmest PawStreak experience on the web today.
+              {installed
+                ? 'Open PawStreak from your home screen anytime — full-screen adventures, your pack profile, and memories saved to your account.'
+                : 'Install PawStreak for one-tap access, full-screen adventures, and the warmest PawStreak experience on the web today.'}
             </p>
           </div>
 
-          <div className="start-install-steps">
-            <article className="start-install-step">
-              <span className="start-install-step-label">iPhone</span>
-              <p className="start-install-step-copy">Safari → Share → Add to Home Screen</p>
-            </article>
-            <article className="start-install-step">
-              <span className="start-install-step-label">Android</span>
-              <p className="start-install-step-copy">Chrome → Menu → Add to Home Screen</p>
-            </article>
-          </div>
+          {installed ? (
+            <button
+              type="button"
+              className="landing-btn landing-btn--primary start-page-cta tap-target"
+              onClick={openApp}
+            >
+              Open PawStreak
+            </button>
+          ) : (
+            <div className="start-install-steps">
+              <article className="start-install-step">
+                <span className="start-install-step-label">iPhone</span>
+                <p className="start-install-step-copy">
+                  Safari → Share → Add to Home Screen
+                </p>
+                <p className="start-install-step-detail">
+                  Use Safari (not Chrome). Confirm the name PawStreak, then tap Add.
+                </p>
+              </article>
+              <article className="start-install-step">
+                <span className="start-install-step-label">Android</span>
+                <p className="start-install-step-copy">
+                  Chrome → Install app (or Menu → Add to Home screen)
+                </p>
+                <p className="start-install-step-detail">
+                  Look for Install app in the address bar or Chrome menu, then open from
+                  your home screen.
+                </p>
+              </article>
+            </div>
+          )}
 
           <p className="start-page-install-note">
-            Allow notifications when prompted — reminders for adventures, memories, and streaks are
-            rolling out as part of early access.
+            {installed
+              ? 'Installed PawStreak opens directly to your app — sign in once and your pack stays synced.'
+              : 'After installing, PawStreak opens straight to /app in full-screen mode. Sign in to sync adventures and memories.'}
           </p>
         </section>
 

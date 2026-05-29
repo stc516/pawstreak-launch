@@ -32,6 +32,7 @@ export interface DogRow {
   avatar_class: string
   profile_emoji: string
   circle_class: string
+  photo_path: string | null
   sort_order: number
   created_at: string
   updated_at: string

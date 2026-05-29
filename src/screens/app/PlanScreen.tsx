@@ -1,7 +1,8 @@
 import type { AppState } from '../../data/demo'
 import { getDisplayDogLabel } from '../../lib/profileDisplay'
+import { CardImage } from '../../components/CardImage'
+import { getAdventureDisplayImageUrl } from '../../lib/adventureDisplayImage'
 import {
-  getPlaceEmoji,
   getPlacesForPlanCategory,
   getPlanMagicMeta,
 } from '../../data/places'
@@ -14,8 +15,10 @@ import {
 
 interface PlanScreenProps {
   state: AppState
+  isDemoMode?: boolean
   onSelectCategory: (categoryId: string) => void
   onZipChange: (zipCode: string) => void
+  onApplyLocation: () => void
   onStartAdventure: (placeId: string, durationLabel?: string) => void
   onOpenCuratedPlanFlow: () => void
   onGenerateRandomPlan: () => void
@@ -24,8 +27,10 @@ interface PlanScreenProps {
 
 export function PlanScreen({
   state,
+  isDemoMode = false,
   onSelectCategory,
   onZipChange,
+  onApplyLocation,
   onStartAdventure,
   onOpenCuratedPlanFlow,
   onGenerateRandomPlan,
@@ -70,7 +75,13 @@ export function PlanScreen({
             value={state.zipCode}
             onChange={(event) => onZipChange(event.target.value)}
           />
-          <div className="zip-btn">Find spots</div>
+          <button
+            type="button"
+            className="zip-btn tap-target"
+            onClick={onApplyLocation}
+          >
+            Find spots
+          </button>
         </div>
       </div>
 
@@ -106,10 +117,16 @@ export function PlanScreen({
         const driveTime = isRoadTrip
           ? getRoadTripDriveTime(place, state.locationSupported)
           : null
+        const cardImageUrl = getAdventureDisplayImageUrl(state.journeyEntries, place)
 
         return (
         <div key={place.id} className={`pcard${isRoadTrip ? ' pcard--road-trip' : ''}`}>
-          <div className="pico">{getPlaceEmoji(place.category)}</div>
+          <CardImage
+            className="pcard-thumb"
+            imageUrl={cardImageUrl}
+            imageAlt={place.imageAlt ?? place.name}
+            imageTone={place.imageTone}
+          />
           <div className="pinfo">
             <div className="pname">{place.name}</div>
             {isRoadTrip ? (
@@ -180,9 +197,11 @@ export function PlanScreen({
           </button>
         ))}
 
-        <p className="plan-calendar-note">
-          Calendar sync is mocked for now. Real reminders come later.
-        </p>
+        {isDemoMode ? (
+          <p className="plan-calendar-note">
+            Calendar sync is mocked for now. Real reminders come later.
+          </p>
+        ) : null}
 
         {state.curatedPlanResult &&
         state.selectedMonthlyPlanId === 'curated' ? (

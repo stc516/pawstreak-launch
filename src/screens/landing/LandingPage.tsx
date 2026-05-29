@@ -7,54 +7,99 @@ import { isSupabaseConfigured } from '../../lib/supabase'
 import { SAMPLE_IMAGES } from '../../data/sampleImages'
 import { BrandLogoCircle, BrandLogoFull } from '../../components/BrandLogoCircle'
 import { LandingPhonePreview } from '../../components/LandingPhonePreview'
-import { BRAND_DESCRIPTION, BRAND_NAME, BRAND_TAGLINE, CTA_ADD_TO_HOME_SCREEN, CTA_GET_STARTED, CTA_JOIN_WAITLIST } from '../../lib/brand'
+import { LandingProductScreens } from '../../components/LandingProductScreens'
+import {
+  BRAND_DESCRIPTION,
+  BRAND_NAME,
+  BRAND_TAGLINE,
+  CTA_ADD_TO_HOME_SCREEN,
+  CTA_GET_STARTED,
+  CTA_JOIN_WAITLIST,
+} from '../../lib/brand'
 
-const PREVIEW_FEATURES = [
-  {
-    icon: 'ti-map-pin',
-    title: 'Adventure map',
-    copy: 'See where you’ve been and what’s next on the trail.',
-    image: SAMPLE_IMAGES.trail,
-    tone: 'trail',
-  },
-  {
-    icon: 'ti-timeline',
-    title: 'Journey timeline',
-    copy: 'Every walk, beach day, and road trip in one living story.',
-    image: SAMPLE_IMAGES.beach,
-    tone: 'journey',
-  },
+const KEY_FEATURES = [
   {
     icon: 'ti-compass',
-    title: 'Local adventures',
-    copy: 'Dog-friendly beaches, trails, patios, and parks near you.',
+    title: 'Adventure planner',
+    copy: 'Pick dog-friendly beaches, trails, patios, and parks — then go.',
     image: SAMPLE_IMAGES.trail,
-    tone: 'local',
+    tone: 'planner',
   },
   {
-    icon: 'ti-camera',
-    title: 'Memory capture',
-    copy: 'Photos, notes, and favorite moments — saved where they belong.',
+    icon: 'ti-book-2',
+    title: 'Memory journal',
+    copy: 'Save photos, notes, and favorite moments from every outing.',
     image: SAMPLE_IMAGES.coastal,
-    tone: 'memory',
+    tone: 'journal',
+  },
+  {
+    icon: 'ti-map-2',
+    title: 'Dog life map',
+    copy: 'See where you’ve been, what you loved, and what’s next on the trail.',
+    image: SAMPLE_IMAGES.beach,
+    tone: 'map',
+  },
+  {
+    icon: 'ti-flame',
+    title: 'Streaks and milestones',
+    copy: 'Celebrate consistency — walks, adventures, and little wins together.',
+    image: SAMPLE_IMAGES.dogPark,
+    tone: 'streaks',
+  },
+  {
+    icon: 'ti-car',
+    title: 'Road trips and local spots',
+    copy: 'From neighborhood parks to weekend getaways — all in one place.',
+    image: SAMPLE_IMAGES.roadTrip,
+    tone: 'roadtrip',
+  },
+  {
+    icon: 'ti-users',
+    title: 'Family and co-parent sharing',
+    copy: 'Keep your pack in sync — partners, walkers, and dog grandparents.',
+    image: SAMPLE_IMAGES.dogsOutdoors,
+    tone: 'family',
   },
 ] as const
 
 const HOW_IT_WORKS = [
   {
     step: '01',
-    title: 'Find adventures',
-    copy: 'Discover dog-friendly beaches, trails, patios, parks, and road trips.',
+    title: 'Pick an adventure',
+    copy: 'Choose a beach, trail, patio, or road trip worth doing together.',
   },
   {
     step: '02',
-    title: 'Capture memories',
-    copy: 'Save photos, notes, and moments from your adventures together.',
+    title: 'Capture a memory',
+    copy: 'Add a photo, a note, or the moment that made you both grin.',
   },
   {
     step: '03',
-    title: 'Build their story',
-    copy: 'Create a living timeline of your dog’s life and favorite places.',
+    title: 'Watch their story grow',
+    copy: 'Your map, timeline, and milestones fill in — one adventure at a time.',
+  },
+] as const
+
+const DIFFERENT_POINTS = [
+  {
+    icon: 'ti-heart',
+    title: 'Built for joy',
+    copy: 'Warm, loving, and exciting — never guilt-based or clinical.',
+  },
+  {
+    icon: 'ti-photo-heart',
+    title: 'Memories with a home',
+    copy: 'Not another camera roll graveyard — every adventure has a place.',
+  },
+  {
+    icon: 'ti-paw',
+    title: 'Made for real dogs',
+    copy: 'Off-leash beaches, senior-friendly trails, patio hangs — the life you actually live.',
+  },
+  {
+    icon: 'ti-sparkles',
+    title: 'A story, not a spreadsheet',
+    copy: 'PawStreak feels personal — like a journal your dog would approve of.',
   },
 ] as const
 
@@ -172,25 +217,42 @@ export function LandingPage() {
         </div>
       </section>
 
-      <section className="landing-section landing-preview">
-        <div className="landing-section-head">
-          <h2 className="landing-section-title">Built for the dogs that make life better.</h2>
-          <p className="landing-section-lead">
-            Plan outings, capture the good stuff, and watch your dog&apos;s story grow — one adventure
-            at a time.
+      <section className="landing-section landing-intro" aria-labelledby="landing-intro-title">
+        <div className="landing-intro-inner">
+          <p className="landing-intro-kicker">What is PawStreak?</p>
+          <h2 id="landing-intro-title" className="landing-intro-title">
+            The app for the life you&apos;re already building with your dog.
+          </h2>
+          <p className="landing-intro-lead">
+            Map adventures, save memories, track streaks, and grow a living story — from morning
+            walks to road trips you never want to forget.
           </p>
         </div>
-        <div className="landing-preview-grid">
-          {PREVIEW_FEATURES.map((feature) => (
-            <article key={feature.title} className={`landing-preview-card landing-preview-card--${feature.tone}`}>
+      </section>
+
+      <section className="landing-section landing-features" aria-labelledby="landing-features-title">
+        <div className="landing-section-head">
+          <h2 id="landing-features-title" className="landing-section-title">
+            Everything your pack needs — in one warm, adventurous app.
+          </h2>
+          <p className="landing-section-lead">
+            Plan outings, capture the good stuff, and watch your dog&apos;s story come alive.
+          </p>
+        </div>
+        <div className="landing-features-grid">
+          {KEY_FEATURES.map((feature) => (
+            <article
+              key={feature.title}
+              className={`landing-feature-card landing-feature-card--${feature.tone}`}
+            >
               <div
-                className="landing-preview-image"
+                className="landing-feature-image"
                 style={{ backgroundImage: `url(${feature.image})` }}
                 role="img"
                 aria-label={feature.title}
               />
-              <div className="landing-preview-body">
-                <i className={`ti ${feature.icon} landing-preview-icon`} aria-hidden="true" />
+              <div className="landing-feature-body">
+                <i className={`ti ${feature.icon} landing-feature-icon`} aria-hidden="true" />
                 <h3>{feature.title}</h3>
                 <p>{feature.copy}</p>
               </div>
@@ -199,9 +261,49 @@ export function LandingPage() {
         </div>
       </section>
 
-      <section className="landing-section landing-how">
+      <section className="landing-section landing-story" aria-labelledby="landing-story-title">
+        <div className="landing-story-inner">
+          <div className="landing-story-copy">
+            <p className="landing-story-kicker">Why dog parents care</p>
+            <h2 id="landing-story-title" className="landing-section-title landing-story-title">
+              Your camera roll wasn&apos;t built for this.
+            </h2>
+            <p className="landing-story-lead">
+              Most dog photos disappear into the camera roll. PawStreak turns the life you&apos;re
+              building with your dog into a living story.
+            </p>
+            <p className="landing-story-body">
+              The beach mornings. The trail you keep coming back to. The road trip where they
+              finally learned to love the car. These aren&apos;t just photos — they&apos;re the
+              chapters of a life you&apos;re sharing. PawStreak keeps them close, organized, and
+              worth revisiting.
+            </p>
+          </div>
+          <div className="landing-story-visual" aria-hidden="true">
+            <div className="landing-story-photo-stack">
+              <div
+                className="landing-story-photo landing-story-photo--back"
+                style={{ backgroundImage: `url(${SAMPLE_IMAGES.trail})` }}
+              />
+              <div
+                className="landing-story-photo landing-story-photo--mid"
+                style={{ backgroundImage: `url(${SAMPLE_IMAGES.beach})` }}
+              />
+              <div
+                className="landing-story-photo landing-story-photo--front"
+                style={{ backgroundImage: `url(${SAMPLE_IMAGES.dogsOutdoors})` }}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="landing-section landing-how" aria-labelledby="landing-how-title">
         <div className="landing-section-head">
-          <h2 className="landing-section-title">How it works</h2>
+          <h2 id="landing-how-title" className="landing-section-title">
+            How it works
+          </h2>
+          <p className="landing-section-lead">Three steps. One story that keeps growing.</p>
         </div>
         <div className="landing-how-grid">
           {HOW_IT_WORKS.map((item) => (
@@ -209,6 +311,39 @@ export function LandingPage() {
               <span className="landing-how-step">{item.step}</span>
               <h3>{item.title}</h3>
               <p>{item.copy}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="landing-section landing-screens" aria-labelledby="landing-screens-title">
+        <div className="landing-section-head">
+          <h2 id="landing-screens-title" className="landing-section-title">
+            See it come together
+          </h2>
+          <p className="landing-section-lead">
+            Today&apos;s adventure, their journey, your map, and the memories that tie it all
+            together.
+          </p>
+        </div>
+        <LandingProductScreens />
+      </section>
+
+      <section className="landing-section landing-different" aria-labelledby="landing-different-title">
+        <div className="landing-section-head">
+          <h2 id="landing-different-title" className="landing-section-title">
+            What makes PawStreak different
+          </h2>
+          <p className="landing-section-lead">
+            Premium, personal, and built for the joy of life with a dog — not another beige app.
+          </p>
+        </div>
+        <div className="landing-different-grid">
+          {DIFFERENT_POINTS.map((point) => (
+            <article key={point.title} className="landing-different-card">
+              <i className={`ti ${point.icon} landing-different-icon`} aria-hidden="true" />
+              <h3>{point.title}</h3>
+              <p>{point.copy}</p>
             </article>
           ))}
         </div>
@@ -325,12 +460,9 @@ export function LandingPage() {
             <BrandLogoCircle className="brand-logo-circle--footer" size={48} />
           </div>
           <nav className="landing-footer-links" aria-label="Footer">
-            <a href="https://instagram.com/pawstreakapp" target="_blank" rel="noopener noreferrer">
-              Instagram
-            </a>
-            <a href="https://tiktok.com/@pawstreakapp" target="_blank" rel="noopener noreferrer">
-              TikTok
-            </a>
+            <button type="button" className="landing-footer-link-btn tap-target" onClick={scrollToWaitlist}>
+              Waitlist
+            </button>
             <button type="button" className="landing-footer-link-btn tap-target" onClick={() => navigateTo(ROUTES.start)}>
               {CTA_GET_STARTED}
             </button>
