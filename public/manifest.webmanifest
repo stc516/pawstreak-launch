@@ -2,7 +2,7 @@
   "id": "/",
   "name": "PawStreak",
   "short_name": "PawStreak",
-  "description": "Adventures, memories, and the life your dog deserves.",
+  "description": "PawStreak is live. Create your free account, plan adventures, save memories, and build your dog's journey.",
   "start_url": "/app",
   "scope": "/",
   "display": "standalone",

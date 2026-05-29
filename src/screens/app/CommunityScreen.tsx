@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { AppState, CommunityComment } from '../../data/demo'
 import { CardImage } from '../../components/CardImage'
 import { getMagicLine, getPlaceById } from '../../data/places'
+import { CTA_START_FREE } from '../../lib/brand'
 import { navigateTo } from '../../lib/demoRoute'
 import { ROUTES } from '../../lib/routes'
 import { shareContent } from '../../lib/shareContent'
@@ -33,9 +34,9 @@ function CommunityComingSoon() {
           <button
             type="button"
             className="community-soon-btn tap-target"
-            onClick={() => navigateTo(`${ROUTES.landing}#waitlist`)}
+            onClick={() => navigateTo(ROUTES.app)}
           >
-            Join the waitlist
+            {CTA_START_FREE}
           </button>
           <a className="community-soon-link" href="mailto:hello@pawstreakapp.com">
             Share feedback

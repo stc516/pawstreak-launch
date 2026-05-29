@@ -8186,6 +8186,28 @@ select.field-input {
   text-align: center;
 }
 
+.early-access-live-title {
+  margin: 0 0 12px;
+  font-family: Literata, Georgia, serif;
+  font-size: 1.35rem;
+  line-height: 1.25;
+  color: #1c1410;
+}
+
+.early-access-live-copy {
+  margin: 0 0 18px;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: #5c3d2e;
+}
+
+.early-access-live-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+}
+
 /* Challenge path */
 
 .challenge-path {

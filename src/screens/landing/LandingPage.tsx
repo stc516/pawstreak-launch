@@ -1,9 +1,6 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useEffect, useRef } from 'react'
 import { navigateTo } from '../../lib/demoRoute'
-import { insertWaitlistSignup, isValidWaitlistEmail } from '../../lib/db/waitlist'
-import { trackUserEvent } from '../../lib/db/userEvents'
 import { ROUTES } from '../../lib/routes'
-import { isSupabaseConfigured } from '../../lib/supabase'
 import { SAMPLE_IMAGES } from '../../data/sampleImages'
 import { BrandLogoCircle, BrandLogoFull } from '../../components/BrandLogoCircle'
 import { LandingPhonePreview } from '../../components/LandingPhonePreview'
@@ -12,9 +9,11 @@ import {
   BRAND_DESCRIPTION,
   BRAND_NAME,
   BRAND_TAGLINE,
-  CTA_ADD_TO_HOME_SCREEN,
-  CTA_GET_STARTED,
-  CTA_JOIN_WAITLIST,
+  CTA_CREATE_ACCOUNT,
+  CTA_START_FIRST_ADVENTURE,
+  CTA_START_FREE,
+  SIGNUP_SECTION_LEAD,
+  SIGNUP_SECTION_TITLE,
 } from '../../lib/brand'
 
 const KEY_FEATURES = [
@@ -105,14 +104,7 @@ const DIFFERENT_POINTS = [
 
 export function LandingPage() {
   const landingRef = useRef<HTMLDivElement>(null)
-  const waitlistRef = useRef<HTMLElement>(null)
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [dogName, setDogName] = useState('')
-  const [zipCode, setZipCode] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const signupRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     document.title = 'PawStreak — Adventures & memories with your dog'
@@ -121,48 +113,11 @@ export function LandingPage() {
     }
   }, [])
 
-  const scrollToWaitlist = () => {
-    waitlistRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  const scrollToSignup = () => {
+    signupRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
-  const handleSubmit = async (event: FormEvent) => {
-    event.preventDefault()
-    setError(null)
-
-    if (!isValidWaitlistEmail(email)) {
-      setError('Please enter a valid email address.')
-      return
-    }
-
-    if (!isSupabaseConfigured()) {
-      setError('Waitlist is temporarily unavailable. Please try again soon.')
-      return
-    }
-
-    setLoading(true)
-
-    const result = await insertWaitlistSignup({
-      name,
-      email,
-      dogName,
-      zipCode,
-      source: 'landing_page',
-    })
-
-    if (!result.ok) {
-      const message =
-        result.reason === 'invalid_email'
-          ? 'Please enter a valid email address.'
-          : 'Could not save your signup. Please try again.'
-      setError(message)
-      setLoading(false)
-      return
-    }
-
-    await trackUserEvent('early_access_joined', { email, source: 'landing_page' })
-    setSubmitted(true)
-    setLoading(false)
-  }
+  const openSignup = () => navigateTo(ROUTES.app)
 
   return (
     <div className="landing" ref={landingRef}>
@@ -171,15 +126,11 @@ export function LandingPage() {
           <BrandLogoCircle className="brand-logo-circle--nav" size={56} />
         </a>
         <nav className="landing-nav-links" aria-label="Site">
-          <button type="button" className="landing-nav-link tap-target" onClick={scrollToWaitlist}>
-            Waitlist
+          <button type="button" className="landing-nav-link tap-target" onClick={scrollToSignup}>
+            Sign up
           </button>
-          <button
-            type="button"
-            className="landing-nav-cta tap-target"
-            onClick={() => navigateTo(ROUTES.start)}
-          >
-            {CTA_GET_STARTED}
+          <button type="button" className="landing-nav-cta tap-target" onClick={openSignup}>
+            {CTA_CREATE_ACCOUNT}
           </button>
         </nav>
       </header>
@@ -200,15 +151,15 @@ export function LandingPage() {
           </h1>
           <p className="landing-subhead">{BRAND_DESCRIPTION}</p>
           <div className="landing-hero-actions">
-            <button type="button" className="landing-btn landing-btn--primary tap-target" onClick={scrollToWaitlist}>
-              {CTA_JOIN_WAITLIST}
+            <button type="button" className="landing-btn landing-btn--primary tap-target" onClick={openSignup}>
+              {CTA_START_FREE}
             </button>
             <button
               type="button"
               className="landing-btn landing-btn--secondary tap-target"
-              onClick={() => navigateTo(ROUTES.start)}
+              onClick={openSignup}
             >
-              {CTA_GET_STARTED}
+              {CTA_START_FIRST_ADVENTURE}
             </button>
           </div>
         </div>
@@ -374,83 +325,24 @@ export function LandingPage() {
         </div>
       </section>
 
-      <section className="landing-section landing-waitlist" ref={waitlistRef} id="waitlist">
-        <div className="landing-waitlist-inner">
-          <div className="landing-waitlist-copy">
-            <h2 className="landing-section-title">Be first on the trail.</h2>
-            <p className="landing-section-lead">
-              {CTA_JOIN_WAITLIST} — early access to PawStreak starts in San Diego and expands from
-              there.
-            </p>
+      <section className="landing-section landing-signup" ref={signupRef} id="signup">
+        <div className="landing-signup-inner">
+          <div className="landing-signup-copy">
+            <h2 className="landing-section-title">{SIGNUP_SECTION_TITLE}</h2>
+            <p className="landing-section-lead">{SIGNUP_SECTION_LEAD}</p>
           </div>
 
-          {submitted ? (
-            <div className="landing-waitlist-success" role="status">
-              <i className="ti ti-circle-check landing-waitlist-success-icon" aria-hidden="true" />
-              <p>You&apos;re on the PawStreak waitlist.</p>
-              <p className="landing-waitlist-success-note">{CTA_ADD_TO_HOME_SCREEN}</p>
-            </div>
-          ) : (
-            <form className="landing-waitlist-form" onSubmit={handleSubmit} noValidate>
-              <label className="landing-field">
-                <span>Your name</span>
-                <input
-                  type="text"
-                  name="name"
-                  autoComplete="name"
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
-                  placeholder="First name"
-                />
-              </label>
-              <label className="landing-field">
-                <span>Email</span>
-                <input
-                  type="email"
-                  name="email"
-                  autoComplete="email"
-                  required
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  placeholder="you@email.com"
-                />
-              </label>
-              <label className="landing-field">
-                <span>Dog&apos;s name</span>
-                <input
-                  type="text"
-                  name="dogName"
-                  value={dogName}
-                  onChange={(event) => setDogName(event.target.value)}
-                  placeholder="e.g. Bailey"
-                />
-              </label>
-              <label className="landing-field">
-                <span>ZIP code</span>
-                <input
-                  type="text"
-                  name="zipCode"
-                  inputMode="numeric"
-                  autoComplete="postal-code"
-                  value={zipCode}
-                  onChange={(event) => setZipCode(event.target.value)}
-                  placeholder="92123"
-                />
-              </label>
-              {error ? (
-                <p className="landing-waitlist-error" role="alert">
-                  {error}
-                </p>
-              ) : null}
-              <button
-                type="submit"
-                className="landing-btn landing-btn--primary landing-btn--full tap-target"
-                disabled={loading}
-              >
-                {loading ? 'Joining…' : CTA_JOIN_WAITLIST}
-              </button>
-            </form>
-          )}
+          <div className="landing-signup-actions">
+            <button type="button" className="landing-btn landing-btn--primary landing-btn--full tap-target" onClick={openSignup}>
+              {CTA_START_FREE}
+            </button>
+            <button type="button" className="landing-btn landing-btn--secondary landing-btn--full tap-target" onClick={openSignup}>
+              {CTA_CREATE_ACCOUNT}
+            </button>
+            <p className="landing-signup-note">
+              Free to start. Early access beta — San Diego first, expanding soon.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -460,11 +352,11 @@ export function LandingPage() {
             <BrandLogoCircle className="brand-logo-circle--footer" size={48} />
           </div>
           <nav className="landing-footer-links" aria-label="Footer">
-            <button type="button" className="landing-footer-link-btn tap-target" onClick={scrollToWaitlist}>
-              Waitlist
+            <button type="button" className="landing-footer-link-btn tap-target" onClick={scrollToSignup}>
+              Sign up
             </button>
-            <button type="button" className="landing-footer-link-btn tap-target" onClick={() => navigateTo(ROUTES.start)}>
-              {CTA_GET_STARTED}
+            <button type="button" className="landing-footer-link-btn tap-target" onClick={openSignup}>
+              {CTA_START_FREE}
             </button>
             <a href="mailto:hello@pawstreakapp.com">Contact</a>
           </nav>

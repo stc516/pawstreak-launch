@@ -26,7 +26,7 @@ const results = []
 const SCREENSHOTS = [
   { name: '01-home', label: 'Landing hero' },
   { name: '02-profile', label: 'App preview section' },
-  { name: '03-invite-flow', label: 'Waitlist form' },
+  { name: '03-invite-flow', label: 'Signup CTA section' },
 ]
 
 async function record(flow, pass, message) {
@@ -152,35 +152,35 @@ async function main() {
     await screenshot(page, '02-profile')
 
     await page.evaluate(() => {
-      document.querySelector('#waitlist')?.scrollIntoView({ behavior: 'instant', block: 'start' })
+      document.querySelector('#signup')?.scrollIntoView({ behavior: 'instant', block: 'start' })
     })
     await page.waitForTimeout(QA_STEP_PAUSE_MS)
     await record(
-      'landing-waitlist-form',
-      await page.locator('.landing-waitlist-form').isVisible(),
-      'Waitlist form visible',
+      'landing-signup-cta',
+      await page.locator('.landing-signup-actions').isVisible(),
+      'Live signup CTA section visible',
     )
 
     await screenshot(page, '03-invite-flow')
 
-    await page.getByRole('button', { name: 'Get started now', exact: true }).first().click()
+    await page.getByRole('button', { name: 'Start Your First Adventure', exact: true }).first().click()
     await page.waitForTimeout(QA_STEP_PAUSE_MS)
     await record(
       'start-cta-nav',
-      page.url().includes('/start') &&
-        (await page.locator('.start-page-title').isVisible()),
-      'Get started now navigates to /start setup page',
+      page.url().includes('/app') &&
+        (await page.getByRole('button', { name: /Create Your Free Account/i }).isVisible()),
+      'Start Your First Adventure navigates to /app onboarding',
     )
 
     await page.goto(`${BASE_URL}/start`, { waitUntil: 'networkidle' })
     await page.waitForTimeout(QA_STEP_PAUSE_MS)
-    await page.getByRole('button', { name: 'Log in or sign up', exact: true }).first().click()
+    await page.getByRole('button', { name: 'Create Your Free Account', exact: true }).first().click()
     await page.waitForTimeout(QA_STEP_PAUSE_MS)
     await record(
       'start-continue-app',
       page.url().includes('/app') &&
-        (await page.getByRole('button', { name: /Get started/i }).isVisible()),
-      'Log in or sign up navigates to /app',
+        (await page.getByRole('button', { name: /Create Your Free Account/i }).isVisible()),
+      'Create Your Free Account navigates to /app',
     )
   } catch (error) {
     overallPass = false

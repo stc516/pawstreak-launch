@@ -2,7 +2,12 @@ import { useEffect, useState } from 'react'
 import { BrandLogoCircle } from '../../components/BrandLogoCircle'
 import { LandingPhonePreview } from '../../components/LandingPhonePreview'
 import { navigateTo } from '../../lib/demoRoute'
-import { BRAND_NAME, BRAND_TAGLINE, CTA_LOGIN_SIGNUP } from '../../lib/brand'
+import {
+  BRAND_NAME,
+  BRAND_TAGLINE,
+  CTA_CREATE_ACCOUNT,
+  CTA_START_FREE,
+} from '../../lib/brand'
 import { isStandaloneDisplayMode } from '../../lib/pwa'
 import { ROUTES } from '../../lib/routes'
 
@@ -26,11 +31,11 @@ export function StartPage() {
           <BrandLogoCircle className="brand-logo-circle--nav" size={56} />
         </a>
         <nav className="landing-nav-links" aria-label="Site">
-          <a className="landing-nav-link tap-target" href={`${ROUTES.landing}#waitlist`}>
-            Waitlist
+          <a className="landing-nav-link tap-target" href={`${ROUTES.landing}#signup`}>
+            Sign up
           </a>
           <button type="button" className="landing-nav-cta tap-target" onClick={openApp}>
-            {CTA_LOGIN_SIGNUP}
+            {CTA_CREATE_ACCOUNT}
           </button>
         </nav>
       </header>
@@ -41,17 +46,24 @@ export function StartPage() {
         <section className="start-page-hero">
           <div className="start-page-hero-copy">
             <p className="start-page-kicker">{BRAND_TAGLINE}</p>
-            <h1 className="start-page-title">Start using PawStreak today</h1>
+            <h1 className="start-page-title">PawStreak is live — start today</h1>
             <p className="start-page-lead">
-              Plan adventures, save memories, and build your dog&apos;s story — PawStreak is ready
-              to use now on your phone.
+              Create your free account and start your first PawStreak. Plan walks, save memories,
+              and build your dog&apos;s journey on the web today.
             </p>
             <button
               type="button"
               className="landing-btn landing-btn--primary start-page-cta tap-target"
               onClick={openApp}
             >
-              {CTA_LOGIN_SIGNUP}
+              {CTA_CREATE_ACCOUNT}
+            </button>
+            <button
+              type="button"
+              className="landing-btn landing-btn--secondary start-page-cta-secondary tap-target"
+              onClick={openApp}
+            >
+              {CTA_START_FREE}
             </button>
             <p className="start-page-emotion">
               Every walk, beach day, and road trip becomes part of their story — not another photo
@@ -116,9 +128,8 @@ export function StartPage() {
         </section>
 
         <p className="start-page-note">
-          Native iPhone + Android apps are on the way.{' '}
-          <a href={`${ROUTES.landing}#waitlist`}>Join the waitlist</a> for launch access while you
-          use PawStreak on the web.
+          Native iPhone + Android apps are on the way. Use PawStreak on the web today —{' '}
+          <a href={ROUTES.app}>create your free account</a> and start your first adventure.
         </p>
       </main>
 
@@ -129,7 +140,7 @@ export function StartPage() {
           </div>
           <nav className="landing-footer-links" aria-label="Footer">
             <a href={ROUTES.landing}>Home</a>
-            <a href={`${ROUTES.landing}#waitlist`}>Waitlist</a>
+            <a href={`${ROUTES.landing}#signup`}>Sign up</a>
             <a href="mailto:hello@pawstreakapp.com">Contact</a>
           </nav>
           <p className="landing-footer-note">&copy; {new Date().getFullYear()} PawStreak</p>

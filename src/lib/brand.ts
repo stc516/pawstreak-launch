@@ -6,17 +6,28 @@ export const BRAND_NAME = 'PawStreak'
 export const BRAND_TAGLINE = 'Adventures. Memories. Together.'
 
 export const BRAND_DESCRIPTION =
-  'Discover dog-friendly places, save your favorite moments, and build your dog\'s story with PawStreak.'
+  'Start building your dog\'s adventure story today. Plan walks, save memories, and build your dog\'s journey.'
 
-export const CTA_JOIN_WAITLIST = 'Join iOS + Android waitlist'
+export const CTA_START_FREE = 'Start Free'
 
-export const CTA_GET_STARTED = 'Get started now'
+export const CTA_START_FIRST_ADVENTURE = 'Start Your First Adventure'
+
+export const CTA_CREATE_ACCOUNT = 'Create Your Free Account'
+
+/** @deprecated Use CTA_START_FIRST_ADVENTURE */
+export const CTA_GET_STARTED = CTA_START_FIRST_ADVENTURE
+
+/** @deprecated Use CTA_CREATE_ACCOUNT */
+export const CTA_LOGIN_SIGNUP = CTA_CREATE_ACCOUNT
 
 export const CTA_ADD_TO_HOME_SCREEN = 'Add PawStreak to your home screen'
 
-export const CTA_LOGIN_SIGNUP = 'Log in or sign up'
-
-export const APP_ENTRY_TITLE = 'Start using PawStreak today'
+export const APP_ENTRY_TITLE = 'Create your free account and start your first PawStreak'
 
 export const APP_ENTRY_SUBHEAD =
-  'Map adventures, save memories, and build streaks with your dog.'
+  'Plan walks, save memories, and build your dog\'s journey.'
+
+export const SIGNUP_SECTION_TITLE = 'Start building your dog\'s adventure story today.'
+
+export const SIGNUP_SECTION_LEAD =
+  'PawStreak is live. Create your free account, plan adventures, save memories, and build your dog\'s journey — starting today.'

@@ -15,7 +15,7 @@ import {
   APP_ENTRY_SUBHEAD,
   APP_ENTRY_TITLE,
   BRAND_NAME,
-  CTA_LOGIN_SIGNUP,
+  CTA_CREATE_ACCOUNT,
 } from '../../lib/brand'
 import type { EmailAuthResult } from '../../lib/auth'
 import {
@@ -300,7 +300,7 @@ export function OnboardingFlow({
                 setStep(2)
               }}
             >
-              {CTA_LOGIN_SIGNUP}
+              {CTA_CREATE_ACCOUNT}
               {arrowIcon}
             </button>
             {authConfigured ? (

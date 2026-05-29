@@ -880,29 +880,37 @@ html.landing-route .landing {
   margin: 0;
 }
 
-.landing-waitlist {
+.landing-signup {
   background: linear-gradient(165deg, var(--color-app-surface) 0%, #1a1612 100%);
   color: #fff;
 }
 
-.landing-waitlist-inner {
+.landing-signup-inner {
   max-width: 520px;
   margin: 0 auto;
 }
 
-.landing-waitlist .landing-section-title,
-.landing-waitlist .landing-section-lead {
+.landing-signup .landing-section-title,
+.landing-signup .landing-section-lead {
   color: rgba(255, 255, 255, 0.95);
 }
 
-.landing-waitlist .landing-section-lead {
+.landing-signup .landing-section-lead {
   color: rgba(255, 255, 255, 0.72);
 }
 
-.landing-waitlist-form {
+.landing-signup-actions {
   display: grid;
-  gap: 14px;
+  gap: 12px;
   margin-top: 28px;
+}
+
+.landing-signup-note {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.62);
 }
 
 .landing-field {
@@ -937,42 +945,6 @@ html.landing-route .landing {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.25);
-}
-
-.landing-waitlist-error {
-  font-size: 0.9rem;
-  color: #fca5a5;
-  margin: -4px 0 0;
-}
-
-.landing-waitlist-success {
-  margin-top: 28px;
-  padding: 28px 24px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  text-align: center;
-}
-
-.landing-waitlist-success-icon {
-  font-size: 2.5rem;
-  color: var(--accent-warm);
-  margin-bottom: 12px;
-  display: block;
-}
-
-.landing-waitlist-success p {
-  font-family: var(--serif);
-  font-size: 1.35rem;
-  font-weight: 600;
-}
-
-.landing-waitlist-success-note {
-  margin-top: 10px;
-  font-family: var(--sans);
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.78);
 }
 
 .landing-footer {
@@ -1178,6 +1150,13 @@ html.landing-route .landing {
 }
 
 .start-page-cta {
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto 12px;
+  display: block;
+}
+
+.start-page-cta-secondary {
   width: 100%;
   max-width: 320px;
   margin: 0 auto 18px;
