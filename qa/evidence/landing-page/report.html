@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Landing Page QA</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 24px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 16px; }
+    th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; }
+    tr.pass td:nth-child(2) { color: #0a7a32; font-weight: 600; }
+    tr.fail td:nth-child(2) { color: #b42318; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>Landing Page QA</h1>
+  <p><strong>Commit:</strong> 7271e925d9bd31e090c08aa70c9f739c9d8355fb</p>
+  <p><strong>Verified:</strong> PASS</p>
+  <table>
+    <thead><tr><th>Flow</th><th>Result</th><th>Message</th></tr></thead>
+    <tbody><tr class="pass"><td>landing-hero</td><td>PASS</td><td>Landing page hero renders at /</td></tr>
+<tr class="pass"><td>landing-headline-copy</td><td>PASS</td><td>Hero headline present ("More adventures.More memories.More life …")</td></tr>
+<tr class="pass"><td>landing-scroll</td><td>PASS</td><td>Landing scroll works (overflow: true, 0 -> 102)</td></tr>
+<tr class="pass"><td>landing-preview</td><td>PASS</td><td>App preview section visible</td></tr>
+<tr class="pass"><td>landing-waitlist-form</td><td>PASS</td><td>Waitlist form visible</td></tr>
+<tr class="pass"><td>demo-cta-nav</td><td>PASS</td><td>See the demo navigates to /demo app experience</td></tr>
+<tr class="pass"><td>production-app-route</td><td>PASS</td><td>Production app onboarding loads at /app</td></tr></tbody>
+  </table>
+</body>
+</html>

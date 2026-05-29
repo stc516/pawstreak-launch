@@ -16,6 +16,8 @@ export const CTA_START_FIRST_ADVENTURE = 'Start Your First Adventure'
 
 export const CTA_CREATE_ACCOUNT = 'Create Your Free Account'
 
+export const CTA_SIGN_IN = 'Log in'
+
 /** @deprecated Use CTA_START_FIRST_ADVENTURE */
 export const CTA_GET_STARTED = CTA_START_FIRST_ADVENTURE
 

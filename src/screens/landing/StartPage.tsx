@@ -6,10 +6,11 @@ import {
   BRAND_NAME,
   BRAND_TAGLINE,
   CTA_CREATE_ACCOUNT,
+  CTA_SIGN_IN,
   CTA_START_FREE,
 } from '../../lib/brand'
 import { isStandaloneDisplayMode } from '../../lib/pwa'
-import { ROUTES } from '../../lib/routes'
+import { ROUTES, getAppSignInUrl } from '../../lib/routes'
 
 export function StartPage() {
   const [installed, setInstalled] = useState(false)
@@ -24,6 +25,8 @@ export function StartPage() {
 
   const openApp = () => navigateTo(ROUTES.app)
 
+  const openLogin = () => navigateTo(getAppSignInUrl())
+
   return (
     <div className="landing start-page">
       <header className="landing-nav">
@@ -31,6 +34,9 @@ export function StartPage() {
           <BrandLogoCircle className="brand-logo-circle--nav" size={56} />
         </a>
         <nav className="landing-nav-links" aria-label="Site">
+          <button type="button" className="landing-nav-link tap-target" onClick={openLogin}>
+            {CTA_SIGN_IN}
+          </button>
           <a className="landing-nav-link tap-target" href={`${ROUTES.landing}#signup`}>
             Sign up
           </a>
@@ -64,6 +70,13 @@ export function StartPage() {
               onClick={openApp}
             >
               {CTA_START_FREE}
+            </button>
+            <button
+              type="button"
+              className="landing-btn landing-btn--secondary start-page-cta-secondary tap-target"
+              onClick={openLogin}
+            >
+              {CTA_SIGN_IN}
             </button>
             <p className="start-page-emotion">
               Every walk, beach day, and road trip becomes part of their story — not another photo

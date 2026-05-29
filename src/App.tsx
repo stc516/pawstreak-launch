@@ -20,7 +20,7 @@ import {
   isEarlyAccessRoute,
   isFeedbackDashboardRoute,
 } from './lib/internalRoute'
-import { isLandingRoute, isMarketingRoute, isProductionAppRoute, isStartRoute, ROUTES } from './lib/routes'
+import { isLandingRoute, isMarketingRoute, isProductionAppRoute, isStartRoute, ROUTES, getAppEntryAuthMode } from './lib/routes'
 import { LandingPage } from './screens/landing/LandingPage'
 import { StartPage } from './screens/landing/StartPage'
 import { ContentStudio } from './screens/internal/ContentStudio'
@@ -114,6 +114,21 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     const timer = window.setTimeout(() => setSplashComplete(true), 1000)
     return () => window.clearTimeout(timer)
   }, [])
+
+  const inAuthFlow =
+    !splashComplete ||
+    (!dataHydrated && useProductionBackend) ||
+    !state.onboardingComplete ||
+    (useProductionBackend && auth.configured && !auth.user)
+
+  useEffect(() => {
+    const root = document.documentElement
+    root.classList.toggle('auth-route', inAuthFlow)
+    root.classList.toggle('app-route', splashComplete && !inAuthFlow)
+    return () => {
+      root.classList.remove('auth-route', 'app-route')
+    }
+  }, [inAuthFlow, splashComplete])
 
   useEffect(() => {
     if (!useProductionBackend || auth.loading) return
@@ -992,8 +1007,10 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
 
   if (!dataHydrated && useProductionBackend) {
     return (
-      <div className="content-studio">
-        <div className="cs-empty">Loading your pack…</div>
+      <div className="auth-viewport">
+        <div className="content-studio">
+          <div className="cs-empty">Loading your pack…</div>
+        </div>
       </div>
     )
   }
@@ -1002,13 +1019,19 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     !state.onboardingComplete ||
     (useProductionBackend && auth.configured && !auth.user)
   ) {
+    const initialAuthMode = getAppEntryAuthMode()
     const initialStep =
-      useProductionBackend && auth.user && !state.onboardingComplete ? 3 : 1
+      useProductionBackend && auth.user && !state.onboardingComplete
+        ? 3
+        : initialAuthMode === 'signin'
+          ? 2
+          : 1
 
     return (
       <OnboardingFlow
         onComplete={completeOnboarding}
         initialStep={initialStep}
+        initialAuthMode={initialAuthMode}
         authConfigured={useProductionBackend}
         authUserId={auth.user?.id ?? null}
         authLoading={authLoading}
@@ -1089,7 +1112,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     const program = getTrainingProgramById(state.selectedTrainingProgramId)
     if (program) {
       return (
-        <AppShell activeTab={state.activeTab} onTabChange={setActiveTab} isDemoMode={isDemoMode}>
+        <AppShell activeTab={state.activeTab} onTabChange={setActiveTab} isDemoMode={isDemoMode} showNavigation={false}>
           <TrainingProgramDetailView
             program={program}
             state={state}
@@ -1106,7 +1129,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     const challenge = getChallengeById(state.selectedChallengeId)
     if (challenge) {
       return (
-        <AppShell activeTab={state.activeTab} onTabChange={setActiveTab} isDemoMode={isDemoMode}>
+        <AppShell activeTab={state.activeTab} onTabChange={setActiveTab} isDemoMode={isDemoMode} showNavigation={false}>
           <ChallengePathDetailView
             challenge={challenge}
             state={state}

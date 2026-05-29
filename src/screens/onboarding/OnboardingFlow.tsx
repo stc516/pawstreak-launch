@@ -59,6 +59,7 @@ function StepsIndicator({ current }: { current: number }) {
 interface OnboardingFlowProps {
   onComplete: (result: OnboardingResult) => void | Promise<void>
   initialStep?: number
+  initialAuthMode?: 'signup' | 'signin'
   authConfigured?: boolean
   authUserId?: string | null
   authLoading?: boolean
@@ -74,6 +75,7 @@ interface OnboardingFlowProps {
 export function OnboardingFlow({
   onComplete,
   initialStep = 1,
+  initialAuthMode = 'signup',
   authConfigured = false,
   authUserId = null,
   authLoading = false,
@@ -83,7 +85,7 @@ export function OnboardingFlow({
   onPasswordReset,
 }: OnboardingFlowProps) {
   const [step, setStep] = useState(initialStep)
-  const [authMode, setAuthMode] = useState<'signup' | 'signin'>('signup')
+  const [authMode, setAuthMode] = useState<'signup' | 'signin'>(initialAuthMode)
   const [userName, setUserName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -273,7 +275,7 @@ export function OnboardingFlow({
   }
 
   return (
-    <div className="app-viewport">
+    <div className="auth-viewport">
       <div className="app-shell app-shell--onboarding">
         <div className="onboarding-root">
       {step === 1 && (
@@ -303,18 +305,16 @@ export function OnboardingFlow({
               {CTA_CREATE_ACCOUNT}
               {arrowIcon}
             </button>
-            {authConfigured ? (
-              <button
-                type="button"
-                className="demo-feedback-link onboarding-welcome-signin"
-                onClick={() => {
-                  setAuthMode('signin')
-                  setStep(2)
-                }}
-              >
-                Already have an account? Sign in
-              </button>
-            ) : null}
+            <button
+              type="button"
+              className="demo-feedback-link onboarding-welcome-signin"
+              onClick={() => {
+                setAuthMode('signin')
+                setStep(2)
+              }}
+            >
+              Already have an account? Sign in
+            </button>
           </div>
         </div>
       )}
@@ -345,7 +345,7 @@ export function OnboardingFlow({
 
             {authConfigured ? (
               <div className="divider">
-                <span>or sign up with email</span>
+                <span>{authMode === 'signin' ? 'or sign in with email' : 'or sign up with email'}</span>
               </div>
             ) : null}
 

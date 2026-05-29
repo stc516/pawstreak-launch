@@ -1,0 +1,46 @@
+{
+  "commit": "7271e925d9bd31e090c08aa70c9f739c9d8355fb",
+  "testedAt": "2026-05-27T19:37:51.358Z",
+  "overallPass": true,
+  "verifiedPass": true,
+  "errorMessage": null,
+  "evidenceDir": "qa/evidence/landing-page",
+  "videoPath": "qa/evidence/landing-page/video/test-run.webm",
+  "results": [
+    {
+      "flow": "landing-hero",
+      "pass": true,
+      "message": "Landing page hero renders at /"
+    },
+    {
+      "flow": "landing-headline-copy",
+      "pass": true,
+      "message": "Hero headline present (\"More adventures.More memories.More life …\")"
+    },
+    {
+      "flow": "landing-scroll",
+      "pass": true,
+      "message": "Landing scroll works (overflow: true, 0 -> 102)"
+    },
+    {
+      "flow": "landing-preview",
+      "pass": true,
+      "message": "App preview section visible"
+    },
+    {
+      "flow": "landing-waitlist-form",
+      "pass": true,
+      "message": "Waitlist form visible"
+    },
+    {
+      "flow": "demo-cta-nav",
+      "pass": true,
+      "message": "See the demo navigates to /demo app experience"
+    },
+    {
+      "flow": "production-app-route",
+      "pass": true,
+      "message": "Production app onboarding loads at /app"
+    }
+  ]
+}

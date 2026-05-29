@@ -1,0 +1,84 @@
+{
+  "commit": "5cb9e74110c6c283df2c18eb45b1f2d843939f26",
+  "capturedAt": "2026-05-27T20:00:46.841Z",
+  "captures": [
+    {
+      "name": "01-app-journey-map-card",
+      "file": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/map-polish-verification/01-app-journey-map-card.png"
+    },
+    {
+      "name": "02-app-journey-map-overlay-full",
+      "file": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/map-polish-verification/02-app-journey-map-overlay-full.png"
+    },
+    {
+      "name": "02b-app-journey-map-panel",
+      "file": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/map-polish-verification/02b-app-journey-map-panel.png"
+    },
+    {
+      "name": "02c-app-journey-map-pin-selected",
+      "file": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/map-polish-verification/02c-app-journey-map-pin-selected.png"
+    },
+    {
+      "name": "03-app-plan-map-card-viewport",
+      "file": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/map-polish-verification/03-app-plan-map-card-viewport.png"
+    },
+    {
+      "name": "03b-app-plan-map-card",
+      "file": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/map-polish-verification/03b-app-plan-map-card.png"
+    },
+    {
+      "name": "04-landing-phone-mockup",
+      "file": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/map-polish-verification/04-landing-phone-mockup.png"
+    },
+    {
+      "name": "04c-landing-phone-map-preview",
+      "file": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/map-polish-verification/04c-landing-phone-map-preview.png"
+    },
+    {
+      "name": "04b-landing-hero-full",
+      "file": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/map-polish-verification/04b-landing-hero-full.png"
+    }
+  ],
+  "checks": [
+    {
+      "id": "journey-map-card-visible",
+      "pass": true,
+      "message": "Journey tab map card is visible"
+    },
+    {
+      "id": "journey-tab-no-scrollbar",
+      "pass": true,
+      "message": "Journey tab scroll overflow-y=auto, scrollbarWidth=none, visible=false"
+    },
+    {
+      "id": "map-overlay-visible",
+      "pass": true,
+      "message": "Journey map overlay opened"
+    },
+    {
+      "id": "map-pin-density",
+      "pass": true,
+      "message": "5 pins, 0 visible labels (labels hidden until tap when crowded)"
+    },
+    {
+      "id": "selected-pin-label",
+      "pass": true,
+      "message": "Selected pin shows 1 label chip"
+    },
+    {
+      "id": "plan-map-card-visible",
+      "pass": true,
+      "message": "Plan region map card is visible"
+    },
+    {
+      "id": "plan-tab-no-scrollbar",
+      "pass": true,
+      "message": "Plan tab scroll visible=false"
+    },
+    {
+      "id": "landing-phone-visible",
+      "pass": true,
+      "message": "Landing phone mockup is visible"
+    }
+  ]
+}

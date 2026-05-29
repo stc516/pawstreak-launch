@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { navigateTo } from '../../lib/demoRoute'
-import { ROUTES } from '../../lib/routes'
+import { ROUTES, getAppSignInUrl } from '../../lib/routes'
 import { SAMPLE_IMAGES } from '../../data/sampleImages'
 import { BrandLogoCircle, BrandLogoFull } from '../../components/BrandLogoCircle'
 import { LandingPhonePreview } from '../../components/LandingPhonePreview'
@@ -10,6 +10,7 @@ import {
   BRAND_NAME,
   BRAND_TAGLINE,
   CTA_CREATE_ACCOUNT,
+  CTA_SIGN_IN,
   CTA_START_FIRST_ADVENTURE,
   CTA_START_FREE,
   SIGNUP_SECTION_LEAD,
@@ -119,6 +120,8 @@ export function LandingPage() {
 
   const openSignup = () => navigateTo(ROUTES.app)
 
+  const openLogin = () => navigateTo(getAppSignInUrl())
+
   return (
     <div className="landing" ref={landingRef}>
       <header className="landing-nav">
@@ -126,6 +129,9 @@ export function LandingPage() {
           <BrandLogoCircle className="brand-logo-circle--nav" size={56} />
         </a>
         <nav className="landing-nav-links" aria-label="Site">
+          <button type="button" className="landing-nav-link tap-target" onClick={openLogin}>
+            {CTA_SIGN_IN}
+          </button>
           <button type="button" className="landing-nav-link tap-target" onClick={scrollToSignup}>
             Sign up
           </button>
@@ -339,6 +345,9 @@ export function LandingPage() {
             <button type="button" className="landing-btn landing-btn--secondary landing-btn--full tap-target" onClick={openSignup}>
               {CTA_CREATE_ACCOUNT}
             </button>
+            <button type="button" className="landing-btn landing-btn--secondary landing-btn--full tap-target" onClick={openLogin}>
+              {CTA_SIGN_IN}
+            </button>
             <p className="landing-signup-note">
               Free to start. Early access beta — San Diego first, expanding soon.
             </p>
@@ -352,6 +361,9 @@ export function LandingPage() {
             <BrandLogoCircle className="brand-logo-circle--footer" size={48} />
           </div>
           <nav className="landing-footer-links" aria-label="Footer">
+            <button type="button" className="landing-footer-link-btn tap-target" onClick={openLogin}>
+              {CTA_SIGN_IN}
+            </button>
             <button type="button" className="landing-footer-link-btn tap-target" onClick={scrollToSignup}>
               Sign up
             </button>

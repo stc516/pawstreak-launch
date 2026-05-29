@@ -145,34 +145,109 @@ button:disabled {
 html,
 body,
 #root {
-  height: 100%;
-  height: -webkit-fill-available;
   min-height: 100dvh;
-  max-height: 100dvh;
+  min-height: -webkit-fill-available;
 }
 
 html,
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
   color: var(--color-text-primary);
-  background:
-    radial-gradient(ellipse 90% 55% at 50% -8%, rgba(249, 115, 22, 0.14) 0%, transparent 58%),
-    radial-gradient(ellipse 70% 45% at 82% 102%, rgba(154, 52, 18, 0.1) 0%, transparent 52%),
-    linear-gradient(165deg, var(--shell-stage-top) 0%, var(--shell-stage-mid) 44%, var(--shell-stage-bottom) 100%);
+  background: var(--bg);
   -webkit-font-smoothing: antialiased;
-  overflow: hidden;
-  overscroll-behavior: none;
-  position: fixed;
-  inset: 0;
+  overflow-x: hidden;
   width: 100%;
 }
 
 #root {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  min-height: inherit;
+}
+
+/* Authenticated app shell — fixed viewport with cinematic phone frame */
+html.app-route,
+html.app-route body,
+html.app-route #root {
+  height: 100%;
+  height: -webkit-fill-available;
+  min-height: 100dvh;
+  max-height: 100dvh;
+}
+
+html.app-route,
+html.app-route body {
+  overflow: hidden;
+  overscroll-behavior: none;
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  background:
+    radial-gradient(ellipse 90% 55% at 50% -8%, rgba(249, 115, 22, 0.14) 0%, transparent 58%),
+    radial-gradient(ellipse 70% 45% at 82% 102%, rgba(154, 52, 18, 0.1) 0%, transparent 52%),
+    linear-gradient(165deg, var(--shell-stage-top) 0%, var(--shell-stage-mid) 44%, var(--shell-stage-bottom) 100%);
+}
+
+html.app-route #root {
   min-height: 0;
   overflow: hidden;
+}
+
+/* Splash, signup, and onboarding — full-bleed light viewport, no app nav chrome */
+html.auth-route,
+html.auth-route body,
+html.auth-route #root {
+  height: 100%;
+  height: -webkit-fill-available;
+  min-height: 100dvh;
+  max-height: 100dvh;
+}
+
+html.auth-route,
+html.auth-route body {
+  overflow: hidden;
+  overscroll-behavior: none;
+  position: fixed;
+  inset: 0;
   width: 100%;
+  background: var(--bg);
+}
+
+html.auth-route #root {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.auth-viewport {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 0;
+  height: 100%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-sizing: border-box;
+  padding:
+    var(--app-safe-top)
+    var(--app-safe-right)
+    var(--app-safe-bottom)
+    var(--app-safe-left);
+  background: var(--bg);
+  overflow: hidden;
+}
+
+html.auth-route .app-shell--onboarding {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: 100%;
+  flex: 1 1 auto;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
 }
 
 button,
@@ -3512,7 +3587,7 @@ textarea {
 .onboarding-root {
   display: flex;
   flex-direction: column;
-  flex: 1;
+  flex: 1 1 auto;
   min-height: 0;
   height: 100%;
   width: 100%;
@@ -3534,9 +3609,23 @@ textarea {
   overflow: hidden;
 }
 
+.onboarding-root .screen-body {
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 20px;
+  position: relative;
+  z-index: 1;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
+}
+
 .onboarding-root .screen.active {
   display: flex;
   animation: fadeUp 0.35s ease both;
+  justify-content: flex-start;
 }
 
 @keyframes fadeUp {

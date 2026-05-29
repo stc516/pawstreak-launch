@@ -9,6 +9,7 @@ interface AppShellProps {
   activeTab: TabId
   onTabChange: (tab: TabId) => void
   isDemoMode?: boolean
+  showNavigation?: boolean
   children: ReactNode
 }
 
@@ -16,6 +17,7 @@ export function AppShell({
   activeTab,
   onTabChange,
   isDemoMode = false,
+  showNavigation = true,
   children,
 }: AppShellProps) {
   return (
@@ -28,18 +30,20 @@ export function AppShell({
           </div>
         ) : null}
         <main className={`scroll${activeTab === 'home' ? ' scroll--home' : ''}`}>{children}</main>
-        <footer className="app-shell-footer">
-          {isDemoMode ? (
-            <div className="demo-feedback-bar">
-              <DemoFeedbackCapture />
-            </div>
-          ) : null}
-          <BottomNav
-            activeTab={activeTab}
-            onTabChange={onTabChange}
-            mode={isDemoMode ? 'demo' : 'app'}
-          />
-        </footer>
+        {showNavigation ? (
+          <footer className="app-shell-footer">
+            {isDemoMode ? (
+              <div className="demo-feedback-bar">
+                <DemoFeedbackCapture />
+              </div>
+            ) : null}
+            <BottomNav
+              activeTab={activeTab}
+              onTabChange={onTabChange}
+              mode={isDemoMode ? 'demo' : 'app'}
+            />
+          </footer>
+        ) : null}
       </div>
     </div>
   )

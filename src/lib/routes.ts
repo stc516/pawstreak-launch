@@ -42,3 +42,17 @@ function getSiteOrigin(): string {
 export function getAuthRedirectUrl(): string {
   return `${getSiteOrigin()}${ROUTES.app}`
 }
+
+export function getAppSignInUrl(): string {
+  return `${ROUTES.app}?signin=1`
+}
+
+export function getAppEntryAuthMode(
+  search = window.location.search,
+): 'signup' | 'signin' {
+  const params = new URLSearchParams(search)
+  if (params.has('signin') || params.get('mode') === 'signin') {
+    return 'signin'
+  }
+  return 'signup'
+}
