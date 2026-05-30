@@ -1,0 +1,1066 @@
+{
+  "generatedAt": "2026-05-30T12:35:37.365Z",
+  "baseUrl": "http://127.0.0.1:5173",
+  "devices": [
+    {
+      "device": "iPhone 13",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "screens": [
+        {
+          "id": "home",
+          "label": "Home",
+          "screenshot": "01-home.png",
+          "rating": "GREEN",
+          "shell": {
+            "pass": true,
+            "message": "ok"
+          },
+          "metrics": {
+            "viewportHeight": 664,
+            "scrollHeight": 1216,
+            "scrollClientHeight": 566,
+            "bnavTop": 618,
+            "bnavBottom": 664,
+            "gapBelowNav": 0,
+            "heroHeight": 154,
+            "mapHeight": null,
+            "journeyPhotoSize": null,
+            "dogCardCount": 0,
+            "dogNames": [],
+            "duplicateDogs": false,
+            "clippedOverflowCount": 0,
+            "features": {
+              "hero": {
+                "label": "Curated hero adventure",
+                "present": true,
+                "count": 1
+              },
+              "progress": {
+                "label": "Progress stats",
+                "present": true,
+                "count": 1
+              },
+              "continue": {
+                "label": "Active/possible adventures (continue)",
+                "present": true,
+                "count": 1
+              },
+              "training": {
+                "label": "Training shortcut",
+                "present": true,
+                "count": 1
+              },
+              "upcoming": {
+                "label": "Upcoming reminders",
+                "present": true,
+                "count": 1
+              },
+              "challenge": {
+                "label": "Current challenge",
+                "present": true,
+                "count": 1
+              },
+              "identity": {
+                "label": "Next dog identity",
+                "present": true,
+                "count": 1
+              },
+              "memories": {
+                "label": "Recent memories",
+                "present": true,
+                "count": 1
+              }
+            }
+          }
+        },
+        {
+          "id": "plan",
+          "label": "Plan",
+          "screenshot": "02-plan.png",
+          "rating": "GREEN",
+          "shell": {
+            "pass": true,
+            "message": "ok"
+          },
+          "metrics": {
+            "viewportHeight": 664,
+            "scrollHeight": 2300,
+            "scrollClientHeight": 566,
+            "bnavTop": 618,
+            "bnavBottom": 664,
+            "gapBelowNav": 0,
+            "heroHeight": null,
+            "mapHeight": 209,
+            "journeyPhotoSize": null,
+            "dogCardCount": 0,
+            "dogNames": [],
+            "duplicateDogs": false,
+            "clippedOverflowCount": 0,
+            "features": {
+              "map": {
+                "label": "Real map section",
+                "present": true,
+                "count": 1
+              },
+              "nearby": {
+                "label": "Nearby places",
+                "present": true,
+                "count": 4
+              },
+              "challenges": {
+                "label": "Challenge opportunities",
+                "present": true,
+                "count": 1
+              },
+              "training": {
+                "label": "Training opportunities",
+                "present": true,
+                "count": 1
+              },
+              "events": {
+                "label": "Events",
+                "present": true,
+                "count": 1
+              },
+              "favorites": {
+                "label": "Saved/favorite places",
+                "present": true,
+                "count": 4
+              },
+              "filters": {
+                "label": "Category filters",
+                "present": true,
+                "count": 8
+              },
+              "roadtrip": {
+                "label": "Road trips/directions",
+                "present": true,
+                "count": 8
+              }
+            }
+          }
+        },
+        {
+          "id": "journey",
+          "label": "Journey",
+          "screenshot": "03-journey.png",
+          "rating": "GREEN",
+          "shell": {
+            "pass": true,
+            "message": "ok"
+          },
+          "metrics": {
+            "viewportHeight": 664,
+            "scrollHeight": 2843,
+            "scrollClientHeight": 566,
+            "bnavTop": 618,
+            "bnavBottom": 664,
+            "gapBelowNav": 0,
+            "heroHeight": null,
+            "mapHeight": null,
+            "journeyPhotoSize": {
+              "width": 168,
+              "height": 168
+            },
+            "dogCardCount": 0,
+            "dogNames": [],
+            "duplicateDogs": false,
+            "clippedOverflowCount": 0,
+            "features": {
+              "story": {
+                "label": "Story path",
+                "present": true,
+                "count": 8
+              },
+              "photos": {
+                "label": "Memory photos",
+                "present": true,
+                "count": 6
+              },
+              "challengePath": {
+                "label": "Challenge path when joined",
+                "present": true,
+                "count": 1
+              },
+              "mapOverlay": {
+                "label": "Map overlay entry",
+                "present": true,
+                "count": 1
+              }
+            }
+          }
+        },
+        {
+          "id": "challenges",
+          "label": "Challenges",
+          "screenshot": "04-challenges.png",
+          "rating": "GREEN",
+          "shell": {
+            "pass": true,
+            "message": "ok"
+          },
+          "metrics": {
+            "viewportHeight": 664,
+            "scrollHeight": 1542,
+            "scrollClientHeight": 566,
+            "bnavTop": 618,
+            "bnavBottom": 664,
+            "gapBelowNav": 0,
+            "heroHeight": null,
+            "mapHeight": null,
+            "journeyPhotoSize": null,
+            "dogCardCount": 0,
+            "dogNames": [],
+            "duplicateDogs": false,
+            "clippedOverflowCount": 0,
+            "features": {
+              "active": {
+                "label": "Active Challenges",
+                "present": true,
+                "count": 5
+              },
+              "identities": {
+                "label": "Dog Identities / Achievements",
+                "present": true,
+                "count": 3
+              },
+              "training": {
+                "label": "Training Programs",
+                "present": true,
+                "count": 2
+              },
+              "curated": {
+                "label": "Curated Challenges",
+                "present": true,
+                "count": 4
+              },
+              "viewAll": {
+                "label": "View all / Show less",
+                "present": true,
+                "count": 3
+              }
+            }
+          }
+        },
+        {
+          "id": "profile",
+          "label": "Profile",
+          "screenshot": "05-profile.png",
+          "rating": "GREEN",
+          "shell": {
+            "pass": true,
+            "message": "ok"
+          },
+          "metrics": {
+            "viewportHeight": 664,
+            "scrollHeight": 1084,
+            "scrollClientHeight": 566,
+            "bnavTop": 618,
+            "bnavBottom": 664,
+            "gapBelowNav": 0,
+            "heroHeight": null,
+            "mapHeight": null,
+            "journeyPhotoSize": null,
+            "dogCardCount": 2,
+            "dogNames": [
+              "Bailey",
+              "Omi"
+            ],
+            "duplicateDogs": false,
+            "clippedOverflowCount": 0,
+            "features": {
+              "dogCards": {
+                "label": "One card per dog",
+                "present": true,
+                "count": 2
+              },
+              "identityChips": {
+                "label": "Identity chips",
+                "present": true,
+                "count": 8
+              },
+              "edit": {
+                "label": "Edit dog",
+                "present": true,
+                "count": 2
+              },
+              "remove": {
+                "label": "Remove dog",
+                "present": true,
+                "count": 2
+              },
+              "settingsBtn": {
+                "label": "Settings entry",
+                "present": true,
+                "count": 1
+              }
+            }
+          }
+        },
+        {
+          "id": "settings",
+          "label": "Settings",
+          "screenshot": "06-settings.png",
+          "rating": "GREEN",
+          "shell": {
+            "pass": true,
+            "message": "ok"
+          },
+          "metrics": {
+            "viewportHeight": 664,
+            "scrollHeight": 834,
+            "scrollClientHeight": 566,
+            "bnavTop": 618,
+            "bnavBottom": 664,
+            "gapBelowNav": 0,
+            "heroHeight": null,
+            "mapHeight": null,
+            "journeyPhotoSize": null,
+            "dogCardCount": 0,
+            "dogNames": [],
+            "duplicateDogs": false,
+            "clippedOverflowCount": 0,
+            "features": {
+              "account": {
+                "label": "Account section",
+                "present": true,
+                "count": 1
+              },
+              "notifications": {
+                "label": "Notifications (coming soon)",
+                "present": true,
+                "count": 1
+              },
+              "location": {
+                "label": "Location / ZIP",
+                "present": true,
+                "count": 1
+              },
+              "dogs": {
+                "label": "Dog profiles",
+                "present": true,
+                "count": 1
+              },
+              "privacy": {
+                "label": "Privacy / Terms",
+                "present": true,
+                "count": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "device": "iPhone 15 Pro",
+      "viewport": {
+        "width": 393,
+        "height": 659
+      },
+      "screens": [
+        {
+          "id": "home",
+          "label": "Home",
+          "screenshot": "iphone-15-pro-home.png",
+          "rating": "GREEN",
+          "shell": {
+            "pass": true,
+            "message": "ok"
+          },
+          "metrics": {
+            "viewportHeight": 659,
+            "scrollHeight": 1216,
+            "scrollClientHeight": 561,
+            "bnavTop": 613,
+            "bnavBottom": 659,
+            "gapBelowNav": 0,
+            "heroHeight": 154,
+            "mapHeight": null,
+            "journeyPhotoSize": null,
+            "dogCardCount": 0,
+            "dogNames": [],
+            "duplicateDogs": false,
+            "clippedOverflowCount": 0,
+            "features": {
+              "hero": {
+                "label": "Curated hero adventure",
+                "present": true,
+                "count": 1
+              },
+              "progress": {
+                "label": "Progress stats",
+                "present": true,
+                "count": 1
+              },
+              "continue": {
+                "label": "Active/possible adventures (continue)",
+                "present": true,
+                "count": 1
+              },
+              "training": {
+                "label": "Training shortcut",
+                "present": true,
+                "count": 1
+              },
+              "upcoming": {
+                "label": "Upcoming reminders",
+                "present": true,
+                "count": 1
+              },
+              "challenge": {
+                "label": "Current challenge",
+                "present": true,
+                "count": 1
+              },
+              "identity": {
+                "label": "Next dog identity",
+                "present": true,
+                "count": 1
+              },
+              "memories": {
+                "label": "Recent memories",
+                "present": true,
+                "count": 1
+              }
+            }
+          }
+        },
+        {
+          "id": "plan",
+          "label": "Plan",
+          "screenshot": "iphone-15-pro-plan.png",
+          "rating": "GREEN",
+          "shell": {
+            "pass": true,
+            "message": "ok"
+          },
+          "metrics": {
+            "viewportHeight": 659,
+            "scrollHeight": 2301,
+            "scrollClientHeight": 561,
+            "bnavTop": 613,
+            "bnavBottom": 659,
+            "gapBelowNav": 0,
+            "heroHeight": null,
+            "mapHeight": 211,
+            "journeyPhotoSize": null,
+            "dogCardCount": 0,
+            "dogNames": [],
+            "duplicateDogs": false,
+            "clippedOverflowCount": 0,
+            "features": {
+              "map": {
+                "label": "Real map section",
+                "present": true,
+                "count": 1
+              },
+              "nearby": {
+                "label": "Nearby places",
+                "present": true,
+                "count": 4
+              },
+              "challenges": {
+                "label": "Challenge opportunities",
+                "present": true,
+                "count": 1
+              },
+              "training": {
+                "label": "Training opportunities",
+                "present": true,
+                "count": 1
+              },
+              "events": {
+                "label": "Events",
+                "present": true,
+                "count": 1
+              },
+              "favorites": {
+                "label": "Saved/favorite places",
+                "present": true,
+                "count": 4
+              },
+              "filters": {
+                "label": "Category filters",
+                "present": true,
+                "count": 8
+              },
+              "roadtrip": {
+                "label": "Road trips/directions",
+                "present": true,
+                "count": 8
+              }
+            }
+          }
+        },
+        {
+          "id": "journey",
+          "label": "Journey",
+          "screenshot": "iphone-15-pro-journey.png",
+          "rating": "GREEN",
+          "shell": {
+            "pass": true,
+            "message": "ok"
+          },
+          "metrics": {
+            "viewportHeight": 659,
+            "scrollHeight": 2809,
+            "scrollClientHeight": 561,
+            "bnavTop": 613,
+            "bnavBottom": 659,
+            "gapBelowNav": 0,
+            "heroHeight": null,
+            "mapHeight": null,
+            "journeyPhotoSize": {
+              "width": 168,
+              "height": 168
+            },
+            "dogCardCount": 0,
+            "dogNames": [],
+            "duplicateDogs": false,
+            "clippedOverflowCount": 0,
+            "features": {
+              "story": {
+                "label": "Story path",
+                "present": true,
+                "count": 8
+              },
+              "photos": {
+                "label": "Memory photos",
+                "present": true,
+                "count": 6
+              },
+              "challengePath": {
+                "label": "Challenge path when joined",
+                "present": true,
+                "count": 1
+              },
+              "mapOverlay": {
+                "label": "Map overlay entry",
+                "present": true,
+                "count": 1
+              }
+            }
+          }
+        },
+        {
+          "id": "challenges",
+          "label": "Challenges",
+          "screenshot": "iphone-15-pro-challenges.png",
+          "rating": "GREEN",
+          "shell": {
+            "pass": true,
+            "message": "ok"
+          },
+          "metrics": {
+            "viewportHeight": 659,
+            "scrollHeight": 1542,
+            "scrollClientHeight": 561,
+            "bnavTop": 613,
+            "bnavBottom": 659,
+            "gapBelowNav": 0,
+            "heroHeight": null,
+            "mapHeight": null,
+            "journeyPhotoSize": null,
+            "dogCardCount": 0,
+            "dogNames": [],
+            "duplicateDogs": false,
+            "clippedOverflowCount": 0,
+            "features": {
+              "active": {
+                "label": "Active Challenges",
+                "present": true,
+                "count": 5
+              },
+              "identities": {
+                "label": "Dog Identities / Achievements",
+                "present": true,
+                "count": 3
+              },
+              "training": {
+                "label": "Training Programs",
+                "present": true,
+                "count": 2
+              },
+              "curated": {
+                "label": "Curated Challenges",
+                "present": true,
+                "count": 4
+              },
+              "viewAll": {
+                "label": "View all / Show less",
+                "present": true,
+                "count": 3
+              }
+            }
+          }
+        },
+        {
+          "id": "profile",
+          "label": "Profile",
+          "screenshot": "iphone-15-pro-profile.png",
+          "rating": "GREEN",
+          "shell": {
+            "pass": true,
+            "message": "ok"
+          },
+          "metrics": {
+            "viewportHeight": 659,
+            "scrollHeight": 1084,
+            "scrollClientHeight": 561,
+            "bnavTop": 613,
+            "bnavBottom": 659,
+            "gapBelowNav": 0,
+            "heroHeight": null,
+            "mapHeight": null,
+            "journeyPhotoSize": null,
+            "dogCardCount": 2,
+            "dogNames": [
+              "Bailey",
+              "Omi"
+            ],
+            "duplicateDogs": false,
+            "clippedOverflowCount": 0,
+            "features": {
+              "dogCards": {
+                "label": "One card per dog",
+                "present": true,
+                "count": 2
+              },
+              "identityChips": {
+                "label": "Identity chips",
+                "present": true,
+                "count": 8
+              },
+              "edit": {
+                "label": "Edit dog",
+                "present": true,
+                "count": 2
+              },
+              "remove": {
+                "label": "Remove dog",
+                "present": true,
+                "count": 2
+              },
+              "settingsBtn": {
+                "label": "Settings entry",
+                "present": true,
+                "count": 1
+              }
+            }
+          }
+        },
+        {
+          "id": "settings",
+          "label": "Settings",
+          "screenshot": "iphone-15-pro-settings.png",
+          "rating": "GREEN",
+          "shell": {
+            "pass": true,
+            "message": "ok"
+          },
+          "metrics": {
+            "viewportHeight": 659,
+            "scrollHeight": 834,
+            "scrollClientHeight": 561,
+            "bnavTop": 613,
+            "bnavBottom": 659,
+            "gapBelowNav": 0,
+            "heroHeight": null,
+            "mapHeight": null,
+            "journeyPhotoSize": null,
+            "dogCardCount": 0,
+            "dogNames": [],
+            "duplicateDogs": false,
+            "clippedOverflowCount": 0,
+            "features": {
+              "account": {
+                "label": "Account section",
+                "present": true,
+                "count": 1
+              },
+              "notifications": {
+                "label": "Notifications (coming soon)",
+                "present": true,
+                "count": 1
+              },
+              "location": {
+                "label": "Location / ZIP",
+                "present": true,
+                "count": 1
+              },
+              "dogs": {
+                "label": "Dog profiles",
+                "present": true,
+                "count": 1
+              },
+              "privacy": {
+                "label": "Privacy / Terms",
+                "present": true,
+                "count": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "device": "iPhone 15 Pro Max",
+      "viewport": {
+        "width": 430,
+        "height": 739
+      },
+      "screens": [
+        {
+          "id": "home",
+          "label": "Home",
+          "screenshot": "iphone-15-pro-max-home.png",
+          "rating": "GREEN",
+          "shell": {
+            "pass": true,
+            "message": "ok"
+          },
+          "metrics": {
+            "viewportHeight": 739,
+            "scrollHeight": 1216,
+            "scrollClientHeight": 641,
+            "bnavTop": 693,
+            "bnavBottom": 739,
+            "gapBelowNav": 0,
+            "heroHeight": 154,
+            "mapHeight": null,
+            "journeyPhotoSize": null,
+            "dogCardCount": 0,
+            "dogNames": [],
+            "duplicateDogs": false,
+            "clippedOverflowCount": 0,
+            "features": {
+              "hero": {
+                "label": "Curated hero adventure",
+                "present": true,
+                "count": 1
+              },
+              "progress": {
+                "label": "Progress stats",
+                "present": true,
+                "count": 1
+              },
+              "continue": {
+                "label": "Active/possible adventures (continue)",
+                "present": true,
+                "count": 1
+              },
+              "training": {
+                "label": "Training shortcut",
+                "present": true,
+                "count": 1
+              },
+              "upcoming": {
+                "label": "Upcoming reminders",
+                "present": true,
+                "count": 1
+              },
+              "challenge": {
+                "label": "Current challenge",
+                "present": true,
+                "count": 1
+              },
+              "identity": {
+                "label": "Next dog identity",
+                "present": true,
+                "count": 1
+              },
+              "memories": {
+                "label": "Recent memories",
+                "present": true,
+                "count": 1
+              }
+            }
+          }
+        },
+        {
+          "id": "plan",
+          "label": "Plan",
+          "screenshot": "iphone-15-pro-max-plan.png",
+          "rating": "GREEN",
+          "shell": {
+            "pass": true,
+            "message": "ok"
+          },
+          "metrics": {
+            "viewportHeight": 739,
+            "scrollHeight": 2311,
+            "scrollClientHeight": 641,
+            "bnavTop": 693,
+            "bnavBottom": 739,
+            "gapBelowNav": 0,
+            "heroHeight": null,
+            "mapHeight": 220,
+            "journeyPhotoSize": null,
+            "dogCardCount": 0,
+            "dogNames": [],
+            "duplicateDogs": false,
+            "clippedOverflowCount": 0,
+            "features": {
+              "map": {
+                "label": "Real map section",
+                "present": true,
+                "count": 1
+              },
+              "nearby": {
+                "label": "Nearby places",
+                "present": true,
+                "count": 4
+              },
+              "challenges": {
+                "label": "Challenge opportunities",
+                "present": true,
+                "count": 1
+              },
+              "training": {
+                "label": "Training opportunities",
+                "present": true,
+                "count": 1
+              },
+              "events": {
+                "label": "Events",
+                "present": true,
+                "count": 1
+              },
+              "favorites": {
+                "label": "Saved/favorite places",
+                "present": true,
+                "count": 4
+              },
+              "filters": {
+                "label": "Category filters",
+                "present": true,
+                "count": 8
+              },
+              "roadtrip": {
+                "label": "Road trips/directions",
+                "present": true,
+                "count": 8
+              }
+            }
+          }
+        },
+        {
+          "id": "journey",
+          "label": "Journey",
+          "screenshot": "iphone-15-pro-max-journey.png",
+          "rating": "GREEN",
+          "shell": {
+            "pass": true,
+            "message": "ok"
+          },
+          "metrics": {
+            "viewportHeight": 739,
+            "scrollHeight": 2726,
+            "scrollClientHeight": 641,
+            "bnavTop": 693,
+            "bnavBottom": 739,
+            "gapBelowNav": 0,
+            "heroHeight": null,
+            "mapHeight": null,
+            "journeyPhotoSize": {
+              "width": 168,
+              "height": 168
+            },
+            "dogCardCount": 0,
+            "dogNames": [],
+            "duplicateDogs": false,
+            "clippedOverflowCount": 0,
+            "features": {
+              "story": {
+                "label": "Story path",
+                "present": true,
+                "count": 8
+              },
+              "photos": {
+                "label": "Memory photos",
+                "present": true,
+                "count": 6
+              },
+              "challengePath": {
+                "label": "Challenge path when joined",
+                "present": true,
+                "count": 1
+              },
+              "mapOverlay": {
+                "label": "Map overlay entry",
+                "present": true,
+                "count": 1
+              }
+            }
+          }
+        },
+        {
+          "id": "challenges",
+          "label": "Challenges",
+          "screenshot": "iphone-15-pro-max-challenges.png",
+          "rating": "GREEN",
+          "shell": {
+            "pass": true,
+            "message": "ok"
+          },
+          "metrics": {
+            "viewportHeight": 739,
+            "scrollHeight": 1542,
+            "scrollClientHeight": 641,
+            "bnavTop": 693,
+            "bnavBottom": 739,
+            "gapBelowNav": 0,
+            "heroHeight": null,
+            "mapHeight": null,
+            "journeyPhotoSize": null,
+            "dogCardCount": 0,
+            "dogNames": [],
+            "duplicateDogs": false,
+            "clippedOverflowCount": 0,
+            "features": {
+              "active": {
+                "label": "Active Challenges",
+                "present": true,
+                "count": 5
+              },
+              "identities": {
+                "label": "Dog Identities / Achievements",
+                "present": true,
+                "count": 3
+              },
+              "training": {
+                "label": "Training Programs",
+                "present": true,
+                "count": 2
+              },
+              "curated": {
+                "label": "Curated Challenges",
+                "present": true,
+                "count": 4
+              },
+              "viewAll": {
+                "label": "View all / Show less",
+                "present": true,
+                "count": 3
+              }
+            }
+          }
+        },
+        {
+          "id": "profile",
+          "label": "Profile",
+          "screenshot": "iphone-15-pro-max-profile.png",
+          "rating": "GREEN",
+          "shell": {
+            "pass": true,
+            "message": "ok"
+          },
+          "metrics": {
+            "viewportHeight": 739,
+            "scrollHeight": 1084,
+            "scrollClientHeight": 641,
+            "bnavTop": 693,
+            "bnavBottom": 739,
+            "gapBelowNav": 0,
+            "heroHeight": null,
+            "mapHeight": null,
+            "journeyPhotoSize": null,
+            "dogCardCount": 2,
+            "dogNames": [
+              "Bailey",
+              "Omi"
+            ],
+            "duplicateDogs": false,
+            "clippedOverflowCount": 0,
+            "features": {
+              "dogCards": {
+                "label": "One card per dog",
+                "present": true,
+                "count": 2
+              },
+              "identityChips": {
+                "label": "Identity chips",
+                "present": true,
+                "count": 8
+              },
+              "edit": {
+                "label": "Edit dog",
+                "present": true,
+                "count": 2
+              },
+              "remove": {
+                "label": "Remove dog",
+                "present": true,
+                "count": 2
+              },
+              "settingsBtn": {
+                "label": "Settings entry",
+                "present": true,
+                "count": 1
+              }
+            }
+          }
+        },
+        {
+          "id": "settings",
+          "label": "Settings",
+          "screenshot": "iphone-15-pro-max-settings.png",
+          "rating": "GREEN",
+          "shell": {
+            "pass": true,
+            "message": "ok"
+          },
+          "metrics": {
+            "viewportHeight": 739,
+            "scrollHeight": 819,
+            "scrollClientHeight": 641,
+            "bnavTop": 693,
+            "bnavBottom": 739,
+            "gapBelowNav": 0,
+            "heroHeight": null,
+            "mapHeight": null,
+            "journeyPhotoSize": null,
+            "dogCardCount": 0,
+            "dogNames": [],
+            "duplicateDogs": false,
+            "clippedOverflowCount": 0,
+            "features": {
+              "account": {
+                "label": "Account section",
+                "present": true,
+                "count": 1
+              },
+              "notifications": {
+                "label": "Notifications (coming soon)",
+                "present": true,
+                "count": 1
+              },
+              "location": {
+                "label": "Location / ZIP",
+                "present": true,
+                "count": 1
+              },
+              "dogs": {
+                "label": "Dog profiles",
+                "present": true,
+                "count": 1
+              },
+              "privacy": {
+                "label": "Privacy / Terms",
+                "present": true,
+                "count": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "shellSummary": {
+    "pass": true,
+    "failures": []
+  }
+}

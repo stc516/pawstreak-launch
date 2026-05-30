@@ -1266,10 +1266,14 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         return (
           <ProfileScreen
             state={state}
+            isDemoMode={isDemoMode}
+            accountEmail={auth.user?.email ?? null}
             onSetActiveDog={handleSetActiveDog}
             onUpdateDog={handleUpdateDog}
             onRemoveDog={handleRemoveDog}
             onOpenAchievement={openAchievementDetail}
+            onZipChange={setZipCode}
+            onApplyLocation={applyLocationFromZip}
             onSignOut={useProductionBackend ? handleSignOut : undefined}
           />
         )

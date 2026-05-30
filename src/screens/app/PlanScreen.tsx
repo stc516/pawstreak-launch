@@ -1,14 +1,13 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import type { AppState } from '../../data/demo'
 import { getDisplayDogLabel } from '../../lib/profileDisplay'
 import { CardImage } from '../../components/CardImage'
+import { PlanAdventureMap } from '../../components/PlanAdventureMap'
 import { getAdventureDisplayImageUrl } from '../../lib/adventureDisplayImage'
 import { getPlanMagicMeta } from '../../data/places'
 import { PLAN_EVENTS } from '../../data/planEvents'
 import { getRecommendationPrefs } from '../../lib/onboardingProfile'
 import {
-  getMapPinPosition,
-  getMapPreviewPlaces,
   getPlanChallengeOpportunities,
   getPlanNearbyPlaces,
   PLAN_PROXIMITY_OPTIONS,
@@ -51,10 +50,15 @@ export function PlanScreen({
 }: PlanScreenProps) {
   const prefs = getRecommendationPrefs(state)
   const [proximityBucket, setProximityBucket] = useState<PlanProximityBucket>('15min')
-  const mapPlaces = useMemo(() => getMapPreviewPlaces(prefs), [prefs])
+  const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null)
+  const placeCardRefs = useRef<Record<string, HTMLDivElement | null>>({})
   const places = useMemo(
     () => getPlanNearbyPlaces(state.selectedPlanCategoryId, proximityBucket, prefs),
     [state.selectedPlanCategoryId, proximityBucket, prefs],
+  )
+  const mapPlaces = useMemo(
+    () => places.filter((place) => place.lat != null && place.lng != null),
+    [places],
   )
   const challengeOpportunities = useMemo(() => getPlanChallengeOpportunities(state), [state])
   const featuredTraining = useMemo(() => getFeaturedTrainingProgram(state), [state])
@@ -79,6 +83,26 @@ export function PlanScreen({
     (option) => LIVE_PRODUCT.calendarPresetPlan || option.id !== 'preset',
   )
 
+  const handleSelectMapPlace = (placeId: string) => {
+    setSelectedPlaceId(placeId)
+    requestAnimationFrame(() => {
+      placeCardRefs.current[placeId]?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+      })
+    })
+  }
+
+  const handleProximityChange = (bucket: PlanProximityBucket) => {
+    setProximityBucket(bucket)
+    setSelectedPlaceId(null)
+  }
+
+  const handleCategorySelect = (categoryId: string) => {
+    onSelectCategory(categoryId)
+    setSelectedPlaceId(null)
+  }
+
   return (
     <>
       <div className="aheader plan-screen-header">
@@ -86,44 +110,16 @@ export function PlanScreen({
         <p className="plan-screen-sub">Where can we go with {dogLabel} right now?</p>
       </div>
 
-      <section className="plan-map-card detail-card-warm" aria-label="Local map">
-        <div className="plan-map-canvas">
-          {mapPlaces.map((place, index) => {
-            const position = getMapPinPosition(index)
-            return (
-              <button
-                key={place.id}
-                type="button"
-                className="plan-map-pin tap-target"
-                style={{ left: position.left, top: position.top }}
-                onClick={() => onStartAdventure(place.id)}
-              >
-                <span className="plan-map-pin-dot" aria-hidden="true" />
-                <span className="plan-map-pin-label">{place.name.split(',')[0]}</span>
-              </button>
-            )
-          })}
-        </div>
-        <div className="plan-map-footer">
-          <div>
-            <div className="plan-map-title">{state.mapRegion.title}</div>
-            <div className="plan-map-sub">{state.mapRegion.subtitle}</div>
-          </div>
-          <div className="plan-map-zip">
-            <input
-              className="zip-input"
-              type="text"
-              inputMode="numeric"
-              placeholder="Zip code"
-              value={state.zipCode}
-              onChange={(event) => onZipChange(event.target.value)}
-            />
-            <button type="button" className="zip-btn tap-target" onClick={onApplyLocation}>
-              Find
-            </button>
-          </div>
-        </div>
-      </section>
+      <PlanAdventureMap
+        places={mapPlaces}
+        selectedPlaceId={selectedPlaceId}
+        mapTitle={state.mapRegion.title}
+        mapSubtitle={state.mapRegion.subtitle}
+        zipCode={state.zipCode}
+        onSelectPlace={handleSelectMapPlace}
+        onZipChange={onZipChange}
+        onApplyLocation={onApplyLocation}
+      />
 
       {!state.locationSupported ? (
         <div className="plan-area-fallback detail-card-warm">{state.mapRegion.subtitle}</div>
@@ -136,7 +132,7 @@ export function PlanScreen({
             key={option.id}
             type="button"
             className={`plan-proximity-chip tap-target${proximityBucket === option.id ? ' on' : ''}`}
-            onClick={() => setProximityBucket(option.id)}
+            onClick={() => handleProximityChange(option.id)}
           >
             <span aria-hidden="true">{option.emoji}</span>
             {option.label}
@@ -152,7 +148,7 @@ export function PlanScreen({
             key={category.id}
             type="button"
             className={`chip tap-target${state.selectedPlanCategoryId === category.id ? ' on' : ''}`}
-            onClick={() => onSelectCategory(category.id)}
+            onClick={() => handleCategorySelect(category.id)}
           >
             <span className="clbl">{category.label}</span>
           </button>
@@ -168,7 +164,14 @@ export function PlanScreen({
           const cardImageUrl = getAdventureDisplayImageUrl(state.journeyEntries, place)
 
           return (
-            <div key={place.id} className={`pcard pcard--compact${isRoadTrip ? ' pcard--road-trip' : ''}`}>
+            <div
+              key={place.id}
+              ref={(node) => {
+                placeCardRefs.current[place.id] = node
+              }}
+              className={`pcard pcard--compact${isRoadTrip ? ' pcard--road-trip' : ''}${selectedPlaceId === place.id ? ' pcard--map-selected' : ''}`}
+              onClick={() => setSelectedPlaceId(place.id)}
+            >
               <CardImage
                 className="pcard-thumb"
                 imageUrl={cardImageUrl}
@@ -252,7 +255,7 @@ export function PlanScreen({
 
       {featuredTraining ? (
         <>
-          <div className="sec">Training opportunities</div>
+          <div className="sec">Training Opportunities</div>
           <button
             type="button"
             className="plan-training-row detail-card-warm tap-target"

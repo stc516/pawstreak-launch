@@ -8,14 +8,6 @@ function dogTarget(dogs: Dog[]): string {
   return 'your dog'
 }
 
-function namedTarget(dogLabel: string, dogCount: number): string {
-  if (dogCount === 1 && dogLabel !== 'your dog') return dogLabel
-  if (dogCount >= 2 && dogLabel !== 'your pack' && dogLabel !== 'your dog') {
-    return dogLabel
-  }
-  return 'them'
-}
-
 export function getHomeDogActivityLine(
   dogLabel: string,
   dogCount: number,
@@ -37,10 +29,35 @@ export function getHomeKicker(dogLabel: string, dogCount: number): string {
   return 'Small adventures count.'
 }
 
-export function getHomeHeadline(dogLabel: string, dogCount: number): string {
-  const target = namedTarget(dogLabel, dogCount)
-  if (target === 'them') return 'What kind of day are we giving them?'
-  return `What kind of day are we giving ${target}?`
+const HOME_HEADLINE_LINES = [
+  'Where are we headed today?',
+  'Ready for your next adventure?',
+  "Let's make today count.",
+  'What memory are we making today?',
+  null,
+  "Pick today's adventure.",
+  'Where should the paws take us?',
+] as const
+
+function getRoamHeadline(dogLabel: string, dogCount: number): string {
+  if (dogCount >= 2 && dogLabel !== 'your pack' && dogLabel !== 'your dog') {
+    return `${dogLabel} are ready to roam.`
+  }
+  if (dogCount === 1 && dogLabel !== 'your dog') {
+    return `${dogLabel} is ready to roam.`
+  }
+  return 'Your dog is ready to roam.'
+}
+
+/** Rotates through seven headlines by day-of-week (stable for the whole day). */
+export function getHomeHeadline(
+  dogLabel: string,
+  dogCount: number,
+  date: Date = new Date(),
+): string {
+  const line = HOME_HEADLINE_LINES[date.getDay()]
+  if (line === null) return getRoamHeadline(dogLabel, dogCount)
+  return line
 }
 
 export function getHomeHeroQuestion(dogLabel: string, dogCount: number): string {

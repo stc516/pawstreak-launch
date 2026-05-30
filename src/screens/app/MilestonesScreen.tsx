@@ -356,7 +356,7 @@ export function MilestonesScreen({
       />
 
       <div className="sec ms-training-sec">
-        <span>Training programs</span>
+        <span>Training Programs</span>
         <span className="ms-training-sec-count">
           {trainingSummary.programsStarted} started · {trainingSummary.rewardsUnlocked} rewards
         </span>

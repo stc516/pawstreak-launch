@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import type { AppState, Dog } from '../../data/demo'
 import type { Achievement } from '../../data/achievements'
 import { resolveIdentitiesForDog } from '../../lib/achievementEngine'
@@ -10,9 +10,12 @@ import {
 } from '../../lib/profileDisplay'
 import { CardImage } from '../../components/CardImage'
 import { getMagicLine, getPlaceById } from '../../data/places'
+import { SettingsScreen } from './SettingsScreen'
 
 interface ProfileScreenProps {
   state: AppState
+  isDemoMode?: boolean
+  accountEmail?: string | null
   onSetActiveDog?: (dogId: string) => void
   onUpdateDog?: (
     dogId: string,
@@ -20,6 +23,8 @@ interface ProfileScreenProps {
   ) => void
   onRemoveDog?: (dogId: string) => void
   onOpenAchievement?: (achievementId: string) => void
+  onZipChange?: (zipCode: string) => void
+  onApplyLocation?: () => void
   onSignOut?: () => Promise<void>
 }
 
@@ -194,13 +199,18 @@ function DogCard({
 
 export function ProfileScreen({
   state,
+  isDemoMode = false,
+  accountEmail,
   onSetActiveDog,
   onUpdateDog,
   onRemoveDog,
   onOpenAchievement,
+  onZipChange,
+  onApplyLocation,
   onSignOut,
 }: ProfileScreenProps) {
   const profileDogs = getProfileDogs(state)
+  const dogListRef = useRef<HTMLDivElement | null>(null)
   const identitiesByDog = useMemo(
     () =>
       Object.fromEntries(
@@ -214,6 +224,7 @@ export function ProfileScreen({
   const [draftBreed, setDraftBreed] = useState('')
   const [draftAge, setDraftAge] = useState('')
   const [removeTarget, setRemoveTarget] = useState<Dog | null>(null)
+  const [showSettings, setShowSettings] = useState(false)
 
   const beginEdit = (dog: Dog) => {
     setEditingDogId(dog.id)
@@ -247,6 +258,26 @@ export function ProfileScreen({
   const isLastDog = profileDogs.length === 1
   const memoryCount = state.journeyEntries.length
 
+  if (showSettings && onZipChange && onApplyLocation) {
+    return (
+      <SettingsScreen
+        state={state}
+        accountEmail={accountEmail}
+        isDemoMode={isDemoMode}
+        onBack={() => setShowSettings(false)}
+        onZipChange={onZipChange}
+        onApplyLocation={onApplyLocation}
+        onManageDogs={() => {
+          setShowSettings(false)
+          requestAnimationFrame(() => {
+            dogListRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          })
+        }}
+        onSignOut={onSignOut}
+      />
+    )
+  }
+
   return (
     <div className="profile-screen">
       <div className="aheader profile-screen-header">
@@ -254,6 +285,16 @@ export function ProfileScreen({
           <div className="alogo">Profile</div>
           <p className="profile-screen-sub">{packLabel}</p>
         </div>
+        {onZipChange && onApplyLocation ? (
+          <button
+            type="button"
+            className="profile-settings-btn tap-target"
+            aria-label="Open settings"
+            onClick={() => setShowSettings(true)}
+          >
+            <i className="ti ti-settings" aria-hidden="true" />
+          </button>
+        ) : null}
       </div>
 
       {memoryCount > 0 ? (
@@ -262,7 +303,7 @@ export function ProfileScreen({
         </p>
       ) : null}
 
-      <section className="profile-section">
+      <section className="profile-section" ref={dogListRef}>
         {profileDogs.length === 0 ? (
           <div className="journey-empty detail-card-warm">
             <div className="journey-empty-title">Add your dog</div>

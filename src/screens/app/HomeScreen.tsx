@@ -282,6 +282,26 @@ export function HomeScreen({
         </div>
       </section>
 
+      {featuredTraining ? (
+        <section className="home-training home-training--compact" aria-label="Training Programs">
+          <h2 className="home-section-label">Training Programs</h2>
+          <button
+            type="button"
+            className="home-training-row detail-card-warm tap-target"
+            onClick={() => onOpenTrainingProgram(featuredTraining.id)}
+          >
+            <span className="home-training-emoji" aria-hidden="true">{featuredTraining.emoji}</span>
+            <span className="home-training-copy">
+              <span className="home-training-title">{featuredTraining.title}</span>
+              <span className="home-training-sub">
+                {featuredTraining.progress.lessonsCompleted}/{featuredTraining.progress.lessonsTotal}{' '}
+                lessons · {featuredTraining.progress.percentComplete}% complete
+              </span>
+            </span>
+          </button>
+        </section>
+      ) : null}
+
       {featuredChallenge ? (
         <section className="home-challenge home-challenge-compact detail-card-warm" aria-label="Featured challenge">
           <CardImage

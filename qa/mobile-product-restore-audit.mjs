@@ -67,6 +67,18 @@ const APP_SCREENS = [
       await page.waitForTimeout(800)
     },
   },
+  {
+    id: 'settings',
+    label: 'Settings',
+    setup: async (page) => {
+      await page.goto(`${BASE_URL}/demo/app`, { waitUntil: 'networkidle' })
+      await page.waitForTimeout(600)
+      await page.locator('.home-dog-pill').first().click()
+      await page.waitForTimeout(600)
+      await page.locator('.profile-settings-btn').click()
+      await page.waitForTimeout(800)
+    },
+  },
 ]
 
 function featureChecks(screenId) {
@@ -109,6 +121,14 @@ function featureChecks(screenId) {
       { id: 'identityChips', label: 'Identity chips', selector: '.profile-dog-identity-chip' },
       { id: 'edit', label: 'Edit dog', selector: '.profile-dog-edit-icon' },
       { id: 'remove', label: 'Remove dog', selector: '.profile-dog-link--danger' },
+      { id: 'settingsBtn', label: 'Settings entry', selector: '.profile-settings-btn' },
+    ],
+    settings: [
+      { id: 'account', label: 'Account section', selector: '.settings-section:has-text("Account")' },
+      { id: 'notifications', label: 'Notifications (coming soon)', selector: '.settings-row:has-text("Adventure reminders")' },
+      { id: 'location', label: 'Location / ZIP', selector: '.settings-zip-input' },
+      { id: 'dogs', label: 'Dog profiles', selector: '.settings-row:has-text("Manage dogs")' },
+      { id: 'privacy', label: 'Privacy / Terms', selector: '.settings-row:has-text("Privacy policy")' },
     ],
   }
   return checks[screenId] ?? []
@@ -300,6 +320,8 @@ function buildReport(report) {
 async function main() {
   await mkdir(OUT_DIR, { recursive: true })
   const browser = await chromium.launch({ headless: true })
+  const blockServiceWorkers = process.env.QA_BLOCK_SERVICE_WORKERS === '1'
+  const navigationTimeout = Number(process.env.QA_NETWORK_TIMEOUT || 30000)
   const report = {
     generatedAt: new Date().toISOString(),
     baseUrl: BASE_URL,
@@ -310,8 +332,15 @@ async function main() {
   for (const deviceName of DEVICE_NAMES) {
     const device = devices[deviceName]
     const slug = deviceName.toLowerCase().replace(/\s+/g, '-')
-    const context = await browser.newContext({ ...device })
+    const context = await browser.newContext({
+      ...device,
+      ...(blockServiceWorkers
+        ? { serviceWorkers: 'block', isMobile: true, hasTouch: true }
+        : {}),
+    })
     const page = await context.newPage()
+    page.setDefaultNavigationTimeout(navigationTimeout)
+    page.setDefaultTimeout(navigationTimeout)
     const deviceReport = { device: deviceName, viewport: device.viewport, screens: [] }
 
     for (const screen of APP_SCREENS) {
