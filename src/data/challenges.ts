@@ -147,10 +147,10 @@ export const CURATED_CHALLENGES: Challenge[] = [
   {
     id: 'summer-beach-challenge',
     seriesId: 'seasonal',
-    title: 'Summer Beach Challenge',
-    subtitle: '8 beach days · Jun 1 – Aug 31',
+    title: 'Beach Explorer',
+    subtitle: '8 San Diego & OC beaches · Jun 1 – Aug 31',
     description:
-      'Join packs worldwide logging dog-friendly beach days all summer. Any coast, any country.',
+      'Hit real dog beaches near you — Dog Beach OB, Fiesta Island, Coronado, Del Mar, and more.',
     accent: 'coastal',
     emoji: '🏖️',
     heroImageUrl: SAMPLE_IMAGES.coastal,
@@ -170,10 +170,10 @@ export const CURATED_CHALLENGES: Challenge[] = [
   {
     id: '30-walk-challenge',
     seriesId: 'fitness',
-    title: '30 Walk Challenge',
-    subtitle: '30 walks · 90 days from join',
+    title: 'Trail & Neighborhood Challenge',
+    subtitle: '30 outings · 90 days from join',
     description:
-      'A global walking streak — neighborhood loops, park visits, and everyday outings all count.',
+      'Real local trails, parks, and patios when we know your area — neighborhood walk goals when we do not.',
     accent: 'warm',
     emoji: '🚶',
     heroImageUrl: SAMPLE_IMAGES.neighborhood,
@@ -213,10 +213,10 @@ export const CURATED_CHALLENGES: Challenge[] = [
   {
     id: 'local-explorer-challenge',
     seriesId: 'discovery',
-    title: 'Local Explorer Challenge',
+    title: 'Local Explorer',
     subtitle: '10 new places · 60 days from join',
     description:
-      'Discover ten distinct dog-friendly places near you — beaches, trails, parks, patios, and more.',
+      'Discover ten distinct dog-friendly spots near you — beaches, trails, coffee patios, dog parks, and parks.',
     accent: 'forest',
     emoji: '🧭',
     heroImageUrl: SAMPLE_IMAGES.trail,

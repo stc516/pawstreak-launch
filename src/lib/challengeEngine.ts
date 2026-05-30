@@ -11,6 +11,7 @@ import {
 } from '../data/challenges'
 import { NEIGHBORHOOD_WALK_PLACE_ID, getPlaceById } from '../data/places'
 import { DEMO_SEEDED_JOURNEY_ENTRY_IDS } from './productionState'
+import { enrichChallengeNodeContent } from './challengePlaceTemplates'
 
 export type ChallengeNodeState = 'completed' | 'current' | 'locked'
 
@@ -51,6 +52,12 @@ export interface ResolvedChallengeNode extends ChallengeNode {
   journeyEntry?: JourneyEntry
   /** Alias for UI components expecting `name`. */
   name: string
+  placeId?: string
+  isGenericFallback?: boolean
+  unlockHint?: string
+  thumbnailUrl?: string
+  completionDate?: string
+  memoryCount?: number
 }
 
 export interface ResolvedChallenge extends Challenge {
@@ -234,7 +241,7 @@ export function resolveChallengeNodes(
 
   let foundCurrent = false
 
-  return challenge.nodes.map((node) => {
+  return challenge.nodes.map((node, index) => {
     const isCompleted = joined ? metricValue >= node.threshold : false
     let nodeState: ChallengeNodeState
 
@@ -255,9 +262,19 @@ export function resolveChallengeNodes(
         ? qualifying[qualifying.length - 1]
         : undefined
 
+    const enriched = enrichChallengeNodeContent(
+      challenge,
+      index,
+      nodeState,
+      node,
+      state,
+      journeyEntry,
+      qualifying,
+    )
+
     return {
       ...node,
-      name: node.title,
+      ...enriched,
       state: nodeState,
       journeyEntry,
       statusLabel: joined ? statusLabelForState(nodeState) : 'Join to start',

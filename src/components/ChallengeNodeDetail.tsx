@@ -19,6 +19,7 @@ export function ChallengeNodeDetail({
   if (!node) return null
 
   const photos = node.journeyEntry?.photoUrls?.filter(Boolean) ?? []
+  const heroImage = node.thumbnailUrl ?? node.imageUrl
 
   return (
     <div className={`challenge-node-detail${node ? ' challenge-node-detail--open' : ''}`}>
@@ -33,20 +34,41 @@ export function ChallengeNodeDetail({
 
         <CardImage
           className="challenge-node-detail-img"
-          imageUrl={node.imageUrl}
+          imageUrl={heroImage}
           imageAlt={node.title}
           imageTone="coastal"
         />
 
         <div className="challenge-node-detail-body">
-          <div className={`challenge-node-detail-status challenge-node-detail-status--${node.state}`}>
-            {node.statusLabel}
+          <div className="challenge-node-detail-meta">
+            <div className={`challenge-node-detail-status challenge-node-detail-status--${node.state}`}>
+              {node.statusLabel}
+            </div>
+            {node.isGenericFallback ? (
+              <span className="challenge-node-detail-tag">Activity goal</span>
+            ) : null}
           </div>
           <h3 className="challenge-node-detail-title">{node.title}</h3>
           <p className="challenge-node-detail-copy">{node.description}</p>
 
           {node.state === 'completed' && node.journeyEntry ? (
             <>
+              {(node.completionDate || node.memoryCount) ? (
+                <div className="challenge-node-detail-stats">
+                  {node.completionDate ? (
+                    <span className="challenge-node-detail-stat">
+                      <i className="ti ti-calendar" aria-hidden="true" />
+                      {node.completionDate}
+                    </span>
+                  ) : null}
+                  {node.memoryCount ? (
+                    <span className="challenge-node-detail-stat">
+                      <i className="ti ti-photo" aria-hidden="true" />
+                      {node.memoryCount} {node.memoryCount === 1 ? 'memory' : 'memories'}
+                    </span>
+                  ) : null}
+                </div>
+              ) : null}
               <p className="challenge-node-detail-copy">
                 {node.journeyEntry.magicLine ?? node.journeyEntry.emotionalLine ?? 'Memory saved.'}
               </p>
@@ -76,7 +98,7 @@ export function ChallengeNodeDetail({
             <p className="challenge-node-detail-copy">{node.planHint}</p>
           ) : (
             <p className="challenge-node-detail-copy">
-              Complete earlier milestones to unlock this step.
+              {node.unlockHint ?? 'Complete earlier milestones to unlock this step.'}
             </p>
           )}
 
@@ -85,6 +107,11 @@ export function ChallengeNodeDetail({
               type="button"
               className="challenge-node-detail-cta tap-target"
               onClick={() => {
+                if (node.placeId) {
+                  onStartAdventure(node.placeId)
+                  onClose()
+                  return
+                }
                 if (onGoToPlan) {
                   onGoToPlan()
                   onClose()
@@ -93,7 +120,7 @@ export function ChallengeNodeDetail({
                 onStartAdventure('')
               }}
             >
-              {onGoToPlan ? 'Go to Plan' : 'Start an adventure'}
+              Start this adventure
             </button>
           ) : null}
 
