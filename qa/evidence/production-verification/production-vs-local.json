@@ -1,0 +1,12 @@
+{
+  "deployment": "success",
+  "diffs": [
+    {
+      "screen": "home",
+      "kind": "metric",
+      "field": "scrollHeight",
+      "local": 1127,
+      "production": 1131
+    }
+  ]
+}
