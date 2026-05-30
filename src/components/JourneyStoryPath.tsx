@@ -20,15 +20,15 @@ export function JourneyStoryPath({
   return (
     <section className="journey-story detail-card-warm" aria-label="Dog life story path">
       <div className="journey-story-header">
-        <div>
+        <div className="journey-story-header-top">
           <div className="journey-story-kicker">Life story</div>
-          <h2 className="journey-story-title">{progression.title}</h2>
-          <p className="journey-story-line">{progression.summary.storyLine}</p>
+          <div className="journey-story-rank">
+            <span className="journey-story-rank-label">Rank</span>
+            <span className="journey-story-rank-value">{progression.summary.rank}</span>
+          </div>
         </div>
-        <div className="journey-story-rank">
-          <div className="journey-story-rank-label">Rank</div>
-          <div className="journey-story-rank-value">{progression.summary.rank}</div>
-        </div>
+        <h2 className="journey-story-title">{progression.title}</h2>
+        <p className="journey-story-line">{progression.summary.storyLine}</p>
       </div>
 
       <div className="journey-story-progress">

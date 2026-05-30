@@ -10621,88 +10621,92 @@ select.field-input {
 
 .journey-story {
   margin-bottom: 8px;
-  padding: 14px 14px 8px;
-  border: 1px solid rgba(146, 64, 14, 0.16);
+  padding: 12px 12px 6px;
+  border: 1px solid rgba(146, 64, 14, 0.14);
   border-radius: 18px;
   background: linear-gradient(180deg, #fff7ed 0%, #fff9f4 55%, #ffffff 100%);
 }
 
 .journey-story-header {
+  margin-bottom: 8px;
+}
+
+.journey-story-header-top {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
+  gap: 10px;
+  margin-bottom: 4px;
 }
 
 .journey-story-kicker {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--accent-coffee);
-  margin-bottom: 4px;
 }
 
 .journey-story-title {
   margin: 0;
   font-family: Literata, Georgia, serif;
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 700;
+  line-height: 1.2;
   color: #1c1410;
 }
 
 .journey-story-line {
-  margin: 6px 0 0;
-  font-size: 12px;
-  line-height: 1.45;
+  margin: 4px 0 0;
+  font-size: 11px;
+  line-height: 1.4;
   font-weight: 500;
   color: #5c3d2e;
 }
 
 .journey-story-rank {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   flex-shrink: 0;
-  min-width: 88px;
-  padding: 8px 10px;
-  border-radius: 14px;
+  padding: 3px 8px;
+  border-radius: 999px;
   background: rgba(255, 255, 255, 0.88);
-  border: 1px solid rgba(146, 64, 14, 0.14);
-  text-align: center;
+  border: 1px solid rgba(146, 64, 14, 0.12);
 }
 
 .journey-story-rank-label {
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 700;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: #92400e;
 }
 
 .journey-story-rank-value {
-  margin-top: 2px;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 800;
   color: #1c1410;
 }
 
 .journey-story-progress {
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
 .journey-story-progress-meta {
   display: flex;
   justify-content: space-between;
   gap: 10px;
-  margin-bottom: 6px;
-  font-size: 10px;
+  margin-bottom: 4px;
+  font-size: 9px;
   font-weight: 600;
   color: #7c2d12;
 }
 
 .journey-story-progress-bar {
-  height: 8px;
+  height: 5px;
   border-radius: 999px;
-  background: rgba(146, 64, 14, 0.12);
+  background: rgba(146, 64, 14, 0.1);
   overflow: hidden;
 }
 
@@ -10716,26 +10720,26 @@ select.field-input {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 8px;
 }
 
 .journey-story-spine {
   position: absolute;
-  top: 28px;
-  bottom: 28px;
-  left: 18px;
-  width: 3px;
+  top: 20px;
+  bottom: 20px;
+  left: 13px;
+  width: 1.5px;
   border-radius: 999px;
-  background: linear-gradient(180deg, #fdba74 0%, rgba(146, 64, 14, 0.16) 100%);
+  background: linear-gradient(180deg, rgba(253, 186, 116, 0.55) 0%, rgba(146, 64, 14, 0.08) 100%);
   pointer-events: none;
 }
 
 .journey-story-node {
   position: relative;
   display: grid;
-  grid-template-columns: 40px minmax(0, 1fr);
-  gap: 10px;
-  padding: 8px 0;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 12px;
+  padding: 2px 0;
 }
 
 .journey-story-node-spine {
@@ -10743,46 +10747,46 @@ select.field-input {
   z-index: 1;
   display: flex;
   justify-content: center;
-  padding-top: 10px;
+  padding-top: 14px;
 }
 
 .journey-story-node-dot {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
-  border: 3px solid transparent;
-  font-size: 13px;
+  border: 2px solid transparent;
+  font-size: 10px;
   font-weight: 800;
 }
 
 .journey-story-node-dot--completed {
-  border-color: #92400e;
+  border-color: rgba(146, 64, 14, 0.55);
   background: linear-gradient(135deg, #fdba74 0%, #92400e 100%);
   color: #fff;
 }
 
 .journey-story-node-dot--completed .ti-check {
-  font-size: 16px;
+  font-size: 11px;
 }
 
 .journey-story-node-dot--current {
   border-color: #f97316;
   background: #fff7ed;
   color: #ea580c;
-  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.14);
+  box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.12);
 }
 
 .journey-story-node-dot--locked {
-  border-color: #d6d3d1;
-  background: #f5f5f4;
+  border-color: #e7e5e4;
+  background: #fafaf9;
   color: #a8a29e;
 }
 
 .journey-story-node-dot--locked .ti-lock {
-  font-size: 14px;
+  font-size: 10px;
 }
 
 .journey-story-node-card {
@@ -10794,12 +10798,12 @@ select.field-input {
 
 .journey-story-node-card--completed {
   display: grid;
-  grid-template-columns: 92px minmax(0, 1fr);
+  grid-template-columns: 112px minmax(0, 1fr);
   gap: 12px;
-  padding: 10px;
-  border-radius: 16px;
+  padding: 8px;
+  border-radius: 14px;
   background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(146, 64, 14, 0.12);
+  border: 1px solid rgba(146, 64, 14, 0.1);
   cursor: pointer;
 }
 
@@ -10808,19 +10812,19 @@ select.field-input {
 }
 
 .journey-story-node-card--current {
-  padding: 12px;
-  border-radius: 16px;
-  border: 1px solid rgba(249, 115, 22, 0.22);
+  padding: 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(249, 115, 22, 0.18);
   background: linear-gradient(180deg, #fff7ed 0%, #ffffff 100%);
-  box-shadow: 0 8px 24px rgba(249, 115, 22, 0.1);
+  box-shadow: 0 4px 16px rgba(249, 115, 22, 0.08);
 }
 
 .journey-story-node-card--locked {
-  padding: 12px;
-  border-radius: 16px;
+  padding: 10px;
+  border-radius: 14px;
   background: rgba(245, 245, 244, 0.72);
-  border: 1px dashed rgba(168, 162, 158, 0.45);
-  opacity: 0.82;
+  border: 1px dashed rgba(168, 162, 158, 0.38);
+  opacity: 0.78;
 }
 
 .journey-story-node-media {
@@ -10829,18 +10833,20 @@ select.field-input {
 
 .journey-story-node-photo {
   display: block;
-  width: 92px;
-  height: 92px;
-  border-radius: 14px;
+  width: 112px;
+  height: 112px;
+  border-radius: 12px;
   object-fit: cover;
   background: #ffedd5;
+  box-shadow: 0 4px 14px rgba(28, 20, 16, 0.14);
 }
 
 .journey-story-node-photo--empty {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
+  font-size: 32px;
+  box-shadow: none;
 }
 
 .journey-story-node-photo-stack {
@@ -10852,12 +10858,12 @@ select.field-input {
 }
 
 .journey-story-node-photo-stack-item {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 8px;
   object-fit: cover;
   border: 2px solid #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.14);
 }
 
 .journey-story-node-body {
@@ -10907,7 +10913,7 @@ select.field-input {
 .journey-story-node-title {
   margin: 0;
   font-family: Literata, Georgia, serif;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   line-height: 1.25;
   color: #1c1410;
