@@ -1,0 +1,324 @@
+{
+  "generatedAt": "2026-05-30T02:42:50.537Z",
+  "devices": [
+    {
+      "device": "iPhone 13",
+      "viewport": {
+        "width": 390,
+        "height": 664
+      },
+      "screens": [
+        {
+          "screenId": "home",
+          "screenshot": "iphone-13-home.png",
+          "metrics": {
+            "viewportHeight": 664,
+            "scrollHeight": 1084,
+            "scrollClientHeight": 566,
+            "heroHeight": 154,
+            "heroVisible": true,
+            "progressVisible": true,
+            "firstVisibleHomeSections": [
+              "hero",
+              "progress",
+              "continue"
+            ],
+            "mapHeight": null,
+            "journeyPhotoSize": null,
+            "bnavBottom": 664,
+            "gapBelowNav": 0,
+            "scrollTop": 0
+          }
+        },
+        {
+          "screenId": "plan",
+          "screenshot": "iphone-13-plan.png",
+          "metrics": {
+            "viewportHeight": 664,
+            "scrollHeight": 2152,
+            "scrollClientHeight": 566,
+            "heroHeight": null,
+            "heroVisible": false,
+            "progressVisible": false,
+            "firstVisibleHomeSections": [],
+            "mapHeight": 209,
+            "journeyPhotoSize": null,
+            "bnavBottom": 664,
+            "gapBelowNav": 0,
+            "scrollTop": 0
+          }
+        },
+        {
+          "screenId": "journey",
+          "screenshot": "iphone-13-journey.png",
+          "metrics": {
+            "viewportHeight": 664,
+            "scrollHeight": 2051,
+            "scrollClientHeight": 566,
+            "heroHeight": null,
+            "heroVisible": false,
+            "progressVisible": false,
+            "firstVisibleHomeSections": [],
+            "mapHeight": null,
+            "journeyPhotoSize": {
+              "width": 168,
+              "height": 168
+            },
+            "bnavBottom": 664,
+            "gapBelowNav": 0,
+            "scrollTop": 0
+          }
+        },
+        {
+          "screenId": "challenges",
+          "screenshot": "iphone-13-challenges.png",
+          "metrics": {
+            "viewportHeight": 664,
+            "scrollHeight": 3633,
+            "scrollClientHeight": 566,
+            "heroHeight": null,
+            "heroVisible": false,
+            "progressVisible": false,
+            "firstVisibleHomeSections": [],
+            "mapHeight": null,
+            "journeyPhotoSize": null,
+            "bnavBottom": 664,
+            "gapBelowNav": 0,
+            "scrollTop": 0
+          }
+        },
+        {
+          "screenId": "profile",
+          "screenshot": "iphone-13-profile.png",
+          "metrics": {
+            "viewportHeight": 664,
+            "scrollHeight": 1084,
+            "scrollClientHeight": 566,
+            "heroHeight": null,
+            "heroVisible": false,
+            "progressVisible": false,
+            "firstVisibleHomeSections": [],
+            "mapHeight": null,
+            "journeyPhotoSize": null,
+            "bnavBottom": 664,
+            "gapBelowNav": 0,
+            "scrollTop": 0
+          }
+        }
+      ]
+    },
+    {
+      "device": "iPhone 15 Pro",
+      "viewport": {
+        "width": 393,
+        "height": 659
+      },
+      "screens": [
+        {
+          "screenId": "home",
+          "screenshot": "iphone-15-pro-home.png",
+          "metrics": {
+            "viewportHeight": 659,
+            "scrollHeight": 1084,
+            "scrollClientHeight": 561,
+            "heroHeight": 154,
+            "heroVisible": true,
+            "progressVisible": true,
+            "firstVisibleHomeSections": [
+              "hero",
+              "progress",
+              "continue"
+            ],
+            "mapHeight": null,
+            "journeyPhotoSize": null,
+            "bnavBottom": 659,
+            "gapBelowNav": 0,
+            "scrollTop": 0
+          }
+        },
+        {
+          "screenId": "plan",
+          "screenshot": "iphone-15-pro-plan.png",
+          "metrics": {
+            "viewportHeight": 659,
+            "scrollHeight": 2154,
+            "scrollClientHeight": 561,
+            "heroHeight": null,
+            "heroVisible": false,
+            "progressVisible": false,
+            "firstVisibleHomeSections": [],
+            "mapHeight": 211,
+            "journeyPhotoSize": null,
+            "bnavBottom": 659,
+            "gapBelowNav": 0,
+            "scrollTop": 0
+          }
+        },
+        {
+          "screenId": "journey",
+          "screenshot": "iphone-15-pro-journey.png",
+          "metrics": {
+            "viewportHeight": 659,
+            "scrollHeight": 2021,
+            "scrollClientHeight": 561,
+            "heroHeight": null,
+            "heroVisible": false,
+            "progressVisible": false,
+            "firstVisibleHomeSections": [],
+            "mapHeight": null,
+            "journeyPhotoSize": {
+              "width": 168,
+              "height": 168
+            },
+            "bnavBottom": 659,
+            "gapBelowNav": 0,
+            "scrollTop": 0
+          }
+        },
+        {
+          "screenId": "challenges",
+          "screenshot": "iphone-15-pro-challenges.png",
+          "metrics": {
+            "viewportHeight": 659,
+            "scrollHeight": 3633,
+            "scrollClientHeight": 561,
+            "heroHeight": null,
+            "heroVisible": false,
+            "progressVisible": false,
+            "firstVisibleHomeSections": [],
+            "mapHeight": null,
+            "journeyPhotoSize": null,
+            "bnavBottom": 659,
+            "gapBelowNav": 0,
+            "scrollTop": 0
+          }
+        },
+        {
+          "screenId": "profile",
+          "screenshot": "iphone-15-pro-profile.png",
+          "metrics": {
+            "viewportHeight": 659,
+            "scrollHeight": 1084,
+            "scrollClientHeight": 561,
+            "heroHeight": null,
+            "heroVisible": false,
+            "progressVisible": false,
+            "firstVisibleHomeSections": [],
+            "mapHeight": null,
+            "journeyPhotoSize": null,
+            "bnavBottom": 659,
+            "gapBelowNav": 0,
+            "scrollTop": 0
+          }
+        }
+      ]
+    },
+    {
+      "device": "iPhone 15 Pro Max",
+      "viewport": {
+        "width": 430,
+        "height": 739
+      },
+      "screens": [
+        {
+          "screenId": "home",
+          "screenshot": "iphone-15-pro-max-home.png",
+          "metrics": {
+            "viewportHeight": 739,
+            "scrollHeight": 1084,
+            "scrollClientHeight": 641,
+            "heroHeight": 154,
+            "heroVisible": true,
+            "progressVisible": true,
+            "firstVisibleHomeSections": [
+              "hero",
+              "progress",
+              "continue",
+              "upcoming"
+            ],
+            "mapHeight": null,
+            "journeyPhotoSize": null,
+            "bnavBottom": 739,
+            "gapBelowNav": 0,
+            "scrollTop": 0
+          }
+        },
+        {
+          "screenId": "plan",
+          "screenshot": "iphone-15-pro-max-plan.png",
+          "metrics": {
+            "viewportHeight": 739,
+            "scrollHeight": 2149,
+            "scrollClientHeight": 641,
+            "heroHeight": null,
+            "heroVisible": false,
+            "progressVisible": false,
+            "firstVisibleHomeSections": [],
+            "mapHeight": 220,
+            "journeyPhotoSize": null,
+            "bnavBottom": 739,
+            "gapBelowNav": 0,
+            "scrollTop": 0
+          }
+        },
+        {
+          "screenId": "journey",
+          "screenshot": "iphone-15-pro-max-journey.png",
+          "metrics": {
+            "viewportHeight": 739,
+            "scrollHeight": 1938,
+            "scrollClientHeight": 641,
+            "heroHeight": null,
+            "heroVisible": false,
+            "progressVisible": false,
+            "firstVisibleHomeSections": [],
+            "mapHeight": null,
+            "journeyPhotoSize": {
+              "width": 168,
+              "height": 168
+            },
+            "bnavBottom": 739,
+            "gapBelowNav": 0,
+            "scrollTop": 0
+          }
+        },
+        {
+          "screenId": "challenges",
+          "screenshot": "iphone-15-pro-max-challenges.png",
+          "metrics": {
+            "viewportHeight": 739,
+            "scrollHeight": 3588,
+            "scrollClientHeight": 641,
+            "heroHeight": null,
+            "heroVisible": false,
+            "progressVisible": false,
+            "firstVisibleHomeSections": [],
+            "mapHeight": null,
+            "journeyPhotoSize": null,
+            "bnavBottom": 739,
+            "gapBelowNav": 0,
+            "scrollTop": 0
+          }
+        },
+        {
+          "screenId": "profile",
+          "screenshot": "iphone-15-pro-max-profile.png",
+          "metrics": {
+            "viewportHeight": 739,
+            "scrollHeight": 1084,
+            "scrollClientHeight": 641,
+            "heroHeight": null,
+            "heroVisible": false,
+            "progressVisible": false,
+            "firstVisibleHomeSections": [],
+            "mapHeight": null,
+            "journeyPhotoSize": null,
+            "bnavBottom": 739,
+            "gapBelowNav": 0,
+            "scrollTop": 0
+          }
+        }
+      ]
+    }
+  ]
+}

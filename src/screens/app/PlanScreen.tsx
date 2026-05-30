@@ -1,18 +1,21 @@
+import { useMemo, useState } from 'react'
 import type { AppState } from '../../data/demo'
 import { getDisplayDogLabel } from '../../lib/profileDisplay'
 import { CardImage } from '../../components/CardImage'
 import { getAdventureDisplayImageUrl } from '../../lib/adventureDisplayImage'
-import {
-  getPlacesForPlanCategory,
-  getPlanMagicMeta,
-} from '../../data/places'
+import { getPlanMagicMeta } from '../../data/places'
 import { PLAN_EVENTS } from '../../data/planEvents'
 import { getRecommendationPrefs } from '../../lib/onboardingProfile'
 import {
-  getRoadTripDriveTime,
-  getRoadTripWhyToday,
-  openRoadTripDirections,
-} from '../../lib/roadTrip'
+  getMapPinPosition,
+  getMapPreviewPlaces,
+  getPlanChallengeOpportunities,
+  getPlanNearbyPlaces,
+  PLAN_PROXIMITY_OPTIONS,
+  type PlanProximityBucket,
+} from '../../lib/planDiscovery'
+import { getFeaturedTrainingProgram } from '../../lib/trainingEngine'
+import { getRoadTripDriveTime, openRoadTripDirections } from '../../lib/roadTrip'
 import { LIVE_PRODUCT } from '../../lib/liveProductFeatures'
 
 interface PlanScreenProps {
@@ -26,6 +29,9 @@ interface PlanScreenProps {
   onOpenCuratedPlanFlow: () => void
   onGenerateRandomPlan: () => void
   onOpenPresetPlan: () => void
+  onOpenChallenge?: (challengeId: string) => void
+  onJoinChallenge?: (challengeId: string) => void
+  onOpenTrainingProgram?: (programId: string) => void
 }
 
 export function PlanScreen({
@@ -39,11 +45,19 @@ export function PlanScreen({
   onOpenCuratedPlanFlow,
   onGenerateRandomPlan,
   onOpenPresetPlan,
+  onOpenChallenge,
+  onJoinChallenge,
+  onOpenTrainingProgram,
 }: PlanScreenProps) {
-  const places = getPlacesForPlanCategory(
-    state.selectedPlanCategoryId,
-    getRecommendationPrefs(state),
+  const prefs = getRecommendationPrefs(state)
+  const [proximityBucket, setProximityBucket] = useState<PlanProximityBucket>('15min')
+  const mapPlaces = useMemo(() => getMapPreviewPlaces(prefs), [prefs])
+  const places = useMemo(
+    () => getPlanNearbyPlaces(state.selectedPlanCategoryId, proximityBucket, prefs),
+    [state.selectedPlanCategoryId, proximityBucket, prefs],
   )
+  const challengeOpportunities = useMemo(() => getPlanChallengeOpportunities(state), [state])
+  const featuredTraining = useMemo(() => getFeaturedTrainingProgram(state), [state])
   const dogLabel = getDisplayDogLabel(state)
 
   const handleMonthlyPlanClick = (planId: string) => {
@@ -67,45 +81,72 @@ export function PlanScreen({
 
   return (
     <>
-      <div className="aheader">
+      <div className="aheader plan-screen-header">
         <div className="alogo">Plan an adventure</div>
-        <p className="plan-screen-sub">Discover what&apos;s worth doing with {dogLabel}</p>
+        <p className="plan-screen-sub">Where can we go with {dogLabel} right now?</p>
       </div>
 
-      <div className="mapbox">
-        <i className="ti ti-map-pin" aria-hidden="true" />
-        <div className="mapbox-title">{state.mapRegion.title}</div>
-        <div className="mapbox-sub">{state.mapRegion.subtitle}</div>
-        <div className="mapbox-zip">
-          <input
-            className="zip-input"
-            type="text"
-            inputMode="numeric"
-            placeholder="Enter your zip code"
-            value={state.zipCode}
-            onChange={(event) => onZipChange(event.target.value)}
-          />
-          <button type="button" className="zip-btn tap-target" onClick={onApplyLocation}>
-            Find spots
-          </button>
+      <section className="plan-map-card detail-card-warm" aria-label="Local map">
+        <div className="plan-map-canvas">
+          {mapPlaces.map((place, index) => {
+            const position = getMapPinPosition(index)
+            return (
+              <button
+                key={place.id}
+                type="button"
+                className="plan-map-pin tap-target"
+                style={{ left: position.left, top: position.top }}
+                onClick={() => onStartAdventure(place.id)}
+              >
+                <span className="plan-map-pin-dot" aria-hidden="true" />
+                <span className="plan-map-pin-label">{place.name.split(',')[0]}</span>
+              </button>
+            )
+          })}
         </div>
-      </div>
-
-      <div className="coming-soon">
-        <div>
-          <div className="cs-left">Not in SD or OC?</div>
-          <div className="cs-req">Request your area →</div>
+        <div className="plan-map-footer">
+          <div>
+            <div className="plan-map-title">{state.mapRegion.title}</div>
+            <div className="plan-map-sub">{state.mapRegion.subtitle}</div>
+          </div>
+          <div className="plan-map-zip">
+            <input
+              className="zip-input"
+              type="text"
+              inputMode="numeric"
+              placeholder="Zip code"
+              value={state.zipCode}
+              onChange={(event) => onZipChange(event.target.value)}
+            />
+            <button type="button" className="zip-btn tap-target" onClick={onApplyLocation}>
+              Find
+            </button>
+          </div>
         </div>
-        <div className="cs-badge">Coming soon</div>
-      </div>
+      </section>
 
       {!state.locationSupported ? (
         <div className="plan-area-fallback detail-card-warm">{state.mapRegion.subtitle}</div>
       ) : null}
 
+      <div className="sec">What&apos;s close right now</div>
+      <div className="plan-proximity-strip">
+        {PLAN_PROXIMITY_OPTIONS.map((option) => (
+          <button
+            key={option.id}
+            type="button"
+            className={`plan-proximity-chip tap-target${proximityBucket === option.id ? ' on' : ''}`}
+            onClick={() => setProximityBucket(option.id)}
+          >
+            <span aria-hidden="true">{option.emoji}</span>
+            {option.label}
+          </button>
+        ))}
+      </div>
+
       <div className="sec">Nearby adventures</div>
 
-      <div className="chips chips--plan">
+      <div className="chips chips--plan chips--compact">
         {state.planCategories.map((category) => (
           <button
             key={category.id}
@@ -118,74 +159,116 @@ export function PlanScreen({
         ))}
       </div>
 
-      {places.map((place) => {
-        const isRoadTrip = place.category === 'Road trip'
-        const driveTime = isRoadTrip
-          ? getRoadTripDriveTime(place, state.locationSupported)
-          : null
-        const cardImageUrl = getAdventureDisplayImageUrl(state.journeyEntries, place)
+      <div className="plan-card-list">
+        {places.map((place) => {
+          const isRoadTrip = place.category === 'Road trip'
+          const driveTime = isRoadTrip
+            ? getRoadTripDriveTime(place, state.locationSupported)
+            : null
+          const cardImageUrl = getAdventureDisplayImageUrl(state.journeyEntries, place)
 
-        return (
-          <div key={place.id} className={`pcard${isRoadTrip ? ' pcard--road-trip' : ''}`}>
-            <CardImage
-              className="pcard-thumb"
-              imageUrl={cardImageUrl}
-              imageAlt={place.imageAlt ?? place.name}
-              imageTone={place.imageTone}
-            />
-            <div className="pinfo">
-              <div className="pname">{place.name}</div>
-              {isRoadTrip ? (
-                <div className="road-trip-details">
-                  <div className="road-trip-row">
-                    <span className="road-trip-key">Destination</span>
-                    <span>
-                      {place.city}
-                      {place.addressLabel ? ` · ${place.addressLabel}` : ''}
-                    </span>
-                  </div>
-                  {driveTime ? (
+          return (
+            <div key={place.id} className={`pcard pcard--compact${isRoadTrip ? ' pcard--road-trip' : ''}`}>
+              <CardImage
+                className="pcard-thumb"
+                imageUrl={cardImageUrl}
+                imageAlt={place.imageAlt ?? place.name}
+                imageTone={place.imageTone}
+              />
+              <div className="pinfo">
+                <div className="pname">{place.name}</div>
+                {isRoadTrip ? (
+                  <div className="road-trip-details road-trip-details--compact">
                     <div className="road-trip-row">
-                      <span className="road-trip-key">Drive time</span>
-                      <span>{driveTime}</span>
+                      <span>{place.city}</span>
+                      {driveTime ? <span>{driveTime}</span> : null}
                     </div>
-                  ) : null}
-                  <div className="road-trip-row">
-                    <span className="road-trip-key">Distance</span>
-                    <span>{place.distanceLabel}</span>
+                    <button
+                      type="button"
+                      className="road-trip-directions tap-target"
+                      onClick={() => openRoadTripDirections(place)}
+                    >
+                      Directions
+                    </button>
                   </div>
-                  <div className="road-trip-row">
-                    <span className="road-trip-key">Why today</span>
-                    <span>{getRoadTripWhyToday(place)}</span>
+                ) : (
+                  <div className="pmeta">{getPlanMagicMeta(place)}</div>
+                )}
+              </div>
+              <button
+                type="button"
+                className="pgo tap-target"
+                onClick={() => {
+                  if (place.id === 'neighborhood-walk') {
+                    onStartNeighborhoodWalk?.()
+                    return
+                  }
+                  onStartAdventure(place.id)
+                }}
+              >
+                Go
+              </button>
+            </div>
+          )
+        })}
+      </div>
+
+      {challengeOpportunities.length > 0 ? (
+        <>
+          <div className="sec">Challenge opportunities</div>
+          <div className="plan-challenge-list">
+            {challengeOpportunities.map((challenge) => (
+              <article
+                key={challenge.id}
+                className={`plan-challenge-card plan-challenge-card--${challenge.accent} detail-card-warm`}
+              >
+                <div className="plan-challenge-copy">
+                  <div className="plan-challenge-title">
+                    <span aria-hidden="true">{challenge.emoji}</span> {challenge.title}
                   </div>
+                  <div className="plan-challenge-sub">{challenge.subtitle}</div>
+                </div>
+                <div className="plan-challenge-actions">
                   <button
                     type="button"
-                    className="road-trip-directions tap-target"
-                    onClick={() => openRoadTripDirections(place)}
+                    className="plan-challenge-join tap-target"
+                    onClick={() => onJoinChallenge?.(challenge.id)}
                   >
-                    Open directions
+                    Join
+                  </button>
+                  <button
+                    type="button"
+                    className="plan-challenge-preview tap-target"
+                    onClick={() => onOpenChallenge?.(challenge.id)}
+                  >
+                    Preview
                   </button>
                 </div>
-              ) : (
-                <div className="pmeta">{getPlanMagicMeta(place)}</div>
-              )}
-            </div>
-            <button
-              type="button"
-              className="pgo tap-target"
-              onClick={() => {
-                if (place.id === 'neighborhood-walk') {
-                  onStartNeighborhoodWalk?.()
-                  return
-                }
-                onStartAdventure(place.id)
-              }}
-            >
-              Go
-            </button>
+              </article>
+            ))}
           </div>
-        )
-      })}
+        </>
+      ) : null}
+
+      {featuredTraining ? (
+        <>
+          <div className="sec">Training opportunities</div>
+          <button
+            type="button"
+            className="plan-training-row detail-card-warm tap-target"
+            onClick={() => onOpenTrainingProgram?.(featuredTraining.id)}
+          >
+            <span className="plan-training-emoji" aria-hidden="true">{featuredTraining.emoji}</span>
+            <span className="plan-training-copy">
+              <span className="plan-training-title">{featuredTraining.title}</span>
+              <span className="plan-training-sub">
+                {featuredTraining.progress.lessonsCompleted}/{featuredTraining.progress.lessonsTotal}{' '}
+                lessons · {featuredTraining.subtitle}
+              </span>
+            </span>
+          </button>
+        </>
+      ) : null}
 
       <div className="sec">Events</div>
       <div className="plan-events-list">
@@ -224,8 +307,8 @@ export function PlanScreen({
         </>
       ) : null}
 
-      <div className="plan-box">
-        <div className="plan-title">Set up a monthly plan for {dogLabel}</div>
+      <div className="plan-box plan-box--compact">
+        <div className="plan-title">Monthly plan for {dogLabel}</div>
         {monthlyPlanOptions.map((option) => (
           <button
             key={option.id}
@@ -243,7 +326,7 @@ export function PlanScreen({
 
         {isDemoMode ? (
           <p className="plan-calendar-note">
-            Calendar sync is mocked for now. Real reminders come later.
+            Internal reminders and planned adventures — no external calendar sync yet.
           </p>
         ) : null}
 

@@ -1220,6 +1220,9 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onOpenCuratedPlanFlow={openCuratedPlanFlow}
             onGenerateRandomPlan={generateRandomPlanForDogs}
             onOpenPresetPlan={openPresetPlanOverlay}
+            onOpenChallenge={openChallengeDetail}
+            onJoinChallenge={joinChallenge}
+            onOpenTrainingProgram={openTrainingProgram}
           />
         )
       case 'journey':
@@ -1266,6 +1269,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onSetActiveDog={handleSetActiveDog}
             onUpdateDog={handleUpdateDog}
             onRemoveDog={handleRemoveDog}
+            onOpenAchievement={openAchievementDetail}
             onSignOut={useProductionBackend ? handleSignOut : undefined}
           />
         )

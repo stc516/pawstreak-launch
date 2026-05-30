@@ -1,5 +1,7 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { AppState, Dog } from '../../data/demo'
+import type { Achievement } from '../../data/achievements'
+import { resolveIdentitiesForDog } from '../../lib/achievementEngine'
 import {
   getDisplayDogLabel,
   getDogAgeLabel,
@@ -17,6 +19,7 @@ interface ProfileScreenProps {
     patch: { name?: string; breed?: string; age?: string; profileEmoji?: string },
   ) => void
   onRemoveDog?: (dogId: string) => void
+  onOpenAchievement?: (achievementId: string) => void
   onSignOut?: () => Promise<void>
 }
 
@@ -35,6 +38,8 @@ interface DogCardProps {
   onSaveEdit: () => void
   onRequestRemove: () => void
   onSetActive?: () => void
+  identities: Achievement[]
+  onOpenAchievement?: (achievementId: string) => void
 }
 
 function DogCard({
@@ -52,6 +57,8 @@ function DogCard({
   onSaveEdit,
   onRequestRemove,
   onSetActive,
+  identities,
+  onOpenAchievement,
 }: DogCardProps) {
   const breed = getDogBreedLabel(dog)
   const age = getDogAgeLabel(dog)
@@ -142,6 +149,29 @@ function DogCard({
         </button>
       </div>
 
+      <div className="profile-dog-identities">
+        <div className="profile-dog-identities-label">Dog identities</div>
+        {identities.length > 0 ? (
+          <div className="profile-dog-identity-list">
+            {identities.slice(0, 4).map((identity) => (
+              <button
+                key={identity.id}
+                type="button"
+                className="profile-dog-identity-chip tap-target"
+                onClick={() => onOpenAchievement?.(identity.id)}
+              >
+                <span aria-hidden="true">{identity.emoji}</span>
+                {identity.title}
+              </button>
+            ))}
+          </div>
+        ) : (
+          <p className="profile-dog-identities-empty">
+            Adventures will shape {dog.name}&apos;s personality here.
+          </p>
+        )}
+      </div>
+
       <div className="profile-dog-card-footer">
         {!isActive && onSetActive ? (
           <button type="button" className="profile-dog-link tap-target" onClick={onSetActive}>
@@ -167,9 +197,17 @@ export function ProfileScreen({
   onSetActiveDog,
   onUpdateDog,
   onRemoveDog,
+  onOpenAchievement,
   onSignOut,
 }: ProfileScreenProps) {
   const profileDogs = getProfileDogs(state)
+  const identitiesByDog = useMemo(
+    () =>
+      Object.fromEntries(
+        profileDogs.map((dog) => [dog.id, resolveIdentitiesForDog(state, dog)]),
+      ),
+    [profileDogs, state],
+  )
   const packLabel = getDisplayDogLabel(state)
   const [editingDogId, setEditingDogId] = useState<string | null>(null)
   const [draftName, setDraftName] = useState('')
@@ -255,6 +293,8 @@ export function ProfileScreen({
                     ? () => onSetActiveDog?.(dog.id)
                     : undefined
                 }
+                identities={identitiesByDog[dog.id] ?? []}
+                onOpenAchievement={onOpenAchievement}
               />
             ))}
           </div>

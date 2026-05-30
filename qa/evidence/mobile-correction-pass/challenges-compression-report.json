@@ -1,0 +1,27 @@
+{
+  "generatedAt": "2026-05-30T02:46:53.109Z",
+  "before": 3633,
+  "results": [
+    {
+      "device": "iPhone 13",
+      "viewportHeight": 664,
+      "scrollHeight": 1418,
+      "scrollClientHeight": 566,
+      "bnavBottom": 664
+    },
+    {
+      "device": "iPhone 15 Pro",
+      "viewportHeight": 659,
+      "scrollHeight": 1418,
+      "scrollClientHeight": 561,
+      "bnavBottom": 659
+    },
+    {
+      "device": "iPhone 15 Pro Max",
+      "viewportHeight": 739,
+      "scrollHeight": 1418,
+      "scrollClientHeight": 641,
+      "bnavBottom": 739
+    }
+  ]
+}

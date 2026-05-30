@@ -1,12 +1,15 @@
 import { useMemo } from 'react'
 import type { AppState } from '../../data/demo'
-import { getActiveAchievement } from '../../lib/achievementEngine'
+import {
+  getActiveAchievement,
+  getIdentityProgressLabel,
+  getNextIdentityAchievement,
+} from '../../lib/achievementEngine'
 import { getDisplayDogLabel, getProfileDogs } from '../../lib/profileDisplay'
 import {
   getHeroFitLine,
   getHomeDogActivityLine,
   getHomeHeadline,
-  getHomeHeroQuestion,
   getMemoryWarmLabel,
 } from '../../lib/homeCopy'
 import { getFeaturedChallenge } from '../../lib/challengeEngine'
@@ -80,9 +83,11 @@ export function HomeScreen({
   const storyProgress = useMemo(() => resolveDogProgression(state), [state])
   const currentChapter = storyProgress.nodes.find((node) => node.state === 'current')
   const activeAchievement = useMemo(() => getActiveAchievement(state), [state])
+  const nextIdentity = useMemo(() => getNextIdentityAchievement(state), [state])
   const featuredTraining = useMemo(() => getFeaturedTrainingProgram(state), [state])
   const upcomingItems = useMemo(() => getHomeUpcomingItems(state), [state])
   const recentMemories = state.journeyEntries.slice(0, 3)
+  const identityTarget = nextIdentity ?? activeAchievement
 
   const handleStartHeroAdventure = () => {
     onSelectActivity(heroActivityId)
@@ -110,7 +115,7 @@ export function HomeScreen({
   }
 
   return (
-    <div className="home-screen home-screen--depth">
+    <div className="home-screen home-screen--depth home-screen--compact">
       <div className="aheader home-screen-header">
         <div className="alogo home-logo">
           Paw<span>Streak</span>
@@ -135,30 +140,29 @@ export function HomeScreen({
         </div>
       ) : null}
 
-      <p className="home-headline">{getHomeHeadline(dogLabel, dogCount)}</p>
+      <p className="home-headline home-headline--compact">{getHomeHeadline(dogLabel, dogCount)}</p>
 
-      <section className="home-hero detail-card-warm" aria-label="Today's adventure">
+      <section className="home-hero home-hero-compact detail-card-warm" aria-label="Today's adventure">
         <CardImage
-          className="home-hero-img"
+          className="home-hero-compact-photo"
           imageUrl={heroImageUrl}
           imageAlt={heroPlace.imageAlt ?? heroPlace.name}
           imageTone={heroPlace.imageTone ?? 'warm'}
         />
-        <div className="home-hero-body">
-          <div className="home-hero-kicker">Today&apos;s Adventure</div>
-          <p className="home-hero-copy">{getHomeHeroQuestion(dogLabel, dogCount)}</p>
-          <div className="home-hero-place">{heroPlace.name}</div>
-          <p className="home-hero-why">{getHeroFitLine(heroPlace, profileDogs)}</p>
-          <p className="home-hero-meta">
+        <div className="home-hero-compact-body">
+          <div className="home-hero-compact-kicker">Today&apos;s Adventure</div>
+          <div className="home-hero-compact-title">{heroPlace.name}</div>
+          <p className="home-hero-compact-copy">{getHeroFitLine(heroPlace, profileDogs)}</p>
+          <p className="home-hero-compact-dogs">
             {getHomeDogActivityLine(dogLabel, dogCount, heroActivityLabel)}
           </p>
-          <button type="button" className="home-hero-cta tap-target" onClick={handleStartHeroAdventure}>
+          <button type="button" className="home-hero-compact-cta tap-target" onClick={handleStartHeroAdventure}>
             Start Adventure
           </button>
         </div>
       </section>
 
-      <section className="home-progress detail-card-warm" aria-label="Your progress">
+      <section className="home-progress home-progress--compact detail-card-warm" aria-label="Your progress">
         <div className="home-progress-stat">
           <div className="home-progress-value">{progress.streak}</div>
           <div className="home-progress-label">day streak</div>
@@ -169,11 +173,11 @@ export function HomeScreen({
         </div>
         <div className="home-progress-stat">
           <div className="home-progress-value">{progress.memoriesSaved}</div>
-          <div className="home-progress-label">memories saved</div>
+          <div className="home-progress-label">memories</div>
         </div>
       </section>
 
-      <section className="home-continue detail-card-warm" aria-label="Continue your journey">
+      <section className="home-continue home-continue--compact detail-card-warm" aria-label="Continue your journey">
         <h2 className="home-section-label">Continue your journey</h2>
 
         {currentChapter ? (
@@ -208,18 +212,21 @@ export function HomeScreen({
           </button>
         ) : null}
 
-        {activeAchievement ? (
+        {identityTarget ? (
           <button
             type="button"
             className="home-continue-row tap-target"
-            onClick={() => onOpenAchievement(activeAchievement.id)}
+            onClick={() => onOpenAchievement(identityTarget.id)}
           >
-            <span className="home-continue-icon" aria-hidden="true">{activeAchievement.emoji}</span>
+            <span className="home-continue-icon" aria-hidden="true">{identityTarget.emoji}</span>
             <span className="home-continue-copy">
-              <span className="home-continue-title">{activeAchievement.title}</span>
+              <span className="home-continue-title">
+                {identityTarget.progress.unlocked
+                  ? `${dogLabel.split(' + ')[0] ?? dogLabel} is a ${identityTarget.title}`
+                  : `Next: ${identityTarget.title}`}
+              </span>
               <span className="home-continue-sub">
-                {activeAchievement.progress.current}/{activeAchievement.progress.target} ·{' '}
-                {activeAchievement.subtitle}
+                {getIdentityProgressLabel(identityTarget)} · {identityTarget.personalityLine}
               </span>
             </span>
           </button>
@@ -243,7 +250,7 @@ export function HomeScreen({
         ) : null}
       </section>
 
-      <section className="home-upcoming" aria-label="Upcoming">
+      <section className="home-upcoming home-upcoming--compact" aria-label="Upcoming">
         <h2 className="home-section-label">Upcoming</h2>
         <div className="home-upcoming-list">
           {upcomingItems.map((item) => (
@@ -258,41 +265,38 @@ export function HomeScreen({
         </div>
       </section>
 
-      <section className="home-quick" aria-label="Quick start">
-        <div className="home-quick-label">Quick start</div>
-        <div className="home-quick-grid">
+      <section className="home-quick home-quick--compact" aria-label="Quick start">
+        <div className="home-section-label">Quick start</div>
+        <div className="home-action-strip">
           {QUICK_ACTIONS.map((action) => (
             <button
               key={action.id}
               type="button"
-              className="home-quick-btn tap-target"
+              className="home-action-chip tap-target"
               onClick={() => handleQuickAction(action)}
             >
-              <span className="home-quick-emoji" aria-hidden="true">
-                {action.emoji}
-              </span>
-              <span className="home-quick-label-text">{action.label}</span>
+              <span aria-hidden="true">{action.emoji}</span>
+              {action.label}
             </button>
           ))}
         </div>
       </section>
 
       {featuredChallenge ? (
-        <section className="home-challenge detail-card-warm" aria-label="Featured challenge">
+        <section className="home-challenge home-challenge-compact detail-card-warm" aria-label="Featured challenge">
           <CardImage
-            className="home-challenge-img"
+            className="home-challenge-compact-thumb"
             imageUrl={featuredChallenge.heroImageUrl}
             imageAlt={featuredChallenge.title}
             imageTone={featuredChallenge.accent === 'coastal' ? 'coastal' : 'warm'}
           />
-          <div className="home-challenge-body">
+          <div className="home-challenge-compact-body">
             <div className="home-challenge-kicker">Featured challenge</div>
             <div className="home-challenge-title">{featuredChallenge.title}</div>
             <div className="home-challenge-sub">{featuredChallenge.subtitle}</div>
             <div className="home-challenge-progress-row">
               <span>
-                {featuredChallenge.progress.completedNodes}/{featuredChallenge.progress.totalNodes}{' '}
-                complete
+                {featuredChallenge.progress.completedNodes}/{featuredChallenge.progress.totalNodes}
               </span>
               <span>{featuredChallenge.progress.percentComplete}%</span>
             </div>
@@ -314,9 +318,9 @@ export function HomeScreen({
       ) : null}
 
       {recentMemories.length > 0 ? (
-        <section className="home-memories" aria-label="Recent memories">
+        <section className="home-memories home-memories--compact" aria-label="Recent memories">
           <h2 className="home-section-label">Recent memories</h2>
-          <div className="home-memory-strip home-memory-strip--large">
+          <div className="home-memory-strip">
             {recentMemories.map((entry, index) => {
               const place = entry.placeId ? getPlaceById(entry.placeId) : undefined
               const imageUrl = getJourneyEntryDisplayImageUrl(state.journeyEntries, entry)
@@ -324,7 +328,7 @@ export function HomeScreen({
                 <button
                   key={entry.id}
                   type="button"
-                  className="home-memory-tile home-memory-tile--large tap-target"
+                  className="home-memory-tile tap-target"
                   onClick={() => onOpenMemory?.(entry.id)}
                 >
                   <CardImage
