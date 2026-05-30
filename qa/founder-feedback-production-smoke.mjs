@@ -65,11 +65,8 @@ const SCREENS = [
 
       const firstPin = page.locator('.plan-map-pin').first()
       if (await firstPin.count()) {
-        const placeId = await firstPin.evaluate((el) => {
-          const label = el.getAttribute('aria-label') ?? ''
-          return label
-        })
-        await firstPin.click()
+        const placeId = await firstPin.getAttribute('aria-label')
+        await firstPin.evaluate((el) => el.click())
         await page.waitForTimeout(400)
         const selectedCard = await page.locator('.pcard--map-selected').count()
         results.push({
