@@ -155,7 +155,7 @@ function DogCard({
       </div>
 
       <div className="profile-dog-identities">
-        <div className="profile-dog-identities-label">Dog identities</div>
+        <div className="profile-dog-identities-label">Earned Tags</div>
         {identities.length > 0 ? (
           <div className="profile-dog-identity-list">
             {identities.slice(0, 4).map((identity) => (
@@ -172,7 +172,7 @@ function DogCard({
           </div>
         ) : (
           <p className="profile-dog-identities-empty">
-            Adventures will shape {dog.name}&apos;s personality here.
+            Tags unlock as you adventure together.
           </p>
         )}
       </div>
@@ -299,7 +299,7 @@ export function ProfileScreen({
 
       {memoryCount > 0 ? (
         <p className="profile-summary-line">
-          {memoryCount} {memoryCount === 1 ? 'memory' : 'memories'} saved together
+          {memoryCount} {memoryCount === 1 ? 'memory' : 'memories'}
         </p>
       ) : null}
 
@@ -371,16 +371,6 @@ export function ProfileScreen({
             )
           })
         )}
-
-        {onSignOut ? (
-          <button
-            type="button"
-            className="profile-signout tap-target"
-            onClick={() => void onSignOut()}
-          >
-            Sign out
-          </button>
-        ) : null}
       </section>
 
       {removeTarget ? (

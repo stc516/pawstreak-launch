@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { Dog, JourneyEntry, PackAccessMember } from '../../data/demo'
 import { getPackDisplayName } from '../../lib/dogLabels'
 import { CardImage } from '../../components/CardImage'
+import { LIVE_PRODUCT } from '../../lib/liveProductFeatures'
 import { getJourneyMemoryDetail } from '../../data/journeyMemories'
 import { getPlaceById } from '../../data/places'
 import { buildMemoryShareText, shareContent } from '../../lib/shareContent'
@@ -133,7 +134,7 @@ export function JourneyMemoryView({
             ))}
           </div>
 
-          {familyMember ? (
+          {LIVE_PRODUCT.packAccess && familyMember ? (
             <div className="memory-pack-reaction detail-card-warm">
               {familyMember.name} loved this memory.
             </div>

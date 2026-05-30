@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import type { AppState } from '../../data/demo'
 import type { Achievement } from '../../data/achievements'
-import { getDisplayBondSubtitle, getDisplayDogLabel } from '../../lib/profileDisplay'
+import { getDisplayBondSubtitle } from '../../lib/profileDisplay'
 import { LIVE_PRODUCT } from '../../lib/liveProductFeatures'
 import { shouldShowBondLevel } from '../../lib/bondLevel'
 import { resolveAchievementsByCategory } from '../../lib/achievementEngine'
@@ -204,7 +204,7 @@ function TrainingProgramCard({
 
       <div className="ms-training-card-meta">
         <span>{program.subtitle}</span>
-        <span>Reward · {program.reward.title}</span>
+        <span>{program.progress.completed ? 'Complete' : `${program.progress.lessonsCompleted} of ${program.progress.lessonsTotal} lessons`}</span>
       </div>
 
       <div className="ms-training-card-bar">
@@ -219,7 +219,7 @@ function TrainingProgramCard({
         className="ms-training-card-cta tap-target"
         onClick={() => onOpenTrainingProgram(program.id)}
       >
-        {program.progress.completed ? 'Review program' : 'Open lessons'}
+        {program.progress.completed ? 'Review program' : 'Continue training'}
       </button>
     </article>
   )
@@ -274,9 +274,6 @@ export function MilestonesScreen({
     ? curatedChallenges
     : curatedChallenges.slice(0, CURATED_PREVIEW_COUNT)
 
-  const dogLabel = getDisplayDogLabel(state)
-  const primaryDogName = dogLabel.split(' + ')[0] ?? dogLabel
-
   return (
     <div className="ms-screen ms-screen--compact">
       <div className="aheader ms-screen-header">
@@ -325,12 +322,12 @@ export function MilestonesScreen({
       )}
 
       <div className="sec ms-achievement-sec">
-        <span>Dog identities</span>
+        <span>Earned Tags</span>
         <span className="ms-achievement-count">{unlockedCount} earned</span>
       </div>
 
       <p className="ms-achievement-lead">
-        Personality traits earned from real adventures — {primaryDogName} becomes a Trail Dog, not a badge unlocked.
+        Collectible tags from real adventures — wear them on profile, share them, and save them for merch someday.
       </p>
 
       {identityItems.length > 0 ? (
@@ -345,7 +342,7 @@ export function MilestonesScreen({
           ))}
         </div>
       ) : (
-        <p className="ms-section-empty">Adventures will shape your dog&apos;s identities here.</p>
+        <p className="ms-section-empty">Your first tags show up after a few adventures.</p>
       )}
 
       <ViewAllButton
@@ -356,14 +353,14 @@ export function MilestonesScreen({
       />
 
       <div className="sec ms-training-sec">
-        <span>Training Programs</span>
+        <span>Training</span>
         <span className="ms-training-sec-count">
           {trainingSummary.programsStarted} started · {trainingSummary.rewardsUnlocked} rewards
         </span>
       </div>
 
       <p className="ms-training-lead">
-        Build real habits lesson by lesson — complete a program and your dog earns its training badge.
+        Short lessons for smoother outings — practice a little, adventure a lot.
       </p>
 
       <div className="ms-training-list">

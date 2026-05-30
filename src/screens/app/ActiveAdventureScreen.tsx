@@ -8,6 +8,7 @@ import { getDisplayDogLabel, getDisplayDogsAreOutLabel, getProfileDogs } from '.
 import type { AdventureFinishPayload } from '../../lib/adventureFinish'
 import { readImageFileAsDataUrl } from '../../lib/imageUtils'
 import { getPlaceById, getPlanMagicMeta } from '../../data/places'
+import { getMiniQuestHint } from '../../lib/miniQuestHints'
 import { BottomNav } from '../../components/BottomNav'
 import { CardImage } from '../../components/CardImage'
 import { StatusBar } from '../../components/StatusBar'
@@ -40,6 +41,12 @@ export function ActiveAdventureScreen({
 
   const adventure = state.activeAdventure
   const place = getPlaceById(adventure?.placeId ?? '')
+  const isNeighborhood =
+    adventure?.placeId === 'neighborhood-walk' || !place || adventure?.location === 'Neighborhood walk'
+  const miniQuest = getMiniQuestHint({
+    placeId: adventure?.placeId,
+    isNeighborhood,
+  })
   const hasPhotos = state.adventurePhotos.some(Boolean)
   const isStarted = adventure?.started ?? false
   const elapsedSeconds =
@@ -139,9 +146,15 @@ export function ActiveAdventureScreen({
               {place ? (
                 <div className="adv-ready-context">{getPlanMagicMeta(place)}</div>
               ) : null}
-              {place ? (
-                <div className="adv-ready-note">{place.whyDogsLoveIt}</div>
-              ) : null}
+            </div>
+
+            <div className="adv-mini-quest detail-card-warm">
+              <div className="adv-mini-quest-kicker">Optional mini-quest</div>
+              <div className="adv-mini-quest-title">
+                <span aria-hidden="true">{miniQuest.emoji}</span> {miniQuest.title}
+              </div>
+              <p className="adv-mini-quest-task">{miniQuest.task}</p>
+              <p className="adv-mini-quest-note">Ignore it and just enjoy the walk.</p>
             </div>
 
             <div className="detail-quote-block">
@@ -199,11 +212,18 @@ export function ActiveAdventureScreen({
         </div>
 
         <main className="scroll scroll--active">
+          <div className="adv-mini-quest adv-mini-quest--active detail-card-warm">
+            <div className="adv-mini-quest-kicker">Optional mini-quest</div>
+            <div className="adv-mini-quest-title">
+              <span aria-hidden="true">{miniQuest.emoji}</span> {miniQuest.title}
+            </div>
+            <p className="adv-mini-quest-task">{miniQuest.task}</p>
+          </div>
+
           {place ? (
             <div className="adv-place-context detail-card-warm">
               <div className="adv-place-name">{place.name}</div>
               <div className="adv-place-meta">{getPlanMagicMeta(place)}</div>
-              <div className="adv-place-note">{place.whyDogsLoveIt}</div>
             </div>
           ) : null}
 

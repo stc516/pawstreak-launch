@@ -12615,3 +12615,186 @@ select.field-input {
   font-size: 18px;
   cursor: pointer;
 }
+
+/* Polish pass finish — product-only */
+
+.home-quick-primary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.home-quick-primary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 10px;
+  border-radius: 14px;
+  border: 1px solid rgba(249, 115, 22, 0.18);
+  background: rgba(255, 255, 255, 0.92);
+  font-size: 12px;
+  font-weight: 800;
+  color: #1c1410;
+  cursor: pointer;
+}
+
+.home-quick-primary-btn--accent {
+  border-color: rgba(249, 115, 22, 0.28);
+  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+  color: #9a3412;
+}
+
+.plan-curated-lead {
+  margin: -4px 0 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #7c5c48;
+}
+
+.plan-curated-strip {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  margin-bottom: 10px;
+  scrollbar-width: none;
+}
+
+.plan-curated-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.plan-curated-card {
+  flex: 0 0 156px;
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+.plan-curated-card-photo {
+  height: 72px;
+}
+
+.plan-curated-card-photo.card-img {
+  min-height: 72px;
+}
+
+.plan-curated-card-body {
+  padding: 8px 10px 10px;
+}
+
+.plan-curated-card-name {
+  font-size: 12px;
+  font-weight: 800;
+  color: #1c1410;
+  line-height: 1.25;
+}
+
+.plan-curated-card-meta {
+  margin-top: 2px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #7c5c48;
+  line-height: 1.35;
+}
+
+.plan-curated-card-go {
+  margin-top: 8px;
+  width: 100%;
+  padding: 7px 10px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.plan-curated-build {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 11px 14px;
+  border: 1px dashed rgba(249, 115, 22, 0.28);
+  border-radius: 12px;
+  background: rgba(255, 247, 237, 0.7);
+  color: #9a3412;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.adv-mini-quest {
+  margin: 12px 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+}
+
+.adv-mini-quest--active {
+  margin-top: 0;
+}
+
+.adv-mini-quest-kicker {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #92400e;
+}
+
+.adv-mini-quest-title {
+  margin-top: 4px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #1c1410;
+}
+
+.adv-mini-quest-task {
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #5c3d2e;
+}
+
+.adv-mini-quest-note {
+  margin: 6px 0 0;
+  font-size: 10px;
+  font-weight: 600;
+  color: #9a3412;
+}
+
+.profile-screen .profile-dog-card {
+  padding: 12px;
+  gap: 8px;
+}
+
+.profile-screen .profile-dog-avatar {
+  width: 52px;
+  height: 52px;
+  border-width: 2px;
+}
+
+.profile-screen .profile-dog-card-breed,
+.profile-screen .profile-dog-card-age {
+  margin-top: 2px;
+  font-size: 11px;
+}
+
+.profile-screen .profile-dog-identities {
+  margin-top: 8px;
+  padding-top: 8px;
+}
+
+.profile-screen .profile-summary-line {
+  margin: 0 0 8px;
+  font-size: 12px;
+}
+
+.profile-screen .profile-section {
+  gap: 10px;
+}
+
+.profile-screen .profile-dog-list {
+  gap: 10px;
+}

@@ -8,14 +8,12 @@ import { getPlanMagicMeta } from '../../data/places'
 import { PLAN_EVENTS } from '../../data/planEvents'
 import { getRecommendationPrefs } from '../../lib/onboardingProfile'
 import {
-  getPlanChallengeOpportunities,
   getPlanNearbyPlaces,
   PLAN_PROXIMITY_OPTIONS,
   type PlanProximityBucket,
 } from '../../lib/planDiscovery'
 import { getFeaturedTrainingProgram } from '../../lib/trainingEngine'
 import { getRoadTripDriveTime, openRoadTripDirections } from '../../lib/roadTrip'
-import { LIVE_PRODUCT } from '../../lib/liveProductFeatures'
 
 interface PlanScreenProps {
   state: AppState
@@ -35,17 +33,12 @@ interface PlanScreenProps {
 
 export function PlanScreen({
   state,
-  isDemoMode = false,
   onSelectCategory,
   onZipChange,
   onApplyLocation,
   onStartAdventure,
   onStartNeighborhoodWalk,
   onOpenCuratedPlanFlow,
-  onGenerateRandomPlan,
-  onOpenPresetPlan,
-  onOpenChallenge,
-  onJoinChallenge,
   onOpenTrainingProgram,
 }: PlanScreenProps) {
   const prefs = getRecommendationPrefs(state)
@@ -60,28 +53,10 @@ export function PlanScreen({
     () => places.filter((place) => place.lat != null && place.lng != null),
     [places],
   )
-  const challengeOpportunities = useMemo(() => getPlanChallengeOpportunities(state), [state])
+  const curatedPicks = useMemo(() => mapPlaces.slice(0, 4), [mapPlaces])
   const featuredTraining = useMemo(() => getFeaturedTrainingProgram(state), [state])
   const dogLabel = getDisplayDogLabel(state)
-
-  const handleMonthlyPlanClick = (planId: string) => {
-    if (planId === 'curated') {
-      onOpenCuratedPlanFlow()
-      return
-    }
-    if (planId === 'random') {
-      onGenerateRandomPlan()
-      return
-    }
-    if (planId === 'preset') {
-      onOpenPresetPlan()
-      return
-    }
-  }
-
-  const monthlyPlanOptions = state.monthlyPlanOptions.filter(
-    (option) => LIVE_PRODUCT.calendarPresetPlan || option.id !== 'preset',
-  )
+  const nextTrainingLesson = featuredTraining?.progress.lessons.find((lesson) => !lesson.completed)
 
   const handleSelectMapPlace = (placeId: string) => {
     setSelectedPlaceId(placeId)
@@ -124,6 +99,44 @@ export function PlanScreen({
       {!state.locationSupported ? (
         <div className="plan-area-fallback detail-card-warm">{state.mapRegion.subtitle}</div>
       ) : null}
+
+      <div className="sec plan-curated-sec">Curated Adventures</div>
+      <p className="plan-curated-lead">Hand-picked outings for {dogLabel} this week.</p>
+      <div className="plan-curated-strip">
+        {curatedPicks.map((place) => {
+          const imageUrl = getAdventureDisplayImageUrl(state.journeyEntries, place)
+          return (
+            <article key={place.id} className="plan-curated-card detail-card-warm">
+              <CardImage
+                className="plan-curated-card-photo"
+                imageUrl={imageUrl}
+                imageAlt={place.imageAlt ?? place.name}
+                imageTone={place.imageTone}
+              />
+              <div className="plan-curated-card-body">
+                <div className="plan-curated-card-name">{place.name}</div>
+                <div className="plan-curated-card-meta">{getPlanMagicMeta(place)}</div>
+                <button
+                  type="button"
+                  className="plan-curated-card-go tap-target"
+                  onClick={() => {
+                    if (place.id === 'neighborhood-walk') {
+                      onStartNeighborhoodWalk?.()
+                      return
+                    }
+                    onStartAdventure(place.id)
+                  }}
+                >
+                  Go
+                </button>
+              </div>
+            </article>
+          )
+        })}
+      </div>
+      <button type="button" className="plan-curated-build tap-target" onClick={onOpenCuratedPlanFlow}>
+        Build a curated plan
+      </button>
 
       <div className="sec">What&apos;s close right now</div>
       <div className="plan-proximity-strip">
@@ -216,43 +229,6 @@ export function PlanScreen({
         })}
       </div>
 
-      {challengeOpportunities.length > 0 ? (
-        <>
-          <div className="sec">Challenge opportunities</div>
-          <div className="plan-challenge-list">
-            {challengeOpportunities.map((challenge) => (
-              <article
-                key={challenge.id}
-                className={`plan-challenge-card plan-challenge-card--${challenge.accent} detail-card-warm`}
-              >
-                <div className="plan-challenge-copy">
-                  <div className="plan-challenge-title">
-                    <span aria-hidden="true">{challenge.emoji}</span> {challenge.title}
-                  </div>
-                  <div className="plan-challenge-sub">{challenge.subtitle}</div>
-                </div>
-                <div className="plan-challenge-actions">
-                  <button
-                    type="button"
-                    className="plan-challenge-join tap-target"
-                    onClick={() => onJoinChallenge?.(challenge.id)}
-                  >
-                    Join
-                  </button>
-                  <button
-                    type="button"
-                    className="plan-challenge-preview tap-target"
-                    onClick={() => onOpenChallenge?.(challenge.id)}
-                  >
-                    Preview
-                  </button>
-                </div>
-              </article>
-            ))}
-          </div>
-        </>
-      ) : null}
-
       {featuredTraining ? (
         <>
           <div className="sec">Training Opportunities</div>
@@ -265,8 +241,9 @@ export function PlanScreen({
             <span className="plan-training-copy">
               <span className="plan-training-title">{featuredTraining.title}</span>
               <span className="plan-training-sub">
-                {featuredTraining.progress.lessonsCompleted}/{featuredTraining.progress.lessonsTotal}{' '}
-                lessons · {featuredTraining.subtitle}
+                {nextTrainingLesson
+                  ? `Try · ${nextTrainingLesson.lesson.title}`
+                  : featuredTraining.subtitle}
               </span>
             </span>
           </button>
@@ -309,59 +286,6 @@ export function PlanScreen({
           </div>
         </>
       ) : null}
-
-      <div className="plan-box plan-box--compact">
-        <div className="plan-title">Monthly plan for {dogLabel}</div>
-        {monthlyPlanOptions.map((option) => (
-          <button
-            key={option.id}
-            type="button"
-            className={`popt tap-target${state.selectedMonthlyPlanId === option.id ? ' on' : ''}`}
-            onClick={() => handleMonthlyPlanClick(option.id)}
-          >
-            <i className={`ti ${option.icon}`} aria-hidden="true" />
-            <div>
-              <div>{option.title}</div>
-              <div className="popt-sub">{option.subtitle}</div>
-            </div>
-          </button>
-        ))}
-
-        {isDemoMode ? (
-          <p className="plan-calendar-note">
-            Internal reminders and planned adventures — no external calendar sync yet.
-          </p>
-        ) : null}
-
-        {state.curatedPlanResult && state.selectedMonthlyPlanId === 'curated' ? (
-          <div className="plan-saved curated-saved detail-card-warm">
-            <div className="plan-saved-title">{state.curatedPlanResult.title}</div>
-            <div className="plan-saved-goals">
-              Built around {state.curatedPlanResult.goalSummary}
-            </div>
-            <div className="plan-saved-copy">{state.curatedPlanResult.emotionalCopy}</div>
-            <div className="plan-saved-cadence">{state.curatedPlanResult.weeklyCadence}</div>
-            <div className="plan-saved-first">
-              First up: {state.curatedPlanResult.firstAdventure.name}
-            </div>
-          </div>
-        ) : null}
-
-        {state.randomPlanResult && state.selectedMonthlyPlanId === 'random' ? (
-          <div className="plan-saved plan-saved--random">
-            <div className="plan-saved-title">{state.randomPlanResult.title}</div>
-            <div className="plan-saved-copy">{state.randomPlanResult.emotionalCopy}</div>
-            <div className="plan-saved-cadence">{state.randomPlanResult.weeklyCadence}</div>
-            <div className="plan-saved-tags">
-              {state.randomPlanResult.adventureTypes.map((type) => (
-                <span key={type} className="rc on plan-saved-tag">
-                  {type}
-                </span>
-              ))}
-            </div>
-          </div>
-        ) : null}
-      </div>
     </>
   )
 }

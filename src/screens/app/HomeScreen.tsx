@@ -8,13 +8,11 @@ import {
 import { getDisplayDogLabel, getProfileDogs } from '../../lib/profileDisplay'
 import {
   getHeroFitLine,
-  getHomeDogActivityLine,
   getHomeHeadline,
   getMemoryWarmLabel,
 } from '../../lib/homeCopy'
 import { getFeaturedChallenge } from '../../lib/challengeEngine'
 import { getHomeProgressStats } from '../../lib/homeStats'
-import { getHomeUpcomingItems } from '../../lib/homeUpcoming'
 import { resolveDogProgression } from '../../lib/dogProgressionEngine'
 import { getFeaturedTrainingProgram } from '../../lib/trainingEngine'
 import { CardImage } from '../../components/CardImage'
@@ -40,22 +38,11 @@ interface HomeScreenProps {
   onGoToChallenges: () => void
 }
 
-const QUICK_ACTIONS = [
-  { id: 'neighborhood', label: 'Neighborhood Walk', emoji: '🏘️', kind: 'neighborhood' as const },
-  { id: 'beach', label: 'Beach', emoji: '🏖️', kind: 'activity' as const, activityId: 'beach' },
-  { id: 'trail', label: 'Trail', emoji: '🌲', kind: 'activity' as const, activityId: 'trail' },
-  { id: 'dog-park', label: 'Dog Park', emoji: '🐕', kind: 'activity' as const, activityId: 'dog-park' },
-  { id: 'coffee', label: 'Coffee Run', emoji: '☕', kind: 'activity' as const, activityId: 'coffee' },
-  { id: 'training', label: 'Training Session', emoji: '🎓', kind: 'training' as const },
+const SECONDARY_QUICK_ACTIONS = [
+  { id: 'beach', label: 'Beach', emoji: '🏖️', activityId: 'beach' },
+  { id: 'trail', label: 'Trail', emoji: '🌲', activityId: 'trail' },
+  { id: 'training', label: 'Training', emoji: '🎓', kind: 'training' as const },
 ] as const
-
-const HERO_ACTIVITY_LABELS: Record<string, string> = {
-  beach: 'Beach day',
-  'dog-park': 'Dog park',
-  trail: 'Trail',
-  coffee: 'Coffee run',
-  neighborhood: 'Neighborhood walk',
-}
 
 export function HomeScreen({
   state,
@@ -74,8 +61,6 @@ export function HomeScreen({
   const dogLabel = getDisplayDogLabel(state)
   const dogCount = profileDogs.length
   const heroActivityId = state.selectedActivityId || 'beach'
-  const heroActivityLabel =
-    HERO_ACTIVITY_LABELS[heroActivityId] ?? "Today's adventure"
   const heroPlace = getHeroPlace(heroActivityId, getRecommendationPrefs(state))
   const heroImageUrl = getAdventureDisplayImageUrl(state.journeyEntries, heroPlace)
   const progress = getHomeProgressStats(state)
@@ -85,17 +70,17 @@ export function HomeScreen({
   const activeAchievement = useMemo(() => getActiveAchievement(state), [state])
   const nextIdentity = useMemo(() => getNextIdentityAchievement(state), [state])
   const featuredTraining = useMemo(() => getFeaturedTrainingProgram(state), [state])
-  const upcomingItems = useMemo(() => getHomeUpcomingItems(state), [state])
   const recentMemories = state.journeyEntries.slice(0, 3)
   const identityTarget = nextIdentity ?? activeAchievement
+  const nextTrainingLesson = featuredTraining?.progress.lessons.find((lesson) => !lesson.completed)
 
   const handleStartHeroAdventure = () => {
     onSelectActivity(heroActivityId)
     onStartAdventure(heroPlace.id, 'Open end')
   }
 
-  const handleQuickAction = (action: (typeof QUICK_ACTIONS)[number]) => {
-    if (action.kind === 'training') {
+  const handleSecondaryQuickAction = (action: (typeof SECONDARY_QUICK_ACTIONS)[number]) => {
+    if ('kind' in action && action.kind === 'training') {
       if (featuredTraining) {
         onOpenTrainingProgram(featuredTraining.id)
       } else {
@@ -104,10 +89,7 @@ export function HomeScreen({
       return
     }
 
-    if (action.kind === 'neighborhood') {
-      onStartNeighborhoodWalk()
-      return
-    }
+    if (!('activityId' in action)) return
 
     onSelectActivity(action.activityId)
     const place = getHeroPlace(action.activityId, getRecommendationPrefs(state))
@@ -136,31 +118,11 @@ export function HomeScreen({
 
       {!state.locationSupported ? (
         <div className="home-area-fallback detail-card-warm">
-          We&apos;re still building your area. Here are suggested adventures for now.
+          We&apos;re still building your area. Suggested adventures are ready below.
         </div>
       ) : null}
 
       <p className="home-headline home-headline--compact">{getHomeHeadline(dogLabel, dogCount)}</p>
-
-      <section className="home-hero home-hero-compact detail-card-warm" aria-label="Today's adventure">
-        <CardImage
-          className="home-hero-compact-photo"
-          imageUrl={heroImageUrl}
-          imageAlt={heroPlace.imageAlt ?? heroPlace.name}
-          imageTone={heroPlace.imageTone ?? 'warm'}
-        />
-        <div className="home-hero-compact-body">
-          <div className="home-hero-compact-kicker">Today&apos;s Adventure</div>
-          <div className="home-hero-compact-title">{heroPlace.name}</div>
-          <p className="home-hero-compact-copy">{getHeroFitLine(heroPlace, profileDogs)}</p>
-          <p className="home-hero-compact-dogs">
-            {getHomeDogActivityLine(dogLabel, dogCount, heroActivityLabel)}
-          </p>
-          <button type="button" className="home-hero-compact-cta tap-target" onClick={handleStartHeroAdventure}>
-            Start Adventure
-          </button>
-        </div>
-      </section>
 
       <section className="home-progress home-progress--compact detail-card-warm" aria-label="Your progress">
         <div className="home-progress-stat">
@@ -177,103 +139,33 @@ export function HomeScreen({
         </div>
       </section>
 
-      <section className="home-continue home-continue--compact detail-card-warm" aria-label="Continue your journey">
-        <h2 className="home-section-label">Continue your journey</h2>
-
-        {currentChapter ? (
-          <button type="button" className="home-continue-row tap-target" onClick={onGoToPlan}>
-            <span className="home-continue-icon" aria-hidden="true">
-              {currentChapter.emoji}
-            </span>
-            <span className="home-continue-copy">
-              <span className="home-continue-title">{currentChapter.title}</span>
-              <span className="home-continue-sub">
-                {storyProgress.summary.chaptersCompleted}/{storyProgress.summary.chaptersTotal}{' '}
-                chapters · {storyProgress.summary.rank}
-              </span>
-            </span>
-          </button>
-        ) : null}
-
-        {featuredChallenge?.progress.joined ? (
-          <button
-            type="button"
-            className="home-continue-row tap-target"
-            onClick={() => onOpenChallenge(featuredChallenge.id)}
-          >
-            <span className="home-continue-icon" aria-hidden="true">🎯</span>
-            <span className="home-continue-copy">
-              <span className="home-continue-title">{featuredChallenge.title}</span>
-              <span className="home-continue-sub">
-                {featuredChallenge.progress.completedNodes}/{featuredChallenge.progress.totalNodes}{' '}
-                stops · {featuredChallenge.progress.percentComplete}% complete
-              </span>
-            </span>
-          </button>
-        ) : null}
-
-        {identityTarget ? (
-          <button
-            type="button"
-            className="home-continue-row tap-target"
-            onClick={() => onOpenAchievement(identityTarget.id)}
-          >
-            <span className="home-continue-icon" aria-hidden="true">{identityTarget.emoji}</span>
-            <span className="home-continue-copy">
-              <span className="home-continue-title">
-                {identityTarget.progress.unlocked
-                  ? `${dogLabel.split(' + ')[0] ?? dogLabel} is a ${identityTarget.title}`
-                  : `Next: ${identityTarget.title}`}
-              </span>
-              <span className="home-continue-sub">
-                {getIdentityProgressLabel(identityTarget)} · {identityTarget.personalityLine}
-              </span>
-            </span>
-          </button>
-        ) : null}
-
-        {featuredTraining ? (
-          <button
-            type="button"
-            className="home-continue-row tap-target"
-            onClick={() => onOpenTrainingProgram(featuredTraining.id)}
-          >
-            <span className="home-continue-icon" aria-hidden="true">{featuredTraining.emoji}</span>
-            <span className="home-continue-copy">
-              <span className="home-continue-title">{featuredTraining.title}</span>
-              <span className="home-continue-sub">
-                {featuredTraining.progress.lessonsCompleted}/{featuredTraining.progress.lessonsTotal}{' '}
-                lessons · {featuredTraining.progress.percentComplete}% complete
-              </span>
-            </span>
-          </button>
-        ) : null}
-      </section>
-
-      <section className="home-upcoming home-upcoming--compact" aria-label="Upcoming">
-        <h2 className="home-section-label">Upcoming</h2>
-        <div className="home-upcoming-list">
-          {upcomingItems.map((item) => (
-            <div key={item.id} className="home-upcoming-row detail-card-warm">
-              <span className="home-upcoming-icon" aria-hidden="true">{item.emoji}</span>
-              <span className="home-upcoming-copy">
-                <span className="home-upcoming-label">{item.label}</span>
-                <span className="home-upcoming-detail">{item.detail}</span>
-              </span>
-            </div>
-          ))}
-        </div>
-      </section>
-
       <section className="home-quick home-quick--compact" aria-label="Quick start">
         <div className="home-section-label">Quick start</div>
+        <div className="home-quick-primary">
+          <button
+            type="button"
+            className="home-quick-primary-btn tap-target"
+            onClick={onStartNeighborhoodWalk}
+          >
+            <span aria-hidden="true">🏘️</span>
+            Quick Walk
+          </button>
+          <button
+            type="button"
+            className="home-quick-primary-btn home-quick-primary-btn--accent tap-target"
+            onClick={handleStartHeroAdventure}
+          >
+            <span aria-hidden="true">✨</span>
+            Quick Adventure
+          </button>
+        </div>
         <div className="home-action-strip">
-          {QUICK_ACTIONS.map((action) => (
+          {SECONDARY_QUICK_ACTIONS.map((action) => (
             <button
               key={action.id}
               type="button"
               className="home-action-chip tap-target"
-              onClick={() => handleQuickAction(action)}
+              onClick={() => handleSecondaryQuickAction(action)}
             >
               <span aria-hidden="true">{action.emoji}</span>
               {action.label}
@@ -282,9 +174,26 @@ export function HomeScreen({
         </div>
       </section>
 
+      <section className="home-hero home-hero-compact detail-card-warm" aria-label="Today's adventure">
+        <CardImage
+          className="home-hero-compact-photo"
+          imageUrl={heroImageUrl}
+          imageAlt={heroPlace.imageAlt ?? heroPlace.name}
+          imageTone={heroPlace.imageTone ?? 'warm'}
+        />
+        <div className="home-hero-compact-body">
+          <div className="home-hero-compact-kicker">Today&apos;s pick</div>
+          <div className="home-hero-compact-title">{heroPlace.name}</div>
+          <p className="home-hero-compact-copy">{getHeroFitLine(heroPlace, profileDogs)}</p>
+          <button type="button" className="home-hero-compact-cta tap-target" onClick={handleStartHeroAdventure}>
+            Start adventure
+          </button>
+        </div>
+      </section>
+
       {featuredTraining ? (
-        <section className="home-training home-training--compact" aria-label="Training Programs">
-          <h2 className="home-section-label">Training Programs</h2>
+        <section className="home-training home-training--compact" aria-label="Training">
+          <h2 className="home-section-label">Training</h2>
           <button
             type="button"
             className="home-training-row detail-card-warm tap-target"
@@ -294,46 +203,66 @@ export function HomeScreen({
             <span className="home-training-copy">
               <span className="home-training-title">{featuredTraining.title}</span>
               <span className="home-training-sub">
-                {featuredTraining.progress.lessonsCompleted}/{featuredTraining.progress.lessonsTotal}{' '}
-                lessons · {featuredTraining.progress.percentComplete}% complete
+                {nextTrainingLesson
+                  ? `Next up · ${nextTrainingLesson.lesson.title}`
+                  : `${featuredTraining.progress.lessonsCompleted}/${featuredTraining.progress.lessonsTotal} lessons done`}
               </span>
             </span>
           </button>
         </section>
       ) : null}
 
-      {featuredChallenge ? (
-        <section className="home-challenge home-challenge-compact detail-card-warm" aria-label="Featured challenge">
-          <CardImage
-            className="home-challenge-compact-thumb"
-            imageUrl={featuredChallenge.heroImageUrl}
-            imageAlt={featuredChallenge.title}
-            imageTone={featuredChallenge.accent === 'coastal' ? 'coastal' : 'warm'}
-          />
-          <div className="home-challenge-compact-body">
-            <div className="home-challenge-kicker">Featured challenge</div>
-            <div className="home-challenge-title">{featuredChallenge.title}</div>
-            <div className="home-challenge-sub">{featuredChallenge.subtitle}</div>
-            <div className="home-challenge-progress-row">
-              <span>
-                {featuredChallenge.progress.completedNodes}/{featuredChallenge.progress.totalNodes}
+      {(currentChapter || identityTarget || featuredChallenge?.progress.joined) ? (
+        <section className="home-continue home-continue--compact detail-card-warm" aria-label="Continue">
+          <h2 className="home-section-label">Continue</h2>
+
+          {currentChapter ? (
+            <button type="button" className="home-continue-row tap-target" onClick={onGoToPlan}>
+              <span className="home-continue-icon" aria-hidden="true">
+                {currentChapter.emoji}
               </span>
-              <span>{featuredChallenge.progress.percentComplete}%</span>
-            </div>
-            <div className="home-challenge-bar">
-              <div
-                className="home-challenge-bar-fill"
-                style={{ width: featuredChallenge.progress.fillWidth }}
-              />
-            </div>
+              <span className="home-continue-copy">
+                <span className="home-continue-title">{currentChapter.title}</span>
+                <span className="home-continue-sub">
+                  Chapter {storyProgress.summary.chaptersCompleted + 1} · {storyProgress.summary.rank}
+                </span>
+              </span>
+            </button>
+          ) : null}
+
+          {featuredChallenge?.progress.joined ? (
             <button
               type="button"
-              className="home-challenge-cta tap-target"
+              className="home-continue-row tap-target"
               onClick={() => onOpenChallenge(featuredChallenge.id)}
             >
-              {featuredChallenge.progress.joined ? 'View path' : 'Join challenge'}
+              <span className="home-continue-icon" aria-hidden="true">🎯</span>
+              <span className="home-continue-copy">
+                <span className="home-continue-title">{featuredChallenge.title}</span>
+                <span className="home-continue-sub">
+                  {featuredChallenge.progress.completedNodes}/{featuredChallenge.progress.totalNodes} stops
+                </span>
+              </span>
             </button>
-          </div>
+          ) : null}
+
+          {identityTarget ? (
+            <button
+              type="button"
+              className="home-continue-row tap-target"
+              onClick={() => onOpenAchievement(identityTarget.id)}
+            >
+              <span className="home-continue-icon" aria-hidden="true">{identityTarget.emoji}</span>
+              <span className="home-continue-copy">
+                <span className="home-continue-title">
+                  {identityTarget.progress.unlocked
+                    ? `Earned · ${identityTarget.title}`
+                    : `Next tag · ${identityTarget.title}`}
+                </span>
+                <span className="home-continue-sub">{getIdentityProgressLabel(identityTarget)}</span>
+              </span>
+            </button>
+          ) : null}
         </section>
       ) : null}
 
