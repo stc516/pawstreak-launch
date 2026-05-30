@@ -4,8 +4,8 @@ import { getFeaturedChallenge } from './challengeEngine'
 export function getHomeProgressStats(state: AppState) {
   return {
     streak: state.streak,
-    adventures: state.adventureCount,
-    memories: state.journeyEntries.length,
+    adventuresCompleted: state.adventureCount,
+    memoriesSaved: state.journeyEntries.length,
     places: state.placeCount,
   }
 }

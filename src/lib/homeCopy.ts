@@ -43,6 +43,16 @@ export function getHomeHeadline(dogLabel: string, dogCount: number): string {
   return `What kind of day are we giving ${target}?`
 }
 
+export function getHomeHeroQuestion(dogLabel: string, dogCount: number): string {
+  if (dogCount >= 2 && dogLabel !== 'your pack' && dogLabel !== 'your dog') {
+    return `What adventure are ${dogLabel} going on today?`
+  }
+  if (dogCount === 1 && dogLabel !== 'your dog') {
+    return `What adventure is ${dogLabel} going on today?`
+  }
+  return 'What adventure are you going on today?'
+}
+
 export function getHomeIntroSub(locationLabel = 'Your area'): string {
   if (locationLabel && locationLabel !== 'Your area') {
     return `${locationLabel} is out there. Pick today's adventure.`

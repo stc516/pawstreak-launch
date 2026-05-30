@@ -13,7 +13,7 @@ const TAB_META: Record<TabId, { label: string; icon: string }> = {
   plan: { label: 'Plan', icon: 'ti-compass' },
   journey: { label: 'Journey', icon: 'ti-map-2' },
   community: { label: 'Community', icon: 'ti-users' },
-  milestones: { label: 'Milestones', icon: 'ti-trophy' },
+  milestones: { label: 'Challenges', icon: 'ti-trophy' },
   profile: { label: 'Profile', icon: 'ti-trophy' },
 }
 

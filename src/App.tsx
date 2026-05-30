@@ -1200,13 +1200,18 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onStartNeighborhoodWalk={startNeighborhoodWalk}
             onOpenProfile={() => setActiveTab('profile')}
             onOpenChallenge={openChallengeDetail}
+            onOpenAchievement={openAchievementDetail}
+            onOpenTrainingProgram={openTrainingProgram}
             onOpenMemory={openJourneyMemory}
+            onGoToPlan={() => setActiveTab('plan')}
+            onGoToChallenges={() => setActiveTab('milestones')}
           />
         )
       case 'plan':
         return (
           <PlanScreen
             state={state}
+            isDemoMode={isDemoMode}
             onSelectCategory={setSelectedPlanCategory}
             onZipChange={setZipCode}
             onApplyLocation={applyLocationFromZip}

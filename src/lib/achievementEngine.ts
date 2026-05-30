@@ -291,3 +291,7 @@ export function getUnlockedAchievements(state: AppState): Achievement[] {
     (achievement) => achievement.progress.unlocked,
   )
 }
+
+export function getActiveAchievement(state: AppState): Achievement | undefined {
+  return resolveAchievements(state).find((achievement) => achievement.status === 'active')
+}

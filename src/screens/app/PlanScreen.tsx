@@ -1,17 +1,23 @@
-import { useState } from 'react'
 import type { AppState } from '../../data/demo'
 import { getDisplayDogLabel } from '../../lib/profileDisplay'
 import { CardImage } from '../../components/CardImage'
 import { getAdventureDisplayImageUrl } from '../../lib/adventureDisplayImage'
 import {
-  getHeroPlace,
-  NEIGHBORHOOD_WALK_PLACE,
+  getPlacesForPlanCategory,
+  getPlanMagicMeta,
 } from '../../data/places'
+import { PLAN_EVENTS } from '../../data/planEvents'
 import { getRecommendationPrefs } from '../../lib/onboardingProfile'
+import {
+  getRoadTripDriveTime,
+  getRoadTripWhyToday,
+  openRoadTripDirections,
+} from '../../lib/roadTrip'
 import { LIVE_PRODUCT } from '../../lib/liveProductFeatures'
 
 interface PlanScreenProps {
   state: AppState
+  isDemoMode?: boolean
   onSelectCategory: (categoryId: string) => void
   onZipChange: (zipCode: string) => void
   onApplyLocation: () => void
@@ -22,50 +28,10 @@ interface PlanScreenProps {
   onOpenPresetPlan: () => void
 }
 
-const ADVENTURE_PICKS = [
-  {
-    id: 'neighborhood',
-    title: 'Neighborhood Walk',
-    subtitle: 'Close by · easy win',
-    emoji: '🏘️',
-    kind: 'neighborhood' as const,
-  },
-  {
-    id: 'beach',
-    title: 'Beach',
-    subtitle: 'Room to run',
-    emoji: '🏖️',
-    kind: 'activity' as const,
-    activityId: 'beach',
-  },
-  {
-    id: 'trail',
-    title: 'Trail',
-    subtitle: 'Fresh air + new smells',
-    emoji: '🌲',
-    kind: 'activity' as const,
-    activityId: 'trail',
-  },
-  {
-    id: 'dog-park',
-    title: 'Dog Park',
-    subtitle: 'Meet the pack',
-    emoji: '🐕',
-    kind: 'activity' as const,
-    activityId: 'dog-park',
-  },
-  {
-    id: 'coffee',
-    title: 'Coffee Run',
-    subtitle: 'Patio-friendly stop',
-    emoji: '☕',
-    kind: 'activity' as const,
-    activityId: 'coffee',
-  },
-] as const
-
 export function PlanScreen({
   state,
+  isDemoMode = false,
+  onSelectCategory,
   onZipChange,
   onApplyLocation,
   onStartAdventure,
@@ -74,22 +40,25 @@ export function PlanScreen({
   onGenerateRandomPlan,
   onOpenPresetPlan,
 }: PlanScreenProps) {
-  const [showMore, setShowMore] = useState(false)
+  const places = getPlacesForPlanCategory(
+    state.selectedPlanCategoryId,
+    getRecommendationPrefs(state),
+  )
   const dogLabel = getDisplayDogLabel(state)
-  const prefs = getRecommendationPrefs(state)
 
-  const handlePick = (pick: (typeof ADVENTURE_PICKS)[number]) => {
-    if (pick.kind === 'neighborhood') {
-      if (onStartNeighborhoodWalk) {
-        onStartNeighborhoodWalk()
-        return
-      }
-      onStartAdventure(NEIGHBORHOOD_WALK_PLACE.id)
+  const handleMonthlyPlanClick = (planId: string) => {
+    if (planId === 'curated') {
+      onOpenCuratedPlanFlow()
       return
     }
-
-    const place = getHeroPlace(pick.activityId, prefs)
-    onStartAdventure(place.id)
+    if (planId === 'random') {
+      onGenerateRandomPlan()
+      return
+    }
+    if (planId === 'preset') {
+      onOpenPresetPlan()
+      return
+    }
   }
 
   const monthlyPlanOptions = state.monthlyPlanOptions.filter(
@@ -99,100 +68,214 @@ export function PlanScreen({
   return (
     <>
       <div className="aheader">
-        <div>
-          <div className="alogo">Choose an adventure</div>
-          <p className="plan-screen-sub">Pick one for {dogLabel}</p>
+        <div className="alogo">Plan an adventure</div>
+        <p className="plan-screen-sub">Discover what&apos;s worth doing with {dogLabel}</p>
+      </div>
+
+      <div className="mapbox">
+        <i className="ti ti-map-pin" aria-hidden="true" />
+        <div className="mapbox-title">{state.mapRegion.title}</div>
+        <div className="mapbox-sub">{state.mapRegion.subtitle}</div>
+        <div className="mapbox-zip">
+          <input
+            className="zip-input"
+            type="text"
+            inputMode="numeric"
+            placeholder="Enter your zip code"
+            value={state.zipCode}
+            onChange={(event) => onZipChange(event.target.value)}
+          />
+          <button type="button" className="zip-btn tap-target" onClick={onApplyLocation}>
+            Find spots
+          </button>
         </div>
       </div>
 
-      <div className="plan-pick-grid">
-        {ADVENTURE_PICKS.map((pick) => {
-          const place =
-            pick.kind === 'neighborhood'
-              ? NEIGHBORHOOD_WALK_PLACE
-              : getHeroPlace(pick.activityId, prefs)
-          const imageUrl = getAdventureDisplayImageUrl(state.journeyEntries, place)
-
-          return (
-            <button
-              key={pick.id}
-              type="button"
-              className="plan-pick-card tap-target"
-              onClick={() => handlePick(pick)}
-            >
-              <CardImage
-                className="plan-pick-photo"
-                imageUrl={imageUrl}
-                imageAlt={place.imageAlt ?? place.name}
-                imageTone={place.imageTone ?? 'warm'}
-              />
-              <div className="plan-pick-body">
-                <span className="plan-pick-emoji" aria-hidden="true">
-                  {pick.emoji}
-                </span>
-                <div>
-                  <div className="plan-pick-title">{pick.title}</div>
-                  <div className="plan-pick-sub">{pick.subtitle}</div>
-                </div>
-              </div>
-            </button>
-          )
-        })}
+      <div className="coming-soon">
+        <div>
+          <div className="cs-left">Not in SD or OC?</div>
+          <div className="cs-req">Request your area →</div>
+        </div>
+        <div className="cs-badge">Coming soon</div>
       </div>
 
-      <button
-        type="button"
-        className="plan-more-toggle tap-target"
-        onClick={() => setShowMore((open) => !open)}
-        aria-expanded={showMore}
-      >
-        {showMore ? 'Hide planner tools' : 'More ways to plan'}
-      </button>
+      {!state.locationSupported ? (
+        <div className="plan-area-fallback detail-card-warm">{state.mapRegion.subtitle}</div>
+      ) : null}
 
-      {showMore ? (
-        <div className="plan-more-panel">
-          <div className="mapbox mapbox--compact">
-            <i className="ti ti-map-pin" aria-hidden="true" />
-            <div className="mapbox-title">{state.mapRegion.title}</div>
-            <div className="mapbox-sub">{state.mapRegion.subtitle}</div>
-            <div className="mapbox-zip">
-              <input
-                className="zip-input"
-                type="text"
-                inputMode="numeric"
-                placeholder="Enter your zip code"
-                value={state.zipCode}
-                onChange={(event) => onZipChange(event.target.value)}
-              />
-              <button type="button" className="zip-btn tap-target" onClick={onApplyLocation}>
-                Find spots
-              </button>
-            </div>
-          </div>
+      <div className="sec">Nearby adventures</div>
 
-          <div className="plan-box plan-box--compact">
-            <div className="plan-title">Monthly planning</div>
-            {monthlyPlanOptions.map((option) => (
-              <button
-                key={option.id}
-                type="button"
-                className={`popt tap-target${state.selectedMonthlyPlanId === option.id ? ' on' : ''}`}
-                onClick={() => {
-                  if (option.id === 'curated') onOpenCuratedPlanFlow()
-                  else if (option.id === 'random') onGenerateRandomPlan()
-                  else if (option.id === 'preset') onOpenPresetPlan()
-                }}
-              >
-                <i className={`ti ${option.icon}`} aria-hidden="true" />
-                <div>
-                  <div>{option.title}</div>
-                  <div className="popt-sub">{option.subtitle}</div>
+      <div className="chips chips--plan">
+        {state.planCategories.map((category) => (
+          <button
+            key={category.id}
+            type="button"
+            className={`chip tap-target${state.selectedPlanCategoryId === category.id ? ' on' : ''}`}
+            onClick={() => onSelectCategory(category.id)}
+          >
+            <span className="clbl">{category.label}</span>
+          </button>
+        ))}
+      </div>
+
+      {places.map((place) => {
+        const isRoadTrip = place.category === 'Road trip'
+        const driveTime = isRoadTrip
+          ? getRoadTripDriveTime(place, state.locationSupported)
+          : null
+        const cardImageUrl = getAdventureDisplayImageUrl(state.journeyEntries, place)
+
+        return (
+          <div key={place.id} className={`pcard${isRoadTrip ? ' pcard--road-trip' : ''}`}>
+            <CardImage
+              className="pcard-thumb"
+              imageUrl={cardImageUrl}
+              imageAlt={place.imageAlt ?? place.name}
+              imageTone={place.imageTone}
+            />
+            <div className="pinfo">
+              <div className="pname">{place.name}</div>
+              {isRoadTrip ? (
+                <div className="road-trip-details">
+                  <div className="road-trip-row">
+                    <span className="road-trip-key">Destination</span>
+                    <span>
+                      {place.city}
+                      {place.addressLabel ? ` · ${place.addressLabel}` : ''}
+                    </span>
+                  </div>
+                  {driveTime ? (
+                    <div className="road-trip-row">
+                      <span className="road-trip-key">Drive time</span>
+                      <span>{driveTime}</span>
+                    </div>
+                  ) : null}
+                  <div className="road-trip-row">
+                    <span className="road-trip-key">Distance</span>
+                    <span>{place.distanceLabel}</span>
+                  </div>
+                  <div className="road-trip-row">
+                    <span className="road-trip-key">Why today</span>
+                    <span>{getRoadTripWhyToday(place)}</span>
+                  </div>
+                  <button
+                    type="button"
+                    className="road-trip-directions tap-target"
+                    onClick={() => openRoadTripDirections(place)}
+                  >
+                    Open directions
+                  </button>
                 </div>
+              ) : (
+                <div className="pmeta">{getPlanMagicMeta(place)}</div>
+              )}
+            </div>
+            <button
+              type="button"
+              className="pgo tap-target"
+              onClick={() => {
+                if (place.id === 'neighborhood-walk') {
+                  onStartNeighborhoodWalk?.()
+                  return
+                }
+                onStartAdventure(place.id)
+              }}
+            >
+              Go
+            </button>
+          </div>
+        )
+      })}
+
+      <div className="sec">Events</div>
+      <div className="plan-events-list">
+        {PLAN_EVENTS.map((event) => (
+          <article key={event.id} className="plan-event-card detail-card-warm">
+            <span className="plan-event-emoji" aria-hidden="true">{event.emoji}</span>
+            <div className="plan-event-copy">
+              <div className="plan-event-title">{event.title}</div>
+              <div className="plan-event-meta">
+                {event.schedule} · {event.location}
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      {state.favoritePlaces.length > 0 ? (
+        <>
+          <div className="sec">Saved places</div>
+          <div className="plan-saved-list">
+            {state.favoritePlaces.map((favorite) => (
+              <button
+                key={favorite.id}
+                type="button"
+                className="plan-saved-row tap-target detail-card-warm"
+                onClick={() => onStartAdventure(favorite.placeId)}
+              >
+                <span className="plan-saved-emoji" aria-hidden="true">{favorite.emoji}</span>
+                <span className="plan-saved-copy">
+                  <span className="plan-saved-name">{favorite.name}</span>
+                  <span className="plan-saved-meta">{favorite.visits}</span>
+                </span>
               </button>
             ))}
           </div>
-        </div>
+        </>
       ) : null}
+
+      <div className="plan-box">
+        <div className="plan-title">Set up a monthly plan for {dogLabel}</div>
+        {monthlyPlanOptions.map((option) => (
+          <button
+            key={option.id}
+            type="button"
+            className={`popt tap-target${state.selectedMonthlyPlanId === option.id ? ' on' : ''}`}
+            onClick={() => handleMonthlyPlanClick(option.id)}
+          >
+            <i className={`ti ${option.icon}`} aria-hidden="true" />
+            <div>
+              <div>{option.title}</div>
+              <div className="popt-sub">{option.subtitle}</div>
+            </div>
+          </button>
+        ))}
+
+        {isDemoMode ? (
+          <p className="plan-calendar-note">
+            Calendar sync is mocked for now. Real reminders come later.
+          </p>
+        ) : null}
+
+        {state.curatedPlanResult && state.selectedMonthlyPlanId === 'curated' ? (
+          <div className="plan-saved curated-saved detail-card-warm">
+            <div className="plan-saved-title">{state.curatedPlanResult.title}</div>
+            <div className="plan-saved-goals">
+              Built around {state.curatedPlanResult.goalSummary}
+            </div>
+            <div className="plan-saved-copy">{state.curatedPlanResult.emotionalCopy}</div>
+            <div className="plan-saved-cadence">{state.curatedPlanResult.weeklyCadence}</div>
+            <div className="plan-saved-first">
+              First up: {state.curatedPlanResult.firstAdventure.name}
+            </div>
+          </div>
+        ) : null}
+
+        {state.randomPlanResult && state.selectedMonthlyPlanId === 'random' ? (
+          <div className="plan-saved plan-saved--random">
+            <div className="plan-saved-title">{state.randomPlanResult.title}</div>
+            <div className="plan-saved-copy">{state.randomPlanResult.emotionalCopy}</div>
+            <div className="plan-saved-cadence">{state.randomPlanResult.weeklyCadence}</div>
+            <div className="plan-saved-tags">
+              {state.randomPlanResult.adventureTypes.map((type) => (
+                <span key={type} className="rc on plan-saved-tag">
+                  {type}
+                </span>
+              ))}
+            </div>
+          </div>
+        ) : null}
+      </div>
     </>
   )
 }

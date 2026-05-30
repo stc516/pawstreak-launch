@@ -4,7 +4,7 @@ import type { AppMode, TabId } from '../data/demo'
 export const LIVE_PRODUCT = {
   communityTab: false,
   packAccess: false,
-  calendarPresetPlan: false,
+  calendarPresetPlan: true,
   bondProgressBar: false,
   statusBarChrome: false,
 } as const

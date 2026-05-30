@@ -206,6 +206,18 @@ export function resetTrainingLessonState(state: AppState, lessonId: string): App
   }
 }
 
+export function getFeaturedTrainingProgram(
+  state: AppState,
+): ResolvedTrainingProgram | undefined {
+  const programs = resolveAllTrainingPrograms(state)
+  const inProgress = programs.find(
+    (program) =>
+      program.progress.lessonsCompleted > 0 && !program.progress.completed,
+  )
+  if (inProgress) return inProgress
+  return programs.find((program) => !program.progress.completed)
+}
+
 export function getTrainingSummary(state: AppState): {
   programsStarted: number
   programsCompleted: number

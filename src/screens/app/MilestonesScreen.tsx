@@ -58,7 +58,7 @@ export function MilestonesScreen({
   return (
     <>
       <div className="aheader">
-        <div className="alogo">Milestones</div>
+        <div className="alogo">Challenges</div>
       </div>
 
       {shouldShowBondLevel(state) ? (
