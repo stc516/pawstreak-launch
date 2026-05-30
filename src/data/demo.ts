@@ -550,7 +550,12 @@ export const defaultAppState: AppState = {
       },
     ],
   },
-  joinedChallenges: [],
+  joinedChallenges: [
+    {
+      challengeId: 'summer-beach-challenge',
+      joinedAt: '2026-05-10T15:00:00.000Z',
+    },
+  ],
   trainingLessonCompletions: [],
   trainingRewardUnlocks: [],
   achievements: [],
