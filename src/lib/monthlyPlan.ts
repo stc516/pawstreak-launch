@@ -1,7 +1,7 @@
 export const MONTHLY_PLAN_CONFIRMATIONS: Record<string, string> = {
-  curated: 'Curated plan saved — built around what they love most.',
-  random: 'Random plan saved — surprise adventures ahead.',
-  preset: 'Preset plan saved — ready to sync to calendar.',
+  curated: 'Saved to your PawStreak plan.',
+  random: 'Saved for later adventures.',
+  preset: 'Saved to your PawStreak plan.',
 }
 
 export function getMonthlyPlanConfirmation(planId: string | null): string | null {

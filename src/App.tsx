@@ -1070,6 +1070,13 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         onNext={advanceCuratedPlanFlow}
         onFinish={finishCuratedPlanFlow}
         onStartWeek={startWeekFromCuratedPlan}
+        onStartAdventure={(placeId) => {
+          if (placeId === 'neighborhood-walk') {
+            startNeighborhoodWalk()
+            return
+          }
+          startAdventure(placeId)
+        }}
       />
     )
   }
@@ -1200,7 +1207,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onStartNeighborhoodWalk={startNeighborhoodWalk}
             onOpenProfile={() => setActiveTab('profile')}
             onOpenChallenge={openChallengeDetail}
-            onOpenAchievement={openAchievementDetail}
+            onJoinChallenge={joinChallenge}
             onOpenTrainingProgram={openTrainingProgram}
             onOpenMemory={openJourneyMemory}
             onGoToPlan={() => setActiveTab('plan')}

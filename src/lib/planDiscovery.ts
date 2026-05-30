@@ -35,6 +35,15 @@ function sortByDistance(places: Place[]): Place[] {
   })
 }
 
+export function getPlanMapPlaces(
+  proximityBucket: PlanProximityBucket,
+  prefs?: RecommendationPrefs,
+): Place[] {
+  return getPlacesForProximityBucket(proximityBucket, prefs).filter(
+    (place) => place.lat != null && place.lng != null,
+  )
+}
+
 export function getMapPreviewPlaces(_prefs?: RecommendationPrefs): Place[] {
   const featured = sortByDistance(
     PLACES.filter((place) => place.featured || place.popularNow),

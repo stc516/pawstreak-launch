@@ -7,8 +7,6 @@ export const PLAN_MAP_BOUNDS = {
   east: -116.25,
 }
 
-const PIN_MIN_DISTANCE = 12
-
 function clampPinPosition(value: number): number {
   return Math.min(88, Math.max(12, value))
 }
@@ -33,50 +31,13 @@ export interface PlanMapPinLayout {
   left: string
 }
 
-function parsePercent(value: string): number {
-  return Number.parseFloat(value)
-}
-
+/** One pin per place at its real lat/lng — no decorative offsets. */
 export function layoutPlanMapPins(places: Place[]): PlanMapPinLayout[] {
-  const pins = places.flatMap((place) => {
+  return places.flatMap((place) => {
     const position = placeToMapPosition(place)
     if (!position) return []
     return [{ placeId: place.id, top: position.top, left: position.left }]
   })
-
-  if (pins.length <= 1) return pins
-
-  const positions = pins.map((pin) => ({
-    top: parsePercent(pin.top),
-    left: parsePercent(pin.left),
-  }))
-
-  for (let pass = 0; pass < 4; pass += 1) {
-    for (let i = 0; i < positions.length; i += 1) {
-      for (let j = i + 1; j < positions.length; j += 1) {
-        const a = positions[i]
-        const b = positions[j]
-        const dx = a.left - b.left
-        const dy = a.top - b.top
-        const distance = Math.hypot(dx, dy)
-
-        if (distance >= PIN_MIN_DISTANCE || distance === 0) continue
-
-        const push = (PIN_MIN_DISTANCE - distance) / 2
-        const angle = Math.atan2(dy, dx)
-        a.left = clampPinPosition(a.left + Math.cos(angle) * push)
-        a.top = clampPinPosition(a.top + Math.sin(angle) * push)
-        b.left = clampPinPosition(b.left - Math.cos(angle) * push)
-        b.top = clampPinPosition(b.top - Math.sin(angle) * push)
-      }
-    }
-  }
-
-  return pins.map((pin, index) => ({
-    ...pin,
-    top: `${positions[index].top.toFixed(1)}%`,
-    left: `${positions[index].left.toFixed(1)}%`,
-  }))
 }
 
 export function shortPlaceMapLabel(name: string): string {

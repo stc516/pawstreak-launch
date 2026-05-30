@@ -90,7 +90,7 @@ export function getHeroEyebrow(dogLabel: string, dogCount: number): string {
 export function getHeroCuratedLabel(place: Place, dogs: Dog[]): string {
   const target = dogTarget(dogs)
 
-  if (place.popularNow) return 'Popular with the pack right now.'
+  if (place.popularNow) return `Worth an early visit for ${target}.`
   if (place.energyLevel === 'High') {
     return place.category === 'Road trip'
       ? `Big adventure for ${target} today.`

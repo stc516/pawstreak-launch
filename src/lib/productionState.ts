@@ -61,7 +61,7 @@ export const DEMO_SEEDED_COMMUNITY_POST_IDS = new Set([
   'bailey-omi-patio',
 ])
 
-export const DEMO_SEEDED_CHALLENGE_IDS = new Set<string>()
+export const DEMO_SEEDED_CHALLENGE_IDS = new Set(['summer-beach-challenge'])
 
 export const DEMO_SEEDED_FAVORITE_IDS = new Set([
   'fav-dog-beach',
@@ -111,8 +111,8 @@ export function getJourneyMapSummary(state: AppState): AppState['journeyMap'] {
     }
   }
 
-  const adventureLabel = `${state.adventureCount} adventure${state.adventureCount === 1 ? '' : 's'} saved`
-  const placeLabel = `${state.placeCount} place${state.placeCount === 1 ? '' : 's'} discovered`
+  const adventureLabel = `${state.adventureCount} adventure${state.adventureCount === 1 ? '' : 's'} on your map`
+  const placeLabel = `${state.placeCount} place${state.placeCount === 1 ? '' : 's'} visited`
 
   return {
     title: adventureLabel,
@@ -226,7 +226,12 @@ export function sanitizeProductionAppState(state: AppState): AppState {
     placeCount,
     streak: stripDemoHistory ? 0 : next.streak,
     recentAdventures: stripDemoHistory ? [] : next.recentAdventures,
-    joinedChallenges: stripDemoHistory ? [] : (next.joinedChallenges ?? []),
+    joinedChallenges: stripDemoHistory
+      ? []
+      : (next.joinedChallenges ?? []).filter(
+          (record) =>
+            next.mode === 'demo' || !DEMO_SEEDED_CHALLENGE_IDS.has(record.challengeId),
+        ),
     trainingLessonCompletions: stripDemoHistory ? [] : (next.trainingLessonCompletions ?? []),
     trainingRewardUnlocks: stripDemoHistory ? [] : (next.trainingRewardUnlocks ?? []),
     favoritePlaces: stripDemoHistory

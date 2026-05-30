@@ -1,4 +1,5 @@
 import type { Dog } from '../data/demo'
+import type { Place } from '../types/place'
 import { getDogDisplayName, getPackDisplayName } from './dogLabels'
 import { getPlaceById, PLACES } from '../data/places'
 
@@ -6,6 +7,16 @@ export interface CuratedPlanWeekItem {
   day: string
   focus: string
   type: string
+}
+
+export interface CuratedPlanAdventureCard {
+  id: string
+  title: string
+  placeId: string
+  placeName: string
+  category: string
+  timeSuggestion: string
+  whyItFits: string
 }
 
 export interface CuratedPlanBalance {
@@ -28,6 +39,7 @@ export interface CuratedPlanResult {
   goalSummary: string
   weeklyCadence: string
   weeklySchedule: CuratedPlanWeekItem[]
+  adventureCards: CuratedPlanAdventureCard[]
   firstAdventure: {
     placeId: string
     name: string
@@ -76,6 +88,85 @@ const WHY_IT_FITS_TEMPLATES: Record<string, string> = {
   training:
     'Same cues, different places. Skills stick when practice feels like an adventure.',
 }
+
+const REAL_ADVENTURE_IDEAS: {
+  id: string
+  title: string
+  categories: Place['category'][]
+  timeSuggestion: string
+  whyTemplate: string
+}[] = [
+  {
+    id: 'beach-morning',
+    title: 'Dog Beach morning',
+    categories: ['Beach'],
+    timeSuggestion: 'Sat · 8–10 AM',
+    whyTemplate: 'Wide sand and room to run — an easy high-energy start.',
+  },
+  {
+    id: 'park-loop',
+    title: 'Local park loop',
+    categories: ['Park', 'Dog park'],
+    timeSuggestion: 'Wed · 5 PM',
+    whyTemplate: 'Shaded paths and sniff stops without a long drive.',
+  },
+  {
+    id: 'coffee-patio',
+    title: 'Coffee patio walk',
+    categories: ['Coffee'],
+    timeSuggestion: 'Sun · 9 AM',
+    whyTemplate: 'A patio stop plus a short loop — low effort, high reward.',
+  },
+  {
+    id: 'trail-sniff',
+    title: 'Easy trail sniff walk',
+    categories: ['Trail'],
+    timeSuggestion: 'Sat · 7 AM',
+    whyTemplate: 'New smells and soft terrain for a calm but interesting outing.',
+  },
+  {
+    id: 'sunset-neighborhood',
+    title: 'Sunset neighborhood walk',
+    categories: ['Neighborhood'],
+    timeSuggestion: 'Fri · 6 PM',
+    whyTemplate: 'Your everyday loop with one new corner to explore.',
+  },
+  {
+    id: 'dog-park-play',
+    title: 'Dog park play session',
+    categories: ['Dog park'],
+    timeSuggestion: 'Thu · 4 PM',
+    whyTemplate: 'Off-leash play and quick social hellos close to home.',
+  },
+  {
+    id: 'weekend-road-trip',
+    title: 'Weekend road trip',
+    categories: ['Road trip'],
+    timeSuggestion: 'Sat · All day',
+    whyTemplate: 'A bigger day out when you have time to make it count.',
+  },
+  {
+    id: 'beach-coffee',
+    title: 'Beach + coffee combo',
+    categories: ['Beach', 'Coffee'],
+    timeSuggestion: 'Sun · 10 AM',
+    whyTemplate: 'Sand first, patio treat after — a classic San Diego morning.',
+  },
+  {
+    id: 'trail-photo',
+    title: 'Trail + photo stop',
+    categories: ['Trail', 'Park'],
+    timeSuggestion: 'Sat · 8 AM',
+    whyTemplate: 'One viewpoint worth capturing on the way back.',
+  },
+  {
+    id: 'park-picnic',
+    title: 'Park picnic walk',
+    categories: ['Park', 'Gardens'],
+    timeSuggestion: 'Sun · 11 AM',
+    whyTemplate: 'Slow loop, grassy break, and time to just be together.',
+  },
+]
 
 function personalizeWhyCopy(template: string, dogs: Dog[]): string {
   if (dogs.length === 0) return template.replace(/\{lead\}|\{support\}/g, 'Your dog')
@@ -139,7 +230,7 @@ const EMOTIONAL_COPY_TEMPLATES: Record<string, string> = {
   behavior:
     'Structure plus joy — the best behavior plans leave room for sniff breaks and praise.',
   social:
-    'Pack time matters. Even one friendly hello can turn a walk into a highlight.',
+    'Friendly outings in low-pressure places — even one hello can turn a walk into a highlight.',
   calmer:
     'Slow is smart. Calmer walks start with familiar routes and unhurried sniff time.',
   bonding:
@@ -158,7 +249,7 @@ const TIME_CADENCE: Record<string, string> = {
   '15min': '3 short outings per week · 15 minutes each',
   '30min': '4 walks per week · 30 minutes each',
   hour: '2 longer adventures + 2 neighborhood loops weekly',
-  weekends: '1 big weekend adventure + 1 midweek reset walk',
+  weekends: '1 big weekend adventure + 1 midweek neighborhood walk',
   flexible: '2–3 adventures weekly · fit around your schedule',
 }
 
@@ -199,83 +290,110 @@ function mergeBalance(optimizeIds: string[]): CuratedPlanBalance[] {
     .slice(0, 5)
 }
 
-function buildWeeklySchedule(
-  timeId: string,
-  loveIds: string[],
-  primaryOptimizeId: string,
-): CuratedPlanWeekItem[] {
-  const adventureLabel =
-    loveIds.includes('beaches') ? 'Beach outing' :
-    loveIds.includes('trails') ? 'Trail loop' :
-    loveIds.includes('cafes') ? 'Patio stop' : 'Neighborhood explore'
-
-  if (timeId === 'weekends') {
-    return [
-      { day: 'Sat', focus: `Big ${adventureLabel.toLowerCase()}`, type: 'adventure' },
-      { day: 'Sun', focus: 'Recovery sniff walk', type: 'calmer walks' },
-      { day: 'Wed', focus: 'Short training loop', type: 'training' },
-    ]
+function pickPlaceForIdea(idea: (typeof REAL_ADVENTURE_IDEAS)[number], usedIds: Set<string>): Place {
+  if (idea.categories.includes('Neighborhood')) {
+    return getPlaceById('neighborhood-walk') ?? PLACES[0]
   }
 
-  if (timeId === '15min') {
-    return [
-      { day: 'Mon', focus: 'Quick sniff loop', type: 'activity' },
-      { day: 'Wed', focus: adventureLabel, type: 'adventure' },
-      { day: 'Fri', focus: 'Calm bonding walk', type: 'bonding' },
-      { day: 'Sun', focus: 'Try somewhere new', type: 'adventure' },
-    ]
-  }
+  const match = PLACES.find(
+    (place) => idea.categories.includes(place.category) && !usedIds.has(place.id),
+  )
+  if (match) return match
 
-  return [
-    { day: 'Mon', focus: 'Neighborhood reset', type: 'activity' },
-    { day: 'Wed', focus: adventureLabel, type: 'adventure' },
-    {
-      day: 'Fri',
-      focus: primaryOptimizeId === 'training' ? 'Cue practice walk' : 'Social hello route',
-      type: primaryOptimizeId === 'training' ? 'training' : 'socialization',
-    },
-    { day: 'Sat', focus: 'Longer adventure', type: 'adventure' },
-  ]
+  const fallback = PLACES.find((place) => idea.categories.includes(place.category))
+  return fallback ?? PLACES[0]
 }
 
-function pickFirstAdventure(loveIds: string[]) {
-  const spots = recommendSpots(loveIds, [])
-  const place = PLACES.find((p) => p.name === spots[0]?.name) ?? PLACES[0]
+function buildCuratedAdventureCards(
+  loveIds: string[],
+  dogs: Dog[],
+): CuratedPlanAdventureCard[] {
+  const categoryBoost = new Set<string>()
+  if (loveIds.includes('beaches') || loveIds.includes('water')) categoryBoost.add('Beach')
+  if (loveIds.includes('trails') || loveIds.includes('sniffing')) categoryBoost.add('Trail')
+  if (loveIds.includes('cafes')) categoryBoost.add('Coffee')
+  if (loveIds.includes('road-trips')) categoryBoost.add('Road trip')
+  if (loveIds.includes('new-dogs') || loveIds.includes('off-leash')) categoryBoost.add('Dog park')
+  if (loveIds.includes('sniffing')) categoryBoost.add('Park')
+
+  const rankedIdeas = [...REAL_ADVENTURE_IDEAS].sort((left, right) => {
+    const leftScore = left.categories.some((category) => categoryBoost.has(category)) ? 1 : 0
+    const rightScore = right.categories.some((category) => categoryBoost.has(category)) ? 1 : 0
+    return rightScore - leftScore
+  })
+
+  const usedPlaceIds = new Set<string>()
+  const cards: CuratedPlanAdventureCard[] = []
+
+  for (const idea of rankedIdeas) {
+    if (cards.length >= 4) break
+    const place = pickPlaceForIdea(idea, usedPlaceIds)
+    if (usedPlaceIds.has(place.id) && idea.categories[0] !== 'Neighborhood') continue
+    usedPlaceIds.add(place.id)
+
+    cards.push({
+      id: idea.id,
+      title: idea.title,
+      placeId: place.id,
+      placeName: place.name,
+      category: place.category,
+      timeSuggestion: idea.timeSuggestion,
+      whyItFits: personalizeWhyCopy(idea.whyTemplate, dogs),
+    })
+  }
+
+  return cards
+}
+
+function buildWeeklySchedule(cards: CuratedPlanAdventureCard[]): CuratedPlanWeekItem[] {
+  const days = ['Mon', 'Wed', 'Fri', 'Sat']
+  return cards.slice(0, 4).map((card, index) => ({
+    day: days[index] ?? 'Sat',
+    focus: card.title,
+    type: card.category,
+  }))
+}
+
+function pickFirstAdventure(cards: CuratedPlanAdventureCard[]) {
+  const first = cards[0]
+  if (!first) {
+    const place = getPlaceById('dog-beach-ocean-beach') ?? PLACES[0]
+    return {
+      placeId: place.id,
+      name: place.name,
+      reason: place.whyDogsLoveIt,
+      when: 'This Saturday morning',
+    }
+  }
+
   return {
-    placeId: place.id,
-    name: place.name,
-    reason: place.whyDogsLoveIt,
-    when: 'This Saturday morning',
+    placeId: first.placeId,
+    name: first.placeName,
+    reason: first.whyItFits,
+    when: first.timeSuggestion,
   }
 }
 
 function loveToAdventureTypes(loveIds: string[]): string[] {
   const map: Record<string, string> = {
-    beaches: 'Beach mornings',
-    trails: 'Trail exploration',
-    cafes: 'Patio cafe stops',
-    'new-dogs': 'Dog park socials',
-    sniffing: 'Sniffari walks',
-    water: 'Water play days',
-    'road-trips': 'Day trip escapes',
-    'off-leash': 'Off-leash runs',
+    beaches: 'Dog Beach mornings',
+    trails: 'Trail sniff walks',
+    cafes: 'Coffee patio walks',
+    'new-dogs': 'Dog park play sessions',
+    sniffing: 'Park loop sniff walks',
+    water: 'Beach + splash days',
+    'road-trips': 'Weekend road trips',
+    'off-leash': 'Off-leash beach runs',
   }
 
   const types = loveIds.map((id) => map[id]).filter(Boolean)
-  return types.length > 0 ? types : ['Neighborhood loops', 'New spot Fridays']
+  return types.length > 0 ? types : ['Dog Beach morning', 'Local park loop', 'Sunset neighborhood walk']
 }
 
 function buildMonthlyGoals(optimizeIds: string[], loveIds: string[]): string[] {
-  const goals = ['Try 2 places you have never visited']
+  const goals = ['Try 2 new places you have not visited yet']
   if (optimizeIds.includes('burn-energy')) goals.push('Log 4 high-energy outings')
-  if (optimizeIds.includes('confidence')) {
-    goals.push('Practice calm greetings in 3 new settings')
-  }
-  if (optimizeIds.includes('weekend')) {
-    goals.push('Plan 1 road trip outside your zip code')
-  }
-  if (optimizeIds.includes('calmer')) goals.push('Keep 2 walks unhurried each week')
-  if (optimizeIds.includes('bonding')) goals.push('Capture one shared memory photo weekly')
+  if (optimizeIds.includes('weekend')) goals.push('Plan 1 road trip outside your zip code')
   if (loveIds.includes('beaches')) goals.push('Hit 3 different dog beaches')
   if (loveIds.includes('trails')) goals.push('Complete 2 new trail loops')
   if (goals.length < 3) goals.push('Capture one memory photo each week')
@@ -287,21 +405,15 @@ function recommendSpots(
   dogs: Dog[],
 ): { name: string; reason: string }[] {
   const categoryPriority: string[] = []
-  if (loveIds.includes('beaches') || loveIds.includes('water')) {
-    categoryPriority.push('Beach')
-  }
-  if (loveIds.includes('trails') || loveIds.includes('sniffing')) {
-    categoryPriority.push('Trail')
-  }
+  if (loveIds.includes('beaches') || loveIds.includes('water')) categoryPriority.push('Beach')
+  if (loveIds.includes('trails') || loveIds.includes('sniffing')) categoryPriority.push('Trail')
   if (loveIds.includes('cafes')) categoryPriority.push('Coffee')
   if (loveIds.includes('road-trips')) categoryPriority.push('Road trip')
   if (loveIds.includes('new-dogs')) categoryPriority.push('Dog park')
   if (loveIds.includes('off-leash')) categoryPriority.push('Park')
 
   const spots = PLACES.filter((place) =>
-    categoryPriority.length === 0
-      ? true
-      : categoryPriority.includes(place.category),
+    categoryPriority.length === 0 ? true : categoryPriority.includes(place.category),
   )
     .slice(0, 3)
     .map((place) => ({
@@ -340,13 +452,13 @@ export function generateCuratedPlanResult(
 ): CuratedPlanResult {
   const optimizeIds =
     draft.optimizeIds.length > 0 ? draft.optimizeIds : ['bonding']
-  const primaryOptimizeId = optimizeIds[0]
   const timeId = draft.timeId ?? 'flexible'
   const loveIds = draft.loveIds.length > 0 ? draft.loveIds : ['trails', 'sniffing']
   const dogLabel = getPackDisplayName(dogs)
   const goalLabels = optimizeIds.map((id) => OPTIMIZE_LABELS[id] ?? id)
   const goalSummary = formatGoalList(goalLabels)
-  const firstAdventure = pickFirstAdventure(loveIds)
+  const adventureCards = buildCuratedAdventureCards(loveIds, dogs)
+  const firstAdventure = pickFirstAdventure(adventureCards)
 
   const whyParts = optimizeIds
     .map((id) => whyItFitsFor(dogs, id))
@@ -363,12 +475,13 @@ export function generateCuratedPlanResult(
     goalSummary,
     emotionalCopy:
       emotionalParts.join(' ') ||
-      'Small adventures count. Your dogs thrive when there is something new to explore each week.',
+      'Real outings, not wellness homework — built around places your dogs will actually love.',
     whyItFits:
       whyParts.join(' ') ||
-      'Built around what they love and the time you actually have — not a perfect schedule.',
+      'Built around what they love and the time you actually have.',
     weeklyCadence: TIME_CADENCE[timeId] ?? TIME_CADENCE.flexible,
-    weeklySchedule: buildWeeklySchedule(timeId, loveIds, primaryOptimizeId),
+    weeklySchedule: buildWeeklySchedule(adventureCards),
+    adventureCards,
     firstAdventure,
     balance: mergeBalance(optimizeIds),
     adventureTypes: loveToAdventureTypes(loveIds),

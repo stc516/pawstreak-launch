@@ -6,7 +6,7 @@ const CATEGORY_LINES: Partial<Record<PlaceCategory, string>> = {
   Beach: 'Beach day energy — worth getting out.',
   Trail: 'Trail day — worth getting out.',
   Coffee: 'Easy win for a short outing.',
-  'Dog park': 'Popular with the pack right now.',
+  'Dog park': 'Off-leash fun close by.',
   Park: 'Low crowd pick for a calmer day.',
   Brewery: 'Perfect right now for a patio stop.',
   Gardens: 'Best window today for a slow loop.',
@@ -16,7 +16,7 @@ const CATEGORY_LINES: Partial<Record<PlaceCategory, string>> = {
 
 export function getMagicLine(place: Place): string {
   if (place.popularNow) {
-    return 'Popular with the pack right now.'
+    return 'Busy spot right now — worth an early visit.'
   }
 
   if (place.energyLevel === 'High') {

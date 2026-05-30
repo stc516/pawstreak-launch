@@ -5,14 +5,13 @@ import { CardImage } from '../../components/CardImage'
 import { PlanAdventureMap } from '../../components/PlanAdventureMap'
 import { getAdventureDisplayImageUrl } from '../../lib/adventureDisplayImage'
 import { getPlanMagicMeta } from '../../data/places'
-import { PLAN_EVENTS } from '../../data/planEvents'
 import { getRecommendationPrefs } from '../../lib/onboardingProfile'
 import {
+  getMapPreviewPlaces,
   getPlanNearbyPlaces,
   PLAN_PROXIMITY_OPTIONS,
   type PlanProximityBucket,
 } from '../../lib/planDiscovery'
-import { getFeaturedTrainingProgram } from '../../lib/trainingEngine'
 import { getRoadTripDriveTime, openRoadTripDirections } from '../../lib/roadTrip'
 
 interface PlanScreenProps {
@@ -39,7 +38,6 @@ export function PlanScreen({
   onStartAdventure,
   onStartNeighborhoodWalk,
   onOpenCuratedPlanFlow,
-  onOpenTrainingProgram,
 }: PlanScreenProps) {
   const prefs = getRecommendationPrefs(state)
   const [proximityBucket, setProximityBucket] = useState<PlanProximityBucket>('15min')
@@ -53,10 +51,8 @@ export function PlanScreen({
     () => places.filter((place) => place.lat != null && place.lng != null),
     [places],
   )
-  const curatedPicks = useMemo(() => mapPlaces.slice(0, 4), [mapPlaces])
-  const featuredTraining = useMemo(() => getFeaturedTrainingProgram(state), [state])
+  const curatedPicks = useMemo(() => getMapPreviewPlaces(prefs), [prefs])
   const dogLabel = getDisplayDogLabel(state)
-  const nextTrainingLesson = featuredTraining?.progress.lessons.find((lesson) => !lesson.completed)
 
   const handleSelectMapPlace = (placeId: string) => {
     setSelectedPlaceId(placeId)
@@ -78,6 +74,14 @@ export function PlanScreen({
     setSelectedPlaceId(null)
   }
 
+  const handlePlaceGo = (placeId: string) => {
+    if (placeId === 'neighborhood-walk') {
+      onStartNeighborhoodWalk?.()
+      return
+    }
+    onStartAdventure(placeId)
+  }
+
   return (
     <>
       <div className="aheader plan-screen-header">
@@ -89,7 +93,7 @@ export function PlanScreen({
         places={mapPlaces}
         selectedPlaceId={selectedPlaceId}
         mapTitle={state.mapRegion.title}
-        mapSubtitle={state.mapRegion.subtitle}
+        mapSubtitle="Each pin is a real place nearby · Tap to find it below"
         zipCode={state.zipCode}
         onSelectPlace={handleSelectMapPlace}
         onZipChange={onZipChange}
@@ -101,7 +105,7 @@ export function PlanScreen({
       ) : null}
 
       <div className="sec plan-curated-sec">Curated Adventures</div>
-      <p className="plan-curated-lead">Hand-picked outings for {dogLabel} this week.</p>
+      <p className="plan-curated-lead">Real outings for {dogLabel} this week.</p>
       <div className="plan-curated-strip">
         {curatedPicks.map((place) => {
           const imageUrl = getAdventureDisplayImageUrl(state.journeyEntries, place)
@@ -114,18 +118,12 @@ export function PlanScreen({
                 imageTone={place.imageTone}
               />
               <div className="plan-curated-card-body">
-                <div className="plan-curated-card-name">{place.name}</div>
+                <div className="plan-curated-card-name">{place.name.split(',')[0]}</div>
                 <div className="plan-curated-card-meta">{getPlanMagicMeta(place)}</div>
                 <button
                   type="button"
                   className="plan-curated-card-go tap-target"
-                  onClick={() => {
-                    if (place.id === 'neighborhood-walk') {
-                      onStartNeighborhoodWalk?.()
-                      return
-                    }
-                    onStartAdventure(place.id)
-                  }}
+                  onClick={() => handlePlaceGo(place.id)}
                 >
                   Go
                 </button>
@@ -214,55 +212,13 @@ export function PlanScreen({
               <button
                 type="button"
                 className="pgo tap-target"
-                onClick={() => {
-                  if (place.id === 'neighborhood-walk') {
-                    onStartNeighborhoodWalk?.()
-                    return
-                  }
-                  onStartAdventure(place.id)
-                }}
+                onClick={() => handlePlaceGo(place.id)}
               >
                 Go
               </button>
             </div>
           )
         })}
-      </div>
-
-      {featuredTraining ? (
-        <>
-          <div className="sec">Training Opportunities</div>
-          <button
-            type="button"
-            className="plan-training-row detail-card-warm tap-target"
-            onClick={() => onOpenTrainingProgram?.(featuredTraining.id)}
-          >
-            <span className="plan-training-emoji" aria-hidden="true">{featuredTraining.emoji}</span>
-            <span className="plan-training-copy">
-              <span className="plan-training-title">{featuredTraining.title}</span>
-              <span className="plan-training-sub">
-                {nextTrainingLesson
-                  ? `Try · ${nextTrainingLesson.lesson.title}`
-                  : featuredTraining.subtitle}
-              </span>
-            </span>
-          </button>
-        </>
-      ) : null}
-
-      <div className="sec">Events</div>
-      <div className="plan-events-list">
-        {PLAN_EVENTS.map((event) => (
-          <article key={event.id} className="plan-event-card detail-card-warm">
-            <span className="plan-event-emoji" aria-hidden="true">{event.emoji}</span>
-            <div className="plan-event-copy">
-              <div className="plan-event-title">{event.title}</div>
-              <div className="plan-event-meta">
-                {event.schedule} · {event.location}
-              </div>
-            </div>
-          </article>
-        ))}
       </div>
 
       {state.favoritePlaces.length > 0 ? (

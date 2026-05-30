@@ -1,20 +1,16 @@
 import { useMemo } from 'react'
 import type { AppState } from '../../data/demo'
-import {
-  getActiveAchievement,
-  getIdentityProgressLabel,
-  getNextIdentityAchievement,
-} from '../../lib/achievementEngine'
 import { getDisplayDogLabel, getProfileDogs } from '../../lib/profileDisplay'
 import {
   getHeroFitLine,
   getHomeHeadline,
   getMemoryWarmLabel,
 } from '../../lib/homeCopy'
-import { getFeaturedChallenge } from '../../lib/challengeEngine'
+import { getFeaturedChallenge, resolveJoinedChallenges } from '../../lib/challengeEngine'
 import { getHomeProgressStats } from '../../lib/homeStats'
-import { resolveDogProgression } from '../../lib/dogProgressionEngine'
 import { getFeaturedTrainingProgram } from '../../lib/trainingEngine'
+import { getMapPreviewPlaces } from '../../lib/planDiscovery'
+import { getPlanMagicMeta } from '../../data/places'
 import { CardImage } from '../../components/CardImage'
 import { getHeroPlace, getPlaceById } from '../../data/places'
 import { getRecommendationPrefs } from '../../lib/onboardingProfile'
@@ -31,7 +27,7 @@ interface HomeScreenProps {
   onStartNeighborhoodWalk: () => void
   onOpenProfile: () => void
   onOpenChallenge: (challengeId: string) => void
-  onOpenAchievement: (achievementId: string) => void
+  onJoinChallenge: (challengeId: string) => void
   onOpenTrainingProgram: (programId: string) => void
   onOpenMemory?: (entryId: string) => void
   onGoToPlan: () => void
@@ -51,7 +47,7 @@ export function HomeScreen({
   onStartNeighborhoodWalk,
   onOpenProfile,
   onOpenChallenge,
-  onOpenAchievement,
+  onJoinChallenge,
   onOpenTrainingProgram,
   onOpenMemory,
   onGoToPlan,
@@ -64,15 +60,15 @@ export function HomeScreen({
   const heroPlace = getHeroPlace(heroActivityId, getRecommendationPrefs(state))
   const heroImageUrl = getAdventureDisplayImageUrl(state.journeyEntries, heroPlace)
   const progress = getHomeProgressStats(state)
-  const featuredChallenge = useMemo(() => getFeaturedChallenge(state), [state])
-  const storyProgress = useMemo(() => resolveDogProgression(state), [state])
-  const currentChapter = storyProgress.nodes.find((node) => node.state === 'current')
-  const activeAchievement = useMemo(() => getActiveAchievement(state), [state])
-  const nextIdentity = useMemo(() => getNextIdentityAchievement(state), [state])
+  const joinedChallenges = useMemo(() => resolveJoinedChallenges(state), [state])
+  const activeChallenge = joinedChallenges[0]
+  const curatedChallenge = useMemo(() => getFeaturedChallenge(state), [state])
   const featuredTraining = useMemo(() => getFeaturedTrainingProgram(state), [state])
+  const curatedPlaces = useMemo(
+    () => getMapPreviewPlaces(getRecommendationPrefs(state)),
+    [state],
+  )
   const recentMemories = state.journeyEntries.slice(0, 3)
-  const identityTarget = nextIdentity ?? activeAchievement
-  const nextTrainingLesson = featuredTraining?.progress.lessons.find((lesson) => !lesson.completed)
 
   const handleStartHeroAdventure = () => {
     onSelectActivity(heroActivityId)
@@ -95,6 +91,17 @@ export function HomeScreen({
     const place = getHeroPlace(action.activityId, getRecommendationPrefs(state))
     onStartAdventure(place.id, 'Open end')
   }
+
+  const handleCuratedPlaceGo = (placeId: string) => {
+    if (placeId === 'neighborhood-walk') {
+      onStartNeighborhoodWalk()
+      return
+    }
+    onStartAdventure(placeId, 'Open end')
+  }
+
+  const showCuratedChallenge =
+    !activeChallenge && curatedChallenge && !curatedChallenge.progress.joined
 
   return (
     <div className="home-screen home-screen--depth home-screen--compact">
@@ -191,78 +198,80 @@ export function HomeScreen({
         </div>
       </section>
 
-      {featuredTraining ? (
-        <section className="home-training home-training--compact" aria-label="Training">
-          <h2 className="home-section-label">Training</h2>
-          <button
-            type="button"
-            className="home-training-row detail-card-warm tap-target"
-            onClick={() => onOpenTrainingProgram(featuredTraining.id)}
-          >
-            <span className="home-training-emoji" aria-hidden="true">{featuredTraining.emoji}</span>
-            <span className="home-training-copy">
-              <span className="home-training-title">{featuredTraining.title}</span>
-              <span className="home-training-sub">
-                {nextTrainingLesson
-                  ? `Next up · ${nextTrainingLesson.lesson.title}`
-                  : `${featuredTraining.progress.lessonsCompleted}/${featuredTraining.progress.lessonsTotal} lessons done`}
-              </span>
-            </span>
+      {curatedPlaces.length > 0 ? (
+        <section className="home-curated" aria-label="Curated Adventures">
+          <div className="home-section-label">Curated Adventures</div>
+          <div className="home-curated-strip">
+            {curatedPlaces.slice(0, 3).map((place) => {
+              const imageUrl = getAdventureDisplayImageUrl(state.journeyEntries, place)
+              return (
+                <article key={place.id} className="home-curated-card detail-card-warm">
+                  <CardImage
+                    className="home-curated-card-photo"
+                    imageUrl={imageUrl}
+                    imageAlt={place.imageAlt ?? place.name}
+                    imageTone={place.imageTone}
+                  />
+                  <div className="home-curated-card-body">
+                    <div className="home-curated-card-name">{place.name.split(',')[0]}</div>
+                    <div className="home-curated-card-meta">{getPlanMagicMeta(place)}</div>
+                    <button
+                      type="button"
+                      className="home-curated-card-go tap-target"
+                      onClick={() => handleCuratedPlaceGo(place.id)}
+                    >
+                      Go
+                    </button>
+                  </div>
+                </article>
+              )
+            })}
+          </div>
+          <button type="button" className="home-curated-more tap-target" onClick={onGoToPlan}>
+            See all on Plan
           </button>
         </section>
       ) : null}
 
-      {(currentChapter || identityTarget || featuredChallenge?.progress.joined) ? (
-        <section className="home-continue home-continue--compact detail-card-warm" aria-label="Continue">
-          <h2 className="home-section-label">Continue</h2>
+      {activeChallenge ? (
+        <section className="home-challenge home-challenge-compact detail-card-warm" aria-label="Active challenge">
+          <div className="home-challenge-kicker">Active challenge</div>
+          <div className="home-challenge-title">{activeChallenge.title}</div>
+          <div className="home-challenge-sub">{activeChallenge.subtitle}</div>
+          <div className="home-challenge-progress-row">
+            <span>
+              {activeChallenge.progress.completedNodes}/{activeChallenge.progress.totalNodes} stops
+            </span>
+            <span>{activeChallenge.progress.percentComplete}%</span>
+          </div>
+          <div className="home-challenge-bar">
+            <div
+              className="home-challenge-bar-fill"
+              style={{ width: activeChallenge.progress.fillWidth }}
+            />
+          </div>
+          <button
+            type="button"
+            className="home-challenge-cta tap-target"
+            onClick={() => onOpenChallenge(activeChallenge.id)}
+          >
+            View challenge
+          </button>
+        </section>
+      ) : null}
 
-          {currentChapter ? (
-            <button type="button" className="home-continue-row tap-target" onClick={onGoToPlan}>
-              <span className="home-continue-icon" aria-hidden="true">
-                {currentChapter.emoji}
-              </span>
-              <span className="home-continue-copy">
-                <span className="home-continue-title">{currentChapter.title}</span>
-                <span className="home-continue-sub">
-                  Chapter {storyProgress.summary.chaptersCompleted + 1} · {storyProgress.summary.rank}
-                </span>
-              </span>
-            </button>
-          ) : null}
-
-          {featuredChallenge?.progress.joined ? (
-            <button
-              type="button"
-              className="home-continue-row tap-target"
-              onClick={() => onOpenChallenge(featuredChallenge.id)}
-            >
-              <span className="home-continue-icon" aria-hidden="true">🎯</span>
-              <span className="home-continue-copy">
-                <span className="home-continue-title">{featuredChallenge.title}</span>
-                <span className="home-continue-sub">
-                  {featuredChallenge.progress.completedNodes}/{featuredChallenge.progress.totalNodes} stops
-                </span>
-              </span>
-            </button>
-          ) : null}
-
-          {identityTarget ? (
-            <button
-              type="button"
-              className="home-continue-row tap-target"
-              onClick={() => onOpenAchievement(identityTarget.id)}
-            >
-              <span className="home-continue-icon" aria-hidden="true">{identityTarget.emoji}</span>
-              <span className="home-continue-copy">
-                <span className="home-continue-title">
-                  {identityTarget.progress.unlocked
-                    ? `Earned · ${identityTarget.title}`
-                    : `Next tag · ${identityTarget.title}`}
-                </span>
-                <span className="home-continue-sub">{getIdentityProgressLabel(identityTarget)}</span>
-              </span>
-            </button>
-          ) : null}
+      {showCuratedChallenge && curatedChallenge ? (
+        <section className="home-challenge home-challenge-compact detail-card-warm" aria-label="Curated challenge">
+          <div className="home-challenge-kicker">Curated challenge</div>
+          <div className="home-challenge-title">{curatedChallenge.title}</div>
+          <div className="home-challenge-sub">{curatedChallenge.subtitle}</div>
+          <button
+            type="button"
+            className="home-challenge-cta tap-target"
+            onClick={() => onJoinChallenge(curatedChallenge.id)}
+          >
+            Join challenge
+          </button>
         </section>
       ) : null}
 

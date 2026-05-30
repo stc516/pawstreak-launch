@@ -77,7 +77,9 @@ export function PlanAdventureMap({
           >
             <div className="plan-map-tooltip-kicker">{selectedPlace.category}</div>
             <div className="plan-map-tooltip-title">{selectedPlace.name.split(',')[0]}</div>
-            <div className="plan-map-tooltip-meta">{selectedPlace.distanceLabel}</div>
+            <div className="plan-map-tooltip-meta">
+              {selectedPlace.distanceLabel} · {selectedPlace.leashInfo}
+            </div>
           </div>
         ) : null}
       </div>

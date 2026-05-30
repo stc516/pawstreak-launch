@@ -27,8 +27,8 @@ export function PresetPlanOverlay({ onClose, isDemoMode = false }: PresetPlanOve
   const handleSave = () => {
     setSavedMessage(
       isDemoMode
-        ? 'Calendar plan saved locally — reminders are mocked for now.'
-        : 'Calendar reminders saved.',
+        ? 'Saved to your PawStreak plan locally.'
+        : 'Saved to your PawStreak plan.',
     )
     window.setTimeout(() => {
       setSavedMessage(null)
@@ -52,9 +52,9 @@ export function PresetPlanOverlay({ onClose, isDemoMode = false }: PresetPlanOve
             <div className="preset-overlay-icon" aria-hidden="true">
               📅
             </div>
-            <h1 className="preset-overlay-title">Calendar plan</h1>
+            <h1 className="preset-overlay-title">Plan reminders</h1>
             <p className="preset-overlay-copy">
-              Pick gentle reminders for adventures — and tiny training moments too.
+              Pick gentle reminders for adventures — saved to your PawStreak plan.
             </p>
           </div>
 
@@ -78,12 +78,12 @@ export function PresetPlanOverlay({ onClose, isDemoMode = false }: PresetPlanOve
 
           {isDemoMode ? (
             <p className="preset-overlay-note">
-              Calendar sync is mocked for now. Real reminders come later.
+              Device calendar export is not available yet.
             </p>
           ) : null}
 
           <button type="button" className="preset-overlay-btn tap-target" onClick={handleSave}>
-            Save calendar plan
+            Save to Plan
           </button>
 
           {savedMessage ? (

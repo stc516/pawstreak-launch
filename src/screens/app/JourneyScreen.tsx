@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import type { AppState } from '../../data/demo'
-import { getDisplayFlashbackSubtitle, getDisplayJourneyTitle } from '../../lib/profileDisplay'
+import { getDisplayJourneyTitle } from '../../lib/profileDisplay'
 import { getJourneyMapSummary } from '../../lib/productionState'
 import { getFeaturedChallenge } from '../../lib/challengeEngine'
 import { JourneyStoryPath } from '../../components/JourneyStoryPath'
@@ -97,16 +97,6 @@ export function JourneyScreen({
         <div className="jmap-title">{journeyMap.title}</div>
         <div className="jmap-sub">{journeyMap.subtitle}</div>
       </button>
-
-      {hasMemories ? (
-        <div className="flash detail-card-warm">
-          <div className="flash-ico">✨</div>
-          <div>
-            <div className="flash-title">{state.flashback.title}</div>
-            <div className="flash-sub">{getDisplayFlashbackSubtitle(state)}</div>
-          </div>
-        </div>
-      ) : null}
     </>
   )
 }

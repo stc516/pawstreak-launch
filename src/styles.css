@@ -12798,3 +12798,130 @@ select.field-input {
 .profile-screen .profile-dog-list {
   gap: 10px;
 }
+
+.home-curated {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.home-curated-strip {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.home-curated-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.home-curated-card {
+  flex: 0 0 148px;
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+.home-curated-card-photo {
+  height: 68px;
+}
+
+.home-curated-card-photo.card-img {
+  min-height: 68px;
+}
+
+.home-curated-card-body {
+  padding: 8px 10px 10px;
+}
+
+.home-curated-card-name {
+  font-size: 12px;
+  font-weight: 800;
+  color: #1c1410;
+  line-height: 1.25;
+}
+
+.home-curated-card-meta {
+  margin-top: 2px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #7c5c48;
+  line-height: 1.35;
+}
+
+.home-curated-card-go {
+  margin-top: 8px;
+  width: 100%;
+  padding: 7px 10px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.home-curated-more {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px dashed rgba(249, 115, 22, 0.24);
+  border-radius: 12px;
+  background: rgba(255, 247, 237, 0.65);
+  color: #9a3412;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.curated-adventure-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.curated-adventure-card {
+  padding: 12px 14px;
+  border-radius: 14px;
+}
+
+.curated-adventure-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #1c1410;
+}
+
+.curated-adventure-meta {
+  margin-top: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #92400e;
+}
+
+.curated-adventure-place {
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #5c3d2e;
+}
+
+.curated-adventure-why {
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #7c5c48;
+}
+
+.curated-adventure-start {
+  margin-top: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
