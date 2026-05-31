@@ -23,7 +23,7 @@ export function CardImage({
       style={
         imageUrl
           ? {
-              backgroundImage: `linear-gradient(to top, rgba(28, 20, 16, 0.44) 0%, rgba(249, 115, 22, 0.08) 52%, transparent 100%), url("${imageUrl}")`,
+              backgroundImage: `linear-gradient(to top, rgba(6, 27, 14, 0.52) 0%, rgba(27, 48, 34, 0.12) 48%, transparent 100%), url("${imageUrl}")`,
             }
           : undefined
       }

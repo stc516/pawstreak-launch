@@ -32,7 +32,7 @@ const APP_TABS = [
 async function openDemoApp(page) {
   await page.goto(`${BASE_URL}/demo/app`, { waitUntil: 'networkidle' })
   await page.waitForTimeout(1500)
-  await page.getByRole('button', { name: 'Neighborhood Walk' }).waitFor({
+  await page.getByRole('button', { name: 'Quick Walk' }).waitFor({
     state: 'visible',
     timeout: 15000,
   })

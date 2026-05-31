@@ -1,0 +1,360 @@
+/* Heritage Adventure — Stitch visual system (app routes only; shell layout untouched) */
+
+html.app-route,
+html.app-route body {
+  font-family: var(--stitch-font);
+  color: var(--color-text-primary);
+}
+
+html.app-route .scroll:not(.scroll--home) {
+  padding-left: var(--stitch-gutter-card);
+  padding-right: var(--stitch-gutter-card);
+  gap: var(--stitch-stack-md);
+}
+
+html.app-route .home-screen,
+html.app-route .home-screen--polish,
+html.app-route .home-screen--compact {
+  padding-left: var(--stitch-gutter-card);
+  padding-right: var(--stitch-gutter-card);
+  gap: var(--stitch-stack-md);
+}
+
+/* Typography */
+
+html.app-route .alogo,
+html.app-route .home-logo,
+html.app-route .home-headline,
+html.app-route .home-hero-compact-title,
+html.app-route .profile-stat-value {
+  font-family: var(--stitch-font);
+  letter-spacing: -0.01em;
+}
+
+html.app-route .alogo {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--stitch-primary);
+}
+
+html.app-route .alogo span {
+  color: var(--accent);
+}
+
+html.app-route .home-headline {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--color-text-primary);
+}
+
+html.app-route .sec,
+html.app-route .sec--warm,
+html.app-route .home-section-label,
+html.app-route .home-strip-label,
+html.app-route .settings-section-label,
+html.app-route .journey-story-kicker {
+  font-family: var(--stitch-font);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--stitch-secondary);
+}
+
+html.app-route .sec {
+  margin-bottom: var(--stitch-stack-sm);
+  color: var(--color-text-primary);
+}
+
+/* Cards */
+
+html.app-route .detail-card-warm,
+html.app-route .hero-card,
+html.app-route .streak-bar,
+html.app-route .plan-box,
+html.app-route .home-dog-hero,
+html.app-route .curated-adventure-card,
+html.app-route .profile-stat-card,
+html.app-route .settings-group.detail-card-warm {
+  border-radius: var(--stitch-radius-card);
+  border: 1px solid rgba(195, 200, 193, 0.45);
+  background: #fff;
+  box-shadow: var(--stitch-shadow-soft);
+}
+
+html.app-route .detail-card-warm {
+  padding: var(--stitch-gutter-card);
+  box-shadow: var(--stitch-shadow-ambient);
+}
+
+html.app-route .home-dog-hero {
+  background: var(--stitch-surface);
+  border-color: rgba(195, 200, 193, 0.45);
+  box-shadow: var(--stitch-shadow-ambient);
+}
+
+/* Image treatment */
+
+html.app-route .card-img[style*='background-image']::after,
+html.app-route .home-dog-hero-photo-wrap::after,
+html.app-route .journey-story-node-photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(to top, rgba(6, 27, 14, 0.42) 0%, transparent 55%);
+}
+
+html.app-route .card-img[style*='background-image'],
+html.app-route .home-dog-hero-photo-wrap,
+html.app-route .journey-story-node-photo {
+  position: relative;
+}
+
+/* Buttons */
+
+html.app-route .pgo,
+html.app-route .home-hero-compact-cta,
+html.app-route .home-quick-primary-btn,
+html.app-route .profile-dog-btn--primary,
+html.app-route .settings-zip-btn,
+html.app-route .curated-adventure-start,
+html.app-route .ms-challenge-card-cta {
+  border-radius: 999px;
+  background: var(--accent-primary-gradient);
+  box-shadow: var(--accent-primary-shadow);
+  font-weight: 700;
+}
+
+html.app-route .home-quick-secondary-btn,
+html.app-route .profile-dog-btn,
+html.app-route .profile-dog-btn--ghost {
+  border-radius: 999px;
+  border-color: rgba(27, 48, 34, 0.18);
+  color: var(--stitch-primary);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+/* Bottom nav — glass over cream (positioning unchanged) */
+
+html.app-route .app-shell > .bnav {
+  background: var(--color-app-surface-nav);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(195, 200, 193, 0.45);
+  box-shadow: 0 -8px 24px rgba(27, 48, 34, 0.06);
+}
+
+html.app-route .ni.on {
+  color: var(--stitch-primary);
+  font-weight: 600;
+}
+
+html.app-route .ni:not(.on) {
+  color: rgba(115, 121, 115, 0.72);
+}
+
+/* Badges / tags — enamel finish */
+
+html.app-route .profile-dog-identity-chip,
+html.app-route .rc,
+html.app-route .hc-badge,
+html.app-route .home-dog-pill {
+  border-radius: 999px;
+  border: 1px solid rgba(195, 200, 193, 0.55);
+  background: linear-gradient(180deg, #fff 0%, var(--stitch-surface-muted) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    0 1px 3px rgba(27, 48, 34, 0.06);
+}
+
+html.app-route .rc.on,
+html.app-route .chip.on {
+  border-color: rgba(212, 106, 67, 0.45);
+  background: linear-gradient(180deg, #ffdbcf 0%, #fff 100%);
+  color: var(--accent-brown);
+}
+
+html.app-route .ach-item-badge-wrap {
+  border-radius: 12px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 2px 8px rgba(27, 48, 34, 0.08);
+  border: 1px solid rgba(195, 200, 193, 0.55);
+}
+
+html.app-route .ach-item.active {
+  background: var(--accent-light);
+  border-color: rgba(212, 106, 67, 0.35);
+}
+
+html.app-route .ach-item.active .ach-title {
+  color: var(--stitch-primary);
+}
+
+html.app-route .ach-item.active .ach-sub {
+  color: var(--stitch-secondary);
+}
+
+/* Journey timeline — styling only, structure preserved */
+
+html.app-route .journey-story {
+  padding: var(--stitch-gutter-card);
+  border-radius: var(--stitch-radius-card);
+  border: 1px solid rgba(195, 200, 193, 0.45);
+  background: #fff;
+  box-shadow: var(--stitch-shadow-soft);
+}
+
+html.app-route .journey-story-title {
+  font-family: var(--stitch-font);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+html.app-route .journey-story-hero-copy,
+html.app-route .journey-story-line {
+  color: var(--color-text-secondary);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+
+html.app-route .journey-story-rank {
+  border-radius: 12px;
+  border: 1px solid rgba(195, 200, 193, 0.45);
+  background: var(--stitch-surface-muted);
+}
+
+html.app-route .journey-story-rank-label,
+html.app-route .journey-story-node-chapter {
+  color: var(--stitch-secondary);
+}
+
+html.app-route .journey-story-progress-bar {
+  background: var(--stitch-surface-container);
+}
+
+html.app-route .journey-story-progress-fill {
+  background: linear-gradient(90deg, var(--stitch-secondary-container) 0%, var(--stitch-secondary) 100%);
+}
+
+html.app-route .journey-story-spine {
+  background: linear-gradient(180deg, var(--stitch-secondary-container) 0%, rgba(27, 48, 34, 0.12) 100%);
+}
+
+html.app-route .journey-story-node-dot--completed {
+  border-color: var(--stitch-primary);
+  background: linear-gradient(135deg, var(--stitch-secondary-container) 0%, var(--stitch-primary) 100%);
+}
+
+html.app-route .journey-story-node-dot--current {
+  border-color: var(--accent);
+  background: var(--accent-light);
+  color: var(--accent-deep);
+  box-shadow: 0 0 0 4px rgba(212, 106, 67, 0.14);
+}
+
+html.app-route .journey-story-node-card--completed {
+  border: 1px solid rgba(195, 200, 193, 0.45);
+  background: #fff;
+  box-shadow: var(--stitch-shadow-soft);
+}
+
+html.app-route .journey-story-node-card--current {
+  border: 1px solid rgba(212, 106, 67, 0.28);
+  background: linear-gradient(180deg, var(--accent-light) 0%, #fff 100%);
+  box-shadow: var(--stitch-shadow-ambient);
+}
+
+html.app-route .journey-story-node-status--current {
+  color: var(--accent-deep);
+  background: rgba(212, 106, 67, 0.12);
+}
+
+html.app-route .journey-story-node-title {
+  font-family: var(--stitch-font);
+  color: var(--color-text-primary);
+}
+
+/* Plan map */
+
+html.app-route .mapbox {
+  border-radius: var(--stitch-radius-card);
+  border: 1px solid rgba(195, 200, 193, 0.45);
+  background:
+    radial-gradient(circle at 18% 78%, rgba(129, 153, 134, 0.14) 0%, transparent 36%),
+    radial-gradient(circle at 82% 24%, rgba(212, 106, 67, 0.08) 0%, transparent 32%),
+    linear-gradient(180deg, rgba(250, 249, 245, 0.98) 0%, rgba(244, 244, 240, 0.94) 100%);
+}
+
+/* Milestones / challenges */
+
+html.app-route .ms-challenge-card {
+  border-radius: var(--stitch-radius-card);
+  border: 1px solid rgba(195, 200, 193, 0.45);
+  box-shadow: var(--stitch-shadow-soft);
+}
+
+html.app-route .ms-challenge-card-bar-fill {
+  background: linear-gradient(90deg, var(--stitch-secondary-container) 0%, var(--stitch-secondary) 100%);
+}
+
+/* Profile & settings */
+
+html.app-route .profile-settings-btn,
+html.app-route .profile-dog-edit-icon {
+  border-color: rgba(195, 200, 193, 0.55);
+  color: var(--stitch-primary);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+html.app-route .profile-dog-link,
+html.app-route .settings-back,
+html.app-route .settings-row-action {
+  color: var(--accent-deep);
+}
+
+html.app-route .settings-row {
+  border-bottom-color: rgba(195, 200, 193, 0.35);
+}
+
+html.app-route .settings-row-title {
+  color: var(--color-text-primary);
+}
+
+html.app-route .settings-row-detail,
+html.app-route .settings-location-copy,
+html.app-route .settings-location-meta {
+  color: var(--color-text-secondary);
+}
+
+/* Quick action chips */
+
+html.app-route .chip {
+  border-radius: 12px;
+  border: 1px solid rgba(195, 200, 193, 0.45);
+  background: #fff;
+}
+
+html.app-route .home-quick-grid .home-quick-chip {
+  border-radius: var(--stitch-radius-card);
+}
+
+/* Contrast helpers */
+
+html.app-route .home-hero-compact-kicker,
+html.app-route .curated-adventure-meta {
+  color: var(--stitch-secondary);
+}
+
+html.app-route .curated-adventure-title,
+html.app-route .curated-adventure-place {
+  color: var(--color-text-primary);
+}
+
+html.app-route .curated-adventure-why {
+  color: var(--color-text-secondary);
+}

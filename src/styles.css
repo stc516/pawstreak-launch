@@ -10,7 +10,7 @@ button {
   font: inherit;
   color: inherit;
   cursor: pointer;
-  -webkit-tap-highlight-color: rgba(249, 115, 22, 0.14);
+  -webkit-tap-highlight-color: rgba(212, 106, 67, 0.14);
   touch-action: manipulation;
 }
 
@@ -20,7 +20,7 @@ button:disabled {
 
 .tap-target {
   touch-action: manipulation;
-  -webkit-tap-highlight-color: rgba(249, 115, 22, 0.14);
+  -webkit-tap-highlight-color: rgba(212, 106, 67, 0.14);
   transition: transform 0.12s ease, opacity 0.12s ease, box-shadow 0.15s ease;
 }
 
@@ -50,28 +50,47 @@ button:disabled {
   --serif: 'Literata', Georgia, serif;
   --sans: 'Plus Jakarta Sans', system-ui, sans-serif;
 
-  /* App palette — warm cream interior */
-  --color-background-primary: #fffdf9;
-  --color-background-secondary: #fff4ec;
-  --color-border-secondary: #f5dcc8;
-  --color-border-tertiary: #edd5c0;
-  --color-text-primary: #1c1410;
-  --color-text-secondary: #5c3d2e;
-  --color-text-tertiary: #8a6a56;
+  /* App palette — Heritage Adventure (Stitch) */
+  --color-background-primary: #faf9f5;
+  --color-background-secondary: #f4f4f0;
+  --color-border-secondary: rgba(195, 200, 193, 0.55);
+  --color-border-tertiary: #c3c8c1;
+  --color-text-primary: #1b1c1a;
+  --color-text-secondary: #434843;
+  --color-text-tertiary: #737973;
 
-  /* Orange accent system */
-  --accent: #f97316;
-  --accent-deep: #c2410c;
-  --accent-brown: #9a3412;
-  --accent-light: #fff4ec;
-  --accent-soft: #fff7ed;
-  --accent-border: #fed7aa;
-  --accent-chip: #fb923c;
-  --accent-warm: #fdba74;
-  --accent-pill: #ffedd5;
-  --accent-rgb: 249, 115, 22;
-  --accent-primary-gradient: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
-  --accent-primary-shadow: 0 4px 14px rgba(249, 115, 22, 0.24);
+  /* Terracotta accent system (Stitch secondary) */
+  --accent: #d46a43;
+  --accent-deep: #9e421e;
+  --accent-brown: #722200;
+  --accent-light: #ffdbcf;
+  --accent-soft: #f7f3e9;
+  --accent-border: rgba(212, 106, 67, 0.32);
+  --accent-chip: #fc895f;
+  --accent-warm: #ffb59c;
+  --accent-pill: #ffdbcf;
+  --accent-rgb: 212, 106, 67;
+  --accent-primary-gradient: linear-gradient(135deg, #fc895f 0%, #d46a43 100%);
+  --accent-primary-shadow: 0 4px 14px rgba(27, 48, 34, 0.14);
+
+  /* Stitch semantic tokens */
+  --stitch-font: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --stitch-primary: #1b3022;
+  --stitch-primary-dark: #061b0e;
+  --stitch-secondary: #9e421e;
+  --stitch-secondary-container: #fc895f;
+  --stitch-surface: #faf9f5;
+  --stitch-surface-muted: #f7f3e9;
+  --stitch-surface-container: #efeeea;
+  --stitch-outline-variant: #c3c8c1;
+  --stitch-page-margin: 24px;
+  --stitch-gutter-card: 16px;
+  --stitch-stack-sm: 8px;
+  --stitch-stack-md: 16px;
+  --stitch-stack-lg: 32px;
+  --stitch-radius-card: 16px;
+  --stitch-shadow-ambient: 0 20px 40px -15px rgba(27, 48, 34, 0.08);
+  --stitch-shadow-soft: 0 2px 12px rgba(27, 48, 34, 0.06);
 
   /* Category accents */
   --accent-beach: #0891b2;
@@ -91,15 +110,15 @@ button:disabled {
   --accent-neighborhood-border: #d6d3d1;
 
   /* Warm detail surfaces */
-  --color-surface-secondary: #fff7ed;
-  --color-surface-warm: #fff4ec;
-  --color-surface-sage: #f0fdf4;
-  --color-surface-sage-border: #bbf7d0;
+  --color-surface-secondary: #f4f4f0;
+  --color-surface-warm: #f7f3e9;
+  --color-surface-sage: #eef5ef;
+  --color-surface-sage-border: #b4cdb8;
   --color-border: var(--color-border-secondary);
-  --detail-shadow: 0 8px 24px rgba(154, 52, 18, 0.08);
-  --detail-shadow-soft: 0 2px 12px rgba(154, 52, 18, 0.06);
-  --app-scroll-gradient: linear-gradient(180deg, #fff9f4 0%, #fff7ed 46%, #fff9f4 100%);
-  --app-card-gradient: linear-gradient(180deg, #fffdf9 0%, #fff7ed 100%);
+  --detail-shadow: var(--stitch-shadow-ambient);
+  --detail-shadow-soft: var(--stitch-shadow-soft);
+  --app-scroll-gradient: linear-gradient(180deg, #faf9f5 0%, #f4f4f0 46%, #faf9f5 100%);
+  --app-card-gradient: linear-gradient(180deg, #ffffff 0%, #f4f4f0 100%);
 
   /* Outer stage (cinematic phone frame — warm charcoal) */
   --shell-stage-top: #2a221c;
@@ -132,14 +151,14 @@ button:disabled {
   --app-demo-feedback-block: calc(0.25rem + 0.5625rem + 0.375rem);
   --app-toast-offset: var(--app-nav-block);
 
-  /* App interior (warm cream — replaces dark espresso shell) */
-  --color-app-surface: #fff9f4;
-  --color-app-surface-elevated: #fff7ed;
-  --color-app-surface-nav: rgba(255, 250, 245, 0.94);
-  --color-app-text: #1c1410;
-  --color-app-text-muted: #5c3d2e;
-  --color-app-text-subtle: #7c5c48;
-  --color-app-border: rgba(249, 115, 22, 0.14);
+  /* App interior (Heritage cream) */
+  --color-app-surface: #faf9f5;
+  --color-app-surface-elevated: #f4f4f0;
+  --color-app-surface-nav: rgba(250, 249, 245, 0.82);
+  --color-app-text: #1b1c1a;
+  --color-app-text-muted: #434843;
+  --color-app-text-subtle: #737973;
+  --color-app-border: rgba(195, 200, 193, 0.55);
 }
 
 html,
