@@ -1,0 +1,1076 @@
+/* Stitch parity — layout + component structure (app routes; shell positioning unchanged) */
+
+/* ── Shared typography ── */
+
+html.app-route .st-display {
+  font-family: var(--stitch-font);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--stitch-primary);
+}
+
+html.app-route .st-headline-lg {
+  font-family: var(--stitch-font);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  color: var(--color-text-primary);
+}
+
+html.app-route .st-headline-md {
+  font-family: var(--stitch-font);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--color-text-primary);
+}
+
+html.app-route .st-body-md,
+html.app-route .st-body-lg {
+  font-family: var(--stitch-font);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: var(--color-text-secondary);
+}
+
+html.app-route .st-body-lg {
+  font-size: 1.0625rem;
+}
+
+html.app-route .st-label-lg {
+  font-family: var(--stitch-font);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--stitch-secondary);
+}
+
+html.app-route .st-label-sm {
+  font-family: var(--stitch-font);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+html.app-route .st-section-label {
+  font-family: var(--stitch-font);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--stitch-secondary);
+}
+
+/* ── Shared card system ── */
+
+html.app-route .st-card {
+  border-radius: var(--stitch-radius-card);
+  border: 1px solid rgba(195, 200, 193, 0.45);
+  background: #fff;
+  box-shadow: var(--stitch-shadow-soft);
+}
+
+html.app-route .st-card--surface {
+  background: var(--color-background-secondary);
+  border-color: rgba(195, 200, 193, 0.35);
+}
+
+html.app-route .st-card--elevated {
+  box-shadow: var(--stitch-shadow-ambient);
+}
+
+html.app-route .st-card--muted {
+  background: rgba(227, 226, 223, 0.35);
+  border-color: rgba(195, 200, 193, 0.3);
+}
+
+/* ── Shared app bar ── */
+
+html.app-route .st-appbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--stitch-stack-md);
+  padding: var(--stitch-stack-md) 0;
+}
+
+html.app-route .st-appbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--stitch-stack-md);
+}
+
+html.app-route .st-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--stitch-primary);
+  font-size: 1.25rem;
+}
+
+html.app-route .st-avatar-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem 0.25rem 0.25rem;
+  border: 1px solid rgba(195, 200, 193, 0.55);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+html.app-route .st-avatar-btn .dog-av {
+  width: 2rem;
+  height: 2rem;
+  font-size: 0.75rem;
+}
+
+html.app-route .st-avatar-btn .dog-names {
+  font-family: var(--stitch-font);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--stitch-primary);
+  max-width: 6rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+html.app-route .st-avatar-single {
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 2px solid var(--stitch-outline-variant);
+}
+
+/* ── Shared buttons ── */
+
+html.app-route .st-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: none;
+  font-family: var(--stitch-font);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+html.app-route .st-btn--primary {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border-radius: 999px;
+  background: var(--accent-primary-gradient);
+  color: #fff;
+  box-shadow: var(--accent-primary-shadow);
+  font-size: 0.8125rem;
+  letter-spacing: 0.02em;
+}
+
+html.app-route .st-btn--forest {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  background: var(--stitch-primary);
+  color: #fff;
+  font-size: 0.8125rem;
+}
+
+html.app-route .st-btn--ghost {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(27, 48, 34, 0.18);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--stitch-primary);
+  font-size: 0.8125rem;
+}
+
+html.app-route .st-section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--stitch-stack-md);
+  margin-bottom: var(--stitch-stack-md);
+}
+
+html.app-route .st-section-head .st-link-btn {
+  border: none;
+  background: none;
+  font-family: var(--stitch-font);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--stitch-secondary);
+  padding: 0;
+}
+
+html.app-route .st-hide-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+html.app-route .st-hide-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Bottom nav chrome ── */
+
+html.app-route .bnav--stitch {
+  border-radius: 1.5rem 1.5rem 0 0;
+}
+
+html.app-route .bnav--stitch .ni {
+  font-family: var(--stitch-font);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  gap: 0.25rem;
+}
+
+html.app-route .bnav--stitch .ni i {
+  font-size: 1.5rem;
+}
+
+html.app-route .bnav--stitch .ni.on {
+  color: var(--stitch-secondary);
+  font-weight: 700;
+}
+
+/* ── Home (Stitch layout) ── */
+
+html.app-route .home-screen--stitch {
+  display: flex;
+  flex-direction: column;
+  gap: var(--stitch-stack-lg);
+  padding-left: var(--stitch-page-margin);
+  padding-right: var(--stitch-page-margin);
+}
+
+html.app-route .home-screen--stitch .st-welcome-meta {
+  margin-top: var(--stitch-stack-sm);
+  font-family: var(--stitch-font);
+  font-size: 0.8125rem;
+  color: var(--color-text-tertiary);
+}
+
+html.app-route .st-hero-pick {
+  position: relative;
+}
+
+html.app-route .st-hero-pick-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 2rem;
+  background: var(--stitch-primary);
+  opacity: 0.08;
+  filter: blur(24px);
+  pointer-events: none;
+}
+
+html.app-route .st-hero-pick-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 2rem;
+  border: 1px solid rgba(233, 232, 228, 0.9);
+  background: #fff;
+  box-shadow: var(--stitch-shadow-ambient);
+}
+
+html.app-route .st-hero-pick-media {
+  position: relative;
+  height: 16rem;
+}
+
+html.app-route .st-hero-pick-media .card-img {
+  height: 100%;
+  border-radius: 0;
+}
+
+html.app-route .st-hero-pick-badge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-family: var(--stitch-font);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+html.app-route .st-hero-pick-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.5rem;
+}
+
+html.app-route .st-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+html.app-route .st-quick-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 0.5rem;
+  border-radius: var(--stitch-radius-card);
+  border: 1px solid rgba(239, 238, 234, 0.9);
+  background: var(--color-background-secondary);
+  color: var(--color-text-secondary);
+  font-family: var(--stitch-font);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+html.app-route .st-quick-tile i {
+  font-size: 1.375rem;
+  color: var(--stitch-secondary);
+}
+
+html.app-route .st-training-row-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 1.25rem;
+  border-radius: var(--stitch-radius-card);
+  border: 1px solid rgba(239, 238, 234, 0.9);
+  background: rgba(227, 226, 223, 0.35);
+  text-align: left;
+}
+
+html.app-route .st-training-row-main {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+html.app-route .st-training-row-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  background: var(--stitch-primary);
+  color: #fff;
+  font-size: 1.125rem;
+}
+
+html.app-route .st-training-row-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+html.app-route .st-curated-strip {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  margin-left: calc(-1 * var(--stitch-page-margin));
+  margin-right: calc(-1 * var(--stitch-page-margin));
+  padding-left: var(--stitch-page-margin);
+  padding-right: var(--stitch-page-margin);
+  padding-bottom: 0.5rem;
+}
+
+html.app-route .st-curated-tile {
+  flex: 0 0 auto;
+  width: 10rem;
+  border: none;
+  background: none;
+  padding: 0;
+  text-align: left;
+}
+
+html.app-route .st-curated-tile-photo {
+  height: 11rem;
+  border-radius: var(--stitch-radius-card);
+  overflow: hidden;
+  box-shadow: var(--stitch-shadow-soft);
+  margin-bottom: 0.75rem;
+}
+
+html.app-route .st-curated-tile-photo.card-img {
+  width: 100%;
+}
+
+html.app-route .st-curated-tile-name {
+  font-family: var(--stitch-font);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+html.app-route .st-curated-tile-meta {
+  font-family: var(--stitch-font);
+  font-size: 0.6875rem;
+  color: var(--color-text-tertiary);
+  margin-top: 0.125rem;
+}
+
+html.app-route .st-challenge-row {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  border-radius: var(--stitch-radius-card);
+  border: 1px solid rgba(233, 232, 228, 0.9);
+  background: var(--color-background-secondary);
+}
+
+html.app-route .st-challenge-row-icon {
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 999px;
+  background: rgba(212, 106, 67, 0.12);
+  font-size: 1.75rem;
+}
+
+html.app-route .st-challenge-row-badge {
+  position: absolute;
+  right: -0.25rem;
+  bottom: -0.25rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  background: var(--stitch-primary);
+  color: #fff;
+  font-family: var(--stitch-font);
+  font-size: 0.625rem;
+  font-weight: 700;
+}
+
+html.app-route .st-challenge-row-body {
+  flex: 1;
+  min-width: 0;
+}
+
+html.app-route .st-challenge-row-title {
+  font-family: var(--stitch-font);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+html.app-route .st-challenge-row-sub {
+  font-family: var(--stitch-font);
+  font-size: 0.6875rem;
+  color: var(--color-text-secondary);
+  margin-top: 0.125rem;
+}
+
+html.app-route .st-challenge-row-bar {
+  height: 0.375rem;
+  margin-top: 0.5rem;
+  border-radius: 999px;
+  background: var(--stitch-surface-container);
+  overflow: hidden;
+}
+
+html.app-route .st-challenge-row-bar-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--stitch-secondary-container) 0%, var(--stitch-secondary) 100%);
+}
+
+html.app-route .st-memory-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+html.app-route .st-memory-tile {
+  aspect-ratio: 1;
+  border: none;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  padding: 0;
+  background: var(--stitch-surface-container);
+}
+
+html.app-route .st-memory-tile .card-img {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+}
+
+/* ── Challenges / Milestones ── */
+
+html.app-route .ms-screen--stitch {
+  display: flex;
+  flex-direction: column;
+  gap: var(--stitch-stack-lg);
+  padding-left: var(--stitch-page-margin);
+  padding-right: var(--stitch-page-margin);
+}
+
+html.app-route .ms-challenge-card--stitch {
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(195, 200, 193, 0.35);
+  background: var(--stitch-surface-container);
+  box-shadow: var(--stitch-shadow-soft);
+}
+
+html.app-route .ms-challenge-card--stitch .ms-challenge-card-inner {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  width: 100%;
+  border: none;
+  background: none;
+  padding: 0;
+  text-align: left;
+  color: inherit;
+}
+
+html.app-route .ms-challenge-card--stitch .ms-challenge-card-content {
+  flex: 1;
+  min-width: 0;
+}
+
+html.app-route .ms-training-card--stitch .ms-training-card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+html.app-route .profile-dog-card--compact .profile-dog-card-footer {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+html.app-route .profile-dog-card--compact .profile-dog-card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+html.app-route .ms-challenge-card-inner {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+html.app-route .ms-challenge-card--stitch .ms-challenge-card-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 0.75rem;
+  background: var(--stitch-primary);
+  font-size: 1.75rem;
+}
+
+html.app-route .ms-challenge-card--stitch .ms-challenge-card-title {
+  font-family: var(--stitch-font);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+html.app-route .ms-challenge-card--stitch .ms-challenge-card-desc {
+  font-family: var(--stitch-font);
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  margin: 0.25rem 0 0.75rem;
+}
+
+html.app-route .ms-challenge-card--stitch .ms-challenge-card-bar {
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--stitch-surface-container-highest, #e3e2df);
+  overflow: hidden;
+}
+
+html.app-route .ms-challenge-card--stitch .ms-challenge-card-meta-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.25rem;
+  font-family: var(--stitch-font);
+  font-size: 0.6875rem;
+  color: var(--color-text-tertiary);
+}
+
+html.app-route .ms-challenge-card--stitch .ms-challenge-card-meta-row strong {
+  color: var(--stitch-secondary);
+  font-weight: 700;
+}
+
+html.app-route .st-enamel-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+html.app-route .st-enamel-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.875rem 0.75rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(195, 200, 193, 0.35);
+  background: #fff;
+  box-shadow: var(--stitch-shadow-soft);
+  text-align: center;
+}
+
+html.app-route .st-enamel-tile--locked {
+  opacity: 0.5;
+  filter: grayscale(0.4);
+}
+
+html.app-route .st-enamel-badge {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 5.5rem;
+  height: 6.25rem;
+  border-radius: 0.75rem 0.75rem 999px 999px;
+  background: var(--stitch-surface-muted);
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.45),
+    0 4px 8px rgba(27, 48, 34, 0.1);
+  overflow: hidden;
+}
+
+html.app-route .st-enamel-badge::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+html.app-route .st-enamel-badge-pin {
+  position: absolute;
+  top: 0.5rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+html.app-route .st-enamel-badge-emoji {
+  font-size: 2.125rem;
+  line-height: 1;
+}
+
+html.app-route .st-enamel-tile-title {
+  font-family: var(--stitch-font);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-text-primary);
+}
+
+html.app-route .ms-training-card--stitch {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(195, 200, 193, 0.25);
+  background: var(--color-background-secondary);
+}
+
+html.app-route .ms-training-card--stitch .ms-training-card-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 999px;
+  background: rgba(27, 48, 34, 0.08);
+  font-size: 1.25rem;
+}
+
+html.app-route .ms-training-card--stitch .ms-training-card-title {
+  font-family: var(--stitch-font);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+html.app-route .ms-training-card--stitch .ms-training-dots {
+  display: flex;
+  gap: 0.25rem;
+  margin-top: 0.375rem;
+}
+
+html.app-route .ms-training-card--stitch .ms-training-dot {
+  width: 0.75rem;
+  height: 0.25rem;
+  border-radius: 999px;
+  background: var(--stitch-outline-variant);
+}
+
+html.app-route .ms-training-card--stitch .ms-training-dot.on {
+  background: var(--stitch-secondary);
+}
+
+html.app-route .ms-training-card--stitch .ms-training-card-play {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: none;
+  border-radius: 999px;
+  background: var(--stitch-primary);
+  color: #fff;
+}
+
+/* ── Profile ── */
+
+html.app-route .profile-screen--stitch {
+  display: flex;
+  flex-direction: column;
+  gap: var(--stitch-stack-lg);
+  padding-left: var(--stitch-page-margin);
+  padding-right: var(--stitch-page-margin);
+}
+
+html.app-route .profile-dog-scroll {
+  display: flex;
+  gap: var(--stitch-stack-md);
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+html.app-route .profile-dog-card--compact {
+  flex: 0 0 auto;
+  min-width: 17.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: var(--stitch-gutter-card);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(195, 200, 193, 0.25);
+  background: var(--color-background-secondary);
+  box-shadow: var(--stitch-shadow-soft);
+}
+
+html.app-route .profile-dog-card--compact .profile-dog-avatar {
+  width: 4rem;
+  height: 4rem;
+  flex-shrink: 0;
+  border: 2px solid rgba(212, 106, 67, 0.25);
+}
+
+html.app-route .profile-dog-card--compact .profile-dog-card-name {
+  font-family: var(--stitch-font);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--stitch-primary);
+}
+
+html.app-route .profile-dog-card--compact .profile-dog-card-breed {
+  font-family: var(--stitch-font);
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+html.app-route .profile-dog-card--compact .profile-dog-card-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.25rem;
+  font-family: var(--stitch-font);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--stitch-secondary);
+}
+
+html.app-route .profile-dog-card--compact .profile-dog-edit-icon {
+  margin-left: auto;
+}
+
+html.app-route .profile-dog-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--stitch-stack-md);
+}
+
+html.app-route .profile-dog-stack .profile-dog-card--compact {
+  min-width: 0;
+  width: 100%;
+}
+
+html.app-route .profile-memory-bento {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+html.app-route .profile-memory-bento-item {
+  position: relative;
+  border: none;
+  border-radius: var(--stitch-radius-card);
+  overflow: hidden;
+  padding: 0;
+  min-height: 8rem;
+  background: var(--stitch-surface-container);
+}
+
+html.app-route .profile-memory-bento-item:first-child {
+  grid-row: span 2;
+  min-height: 16.5rem;
+}
+
+html.app-route .profile-memory-bento-item .card-img {
+  width: 100%;
+  height: 100%;
+  min-height: inherit;
+}
+
+html.app-route .profile-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--stitch-stack-md);
+}
+
+html.app-route .profile-stat-card--stitch {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem;
+  border-radius: var(--stitch-radius-card);
+  border: 1px solid rgba(195, 200, 193, 0.35);
+  background: #fff;
+  box-shadow: var(--stitch-shadow-soft);
+}
+
+html.app-route .profile-stat-card--stitch .profile-stat-value {
+  font-family: var(--stitch-font);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--stitch-primary);
+}
+
+html.app-route .profile-stat-card--stitch .profile-stat-label {
+  font-family: var(--stitch-font);
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+/* ── Settings ── */
+
+html.app-route .settings-screen--stitch {
+  display: flex;
+  flex-direction: column;
+  gap: var(--stitch-stack-lg);
+  padding-left: var(--stitch-page-margin);
+  padding-right: var(--stitch-page-margin);
+}
+
+html.app-route .settings-screen-header--stitch {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  margin-left: calc(-1 * var(--stitch-page-margin));
+  margin-right: calc(-1 * var(--stitch-page-margin));
+  padding: var(--stitch-stack-md) var(--stitch-page-margin);
+  background: rgba(250, 249, 245, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+html.app-route .settings-back--stitch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--stitch-primary);
+  font-size: 1.25rem;
+}
+
+html.app-route .settings-summary-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: var(--stitch-gutter-card);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(195, 200, 193, 0.25);
+  background: #fff;
+  box-shadow: 0 8px 30px rgba(27, 48, 34, 0.05);
+}
+
+html.app-route .settings-summary-avatar {
+  position: relative;
+  flex-shrink: 0;
+}
+
+html.app-route .settings-summary-avatar .profile-dog-avatar {
+  width: 4rem;
+  height: 4rem;
+}
+
+html.app-route .settings-summary-edit {
+  position: absolute;
+  right: -0.125rem;
+  bottom: -0.125rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.375rem;
+  height: 1.375rem;
+  border-radius: 999px;
+  background: var(--stitch-secondary);
+  color: #fff;
+  font-size: 0.75rem;
+}
+
+html.app-route .settings-group--stitch {
+  overflow: hidden;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(195, 200, 193, 0.15);
+  background: var(--color-background-secondary);
+  padding: 0;
+}
+
+html.app-route .settings-row--stitch {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  padding: var(--stitch-gutter-card);
+  border: none;
+  border-bottom: 1px solid rgba(195, 200, 193, 0.15);
+  background: #fff;
+  text-align: left;
+}
+
+html.app-route .settings-row--stitch:last-child {
+  border-bottom: none;
+}
+
+html.app-route .settings-row--stitch .settings-row-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.625rem;
+  background: rgba(27, 48, 34, 0.08);
+  color: var(--stitch-primary);
+  font-size: 1.125rem;
+}
+
+html.app-route .settings-row--stitch .settings-row-main {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  min-width: 0;
+}
+
+html.app-route .settings-row--stitch .settings-row-title {
+  font-family: var(--stitch-font);
+  font-size: 1.0625rem;
+  color: var(--color-text-primary);
+}
+
+html.app-route .settings-row--stitch .settings-row-detail {
+  font-family: var(--stitch-font);
+  font-size: 0.6875rem;
+  color: var(--color-text-secondary);
+  margin-top: 0.125rem;
+}
+
+html.app-route .settings-signout--stitch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(186, 26, 26, 0.2);
+  background: rgba(255, 218, 214, 0.35);
+  color: #ba1a1a;
+  font-family: var(--stitch-font);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+html.app-route .settings-location-group--stitch {
+  padding: var(--stitch-gutter-card);
+  background: #fff;
+}
+
+html.app-route .settings-section--signout {
+  padding-bottom: var(--stitch-stack-lg);
+}
+
+html.app-route .settings-signout--stitch:disabled {
+  opacity: 0.72;
+  cursor: not-allowed;
+}
+
+html.app-route .settings-signout-note {
+  margin-top: 0.75rem;
+  text-align: center;
+  color: var(--color-text-tertiary);
+}
+
+html.app-route .settings-screen--stitch {
+  padding-bottom: calc(var(--stitch-stack-lg) * 2);
+}
+
+/* ── Plan (styling only) ── */
+
+html.app-route .plan-screen .mapbox {
+  box-shadow: var(--stitch-shadow-ambient);
+}
+
+html.app-route .plan-screen .plan-box,
+html.app-route .plan-screen .plan-detail-card {
+  border-radius: var(--stitch-radius-card);
+  border: 1px solid rgba(195, 200, 193, 0.45);
+  box-shadow: var(--stitch-shadow-soft);
+}
+
+html.app-route .plan-screen .plan-pin {
+  box-shadow: 0 4px 12px rgba(27, 48, 34, 0.12);
+}

@@ -6,12 +6,14 @@ interface AchievementIdentityCardProps {
   achievement: Achievement
   onClick: () => void
   compact?: boolean
+  variant?: 'default' | 'bento'
 }
 
 export function AchievementIdentityCard({
   achievement,
   onClick,
   compact = false,
+  variant = 'default',
 }: AchievementIdentityCardProps) {
   const statusLabel =
     achievement.status === 'done'
@@ -19,6 +21,25 @@ export function AchievementIdentityCard({
       : achievement.status === 'active'
         ? 'In progress'
         : 'Locked'
+
+  if (variant === 'bento') {
+    const locked = achievement.status === 'locked'
+    return (
+      <button
+        type="button"
+        className={`st-enamel-tile identity-card identity-card--tap identity-card--${achievement.status} tap-target${locked ? ' st-enamel-tile--locked' : ''}`}
+        onClick={onClick}
+      >
+        <div className="st-enamel-badge">
+          <span className="st-enamel-badge-pin" aria-hidden="true" />
+          <span className="st-enamel-badge-emoji" aria-hidden="true">
+            {achievement.emoji}
+          </span>
+        </div>
+        <span className="st-enamel-tile-title">{locked ? 'Locked' : achievement.title}</span>
+      </button>
+    )
+  }
 
   return (
     <button

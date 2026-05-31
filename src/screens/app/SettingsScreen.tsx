@@ -1,4 +1,5 @@
 import type { AppState } from '../../data/demo'
+import { getDisplayDogLabel, getProfileDogs } from '../../lib/profileDisplay'
 
 interface SettingsScreenProps {
   state: AppState
@@ -11,13 +12,15 @@ interface SettingsScreenProps {
   onSignOut?: () => Promise<void>
 }
 
-function SettingsRow({
+function SettingsIconRow({
+  icon,
   title,
   detail,
   action,
   disabled,
   onClick,
 }: {
+  icon: string
   title: string
   detail?: string
   action?: string
@@ -26,24 +29,34 @@ function SettingsRow({
 }) {
   const content = (
     <>
-      <span className="settings-row-copy">
-        <span className="settings-row-title">{title}</span>
-        {detail ? <span className="settings-row-detail">{detail}</span> : null}
-      </span>
+      <div className="settings-row-main">
+        <span className="settings-row-icon">
+          <i className={`ti ${icon}`} aria-hidden="true" />
+        </span>
+        <span className="settings-row-copy">
+          <span className="settings-row-title">{title}</span>
+          {detail ? <span className="settings-row-detail">{detail}</span> : null}
+        </span>
+      </div>
       {action ? <span className="settings-row-action">{action}</span> : null}
+      {!action && onClick && !disabled ? (
+        <i className="ti ti-chevron-right settings-row-action" aria-hidden="true" />
+      ) : null}
     </>
   )
 
   if (onClick && !disabled) {
     return (
-      <button type="button" className="settings-row tap-target" onClick={onClick}>
+      <button type="button" className="settings-row settings-row--stitch tap-target" onClick={onClick}>
         {content}
       </button>
     )
   }
 
   return (
-    <div className={`settings-row settings-row--static${disabled ? ' settings-row--muted' : ''}`}>
+    <div
+      className={`settings-row settings-row--stitch settings-row--static${disabled ? ' settings-row--muted' : ''}`}
+    >
       {content}
     </div>
   )
@@ -59,6 +72,9 @@ export function SettingsScreen({
   onManageDogs,
   onSignOut,
 }: SettingsScreenProps) {
+  const profileDogs = getProfileDogs(state)
+  const packLabel = getDisplayDogLabel(state)
+  const leadDog = profileDogs[0]
   const accountDetail = isDemoMode
     ? 'Demo mode — sign in on pawstreakapp.com/app for a real account.'
     : accountEmail
@@ -66,28 +82,57 @@ export function SettingsScreen({
       : 'Your account details appear here after sign-in.'
 
   return (
-    <div className="settings-screen">
-      <div className="aheader settings-screen-header">
-        <button type="button" className="settings-back tap-target" onClick={onBack}>
-          <i className="ti ti-chevron-left" aria-hidden="true" />
-          Profile
-        </button>
-        <div className="alogo settings-screen-title">Settings</div>
-        <span className="settings-header-spacer" aria-hidden="true" />
-      </div>
+    <div className="settings-screen settings-screen--stitch">
+      <header className="st-appbar settings-screen-header settings-screen-header--stitch">
+        <div className="st-appbar-actions">
+          <button type="button" className="settings-back settings-back--stitch tap-target" onClick={onBack}>
+            <i className="ti ti-arrow-left" aria-hidden="true" />
+          </button>
+          <div className="st-headline-md settings-screen-title">Settings</div>
+        </div>
+        {leadDog ? (
+          <div className="st-avatar-single">
+            <div className={`dog-av ${leadDog.avatarClass}`}>
+              {leadDog.photoUrl ? (
+                <img src={leadDog.photoUrl} alt="" className="dog-av-img" />
+              ) : (
+                leadDog.initial
+              )}
+            </div>
+          </div>
+        ) : (
+          <span className="settings-header-spacer" aria-hidden="true" />
+        )}
+      </header>
 
-      <section className="settings-section">
-        <h2 className="settings-section-label">Account</h2>
-        <div className="settings-group detail-card-warm">
-          <SettingsRow title="Account" detail={accountDetail} />
+      <section className="settings-summary-card">
+        <div className="settings-summary-avatar">
+          {leadDog ? (
+            <div className={`profile-dog-avatar ${leadDog.circleClass}`}>
+              {leadDog.photoUrl ? (
+                <img src={leadDog.photoUrl} alt="" className="profile-dog-avatar-img" />
+              ) : (
+                <span className="profile-dog-avatar-emoji">{leadDog.profileEmoji}</span>
+              )}
+            </div>
+          ) : null}
+          <span className="settings-summary-edit" aria-hidden="true">
+            <i className="ti ti-pencil" />
+          </span>
+        </div>
+        <div>
+          <h2 className="st-headline-md">{packLabel}</h2>
+          <p className="st-body-md">{accountDetail}</p>
         </div>
       </section>
 
       <section className="settings-section">
-        <h2 className="settings-section-label">Notifications</h2>
-        <div className="settings-group detail-card-warm">
-          <SettingsRow
-            title="Adventure reminders"
+        <h2 className="st-section-label settings-section-label">Account &amp; Security</h2>
+        <div className="settings-group settings-group--stitch">
+          <SettingsIconRow icon="ti-user" title="Account" detail={accountDetail} />
+          <SettingsIconRow
+            icon="ti-bell"
+            title="Notifications"
             detail="Push and email reminders are coming soon."
             action="Soon"
             disabled
@@ -96,8 +141,8 @@ export function SettingsScreen({
       </section>
 
       <section className="settings-section">
-        <h2 className="settings-section-label">Location / ZIP</h2>
-        <div className="settings-group detail-card-warm settings-location-group">
+        <h2 className="st-section-label settings-section-label">Location / ZIP</h2>
+        <div className="settings-group settings-group--stitch settings-location-group settings-location-group--stitch">
           <p className="settings-location-copy">
             Update your ZIP to refresh nearby adventures and map pins.
           </p>
@@ -119,27 +164,29 @@ export function SettingsScreen({
       </section>
 
       <section className="settings-section">
-        <h2 className="settings-section-label">Dog profiles</h2>
-        <div className="settings-group detail-card-warm">
-          <SettingsRow
+        <h2 className="st-section-label settings-section-label">Dog profiles</h2>
+        <div className="settings-group settings-group--stitch">
+          <SettingsIconRow
+            icon="ti-paw"
             title="Manage dogs"
             detail="Edit names, breeds, and remove dogs from your pack."
-            action="Open"
             onClick={onManageDogs}
           />
         </div>
       </section>
 
       <section className="settings-section">
-        <h2 className="settings-section-label">Privacy / Terms</h2>
-        <div className="settings-group detail-card-warm">
-          <SettingsRow
+        <h2 className="st-section-label settings-section-label">Privacy</h2>
+        <div className="settings-group settings-group--stitch">
+          <SettingsIconRow
+            icon="ti-shield"
             title="Privacy policy"
             detail="Full policy publishing soon."
             action="Soon"
             disabled
           />
-          <SettingsRow
+          <SettingsIconRow
+            icon="ti-file-text"
             title="Terms of service"
             detail="Full terms publishing soon."
             action="Soon"
@@ -148,11 +195,20 @@ export function SettingsScreen({
         </div>
       </section>
 
-      {onSignOut ? (
-        <button type="button" className="settings-signout tap-target" onClick={() => void onSignOut()}>
+      <section className="settings-section settings-section--signout">
+        <button
+          type="button"
+          className="settings-signout settings-signout--stitch tap-target"
+          disabled={!onSignOut}
+          onClick={() => onSignOut && void onSignOut()}
+        >
+          <i className="ti ti-logout" aria-hidden="true" />
           Sign out
         </button>
-      ) : null}
+        {!onSignOut ? (
+          <p className="settings-signout-note st-body-md">Sign in on pawstreakapp.com/app to enable sign out.</p>
+        ) : null}
+      </section>
     </div>
   )
 }

@@ -8,7 +8,10 @@ import {
   getDogBreedLabel,
   getProfileDogs,
 } from '../../lib/profileDisplay'
+import { getHomeProgressStats } from '../../lib/homeStats'
+import { getJourneyEntryDisplayImageUrl } from '../../lib/adventureDisplayImage'
 import { CardImage } from '../../components/CardImage'
+import { AchievementIdentityCard } from '../../components/AchievementIdentityCard'
 import { getMagicLine, getPlaceById } from '../../data/places'
 import { SettingsScreen } from './SettingsScreen'
 
@@ -45,6 +48,7 @@ interface DogCardProps {
   onSetActive?: () => void
   identities: Achievement[]
   onOpenAchievement?: (achievementId: string) => void
+  compact?: boolean
 }
 
 function DogCard({
@@ -64,9 +68,11 @@ function DogCard({
   onSetActive,
   identities,
   onOpenAchievement,
+  compact = false,
 }: DogCardProps) {
   const breed = getDogBreedLabel(dog)
   const age = getDogAgeLabel(dog)
+  const topIdentity = identities.find((item) => item.status === 'done') ?? identities[0]
 
   if (isEditing) {
     return (
@@ -120,6 +126,57 @@ function DogCard({
             Cancel
           </button>
         </div>
+      </article>
+    )
+  }
+
+  if (compact) {
+    return (
+      <article className="profile-dog-card profile-dog-card--compact">
+        <div className={`profile-dog-avatar ${dog.circleClass}`}>
+          {dog.photoUrl ? (
+            <img src={dog.photoUrl} alt="" className="profile-dog-avatar-img" />
+          ) : (
+            <span className="profile-dog-avatar-emoji">{dog.profileEmoji}</span>
+          )}
+        </div>
+        <div className="profile-dog-card-body">
+          <div className="profile-dog-card-title-row">
+            <h3 className="profile-dog-card-name">{dog.name}</h3>
+            {isActive ? <span className="profile-dog-active-badge">Active</span> : null}
+          </div>
+          <p className="profile-dog-card-breed">
+            {[age, breed || 'Mixed breed'].filter(Boolean).join(' · ')}
+          </p>
+          {topIdentity ? (
+            <div className="profile-dog-card-tag">
+              <i className="ti ti-heart-filled" aria-hidden="true" />
+              {topIdentity.title}
+            </div>
+          ) : null}
+          <div className="profile-dog-card-footer">
+            {!isActive && onSetActive ? (
+              <button type="button" className="profile-dog-link tap-target" onClick={onSetActive}>
+                Set active
+              </button>
+            ) : null}
+            <button
+              type="button"
+              className="profile-dog-link profile-dog-link--danger tap-target"
+              onClick={onRequestRemove}
+            >
+              Remove
+            </button>
+          </div>
+        </div>
+        <button
+          type="button"
+          className="profile-dog-edit-icon tap-target"
+          aria-label={`Edit ${dog.name}`}
+          onClick={onBeginEdit}
+        >
+          <i className="ti ti-pencil" aria-hidden="true" />
+        </button>
       </article>
     )
   }
@@ -257,6 +314,21 @@ export function ProfileScreen({
 
   const isLastDog = profileDogs.length === 1
   const memoryCount = state.journeyEntries.length
+  const progress = getHomeProgressStats(state)
+  const recentMemories = state.journeyEntries.slice(0, 3)
+  const packIdentities = useMemo(() => {
+    const seen = new Set<string>()
+    const items: Achievement[] = []
+    for (const dog of profileDogs) {
+      for (const identity of resolveIdentitiesForDog(state, dog)) {
+        if (seen.has(identity.id)) continue
+        seen.add(identity.id)
+        items.push(identity)
+      }
+    }
+    return items.slice(0, 4)
+  }, [profileDogs, state])
+  const editingDog = editingDogId ? profileDogs.find((dog) => dog.id === editingDogId) : null
 
   if (showSettings && onZipChange && onApplyLocation) {
     return (
@@ -279,46 +351,82 @@ export function ProfileScreen({
   }
 
   return (
-    <div className="profile-screen">
-      <div className="aheader profile-screen-header">
-        <div>
-          <div className="alogo">Profile</div>
-          <p className="profile-screen-sub">{packLabel}</p>
+    <div className="profile-screen profile-screen--stitch">
+      <header className="st-appbar profile-screen-header">
+        <div className="st-appbar-actions">
+          {profileDogs[0] ? (
+            <div className="st-avatar-single">
+              <div className={`dog-av ${profileDogs[0].avatarClass}`}>
+                {profileDogs[0].photoUrl ? (
+                  <img src={profileDogs[0].photoUrl} alt="" className="dog-av-img" />
+                ) : (
+                  profileDogs[0].initial
+                )}
+              </div>
+            </div>
+          ) : null}
+          <div>
+            <div className="st-headline-md alogo">{packLabel}</div>
+            {memoryCount > 0 ? (
+              <p className="profile-screen-sub st-body-md">
+                {memoryCount} {memoryCount === 1 ? 'memory' : 'memories'}
+              </p>
+            ) : null}
+          </div>
         </div>
         {onZipChange && onApplyLocation ? (
           <button
             type="button"
-            className="profile-settings-btn tap-target"
+            className="st-icon-btn profile-settings-btn tap-target"
             aria-label="Open settings"
             onClick={() => setShowSettings(true)}
           >
             <i className="ti ti-settings" aria-hidden="true" />
           </button>
         ) : null}
-      </div>
-
-      {memoryCount > 0 ? (
-        <p className="profile-summary-line">
-          {memoryCount} {memoryCount === 1 ? 'memory' : 'memories'}
-        </p>
-      ) : null}
+      </header>
 
       <section className="profile-section" ref={dogListRef}>
         {profileDogs.length === 0 ? (
-          <div className="journey-empty detail-card-warm">
+          <div className="journey-empty st-card st-card--elevated">
             <div className="journey-empty-title">Add your dog</div>
             <div className="journey-empty-body">
               Your pack profile will show up here once you add your dog.
             </div>
           </div>
+        ) : editingDog ? (
+          <DogCard
+            key={editingDog.id}
+            dog={editingDog}
+            isActive={
+              state.activeDogId === editingDog.id ||
+              (profileDogs.length === 1 && !state.activeDogId)
+            }
+            isEditing
+            draftName={draftName}
+            draftBreed={draftBreed}
+            draftAge={draftAge}
+            onDraftNameChange={setDraftName}
+            onDraftBreedChange={setDraftBreed}
+            onDraftAgeChange={setDraftAge}
+            onBeginEdit={() => beginEdit(editingDog)}
+            onCancelEdit={cancelEdit}
+            onSaveEdit={() => saveEdit(editingDog.id)}
+            onRequestRemove={() => setRemoveTarget(editingDog)}
+            identities={identitiesByDog[editingDog.id] ?? []}
+            onOpenAchievement={onOpenAchievement}
+          />
         ) : (
-          <div className="profile-dog-list">
+          <div className="profile-dog-stack">
             {profileDogs.map((dog) => (
               <DogCard
                 key={dog.id}
                 dog={dog}
-                isActive={state.activeDogId === dog.id || (profileDogs.length === 1 && !state.activeDogId)}
-                isEditing={editingDogId === dog.id}
+                compact
+                isActive={
+                  state.activeDogId === dog.id || (profileDogs.length === 1 && !state.activeDogId)
+                }
+                isEditing={false}
                 draftName={draftName}
                 draftBreed={draftBreed}
                 draftAge={draftAge}
@@ -330,9 +438,7 @@ export function ProfileScreen({
                 onSaveEdit={() => saveEdit(dog.id)}
                 onRequestRemove={() => setRemoveTarget(dog)}
                 onSetActive={
-                  state.activeDogId !== dog.id
-                    ? () => onSetActiveDog?.(dog.id)
-                    : undefined
+                  state.activeDogId !== dog.id ? () => onSetActiveDog?.(dog.id) : undefined
                 }
                 identities={identitiesByDog[dog.id] ?? []}
                 onOpenAchievement={onOpenAchievement}
@@ -340,6 +446,76 @@ export function ProfileScreen({
             ))}
           </div>
         )}
+      </section>
+
+      {packIdentities.length > 0 ? (
+        <section className="profile-section">
+          <div className="st-section-head">
+            <h2 className="st-headline-lg">Earned Tags</h2>
+          </div>
+          <div className="st-enamel-grid">
+            {packIdentities.map((achievement) => (
+              <AchievementIdentityCard
+                key={achievement.id}
+                achievement={achievement}
+                variant="bento"
+                onClick={() => onOpenAchievement?.(achievement.id)}
+              />
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {recentMemories.length > 0 ? (
+        <section className="profile-section">
+          <div className="st-section-head">
+            <h2 className="st-headline-lg">Recent Memories</h2>
+          </div>
+          <div className="profile-memory-bento">
+            {recentMemories.map((entry) => {
+              const place = entry.placeId ? getPlaceById(entry.placeId) : undefined
+              const imageUrl = getJourneyEntryDisplayImageUrl(state.journeyEntries, entry)
+              return (
+                <button
+                  key={entry.id}
+                  type="button"
+                  className="profile-memory-bento-item tap-target"
+                  aria-label={entry.place}
+                >
+                  <CardImage
+                    imageUrl={imageUrl}
+                    imageAlt={entry.place}
+                    imageTone={place?.imageTone ?? 'warm'}
+                  />
+                </button>
+              )
+            })}
+          </div>
+        </section>
+      ) : null}
+
+      <section className="profile-section">
+        <div className="st-section-head">
+          <h2 className="st-headline-lg">Your Stats</h2>
+        </div>
+        <div className="profile-stats-grid">
+          <div className="profile-stat-card profile-stat-card--stitch">
+            <div className="profile-stat-value">{progress.streak}</div>
+            <div className="profile-stat-label">day streak</div>
+          </div>
+          <div className="profile-stat-card profile-stat-card--stitch">
+            <div className="profile-stat-value">{progress.adventuresCompleted}</div>
+            <div className="profile-stat-label">adventures</div>
+          </div>
+          <div className="profile-stat-card profile-stat-card--stitch">
+            <div className="profile-stat-value">{progress.memoriesSaved}</div>
+            <div className="profile-stat-label">memories</div>
+          </div>
+          <div className="profile-stat-card profile-stat-card--stitch">
+            <div className="profile-stat-value">{progress.places}</div>
+            <div className="profile-stat-label">places</div>
+          </div>
+        </div>
       </section>
 
       <section className="profile-section profile-settings-section">

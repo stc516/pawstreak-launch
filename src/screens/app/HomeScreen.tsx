@@ -2,13 +2,13 @@ import { useMemo } from 'react'
 import type { AppState } from '../../data/demo'
 import { getDisplayDogLabel, getProfileDogs } from '../../lib/profileDisplay'
 import {
+  getHeroEyebrow,
   getHeroFitLine,
-  getHomeHeadline,
+  getHomeWelcomeGreeting,
   getMemoryWarmLabel,
 } from '../../lib/homeCopy'
 import { getFeaturedChallenge, resolveJoinedChallenges } from '../../lib/challengeEngine'
 import { getHomeProgressStats } from '../../lib/homeStats'
-import { getFeaturedTrainingProgram } from '../../lib/trainingEngine'
 import { getMapPreviewPlaces } from '../../lib/planDiscovery'
 import { getPlanMagicMeta } from '../../data/places'
 import { CardImage } from '../../components/CardImage'
@@ -34,10 +34,11 @@ interface HomeScreenProps {
   onGoToChallenges: () => void
 }
 
-const SECONDARY_QUICK_ACTIONS = [
-  { id: 'beach', label: 'Beach', emoji: '🏖️', activityId: 'beach' },
-  { id: 'trail', label: 'Trail', emoji: '🌲', activityId: 'trail' },
-  { id: 'training', label: 'Training', emoji: '🎓', kind: 'training' as const },
+const QUICK_GRID_ACTIONS = [
+  { id: 'walk', label: 'Walk', icon: 'ti-walk', handler: 'walk' as const },
+  { id: 'adventure', label: 'Adventure', icon: 'ti-compass', handler: 'adventure' as const },
+  { id: 'beach', label: 'Beach', icon: 'ti-beach', handler: 'beach' as const },
+  { id: 'trail', label: 'Trail', icon: 'ti-trees', handler: 'trail' as const },
 ] as const
 
 export function HomeScreen({
@@ -48,10 +49,10 @@ export function HomeScreen({
   onOpenProfile,
   onOpenChallenge,
   onJoinChallenge,
-  onOpenTrainingProgram,
+  onOpenTrainingProgram: _onOpenTrainingProgram,
   onOpenMemory,
   onGoToPlan,
-  onGoToChallenges,
+  onGoToChallenges: _onGoToChallenges,
 }: HomeScreenProps) {
   const profileDogs = getProfileDogs(state)
   const dogLabel = getDisplayDogLabel(state)
@@ -63,32 +64,31 @@ export function HomeScreen({
   const joinedChallenges = useMemo(() => resolveJoinedChallenges(state), [state])
   const activeChallenge = joinedChallenges[0]
   const curatedChallenge = useMemo(() => getFeaturedChallenge(state), [state])
-  const featuredTraining = useMemo(() => getFeaturedTrainingProgram(state), [state])
   const curatedPlaces = useMemo(
     () => getMapPreviewPlaces(getRecommendationPrefs(state)),
     [state],
   )
   const recentMemories = state.journeyEntries.slice(0, 3)
+  const welcomeGreeting = getHomeWelcomeGreeting()
+  const heroEyebrow = getHeroEyebrow(dogLabel, dogCount)
 
   const handleStartHeroAdventure = () => {
     onSelectActivity(heroActivityId)
     onStartAdventure(heroPlace.id, 'Open end')
   }
 
-  const handleSecondaryQuickAction = (action: (typeof SECONDARY_QUICK_ACTIONS)[number]) => {
-    if ('kind' in action && action.kind === 'training') {
-      if (featuredTraining) {
-        onOpenTrainingProgram(featuredTraining.id)
-      } else {
-        onGoToChallenges()
-      }
+  const handleQuickGridAction = (handler: (typeof QUICK_GRID_ACTIONS)[number]['handler']) => {
+    if (handler === 'walk') {
+      onStartNeighborhoodWalk()
       return
     }
-
-    if (!('activityId' in action)) return
-
-    onSelectActivity(action.activityId)
-    const place = getHeroPlace(action.activityId, getRecommendationPrefs(state))
+    if (handler === 'adventure') {
+      handleStartHeroAdventure()
+      return
+    }
+    const activityId = handler === 'beach' ? 'beach' : 'trail'
+    onSelectActivity(activityId)
+    const place = getHeroPlace(activityId, getRecommendationPrefs(state))
     onStartAdventure(place.id, 'Open end')
   }
 
@@ -104,181 +104,193 @@ export function HomeScreen({
     !activeChallenge && curatedChallenge && !curatedChallenge.progress.joined
 
   return (
-    <div className="home-screen home-screen--depth home-screen--compact">
-      <div className="aheader home-screen-header">
-        <div className="alogo home-logo">
+    <div className="home-screen home-screen--stitch">
+      <header className="st-appbar home-screen-header">
+        <div className="st-display alogo home-logo">
           Paw<span>Streak</span>
         </div>
-        <button type="button" className="two-dogs tap-target home-dog-pill" onClick={onOpenProfile}>
-          {profileDogs.map((dog) => (
-            <div key={dog.id} className={`dog-av ${dog.avatarClass}`}>
-              {dog.photoUrl ? (
-                <img src={dog.photoUrl} alt="" className="dog-av-img" />
-              ) : (
-                dog.initial
-              )}
-            </div>
-          ))}
-          <span className="dog-names">{dogLabel}</span>
-        </button>
-      </div>
+        <div className="st-appbar-actions">
+          <button
+            type="button"
+            className="st-icon-btn tap-target"
+            aria-label="Open profile and settings"
+            onClick={onOpenProfile}
+          >
+            <i className="ti ti-settings" aria-hidden="true" />
+          </button>
+          <button type="button" className="st-avatar-btn tap-target home-dog-pill" onClick={onOpenProfile}>
+            {profileDogs.slice(0, 2).map((dog) => (
+              <div key={dog.id} className={`dog-av ${dog.avatarClass}`}>
+                {dog.photoUrl ? (
+                  <img src={dog.photoUrl} alt="" className="dog-av-img" />
+                ) : (
+                  dog.initial
+                )}
+              </div>
+            ))}
+            {profileDogs.length > 0 ? (
+              <span className="dog-names">{dogLabel}</span>
+            ) : null}
+          </button>
+        </div>
+      </header>
 
       {!state.locationSupported ? (
-        <div className="home-area-fallback detail-card-warm">
+        <div className="home-area-fallback st-card st-card--elevated">
           We&apos;re still building your area. Suggested adventures are ready below.
         </div>
       ) : null}
 
-      <p className="home-headline home-headline--compact">{getHomeHeadline(dogLabel, dogCount)}</p>
-
-      <section className="home-progress home-progress--compact detail-card-warm" aria-label="Your progress">
-        <div className="home-progress-stat">
-          <div className="home-progress-value">{progress.streak}</div>
-          <div className="home-progress-label">day streak</div>
-        </div>
-        <div className="home-progress-stat">
-          <div className="home-progress-value">{progress.adventuresCompleted}</div>
-          <div className="home-progress-label">adventures</div>
-        </div>
-        <div className="home-progress-stat">
-          <div className="home-progress-value">{progress.memoriesSaved}</div>
-          <div className="home-progress-label">memories</div>
-        </div>
+      <section className="st-welcome">
+        <h2 className="st-headline-lg home-headline">
+          {welcomeGreeting},
+          <br />
+          {dogLabel}
+        </h2>
+        <p className="st-welcome-meta">
+          {progress.streak} day streak · {progress.adventuresCompleted} adventures ·{' '}
+          {progress.memoriesSaved} memories
+        </p>
       </section>
 
-      <section className="home-quick home-quick--compact" aria-label="Quick start">
-        <div className="home-section-label">Quick start</div>
-        <div className="home-quick-primary">
-          <button
-            type="button"
-            className="home-quick-primary-btn tap-target"
-            onClick={onStartNeighborhoodWalk}
-          >
-            <span aria-hidden="true">🏘️</span>
-            Quick Walk
-          </button>
-          <button
-            type="button"
-            className="home-quick-primary-btn home-quick-primary-btn--accent tap-target"
-            onClick={handleStartHeroAdventure}
-          >
-            <span aria-hidden="true">✨</span>
-            Quick Adventure
-          </button>
-        </div>
-        <div className="home-action-strip">
-          {SECONDARY_QUICK_ACTIONS.map((action) => (
+      <section className="st-hero-pick home-hero" aria-label="Today's adventure">
+        <div className="st-hero-pick-glow" aria-hidden="true" />
+        <div className="st-hero-pick-card">
+          <div className="st-hero-pick-media">
+            <CardImage
+              className="home-hero-compact-photo"
+              imageUrl={heroImageUrl}
+              imageAlt={heroPlace.imageAlt ?? heroPlace.name}
+              imageTone={heroPlace.imageTone ?? 'warm'}
+            />
+            <span className="st-hero-pick-badge">{heroEyebrow}</span>
+          </div>
+          <div className="st-hero-pick-body">
+            <h3 className="st-headline-md home-hero-compact-title">{heroPlace.name}</h3>
+            <p className="st-body-md home-hero-compact-copy">
+              {getHeroFitLine(heroPlace, profileDogs)}
+            </p>
             <button
-              key={action.id}
               type="button"
-              className="home-action-chip tap-target"
-              onClick={() => handleSecondaryQuickAction(action)}
+              className="st-btn st-btn--primary home-hero-compact-cta tap-target"
+              onClick={handleStartHeroAdventure}
             >
-              <span aria-hidden="true">{action.emoji}</span>
-              {action.label}
+              Start adventure
             </button>
-          ))}
+          </div>
         </div>
       </section>
 
-      <section className="home-hero home-hero-compact detail-card-warm" aria-label="Today's adventure">
-        <CardImage
-          className="home-hero-compact-photo"
-          imageUrl={heroImageUrl}
-          imageAlt={heroPlace.imageAlt ?? heroPlace.name}
-          imageTone={heroPlace.imageTone ?? 'warm'}
-        />
-        <div className="home-hero-compact-body">
-          <div className="home-hero-compact-kicker">Today&apos;s pick</div>
-          <div className="home-hero-compact-title">{heroPlace.name}</div>
-          <p className="home-hero-compact-copy">{getHeroFitLine(heroPlace, profileDogs)}</p>
-          <button type="button" className="home-hero-compact-cta tap-target" onClick={handleStartHeroAdventure}>
-            Start adventure
+      <section className="st-quick-grid" aria-label="Quick start">
+        {QUICK_GRID_ACTIONS.map((action) => (
+          <button
+            key={action.id}
+            type="button"
+            className="st-quick-tile tap-target"
+            onClick={() => handleQuickGridAction(action.handler)}
+          >
+            <i className={`ti ${action.icon}`} aria-hidden="true" />
+            {action.label}
           </button>
-        </div>
+        ))}
       </section>
 
       {curatedPlaces.length > 0 ? (
         <section className="home-curated" aria-label="Curated Adventures">
-          <div className="home-section-label">Curated Adventures</div>
-          <div className="home-curated-strip">
+          <div className="st-section-head">
+            <h2 className="st-headline-md">Curated Adventures</h2>
+            <button type="button" className="st-link-btn tap-target" onClick={onGoToPlan}>
+              See all on Plan
+            </button>
+          </div>
+          <div className="st-curated-strip st-hide-scroll">
             {curatedPlaces.slice(0, 3).map((place) => {
               const imageUrl = getAdventureDisplayImageUrl(state.journeyEntries, place)
               return (
-                <article key={place.id} className="home-curated-card detail-card-warm">
+                <button
+                  key={place.id}
+                  type="button"
+                  className="st-curated-tile tap-target"
+                  onClick={() => handleCuratedPlaceGo(place.id)}
+                >
                   <CardImage
-                    className="home-curated-card-photo"
+                    className="st-curated-tile-photo"
                     imageUrl={imageUrl}
                     imageAlt={place.imageAlt ?? place.name}
                     imageTone={place.imageTone}
                   />
-                  <div className="home-curated-card-body">
-                    <div className="home-curated-card-name">{place.name.split(',')[0]}</div>
-                    <div className="home-curated-card-meta">{getPlanMagicMeta(place)}</div>
-                    <button
-                      type="button"
-                      className="home-curated-card-go tap-target"
-                      onClick={() => handleCuratedPlaceGo(place.id)}
-                    >
-                      Go
-                    </button>
-                  </div>
-                </article>
+                  <div className="st-curated-tile-name">{place.name.split(',')[0]}</div>
+                  <div className="st-curated-tile-meta">{getPlanMagicMeta(place)}</div>
+                </button>
               )
             })}
           </div>
-          <button type="button" className="home-curated-more tap-target" onClick={onGoToPlan}>
-            See all on Plan
-          </button>
         </section>
       ) : null}
 
       {activeChallenge ? (
-        <section className="home-challenge home-challenge-compact detail-card-warm" aria-label="Active challenge">
-          <div className="home-challenge-kicker">Active challenge</div>
-          <div className="home-challenge-title">{activeChallenge.title}</div>
-          <div className="home-challenge-sub">{activeChallenge.subtitle}</div>
-          <div className="home-challenge-progress-row">
-            <span>
-              {activeChallenge.progress.completedNodes}/{activeChallenge.progress.totalNodes} stops
-            </span>
-            <span>{activeChallenge.progress.percentComplete}%</span>
+        <section aria-label="Active challenge">
+          <div className="st-section-head">
+            <h2 className="st-headline-md">Active Challenge</h2>
           </div>
-          <div className="home-challenge-bar">
-            <div
-              className="home-challenge-bar-fill"
-              style={{ width: activeChallenge.progress.fillWidth }}
-            />
+          <div className="st-challenge-row detail-card-warm">
+            <div className="st-challenge-row-icon" aria-hidden="true">
+              {activeChallenge.emoji}
+              <span className="st-challenge-row-badge">
+                {activeChallenge.progress.completedNodes}/{activeChallenge.progress.totalNodes}
+              </span>
+            </div>
+            <div className="st-challenge-row-body">
+              <div className="st-challenge-row-title">{activeChallenge.title}</div>
+              <div className="st-challenge-row-sub">{activeChallenge.subtitle}</div>
+              <div className="st-challenge-row-bar">
+                <div
+                  className="st-challenge-row-bar-fill"
+                  style={{ width: activeChallenge.progress.fillWidth }}
+                />
+              </div>
+            </div>
+            <button
+              type="button"
+              className="st-btn st-btn--forest tap-target"
+              onClick={() => onOpenChallenge(activeChallenge.id)}
+            >
+              View
+            </button>
           </div>
-          <button
-            type="button"
-            className="home-challenge-cta tap-target"
-            onClick={() => onOpenChallenge(activeChallenge.id)}
-          >
-            View challenge
-          </button>
         </section>
       ) : null}
 
       {showCuratedChallenge && curatedChallenge ? (
-        <section className="home-challenge home-challenge-compact detail-card-warm" aria-label="Curated challenge">
-          <div className="home-challenge-kicker">Curated challenge</div>
-          <div className="home-challenge-title">{curatedChallenge.title}</div>
-          <div className="home-challenge-sub">{curatedChallenge.subtitle}</div>
-          <button
-            type="button"
-            className="home-challenge-cta tap-target"
-            onClick={() => onJoinChallenge(curatedChallenge.id)}
-          >
-            Join challenge
-          </button>
+        <section aria-label="Curated challenge">
+          <div className="st-section-head">
+            <h2 className="st-headline-md">Active Challenge</h2>
+          </div>
+          <div className="st-challenge-row detail-card-warm">
+            <div className="st-challenge-row-icon" aria-hidden="true">
+              {curatedChallenge.emoji}
+            </div>
+            <div className="st-challenge-row-body">
+              <div className="st-challenge-row-title">{curatedChallenge.title}</div>
+              <div className="st-challenge-row-sub">{curatedChallenge.subtitle}</div>
+            </div>
+            <button
+              type="button"
+              className="st-btn st-btn--forest tap-target"
+              onClick={() => onJoinChallenge(curatedChallenge.id)}
+            >
+              Join
+            </button>
+          </div>
         </section>
       ) : null}
 
       {recentMemories.length > 0 ? (
-        <section className="home-memories home-memories--compact" aria-label="Recent memories">
-          <h2 className="home-section-label">Recent memories</h2>
-          <div className="home-memory-strip">
+        <section className="home-memories" aria-label="Recent memories">
+          <div className="st-section-head">
+            <h2 className="st-headline-md">Recent Memories</h2>
+          </div>
+          <div className="st-memory-grid">
             {recentMemories.map((entry, index) => {
               const place = entry.placeId ? getPlaceById(entry.placeId) : undefined
               const imageUrl = getJourneyEntryDisplayImageUrl(state.journeyEntries, entry)
@@ -286,7 +298,8 @@ export function HomeScreen({
                 <button
                   key={entry.id}
                   type="button"
-                  className="home-memory-tile tap-target"
+                  className="st-memory-tile tap-target"
+                  aria-label={`${getMemoryWarmLabel(index)}: ${entry.place}`}
                   onClick={() => onOpenMemory?.(entry.id)}
                 >
                   <CardImage
@@ -295,13 +308,6 @@ export function HomeScreen({
                     imageAlt={entry.place}
                     imageTone={place?.imageTone ?? 'warm'}
                   />
-                  <div className="home-memory-tile-body">
-                    <div className="home-memory-tile-kicker">{getMemoryWarmLabel(index)}</div>
-                    <div className="home-memory-tile-place">{entry.place}</div>
-                    <div className="home-memory-tile-line">
-                      {entry.magicLine ?? entry.date}
-                    </div>
-                  </div>
                 </button>
               )
             })}

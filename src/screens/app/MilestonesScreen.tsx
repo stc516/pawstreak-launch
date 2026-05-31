@@ -11,7 +11,6 @@ import {
   type ResolvedChallenge,
 } from '../../lib/challengeEngine'
 import {
-  getTrainingSummary,
   resolveAllTrainingPrograms,
   resolveUnlockedTrainingRewards,
   type ResolvedTrainingProgram,
@@ -71,39 +70,31 @@ function ActiveChallengeCard({
   onOpenChallenge: (challengeId: string) => void
 }) {
   return (
-    <article
-      className={`ms-challenge-card ms-challenge-card--${challenge.accent} detail-card-warm`}
-    >
-      <div className="ms-challenge-card-top">
-        <div>
-          <h2 className="ms-challenge-card-title">{challenge.title}</h2>
-          <p className="ms-challenge-card-desc">{challenge.description}</p>
-        </div>
-        <div className="ms-challenge-card-count">
-          {challenge.progress.metricValue}/{challenge.progress.metricTarget}
-        </div>
-      </div>
-
-      <div className="ms-challenge-card-meta">
-        <span>{challenge.progress.durationLabel}</span>
-        <span>
-          {formatParticipants(challenge.participants.count, challenge.participants.label)}
-        </span>
-      </div>
-
-      <div className="ms-challenge-card-bar">
-        <div
-          className="ms-challenge-card-bar-fill"
-          style={{ width: challenge.progress.fillWidth }}
-        />
-      </div>
-
+    <article className="ms-challenge-card ms-challenge-card--stitch">
       <button
         type="button"
-        className="ms-challenge-card-cta tap-target"
+        className="ms-challenge-card-inner tap-target"
         onClick={() => onOpenChallenge(challenge.id)}
       >
-        View challenge
+        <div className="ms-challenge-card-icon" aria-hidden="true">
+          {challenge.emoji}
+        </div>
+        <div className="ms-challenge-card-content">
+          <h2 className="ms-challenge-card-title">{challenge.title}</h2>
+          <p className="ms-challenge-card-desc">{challenge.description}</p>
+          <div className="ms-challenge-card-bar">
+            <div
+              className="ms-challenge-card-bar-fill"
+              style={{ width: challenge.progress.fillWidth }}
+            />
+          </div>
+          <div className="ms-challenge-card-meta-row">
+            <span>
+              {challenge.progress.completedNodes}/{challenge.progress.totalNodes} stops
+            </span>
+            <strong>{challenge.progress.durationLabel}</strong>
+          </div>
+        </div>
       </button>
     </article>
   )
@@ -186,40 +177,40 @@ function TrainingProgramCard({
   program: ResolvedTrainingProgram
   onOpenTrainingProgram: (programId: string) => void
 }) {
+  const levelDots = Math.min(3, program.progress.lessonsTotal)
+  const filledDots = Math.min(
+    levelDots,
+    Math.ceil((program.progress.lessonsCompleted / Math.max(program.progress.lessonsTotal, 1)) * levelDots),
+  )
+
   return (
-    <article
-      className={`ms-training-card ms-training-card--${program.accent} detail-card-warm`}
-    >
-      <div className="ms-training-card-top">
-        <div>
-          <h2 className="ms-training-card-title">
-            <span aria-hidden="true">{program.emoji}</span> {program.title}
-          </h2>
-          <p className="ms-training-card-desc">{program.description}</p>
+    <article className="ms-training-card ms-training-card--stitch">
+      <div className="ms-training-card-icon" aria-hidden="true">
+        {program.emoji}
+      </div>
+      <div className="ms-training-card-body">
+        <h2 className="ms-training-card-title">{program.title}</h2>
+        <div className="ms-training-dots" aria-hidden="true">
+          {Array.from({ length: levelDots }, (_, index) => (
+            <span
+              key={index}
+              className={`ms-training-dot${index < filledDots ? ' on' : ''}`}
+            />
+          ))}
         </div>
-        <div className="ms-training-card-count">
-          {program.progress.lessonsCompleted}/{program.progress.lessonsTotal}
-        </div>
+        <p className="st-label-sm">
+          {program.progress.completed
+            ? 'Complete'
+            : `${program.progress.lessonsCompleted} of ${program.progress.lessonsTotal} lessons`}
+        </p>
       </div>
-
-      <div className="ms-training-card-meta">
-        <span>{program.subtitle}</span>
-        <span>{program.progress.completed ? 'Complete' : `${program.progress.lessonsCompleted} of ${program.progress.lessonsTotal} lessons`}</span>
-      </div>
-
-      <div className="ms-training-card-bar">
-        <div
-          className="ms-training-card-bar-fill"
-          style={{ width: program.progress.fillWidth }}
-        />
-      </div>
-
       <button
         type="button"
-        className="ms-training-card-cta tap-target"
+        className="ms-training-card-play tap-target"
+        aria-label={`Open ${program.title}`}
         onClick={() => onOpenTrainingProgram(program.id)}
       >
-        {program.progress.completed ? 'Review program' : 'Continue training'}
+        <i className="ti ti-player-play-filled" aria-hidden="true" />
       </button>
     </article>
   )
@@ -241,7 +232,6 @@ export function MilestonesScreen({
   const curatedChallenges = useMemo(() => resolveAllCuratedChallenges(state), [state])
   const trainingPrograms = useMemo(() => resolveAllTrainingPrograms(state), [state])
   const trainingRewards = useMemo(() => resolveUnlockedTrainingRewards(state), [state])
-  const trainingSummary = useMemo(() => getTrainingSummary(state), [state])
 
   const achievementGroups = useMemo(
     () => resolveAchievementsByCategory(state),
@@ -275,10 +265,21 @@ export function MilestonesScreen({
     : curatedChallenges.slice(0, CURATED_PREVIEW_COUNT)
 
   return (
-    <div className="ms-screen ms-screen--compact">
-      <div className="aheader ms-screen-header">
-        <div className="alogo">Challenges</div>
-      </div>
+    <div className="ms-screen ms-screen--stitch">
+      <header className="st-appbar ms-screen-header">
+        <div className="st-appbar-actions">
+          <div className="st-avatar-single">
+            <div className={`dog-av ${state.dogs[0]?.avatarClass ?? 'av1'}`}>
+              {state.dogs[0]?.photoUrl ? (
+                <img src={state.dogs[0].photoUrl} alt="" className="dog-av-img" />
+              ) : (
+                state.dogs[0]?.initial ?? '🐾'
+              )}
+            </div>
+          </div>
+          <div className="st-display alogo">PawStreak</div>
+        </div>
+      </header>
 
       {shouldShowBondLevel(state) ? (
         <button
@@ -300,9 +301,9 @@ export function MilestonesScreen({
         </button>
       ) : null}
 
-      <div className="sec ms-challenge-sec">
-        <span>Active challenges</span>
-        <span className="ms-challenge-sec-count">{joinedChallenges.length} joined</span>
+      <div className="st-section-head ms-challenge-sec">
+        <h2 className="st-headline-lg">Active Challenges</h2>
+        <span className="st-label-lg ms-challenge-sec-count">{joinedChallenges.length} joined</span>
       </div>
 
       {joinedChallenges.length === 0 ? (
@@ -321,9 +322,9 @@ export function MilestonesScreen({
         </div>
       )}
 
-      <div className="sec ms-achievement-sec">
-        <span>Earned Tags</span>
-        <span className="ms-achievement-count">{unlockedCount} earned</span>
+      <div className="st-section-head ms-achievement-sec">
+        <h2 className="st-headline-lg">Earned Tags</h2>
+        <span className="st-body-md">{unlockedCount} earned</span>
       </div>
 
       <p className="ms-achievement-lead">
@@ -331,12 +332,12 @@ export function MilestonesScreen({
       </p>
 
       {identityItems.length > 0 ? (
-        <div className="ms-identity-list">
+        <div className="st-enamel-grid ms-identity-list">
           {visibleIdentities.map((achievement) => (
             <AchievementIdentityCard
               key={achievement.id}
               achievement={achievement}
-              compact
+              variant="bento"
               onClick={() => onOpenAchievement(achievement.id)}
             />
           ))}
@@ -352,16 +353,7 @@ export function MilestonesScreen({
         onClick={() => setShowAllIdentities((value) => !value)}
       />
 
-      <div className="sec ms-training-sec">
-        <span>Training</span>
-        <span className="ms-training-sec-count">
-          {trainingSummary.programsStarted} started · {trainingSummary.rewardsUnlocked} rewards
-        </span>
-      </div>
-
-      <p className="ms-training-lead">
-        Short lessons for smoother outings — practice a little, adventure a lot.
-      </p>
+      <h2 className="st-headline-lg ms-training-sec">Training Skills</h2>
 
       <div className="ms-training-list">
         {visibleTrainingPrograms.map((program) => (
