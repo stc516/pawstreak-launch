@@ -18,6 +18,12 @@ import {
   getAdventureDisplayImageUrl,
   getJourneyEntryDisplayImageUrl,
 } from '../../lib/adventureDisplayImage'
+import {
+  getActiveMonthlyPlanWeek,
+  getMonthlyPlanProgressLabel,
+} from '../../lib/monthlyPlan'
+import { getCurrentTrainingSession } from '../../lib/trainingSchedule'
+import { getTrainingProgramById } from '../../data/training'
 
 interface HomeScreenProps {
   state: AppState
@@ -29,14 +35,11 @@ interface HomeScreenProps {
   onOpenChallenge: (challengeId: string) => void
   onOpenMemory?: (entryId: string) => void
   onGoToPlan: () => void
+  onOpenBuildMyMonth: () => void
+  onOpenTrainingProgram: () => void
+  onStartMonthlyPlanAdventure: (placeId: string) => void
+  onContinueTraining: (programId: string) => void
 }
-
-const QUICK_GRID_ACTIONS = [
-  { id: 'walk', label: 'Walk', icon: 'ti-walk', handler: 'walk' as const },
-  { id: 'adventure', label: 'Adventure', icon: 'ti-compass', handler: 'adventure' as const },
-  { id: 'beach', label: 'Beach', icon: 'ti-beach', handler: 'beach' as const },
-  { id: 'trail', label: 'Trail', icon: 'ti-trees', handler: 'trail' as const },
-] as const
 
 export function HomeScreen({
   state,
@@ -47,6 +50,10 @@ export function HomeScreen({
   onOpenChallenge,
   onOpenMemory,
   onGoToPlan,
+  onOpenBuildMyMonth,
+  onOpenTrainingProgram,
+  onStartMonthlyPlanAdventure,
+  onContinueTraining,
 }: HomeScreenProps) {
   const profileDogs = getProfileDogs(state)
   const dogLabel = getDisplayDogLabel(state)
@@ -64,25 +71,15 @@ export function HomeScreen({
   const recentMemories = state.journeyEntries.slice(0, 3)
   const welcomeGreeting = getHomeWelcomeGreeting()
   const heroEyebrow = getHeroEyebrow(dogLabel, dogCount)
+  const activeMonthWeek = getActiveMonthlyPlanWeek(state.monthlyPlanResult)
+  const trainingSession = getCurrentTrainingSession(state.activeTrainingSchedule)
+  const trainingProgram = state.activeTrainingSchedule
+    ? getTrainingProgramById(state.activeTrainingSchedule.programId)
+    : null
 
-  const handleStartHeroAdventure = () => {
+  const handleQuickAdventure = () => {
     onSelectActivity(heroActivityId)
     onStartAdventure(heroPlace.id, 'Open end')
-  }
-
-  const handleQuickGridAction = (handler: (typeof QUICK_GRID_ACTIONS)[number]['handler']) => {
-    if (handler === 'walk') {
-      onStartNeighborhoodWalk()
-      return
-    }
-    if (handler === 'adventure') {
-      handleStartHeroAdventure()
-      return
-    }
-    const activityId = handler === 'beach' ? 'beach' : 'trail'
-    onSelectActivity(activityId)
-    const place = getHeroPlace(activityId, getRecommendationPrefs(state))
-    onStartAdventure(place.id, 'Open end')
   }
 
   const handleSuggestedPlaceGo = (placeId: string) => {
@@ -143,77 +140,107 @@ export function HomeScreen({
         </p>
       </section>
 
-      <section className="st-hero-pick home-hero" aria-label="Today's adventure">
-        <div className="st-hero-pick-glow" aria-hidden="true" />
-        <div className="st-hero-pick-card">
-          <div className="st-hero-pick-media">
-            <CardImage
-              className="home-hero-compact-photo"
-              imageUrl={heroImageUrl}
-              imageAlt={heroPlace.imageAlt ?? heroPlace.name}
-              imageTone={heroPlace.imageTone ?? 'warm'}
-            />
-            <span className="st-hero-pick-badge">{heroEyebrow}</span>
-          </div>
-          <div className="st-hero-pick-body">
-            <h3 className="st-headline-md home-hero-compact-title">{heroPlace.name}</h3>
-            <p className="st-body-md home-hero-compact-copy">
-              {getHeroFitLine(heroPlace, profileDogs)}
-            </p>
-            <button
-              type="button"
-              className="st-btn st-btn--primary home-hero-compact-cta tap-target"
-              onClick={handleStartHeroAdventure}
-            >
-              Start adventure
-            </button>
-          </div>
+      <section className="home-quick-walk-hero" aria-label="Quick Walk">
+        <button
+          type="button"
+          className="home-quick-walk-btn tap-target"
+          onClick={onStartNeighborhoodWalk}
+        >
+          <span className="home-quick-walk-icon" aria-hidden="true">
+            <i className="ti ti-walk" />
+          </span>
+          <span className="home-quick-walk-copy">
+            <span className="home-quick-walk-title">Quick Walk</span>
+            <span className="home-quick-walk-sub">Start now · no planning needed</span>
+          </span>
+          <span className="home-quick-walk-arrow" aria-hidden="true">
+            <i className="ti ti-arrow-right" />
+          </span>
+        </button>
+      </section>
+
+      <section className="home-action-card" aria-label="Build My Month">
+        <button type="button" className="home-action-card-inner tap-target" onClick={onOpenBuildMyMonth}>
+          <div className="home-action-card-kicker">Monthly plan</div>
+          <div className="home-action-card-title">Build My Month</div>
+          <div className="home-action-card-sub">Surprise me or pick beaches, trails, or dog parks</div>
+        </button>
+      </section>
+
+      <section className="home-quick-adventure detail-card-warm" aria-label="Quick Adventure">
+        <div className="home-quick-adventure-media">
+          <CardImage
+            className="home-quick-adventure-photo"
+            imageUrl={heroImageUrl}
+            imageAlt={heroPlace.imageAlt ?? heroPlace.name}
+            imageTone={heroPlace.imageTone ?? 'warm'}
+          />
+        </div>
+        <div className="home-quick-adventure-body">
+          <div className="home-quick-adventure-kicker">{heroEyebrow}</div>
+          <h3 className="home-quick-adventure-title">{heroPlace.name}</h3>
+          <p className="home-quick-adventure-copy">{getHeroFitLine(heroPlace, profileDogs)}</p>
+          <button
+            type="button"
+            className="st-btn st-btn--primary tap-target"
+            onClick={handleQuickAdventure}
+          >
+            Quick Adventure
+          </button>
         </div>
       </section>
 
-      <section className="st-quick-grid" aria-label="Quick start">
-        {QUICK_GRID_ACTIONS.map((action) => (
-          <button
-            key={action.id}
-            type="button"
-            className="st-quick-tile tap-target"
-            onClick={() => handleQuickGridAction(action.handler)}
-          >
-            <i className={`ti ${action.icon}`} aria-hidden="true" />
-            {action.label}
-          </button>
-        ))}
+      <section className="home-action-card" aria-label="Training Program">
+        <button
+          type="button"
+          className="home-action-card-inner tap-target"
+          onClick={onOpenTrainingProgram}
+        >
+          <div className="home-action-card-kicker">Training</div>
+          <div className="home-action-card-title">Start Training Program</div>
+          <div className="home-action-card-sub">
+            Puppy Foundations, Recall &amp; Off-Leash, or Fun &amp; Enrichment
+          </div>
+        </button>
       </section>
 
-      {suggestedPlaces.length > 0 ? (
-        <section className="home-suggested-spots" aria-label="Suggested Spots">
-          <div className="st-section-head">
-            <h2 className="st-headline-md">Suggested Spots</h2>
-            <button type="button" className="st-link-btn tap-target" onClick={onGoToPlan}>
-              See all on Plan
+      {activeMonthWeek && state.monthlyPlanResult ? (
+        <section className="home-active-plan detail-card-warm" aria-label="Active Monthly Plan">
+          <div className="home-active-plan-head">
+            <div>
+              <div className="home-active-plan-kicker">Active Monthly Plan</div>
+              <div className="home-active-plan-title">
+                {activeMonthWeek.label} · {activeMonthWeek.placeName}
+              </div>
+              <div className="home-active-plan-sub">
+                {getMonthlyPlanProgressLabel(state.monthlyPlanResult)}
+              </div>
+            </div>
+            <button
+              type="button"
+              className="st-btn st-btn--forest tap-target"
+              onClick={() => onStartMonthlyPlanAdventure(activeMonthWeek.placeId)}
+            >
+              Go
             </button>
           </div>
-          <div className="st-suggested-spots-strip st-hide-scroll">
-            {suggestedPlaces.slice(0, 3).map((place) => {
-              const imageUrl = getAdventureDisplayImageUrl(state.journeyEntries, place)
-              return (
-                <button
-                  key={place.id}
-                  type="button"
-                  className="st-suggested-spots-tile tap-target"
-                  onClick={() => handleSuggestedPlaceGo(place.id)}
-                >
-                  <CardImage
-                    className="st-suggested-spots-tile-photo"
-                    imageUrl={imageUrl}
-                    imageAlt={place.imageAlt ?? place.name}
-                    imageTone={place.imageTone}
-                  />
-                  <div className="st-suggested-spots-tile-name">{place.name.split(',')[0]}</div>
-                  <div className="st-suggested-spots-tile-meta">{getPlanMagicMeta(place)}</div>
-                </button>
-              )
-            })}
+        </section>
+      ) : null}
+
+      {trainingSession && trainingProgram ? (
+        <section className="home-training-active detail-card-warm" aria-label="Active training">
+          <div className="home-active-plan-head">
+            <div>
+              <div className="home-active-plan-kicker">{trainingProgram.title}</div>
+              <div className="home-active-plan-title">Today: {trainingSession.lessonTitle}</div>
+            </div>
+            <button
+              type="button"
+              className="st-btn st-btn--forest tap-target"
+              onClick={() => onContinueTraining(trainingProgram.id)}
+            >
+              Continue
+            </button>
           </div>
         </section>
       ) : null}
@@ -247,6 +274,39 @@ export function HomeScreen({
             >
               View
             </button>
+          </div>
+        </section>
+      ) : null}
+
+      {suggestedPlaces.length > 0 ? (
+        <section className="home-suggested-spots" aria-label="Suggested Spots">
+          <div className="st-section-head">
+            <h2 className="st-headline-md">Suggested Spots</h2>
+            <button type="button" className="st-link-btn tap-target" onClick={onGoToPlan}>
+              See all on Plan
+            </button>
+          </div>
+          <div className="st-suggested-spots-strip st-hide-scroll">
+            {suggestedPlaces.slice(0, 3).map((place) => {
+              const imageUrl = getAdventureDisplayImageUrl(state.journeyEntries, place)
+              return (
+                <button
+                  key={place.id}
+                  type="button"
+                  className="st-suggested-spots-tile tap-target"
+                  onClick={() => handleSuggestedPlaceGo(place.id)}
+                >
+                  <CardImage
+                    className="st-suggested-spots-tile-photo"
+                    imageUrl={imageUrl}
+                    imageAlt={place.imageAlt ?? place.name}
+                    imageTone={place.imageTone}
+                  />
+                  <div className="st-suggested-spots-tile-name">{place.name.split(',')[0]}</div>
+                  <div className="st-suggested-spots-tile-meta">{getPlanMagicMeta(place)}</div>
+                </button>
+              )
+            })}
           </div>
         </section>
       ) : null}

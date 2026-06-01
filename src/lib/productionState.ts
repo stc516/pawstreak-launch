@@ -69,6 +69,15 @@ export const DEMO_SEEDED_FAVORITE_IDS = new Set([
   'fav-julian',
 ])
 
+/** Demo may show at most these earned achievements regardless of seeded memories. */
+export const DEMO_EARNED_ACHIEVEMENT_IDS = new Set([
+  'surfer-dog',
+  'trail-dog',
+  'neighborhood-hero',
+  'memory-maker',
+  'coffee-pup',
+])
+
 export const EMPTY_COMMUNITY_LIVE: AppState['communityLive'] = {
   label: 'Community',
   count: '0',

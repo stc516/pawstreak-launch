@@ -164,6 +164,36 @@ const adventureLessons: TrainingLesson[] = [
   },
 ]
 
+const funEnrichmentLessons: TrainingLesson[] = [
+  {
+    id: 'fun-sniffari',
+    programId: 'fun-enrichment',
+    order: 1,
+    title: 'Sniffari walk',
+    description: 'Let your dog lead with their nose — slow pace, no strict heel.',
+    emoji: '👃',
+    practiceHint: '5–10 minutes · reward check-ins · no pulling corrections',
+  },
+  {
+    id: 'fun-trick-session',
+    programId: 'fun-enrichment',
+    order: 2,
+    title: 'Trick session',
+    description: 'One fun cue — spin, shake, or touch — in a low-pressure session.',
+    emoji: '🎉',
+    practiceHint: '3 reps · end on a win · keep it playful',
+  },
+  {
+    id: 'fun-puzzle-feeder',
+    programId: 'fun-enrichment',
+    order: 3,
+    title: 'Puzzle feeder',
+    description: 'Meals or treats from a puzzle toy for calm mental work at home.',
+    emoji: '🧩',
+    practiceHint: 'Supervise first use · swap puzzles weekly',
+  },
+]
+
 const offLeashLessons: TrainingLesson[] = [
   {
     id: 'offleash-recall',
@@ -229,13 +259,23 @@ export const TRAINING_PROGRAMS: TrainingProgram[] = [
   },
   {
     id: 'off-leash-expert',
-    title: 'Off Leash Expert',
+    title: 'Recall & Off-Leash',
     subtitle: '2 advanced skills · build trust',
     description: 'For teams ready to practice recall and distance stays with safety first.',
     emoji: '🎯',
     accent: 'coastal',
     rewardId: 'explorer-dog',
     lessons: offLeashLessons,
+  },
+  {
+    id: 'fun-enrichment',
+    title: 'Fun & Enrichment',
+    subtitle: '3 playful sessions · low pressure',
+    description: 'Sniffaris, tricks, and puzzle time — bonding without strict drills.',
+    emoji: '🎾',
+    accent: 'warm',
+    rewardId: 'good-dog-graduate',
+    lessons: funEnrichmentLessons,
   },
   {
     id: 'senior-dog',

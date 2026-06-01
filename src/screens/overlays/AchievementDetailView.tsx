@@ -53,25 +53,39 @@ export function AchievementDetailView({
             <p className="detail-quote-text">{detail.emotionalExplanation}</p>
           </div>
 
+          {detail.howToEarn ? (
+            <div className="detail-card-warm achdetail-meta">
+              <div className="detail-section-label">How to earn</div>
+              <div className="achdetail-meta-value">{detail.howToEarn}</div>
+            </div>
+          ) : null}
+
+          <div className="detail-card-warm achdetail-progress-block">
+            <div className="detail-section-label">Progress</div>
+            <div className="achdetail-count-row">
+              <div className="achdetail-count-item">
+                <div className="achdetail-count-label">Current</div>
+                <div className="achdetail-count-value">{detail.currentCount}</div>
+              </div>
+              <div className="achdetail-count-item">
+                <div className="achdetail-count-label">Target</div>
+                <div className="achdetail-count-value">{detail.targetCount}</div>
+              </div>
+            </div>
+            {detail.progressPercent !== undefined ? (
+              <div className="achdetail-bar">
+                <div
+                  className="achdetail-fill"
+                  style={{ width: `${detail.progressPercent}%` }}
+                />
+              </div>
+            ) : null}
+          </div>
+
           {detail.dateEarned ? (
             <div className="detail-card-warm achdetail-meta">
               <div className="detail-section-label">Unlock date</div>
               <div className="achdetail-meta-value">{detail.dateEarned}</div>
-            </div>
-          ) : null}
-
-          {detail.progressLabel ? (
-            <div className="detail-card-warm achdetail-progress-block">
-              <div className="detail-section-label">Progress</div>
-              <div className="achdetail-meta-value">{detail.progressLabel}</div>
-              {detail.progressPercent !== undefined ? (
-                <div className="achdetail-bar">
-                  <div
-                    className="achdetail-fill"
-                    style={{ width: `${detail.progressPercent}%` }}
-                  />
-                </div>
-              ) : null}
             </div>
           ) : null}
 

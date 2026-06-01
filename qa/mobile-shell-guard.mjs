@@ -27,6 +27,8 @@ const APP_TABS = [
   { id: 'plan', label: 'Plan' },
   { id: 'journey', label: 'Journey' },
   { id: 'challenges', label: 'Challenges' },
+  { id: 'achievements', label: 'Achievements' },
+  { id: 'community', label: 'Community' },
 ]
 
 async function openDemoApp(page) {

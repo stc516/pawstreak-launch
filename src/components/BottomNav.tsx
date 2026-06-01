@@ -8,46 +8,43 @@ interface BottomNavProps {
   mode?: 'app' | 'demo'
 }
 
-const TAB_META: Record<TabId, { label: string; icon: string }> = {
+const TAB_META: Record<
+  Exclude<TabId, 'profile'>,
+  { label: string; icon: string }
+> = {
   home: { label: 'Home', icon: 'ti-home' },
   plan: { label: 'Plan', icon: 'ti-map' },
   journey: { label: 'Journey', icon: 'ti-compass' },
   community: { label: 'Community', icon: 'ti-users' },
   milestones: { label: 'Challenges', icon: 'ti-trophy' },
-  profile: { label: 'Profile', icon: 'ti-user' },
+  achievements: { label: 'Achievements', icon: 'ti-medal' },
 }
 
 export function BottomNav({
   activeTab,
   onTabChange,
-  className = 'bnav bnav--stitch',
+  className = 'bnav bnav--stitch bnav--six',
   mode = 'app',
 }: BottomNavProps) {
   const tabs = getVisibleNavTabs(mode)
 
   return (
-    <nav className={className}>
+    <nav className={className} aria-label="Main navigation">
       {tabs.map((tab) => {
-        const isProfileTab = tab === 'milestones'
-        const isActive =
-          activeTab === tab || (isProfileTab && activeTab === 'profile')
-        const label =
-          isProfileTab && activeTab === 'profile' ? 'Profile' : TAB_META[tab].label
-        const icon =
-          isProfileTab && activeTab === 'profile' ? TAB_META.profile.icon : TAB_META[tab].icon
+        if (tab === 'profile') return null
+        const isActive = activeTab === tab
+        const meta = TAB_META[tab]
 
         return (
           <button
             key={tab}
             type="button"
             className={`ni tap-target${isActive ? ' on' : ''}`}
-            onClick={() => {
-              if (isProfileTab && activeTab === 'profile') return
-              onTabChange(tab)
-            }}
+            aria-current={isActive ? 'page' : undefined}
+            onClick={() => onTabChange(tab)}
           >
-            <i className={`ti ${icon}`} aria-hidden="true" />
-            <span>{label}</span>
+            <i className={`ti ${meta.icon}`} aria-hidden="true" />
+            <span>{meta.label}</span>
           </button>
         )
       })}

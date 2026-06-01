@@ -1,7 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
 import type { AppState, Dog } from '../../data/demo'
-import type { Achievement } from '../../data/achievements'
-import { resolveIdentitiesForDog, resolveAchievementsByCategory } from '../../lib/achievementEngine'
 import {
   resolveAllTrainingPrograms,
   type ResolvedTrainingProgram,
@@ -15,7 +13,6 @@ import {
 import { getHomeProgressStats } from '../../lib/homeStats'
 import { getJourneyEntryDisplayImageUrl } from '../../lib/adventureDisplayImage'
 import { CardImage } from '../../components/CardImage'
-import { AchievementIdentityCard } from '../../components/AchievementIdentityCard'
 import { TrainingProgramCard } from '../../components/TrainingProgramCard'
 import { getMagicLine, getPlaceById } from '../../data/places'
 import { SettingsScreen } from './SettingsScreen'
@@ -52,8 +49,6 @@ interface DogCardProps {
   onSaveEdit: () => void
   onRequestRemove: () => void
   onSetActive?: () => void
-  identities: Achievement[]
-  onOpenAchievement?: (achievementId: string) => void
   compact?: boolean
 }
 
@@ -72,13 +67,10 @@ function DogCard({
   onSaveEdit,
   onRequestRemove,
   onSetActive,
-  identities,
-  onOpenAchievement,
   compact = false,
 }: DogCardProps) {
   const breed = getDogBreedLabel(dog)
   const age = getDogAgeLabel(dog)
-  const topIdentity = identities.find((item) => item.status === 'done') ?? identities[0]
 
   if (isEditing) {
     return (
@@ -154,12 +146,6 @@ function DogCard({
           <p className="profile-dog-card-breed">
             {[age, breed || 'Mixed breed'].filter(Boolean).join(' · ')}
           </p>
-          {topIdentity ? (
-            <div className="profile-dog-card-tag">
-              <i className="ti ti-heart-filled" aria-hidden="true" />
-              {topIdentity.title}
-            </div>
-          ) : null}
           <div className="profile-dog-card-footer">
             {!isActive && onSetActive ? (
               <button type="button" className="profile-dog-link tap-target" onClick={onSetActive}>
@@ -217,29 +203,6 @@ function DogCard({
         </button>
       </div>
 
-      <div className="profile-dog-identities">
-        <div className="profile-dog-identities-label">Earned Tags</div>
-        {identities.length > 0 ? (
-          <div className="profile-dog-identity-list">
-            {identities.slice(0, 4).map((identity) => (
-              <button
-                key={identity.id}
-                type="button"
-                className="profile-dog-identity-chip tap-target"
-                onClick={() => onOpenAchievement?.(identity.id)}
-              >
-                <span aria-hidden="true">{identity.emoji}</span>
-                {identity.title}
-              </button>
-            ))}
-          </div>
-        ) : (
-          <p className="profile-dog-identities-empty">
-            Tags unlock as you adventure together.
-          </p>
-        )}
-      </div>
-
       <div className="profile-dog-card-footer">
         {!isActive && onSetActive ? (
           <button type="button" className="profile-dog-link tap-target" onClick={onSetActive}>
@@ -267,7 +230,6 @@ export function ProfileScreen({
   onSetActiveDog,
   onUpdateDog,
   onRemoveDog,
-  onOpenAchievement,
   onOpenTrainingProgram,
   onZipChange,
   onApplyLocation,
@@ -275,13 +237,6 @@ export function ProfileScreen({
 }: ProfileScreenProps) {
   const profileDogs = getProfileDogs(state)
   const dogListRef = useRef<HTMLDivElement | null>(null)
-  const identitiesByDog = useMemo(
-    () =>
-      Object.fromEntries(
-        profileDogs.map((dog) => [dog.id, resolveIdentitiesForDog(state, dog)]),
-      ),
-    [profileDogs, state],
-  )
   const packLabel = getDisplayDogLabel(state)
   const [editingDogId, setEditingDogId] = useState<string | null>(null)
   const [draftName, setDraftName] = useState('')
@@ -328,12 +283,6 @@ export function ProfileScreen({
   const visibleTrainingPrograms = showAllTraining
     ? trainingPrograms
     : trainingPrograms.slice(0, 2)
-  const earnedTags = useMemo(() => {
-    const groups = resolveAchievementsByCategory(state)
-    return groups
-      .flatMap(({ achievements }) => achievements)
-      .filter((achievement) => achievement.status !== 'locked')
-  }, [state])
   const editingDog = editingDogId ? profileDogs.find((dog) => dog.id === editingDogId) : null
 
   if (showSettings && onZipChange && onApplyLocation) {
@@ -419,8 +368,6 @@ export function ProfileScreen({
             onCancelEdit={cancelEdit}
             onSaveEdit={() => saveEdit(editingDog.id)}
             onRequestRemove={() => setRemoveTarget(editingDog)}
-            identities={identitiesByDog[editingDog.id] ?? []}
-            onOpenAchievement={onOpenAchievement}
           />
         ) : (
           <div className="profile-dog-stack">
@@ -446,33 +393,9 @@ export function ProfileScreen({
                 onSetActive={
                   state.activeDogId !== dog.id ? () => onSetActiveDog?.(dog.id) : undefined
                 }
-                identities={identitiesByDog[dog.id] ?? []}
-                onOpenAchievement={onOpenAchievement}
               />
             ))}
           </div>
-        )}
-      </section>
-
-      <section className="profile-section">
-        <div className="st-section-head">
-          <h2 className="st-headline-lg">Earned Tags</h2>
-        </div>
-        {earnedTags.length > 0 ? (
-          <div className="st-enamel-grid">
-            {earnedTags.map((achievement) => (
-              <AchievementIdentityCard
-                key={achievement.id}
-                achievement={achievement}
-                variant="bento"
-                onClick={() => onOpenAchievement?.(achievement.id)}
-              />
-            ))}
-          </div>
-        ) : (
-          <p className="profile-section-empty">
-            Your first tags show up after a few real adventures.
-          </p>
         )}
       </section>
 

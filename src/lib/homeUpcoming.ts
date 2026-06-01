@@ -12,21 +12,17 @@ export interface HomeUpcomingItem {
 export function getHomeUpcomingItems(state: AppState): HomeUpcomingItem[] {
   const items: HomeUpcomingItem[] = []
 
-  if (state.curatedPlanResult && state.selectedMonthlyPlanId === 'curated') {
-    items.push({
-      id: 'curated-first',
-      label: 'Planned adventure',
-      detail: state.curatedPlanResult.firstAdventure.name,
-      emoji: '🗺️',
-      kind: 'plan',
-    })
-    if (state.curatedPlanResult.weeklyCadence) {
+  if (state.monthlyPlanResult && state.selectedMonthlyPlanId === 'monthly') {
+    const activeWeek = state.monthlyPlanResult.weeks.find(
+      (week) => week.weekIndex === state.monthlyPlanResult!.nextWeekIndex,
+    )
+    if (activeWeek) {
       items.push({
-        id: 'curated-cadence',
-        label: 'This week',
-        detail: state.curatedPlanResult.weeklyCadence,
-        emoji: '📅',
-        kind: 'reminder',
+        id: 'monthly-next',
+        label: 'Monthly plan',
+        detail: `${activeWeek.label} · ${activeWeek.placeName}`,
+        emoji: '🗓️',
+        kind: 'plan',
       })
     }
   }

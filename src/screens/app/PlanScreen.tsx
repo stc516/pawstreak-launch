@@ -22,7 +22,7 @@ interface PlanScreenProps {
   onApplyLocation: () => void
   onStartAdventure: (placeId: string, durationLabel?: string) => void
   onStartNeighborhoodWalk?: () => void
-  onOpenCuratedPlanFlow: () => void
+  onOpenBuildMyMonth: () => void
   onGenerateRandomPlan: () => void
   onOpenPresetPlan: () => void
   onOpenChallenge?: (challengeId: string) => void
@@ -37,7 +37,7 @@ export function PlanScreen({
   onApplyLocation,
   onStartAdventure,
   onStartNeighborhoodWalk,
-  onOpenCuratedPlanFlow,
+  onOpenBuildMyMonth,
 }: PlanScreenProps) {
   const prefs = getRecommendationPrefs(state)
   const [proximityBucket, setProximityBucket] = useState<PlanProximityBucket>('15min')
@@ -133,8 +133,8 @@ export function PlanScreen({
           )
         })}
       </div>
-      <button type="button" className="plan-build-curated-plan tap-target" onClick={onOpenCuratedPlanFlow}>
-        Build a Curated Plan
+      <button type="button" className="plan-build-curated-plan tap-target" onClick={onOpenBuildMyMonth}>
+        Build My Month
       </button>
 
       <div className="sec">What&apos;s close right now</div>

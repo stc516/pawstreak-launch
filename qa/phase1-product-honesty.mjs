@@ -39,9 +39,14 @@ async function runDemoChecks(page, results) {
     detail: 'Home has no "Curated Adventures" copy',
   })
   results.push({
-    id: 'demo-home-no-join-promo',
-    pass: !(await page.getByRole('button', { name: 'Join', exact: true }).count()),
-    detail: 'Home has no challenge join promo',
+    id: 'demo-home-quick-walk',
+    pass: (await page.locator('.home-quick-walk-hero').count()) > 0,
+    detail: 'Home shows Quick Walk hero',
+  })
+  results.push({
+    id: 'demo-home-build-my-month',
+    pass: homeText.includes('Build My Month'),
+    detail: 'Home shows Build My Month card',
   })
   results.push({
     id: 'demo-home-active-challenge',
@@ -70,9 +75,9 @@ async function runDemoChecks(page, results) {
     detail: 'Plan strip labeled Suggested Spots',
   })
   results.push({
-    id: 'demo-plan-curated-plan-cta',
-    pass: (await page.locator('.plan-build-curated-plan').count()) > 0,
-    detail: 'Plan has Build a Curated Plan CTA',
+    id: 'demo-plan-build-my-month',
+    pass: planText.includes('Build My Month'),
+    detail: 'Plan has Build My Month CTA',
   })
   await page.screenshot({ path: path.join(OUT_DIR, '02-demo-plan.png'), fullPage: true })
 
@@ -107,9 +112,9 @@ async function runDemoChecks(page, results) {
   await page.waitForTimeout(800)
   const profileText = await bodyText(page)
   results.push({
-    id: 'demo-profile-earned-tags',
-    pass: profileText.includes('Earned Tags'),
-    detail: 'Profile shows Earned Tags section',
+    id: 'demo-profile-no-earned-tags',
+    pass: !profileText.includes('Earned Tags'),
+    detail: 'Profile has no Earned Tags section',
   })
   results.push({
     id: 'demo-profile-training',
@@ -117,6 +122,26 @@ async function runDemoChecks(page, results) {
     detail: 'Profile shows Training section',
   })
   await page.screenshot({ path: path.join(OUT_DIR, '04-demo-profile.png'), fullPage: true })
+
+  await page.getByRole('button', { name: 'Achievements', exact: true }).click()
+  await page.waitForTimeout(900)
+  const achievementsText = await bodyText(page)
+  results.push({
+    id: 'demo-achievements-tab',
+    pass: achievementsText.includes('Achievements') && achievementsText.includes('Earned'),
+    detail: 'Achievements tab shows earned badges',
+  })
+  await page.screenshot({ path: path.join(OUT_DIR, '05-demo-achievements.png'), fullPage: true })
+
+  await page.getByRole('button', { name: 'Community', exact: true }).click()
+  await page.waitForTimeout(900)
+  const communityText = await bodyText(page)
+  results.push({
+    id: 'demo-community-coming-soon',
+    pass: communityText.includes('Coming soon'),
+    detail: 'Community tab is Coming Soon only',
+  })
+  await page.screenshot({ path: path.join(OUT_DIR, '06-demo-community.png'), fullPage: true })
 
   await page.getByRole('button', { name: 'Home', exact: true }).click()
   await page.waitForTimeout(500)
@@ -133,7 +158,7 @@ async function runDemoChecks(page, results) {
       detailText.includes('No leaderboard yet'),
     detail: 'Challenge detail shows honest leaderboard empty state',
   })
-  await page.screenshot({ path: path.join(OUT_DIR, '05-demo-challenge-detail.png'), fullPage: true })
+  await page.screenshot({ path: path.join(OUT_DIR, '07-demo-challenge-detail.png'), fullPage: true })
 }
 
 async function runAppChecks(page, results) {
@@ -153,7 +178,7 @@ async function runAppChecks(page, results) {
     pass: !appText.includes('syncs to calendar'),
     detail: '/app route has no calendar sync promise',
   })
-  await page.screenshot({ path: path.join(OUT_DIR, '06-app-entry.png'), fullPage: true })
+  await page.screenshot({ path: path.join(OUT_DIR, '08-app-entry.png'), fullPage: true })
 }
 
 async function main() {

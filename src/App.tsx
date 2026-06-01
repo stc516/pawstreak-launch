@@ -36,6 +36,7 @@ import { HomeScreen } from './screens/app/HomeScreen'
 import { CommunityScreen } from './screens/app/CommunityScreen'
 import { JourneyScreen } from './screens/app/JourneyScreen'
 import { MilestonesScreen } from './screens/app/MilestonesScreen'
+import { AchievementsScreen } from './screens/app/AchievementsScreen'
 import { ProfileScreen } from './screens/app/ProfileScreen'
 import { OnboardingFlow } from './screens/onboarding/OnboardingFlow'
 import { SplashScreen } from './screens/SplashScreen'
@@ -54,6 +55,8 @@ import {
   resetTrainingLessonState,
 } from './lib/trainingEngine'
 import { TrainingProgramDetailView } from './screens/overlays/TrainingProgramDetailView'
+import { BuildMyMonthFlow } from './screens/overlays/BuildMyMonthFlow'
+import { TrainingProgramFlow } from './screens/overlays/TrainingProgramFlow'
 import { CuratedPlanFlow } from './screens/overlays/CuratedPlanFlow'
 import { AchievementDetailView } from './screens/overlays/AchievementDetailView'
 import { CommunityComposeOverlay } from './screens/overlays/CommunityComposeOverlay'
@@ -62,9 +65,17 @@ import type { PackInvitePayload } from './screens/overlays/PackInviteOverlay'
 import { PresetPlanOverlay } from './screens/overlays/PresetPlanOverlay'
 import { PlanScreen } from './screens/app/PlanScreen'
 import {
-  EMPTY_CURATED_PLAN_DRAFT,
   generateCuratedPlanResult,
 } from './lib/curatedPlan'
+import {
+  EMPTY_MONTHLY_PLAN_DRAFT,
+  advanceMonthlyPlanAfterAdventure,
+  generateMonthlyPlanResult,
+} from './lib/monthlyPlan'
+import {
+  EMPTY_TRAINING_PROGRAM_DRAFT,
+  generateTrainingSchedule,
+} from './lib/trainingSchedule'
 import { generateRandomPlan } from './lib/randomPlan'
 import type { OnboardingResult } from './lib/onboardingProfile'
 import { applyOnboardingToAppState, resolveLocationProfile } from './lib/onboardingProfile'
@@ -370,18 +381,6 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     setState((current) => ({ ...current, showJourneyLevelOverlay: false }))
   }
 
-  const openCuratedPlanFlow = () => {
-    setState((current) => ({
-      ...current,
-      activeTab: 'plan',
-      curatedPlanFlowStep: 1,
-      curatedPlanDraft: EMPTY_CURATED_PLAN_DRAFT,
-      selectedJourneyEntryId: null,
-      selectedChallengeId: null,
-      showPresetPlanOverlay: false,
-    }))
-  }
-
   const handleCuratedPlanBack = () => {
     setState((current) => {
       if (current.curatedPlanFlowStep === 4) {
@@ -492,8 +491,181 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       selectedMonthlyPlanId: 'random',
       randomPlanResult: generateRandomPlan(current.dogs),
       curatedPlanResult: null,
+      monthlyPlanResult: null,
       curatedPlanFlowStep: 0,
+      buildMyMonthFlowStep: 0,
     }))
+  }
+
+  const openBuildMyMonthFlow = () => {
+    setState((current) => ({
+      ...current,
+      activeTab: 'home',
+      buildMyMonthFlowStep: 1,
+      buildMyMonthDraft: EMPTY_MONTHLY_PLAN_DRAFT,
+      selectedJourneyEntryId: null,
+      selectedChallengeId: null,
+      showPresetPlanOverlay: false,
+    }))
+  }
+
+  const handleBuildMyMonthBack = () => {
+    setState((current) => {
+      if (current.buildMyMonthFlowStep === 4) {
+        return {
+          ...current,
+          buildMyMonthFlowStep: 0,
+          activeTab: 'home',
+          selectedMonthlyPlanId: 'monthly',
+        }
+      }
+      if (current.buildMyMonthFlowStep <= 1) {
+        return { ...current, buildMyMonthFlowStep: 0, activeTab: 'home' }
+      }
+      return {
+        ...current,
+        buildMyMonthFlowStep: current.buildMyMonthFlowStep - 1,
+      }
+    })
+  }
+
+  const setBuildMyMonthVibe = (vibeId: AppState['buildMyMonthDraft']['vibeId']) => {
+    setState((current) => ({
+      ...current,
+      buildMyMonthDraft: { ...current.buildMyMonthDraft, vibeId },
+    }))
+  }
+
+  const setBuildMyMonthFrequency = (
+    frequencyPerWeek: NonNullable<AppState['buildMyMonthDraft']['frequencyPerWeek']>,
+  ) => {
+    setState((current) => ({
+      ...current,
+      buildMyMonthDraft: { ...current.buildMyMonthDraft, frequencyPerWeek },
+    }))
+  }
+
+  const setBuildMyMonthDays = (
+    dayPreference: NonNullable<AppState['buildMyMonthDraft']['dayPreference']>,
+  ) => {
+    setState((current) => ({
+      ...current,
+      buildMyMonthDraft: { ...current.buildMyMonthDraft, dayPreference },
+    }))
+  }
+
+  const advanceBuildMyMonthFlow = () => {
+    setState((current) => {
+      if (current.buildMyMonthFlowStep === 3) {
+        return {
+          ...current,
+          buildMyMonthFlowStep: 4,
+          monthlyPlanResult: generateMonthlyPlanResult(current.buildMyMonthDraft),
+          curatedPlanResult: null,
+          randomPlanResult: null,
+          selectedMonthlyPlanId: 'monthly',
+        }
+      }
+      return {
+        ...current,
+        buildMyMonthFlowStep: current.buildMyMonthFlowStep + 1,
+      }
+    })
+  }
+
+  const saveBuildMyMonthFlow = () => {
+    setState((current) => ({
+      ...current,
+      buildMyMonthFlowStep: 0,
+      activeTab: 'home',
+      selectedMonthlyPlanId: 'monthly',
+    }))
+  }
+
+  const startAdventureFromMonthlyPlan = (placeId: string) => {
+    setState((current) => ({
+      ...current,
+      buildMyMonthFlowStep: 0,
+      selectedMonthlyPlanId: 'monthly',
+    }))
+    void startAdventure(placeId)
+  }
+
+  const openTrainingProgramFlow = () => {
+    setState((current) => ({
+      ...current,
+      trainingProgramFlowStep: 1,
+      trainingProgramDraft: EMPTY_TRAINING_PROGRAM_DRAFT,
+      selectedJourneyEntryId: null,
+      selectedChallengeId: null,
+      selectedTrainingProgramId: null,
+      showPresetPlanOverlay: false,
+    }))
+  }
+
+  const handleTrainingProgramBack = () => {
+    setState((current) => {
+      if (current.trainingProgramFlowStep === 3) {
+        return {
+          ...current,
+          trainingProgramFlowStep: 0,
+          activeTab: 'home',
+        }
+      }
+      if (current.trainingProgramFlowStep <= 1) {
+        return { ...current, trainingProgramFlowStep: 0, activeTab: 'home' }
+      }
+      return {
+        ...current,
+        trainingProgramFlowStep: current.trainingProgramFlowStep - 1,
+      }
+    })
+  }
+
+  const setTrainingProgramSelection = (programId: string) => {
+    setState((current) => ({
+      ...current,
+      trainingProgramDraft: { ...current.trainingProgramDraft, programId },
+    }))
+  }
+
+  const setTrainingCadence = (
+    cadence: NonNullable<AppState['trainingProgramDraft']['cadence']>,
+  ) => {
+    setState((current) => ({
+      ...current,
+      trainingProgramDraft: { ...current.trainingProgramDraft, cadence },
+    }))
+  }
+
+  const advanceTrainingProgramFlow = () => {
+    setState((current) => {
+      const { programId, cadence } = current.trainingProgramDraft
+      if (current.trainingProgramFlowStep === 2 && programId && cadence) {
+        const schedule = generateTrainingSchedule(programId, cadence, current)
+        return {
+          ...current,
+          trainingProgramFlowStep: 3,
+          activeTrainingSchedule: schedule,
+        }
+      }
+      return {
+        ...current,
+        trainingProgramFlowStep: current.trainingProgramFlowStep + 1,
+      }
+    })
+  }
+
+  const saveTrainingProgramFlow = () => {
+    setState((current) => ({
+      ...current,
+      trainingProgramFlowStep: 0,
+      activeTab: 'home',
+    }))
+  }
+
+  const continueTrainingFromHome = (programId: string) => {
+    openTrainingProgram(programId)
   }
 
   const openPresetPlanOverlay = () => {
@@ -581,6 +753,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       selectedChallengeId: null,
       showPresetPlanOverlay: false,
       curatedPlanFlowStep: 0,
+      buildMyMonthFlowStep: 0,
     }))
   }
 
@@ -608,6 +781,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
           selectedChallengeId: null,
           showPresetPlanOverlay: false,
           curatedPlanFlowStep: 0,
+          buildMyMonthFlowStep: 0,
         }))
         return
       }
@@ -629,6 +803,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       selectedChallengeId: null,
       showPresetPlanOverlay: false,
       curatedPlanFlowStep: 0,
+      buildMyMonthFlowStep: 0,
     }))
   }
 
@@ -683,6 +858,10 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             journeyEntries,
             adventurePhotos: ['', '', ''],
             memorySaveToast: 'Memory saved — worth remembering.',
+            monthlyPlanResult:
+              current.monthlyPlanResult && place
+                ? advanceMonthlyPlanAfterAdventure(current.monthlyPlanResult, place.id)
+                : current.monthlyPlanResult,
           }),
         )
         return
@@ -734,6 +913,10 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         journeyEntries,
         adventurePhotos: ['', '', ''],
         memorySaveToast: 'Memory saved — worth remembering.',
+        monthlyPlanResult:
+          current.monthlyPlanResult && place
+            ? advanceMonthlyPlanAfterAdventure(current.monthlyPlanResult, place.id)
+            : current.monthlyPlanResult,
       })
     })
   }
@@ -1045,6 +1228,41 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     )
   }
 
+  if (state.buildMyMonthFlowStep > 0) {
+    return (
+      <BuildMyMonthFlow
+        state={state}
+        step={state.buildMyMonthFlowStep}
+        draft={state.buildMyMonthDraft}
+        result={state.monthlyPlanResult}
+        onBack={handleBuildMyMonthBack}
+        onSelectVibe={setBuildMyMonthVibe}
+        onSelectFrequency={setBuildMyMonthFrequency}
+        onSelectDays={setBuildMyMonthDays}
+        onNext={advanceBuildMyMonthFlow}
+        onSave={saveBuildMyMonthFlow}
+        onStartFirstAdventure={startAdventureFromMonthlyPlan}
+      />
+    )
+  }
+
+  if (state.trainingProgramFlowStep > 0) {
+    return (
+      <TrainingProgramFlow
+        state={state}
+        step={state.trainingProgramFlowStep}
+        draft={state.trainingProgramDraft}
+        schedule={state.activeTrainingSchedule}
+        onBack={handleTrainingProgramBack}
+        onSelectProgram={setTrainingProgramSelection}
+        onSelectCadence={setTrainingCadence}
+        onNext={advanceTrainingProgramFlow}
+        onSave={saveTrainingProgramFlow}
+        onOpenLesson={openTrainingProgram}
+      />
+    )
+  }
+
   if (state.curatedPlanFlowStep > 0) {
     return (
       <CuratedPlanFlow
@@ -1094,7 +1312,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     return <PresetPlanOverlay onClose={closePresetPlanOverlay} isDemoMode={isDemoMode} />
   }
 
-  if (state.showCommunityCompose && isDemoMode && LIVE_PRODUCT.communityTab) {
+  if (state.showCommunityCompose && isDemoMode) {
     return (
       <CommunityComposeOverlay
         state={state}
@@ -1198,6 +1416,10 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onOpenChallenge={openChallengeDetail}
             onOpenMemory={openJourneyMemory}
             onGoToPlan={() => setActiveTab('plan')}
+            onOpenBuildMyMonth={openBuildMyMonthFlow}
+            onOpenTrainingProgram={openTrainingProgramFlow}
+            onStartMonthlyPlanAdventure={startAdventureFromMonthlyPlan}
+            onContinueTraining={continueTrainingFromHome}
           />
         )
       case 'plan':
@@ -1210,7 +1432,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onApplyLocation={applyLocationFromZip}
             onStartAdventure={startAdventure}
             onStartNeighborhoodWalk={startNeighborhoodWalk}
-            onOpenCuratedPlanFlow={openCuratedPlanFlow}
+            onOpenBuildMyMonth={openBuildMyMonthFlow}
             onGenerateRandomPlan={generateRandomPlanForDogs}
             onOpenPresetPlan={openPresetPlanOverlay}
             onOpenChallenge={openChallengeDetail}
@@ -1236,11 +1458,12 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         if (!isNavTabVisible('community', isDemoMode ? 'demo' : 'app')) {
           return null
         }
+        return <CommunityScreen />
+      case 'achievements':
         return (
-          <CommunityScreen
+          <AchievementsScreen
             state={state}
-            onOpenChallenge={openChallengeDetail}
-            onOpenMemory={openJourneyMemory}
+            onOpenAchievement={openAchievementDetail}
           />
         )
       case 'milestones':
@@ -1261,7 +1484,6 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onSetActiveDog={handleSetActiveDog}
             onUpdateDog={handleUpdateDog}
             onRemoveDog={handleRemoveDog}
-            onOpenAchievement={openAchievementDetail}
             onOpenTrainingProgram={openTrainingProgram}
             onZipChange={setZipCode}
             onApplyLocation={applyLocationFromZip}

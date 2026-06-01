@@ -1,7 +1,24 @@
-export type TabId = 'home' | 'plan' | 'journey' | 'community' | 'milestones' | 'profile'
+export type TabId =
+  | 'home'
+  | 'plan'
+  | 'journey'
+  | 'community'
+  | 'milestones'
+  | 'achievements'
+  | 'profile'
 
 import type { CuratedPlanDraft, CuratedPlanResult } from '../lib/curatedPlan'
 import { EMPTY_CURATED_PLAN_DRAFT } from '../lib/curatedPlan'
+import type {
+  MonthlyPlanDraft,
+  MonthlyPlanResult,
+} from '../lib/monthlyPlan'
+import { EMPTY_MONTHLY_PLAN_DRAFT } from '../lib/monthlyPlan'
+import type {
+  ActiveTrainingSchedule,
+  TrainingProgramDraft,
+} from '../lib/trainingSchedule'
+import { EMPTY_TRAINING_PROGRAM_DRAFT } from '../lib/trainingSchedule'
 import type { MapCenter } from '../lib/mapbox'
 import { DEFAULT_MAP_CENTER } from '../lib/mapbox'
 import type { RandomPlanResult } from '../lib/randomPlan'
@@ -171,6 +188,12 @@ export interface AppState {
   curatedPlanFlowStep: number
   curatedPlanDraft: CuratedPlanDraft
   curatedPlanResult: CuratedPlanResult | null
+  buildMyMonthFlowStep: number
+  buildMyMonthDraft: MonthlyPlanDraft
+  monthlyPlanResult: MonthlyPlanResult | null
+  trainingProgramFlowStep: number
+  trainingProgramDraft: TrainingProgramDraft
+  activeTrainingSchedule: ActiveTrainingSchedule | null
   randomPlanResult: RandomPlanResult | null
   showPresetPlanOverlay: boolean
   showJourneyMapOverlay: boolean
@@ -263,6 +286,12 @@ export const defaultAppState: AppState = {
   curatedPlanFlowStep: 0,
   curatedPlanDraft: EMPTY_CURATED_PLAN_DRAFT,
   curatedPlanResult: null,
+  buildMyMonthFlowStep: 0,
+  buildMyMonthDraft: EMPTY_MONTHLY_PLAN_DRAFT,
+  monthlyPlanResult: null,
+  trainingProgramFlowStep: 0,
+  trainingProgramDraft: EMPTY_TRAINING_PROGRAM_DRAFT,
+  activeTrainingSchedule: null,
   randomPlanResult: null,
   showPresetPlanOverlay: false,
   showJourneyMapOverlay: false,
@@ -457,78 +486,15 @@ export const defaultAppState: AppState = {
     },
   ],
   communityLive: {
-    label: 'Right now in San Diego',
-    count: '247',
-    countLabel: 'dogs out now',
-    tagline: 'Beach walks, trail runs, patio hangs.',
-    topSpot: 'Dog Beach',
-    topSpotNote: 'Pack favorite today',
-    chips: [
-      { label: '89 beach adventures' },
-      { label: '54 trails' },
-      { label: '41 cafes' },
-      { label: '38 dog parks' },
-      { label: '25 road trips' },
-    ],
+    label: 'Community',
+    count: '0',
+    countLabel: 'coming soon',
+    tagline: 'Shared memories and pack activity are on the way.',
+    topSpot: '',
+    topSpotNote: '',
+    chips: [],
   },
-  communityPosts: [
-    {
-      id: 'sophie-mango',
-      placeId: 'del-mar-dog-beach',
-      photoUrl: '/sample-images/beach.jpg',
-      avatarClass: 'cp-av1',
-      initial: 'S',
-      name: 'Sophie + Mango',
-      meta: '2h ago · Day 31 streak',
-      caption:
-        "Mango absolutely lost his mind at the water today. Best $0 we've ever spent.",
-      location: 'Del Mar Dog Beach',
-      likes: 84,
-      comments: 12,
-    },
-    {
-      id: 'jake-luna-biscuit',
-      placeId: 'julian-day-trip',
-      photoUrl: '/sample-images/road-trip.jpg',
-      avatarClass: 'cp-av2',
-      initial: 'J',
-      name: 'Jake + Luna + Biscuit',
-      meta: '4h ago · Day 8 streak',
-      caption:
-        'First road trip with both dogs. Julian was worth every minute of the drive.',
-      location: 'Julian, CA · Road trip',
-      likes: 61,
-      comments: 7,
-    },
-    {
-      id: 'maria-cooper',
-      placeId: 'torrey-pines',
-      photoUrl: '/sample-images/trail.jpg',
-      avatarClass: 'cp-av1',
-      initial: 'M',
-      name: 'Maria + Cooper',
-      meta: '6h ago · Day 14 streak',
-      caption:
-        'Trail day at Torrey Pines — Cooper finally stopped to smell every pine cone.',
-      location: 'Torrey Pines State Reserve',
-      likes: 47,
-      comments: 5,
-    },
-    {
-      id: 'bailey-omi-patio',
-      placeId: 'lestats-coffee',
-      photoUrl: '/sample-images/cafe.jpg',
-      avatarClass: 'cp-av2',
-      initial: 'B',
-      name: 'Bailey + Omi',
-      meta: 'Yesterday · Day 14 streak',
-      caption:
-        'Slow morning on the patio — Omi people-watched while Bailey guarded the treats.',
-      location: "Lestat's Coffee House · Patio hang",
-      likes: 52,
-      comments: 9,
-    },
-  ],
+  communityPosts: [],
   bondLevel: {
     label: 'Journey Level',
     rank: 'Trail Scout',

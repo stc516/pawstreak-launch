@@ -2,20 +2,22 @@ import type { AppMode, TabId } from '../data/demo'
 
 /** Live product gates — hide UI for features that are not fully shipped. */
 export const LIVE_PRODUCT = {
-  communityTab: false,
   packAccess: false,
   calendarPresetPlan: false,
   bondProgressBar: false,
   statusBarChrome: false,
 } as const
 
-const NAV_TAB_ORDER: TabId[] = ['home', 'plan', 'journey', 'community', 'milestones']
+const NAV_TAB_ORDER: TabId[] = [
+  'home',
+  'plan',
+  'journey',
+  'milestones',
+  'achievements',
+  'community',
+]
 
-export function isNavTabVisible(tab: TabId, mode: AppMode = 'app'): boolean {
-  if (tab === 'community') {
-    if (mode === 'demo') return true
-    return LIVE_PRODUCT.communityTab
-  }
+export function isNavTabVisible(tab: TabId, _mode: AppMode = 'app'): boolean {
   return NAV_TAB_ORDER.includes(tab)
 }
 

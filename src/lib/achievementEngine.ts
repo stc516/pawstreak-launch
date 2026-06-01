@@ -10,6 +10,7 @@ import {
 } from '../data/achievements'
 import { NEIGHBORHOOD_WALK_PLACE_ID, getPlaceById } from '../data/places'
 import { DEMO_SEEDED_JOURNEY_ENTRY_IDS } from './productionState'
+import { DEMO_EARNED_ACHIEVEMENT_IDS } from './productionState'
 
 type MetricMatch = {
   entry: JourneyEntry
@@ -264,7 +265,15 @@ export function resolveAchievement(
   definition: AchievementDefinition,
   state: AppState,
 ): Achievement {
-  const progress = computeAchievementProgress(definition, state)
+  let progress = computeAchievementProgress(definition, state)
+
+  if (state.mode === 'demo' && progress.unlocked && !DEMO_EARNED_ACHIEVEMENT_IDS.has(definition.id)) {
+    progress = {
+      ...progress,
+      unlocked: false,
+      unlockedAt: undefined,
+    }
+  }
 
   return {
     id: definition.id,

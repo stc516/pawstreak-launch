@@ -16,6 +16,9 @@ export interface AchievementMemory {
 export interface AchievementDetail {
   statusLabel: 'Unlocked' | 'In progress' | 'Locked'
   emotionalExplanation: string
+  howToEarn: string
+  currentCount: number
+  targetCount: number
   dateEarned?: string
   progressLabel?: string
   progressPercent?: number
@@ -65,11 +68,18 @@ function buildAchievementDetail(achievement: Achievement): AchievementDetail {
     progress.target > 0
       ? Math.round((progress.current / progress.target) * 100)
       : 0
+  const howToEarn = definition?.requirementHint ?? achievement.subtitle
+  const baseDetail = {
+    howToEarn,
+    currentCount: progress.current,
+    targetCount: progress.target,
+  }
 
   if (progress.unlocked) {
     return {
       statusLabel: 'Unlocked',
       emotionalExplanation: definition?.description ?? achievement.description,
+      ...baseDetail,
       dateEarned: progress.unlockedAt
         ? formatUnlockDate(progress.unlockedAt)
         : undefined,
@@ -87,6 +97,7 @@ function buildAchievementDetail(achievement: Achievement): AchievementDetail {
     return {
       statusLabel: 'In progress',
       emotionalExplanation: definition?.description ?? achievement.description,
+      ...baseDetail,
       progressLabel: `${progress.current} of ${progress.target} complete`,
       progressPercent,
       relatedMemories: [],
@@ -100,7 +111,8 @@ function buildAchievementDetail(achievement: Achievement): AchievementDetail {
   return {
     statusLabel: 'Locked',
     emotionalExplanation: definition?.description ?? achievement.description,
-    unlockSteps: [definition?.requirementHint ?? achievement.subtitle],
+    ...baseDetail,
+    unlockSteps: [howToEarn],
     progressLabel: `0 of ${progress.target} complete`,
     progressPercent: 0,
     relatedMemories: [],

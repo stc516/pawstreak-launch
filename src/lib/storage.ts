@@ -9,6 +9,8 @@ import {
 import { normalizePhotoSlots } from '../lib/imageUtils'
 import { resolvePlaceFromAdventure } from '../data/places'
 import { EMPTY_CURATED_PLAN_DRAFT, type LegacyCuratedPlanDraft } from '../lib/curatedPlan'
+import { EMPTY_MONTHLY_PLAN_DRAFT } from '../lib/monthlyPlan'
+import { EMPTY_TRAINING_PROGRAM_DRAFT } from '../lib/trainingSchedule'
 import { DEFAULT_PACK_ACCESS_MEMBERS } from '../data/packAccess'
 import { isDefaultDemoDogs } from './dogLabels'
 import { personalizeAppContentForDogs } from './personalizeContent'
@@ -128,6 +130,8 @@ export function applyLaunchSessionState(state: AppState): AppState {
     showCommunityCompose: false,
     showPackInviteOverlay: false,
     curatedPlanFlowStep: 0,
+    buildMyMonthFlowStep: 0,
+    trainingProgramFlowStep: 0,
   }
 }
 
@@ -150,6 +154,12 @@ function normalizeAppState(state: AppState, mode: AppMode): AppState {
     curatedPlanFlowStep: rest.curatedPlanFlowStep ?? 0,
     curatedPlanDraft: normalizeCuratedDraft(rest.curatedPlanDraft),
     curatedPlanResult: rest.curatedPlanResult ?? null,
+    buildMyMonthFlowStep: rest.buildMyMonthFlowStep ?? 0,
+    buildMyMonthDraft: rest.buildMyMonthDraft ?? EMPTY_MONTHLY_PLAN_DRAFT,
+    monthlyPlanResult: rest.monthlyPlanResult ?? null,
+    trainingProgramFlowStep: rest.trainingProgramFlowStep ?? 0,
+    trainingProgramDraft: rest.trainingProgramDraft ?? EMPTY_TRAINING_PROGRAM_DRAFT,
+    activeTrainingSchedule: rest.activeTrainingSchedule ?? null,
     randomPlanResult: rest.randomPlanResult ?? null,
     showPresetPlanOverlay: rest.showPresetPlanOverlay ?? false,
     showJourneyMapOverlay: rest.showJourneyMapOverlay ?? false,
