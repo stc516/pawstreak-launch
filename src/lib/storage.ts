@@ -13,6 +13,7 @@ import { DEFAULT_PACK_ACCESS_MEMBERS } from '../data/packAccess'
 import { isDefaultDemoDogs } from './dogLabels'
 import { personalizeAppContentForDogs } from './personalizeContent'
 import { createProductionInitialState } from './appDataSync'
+import { DEFAULT_MAP_CENTER, resolveMapCenterForLocation } from './mapbox'
 import { resolveAchievements } from './achievementEngine'
 import { computeBondLevel } from './bondLevel'
 import {
@@ -160,6 +161,14 @@ function normalizeAppState(state: AppState, mode: AppMode): AppState {
     locationQuery: rest.locationQuery ?? defaultAppState.locationQuery,
     locationLabel: rest.locationLabel ?? defaultAppState.locationLabel,
     locationSupported: rest.locationSupported ?? defaultAppState.locationSupported,
+    mapCenter:
+      rest.mapCenter ??
+      resolveMapCenterForLocation({
+        zipCode: rest.zipCode ?? defaultAppState.zipCode,
+        supported: rest.locationSupported ?? defaultAppState.locationSupported,
+        label: rest.locationLabel ?? defaultAppState.locationLabel,
+      }) ??
+      DEFAULT_MAP_CENTER,
     userName: rest.userName ?? '',
     dogVibeNames: rest.dogVibeNames ?? [],
     onboardingCategoryIds: rest.onboardingCategoryIds ?? [],

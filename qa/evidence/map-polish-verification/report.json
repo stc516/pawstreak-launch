@@ -1,6 +1,6 @@
 {
-  "commit": "5cb9e74110c6c283df2c18eb45b1f2d843939f26",
-  "capturedAt": "2026-05-27T20:00:46.841Z",
+  "commit": "dc4d8eb01703bdeb46f8852c6d9dfa24a62675d0",
+  "capturedAt": "2026-06-01T05:21:58.499Z",
   "captures": [
     {
       "name": "01-app-journey-map-card",
@@ -29,10 +29,6 @@
     {
       "name": "04-landing-phone-mockup",
       "file": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/map-polish-verification/04-landing-phone-mockup.png"
-    },
-    {
-      "name": "04c-landing-phone-map-preview",
-      "file": "/Users/stephencarroll/Projects/pawstreak-launch/qa/evidence/map-polish-verification/04c-landing-phone-map-preview.png"
     },
     {
       "name": "04b-landing-hero-full",
@@ -68,7 +64,7 @@
     {
       "id": "plan-map-card-visible",
       "pass": true,
-      "message": "Plan region map card is visible"
+      "message": "Plan Mapbox map is visible"
     },
     {
       "id": "plan-tab-no-scrollbar",

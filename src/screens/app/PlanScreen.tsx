@@ -92,6 +92,7 @@ export function PlanScreen({
       <PlanAdventureMap
         places={mapPlaces}
         selectedPlaceId={selectedPlaceId}
+        mapCenter={state.mapCenter}
         mapTitle={state.mapRegion.title}
         mapSubtitle="Each pin is a real place nearby · Tap to find it below"
         zipCode={state.zipCode}

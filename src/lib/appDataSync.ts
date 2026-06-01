@@ -2,6 +2,7 @@ import type { AppState } from '../data/demo'
 import { defaultAppState } from '../data/demo'
 import type { OnboardingResult } from './onboardingProfile'
 import { resolveLocationProfile, buildDogsFromOnboarding } from './onboardingProfile'
+import { resolveMapCenterForLocation } from './mapbox'
 import { createDogsForUser, fetchDogsForUser, getActiveDog, updateDogPhotoPath, uploadDogPhoto } from './db/dogs'
 import { fetchMemoriesForUser, countDistinctPlaces } from './db/memories'
 import { fetchProfile, upsertProfileFromOnboarding } from './db/profiles'
@@ -64,6 +65,11 @@ export async function hydrateProductionState(
     locationQuery: profile?.location_query ?? base.locationQuery,
     locationLabel: profile?.location_label ?? base.locationLabel,
     locationSupported: profile?.location_supported ?? base.locationSupported,
+    mapCenter: resolveMapCenterForLocation({
+      zipCode: profile?.zip_code ?? base.zipCode,
+      supported: profile?.location_supported ?? base.locationSupported,
+      label: profile?.location_label ?? base.locationLabel,
+    }),
     dogVibeNames: profile?.dog_vibe_names ?? [],
     onboardingCategoryIds: profile?.onboarding_category_ids ?? [],
     dogs,

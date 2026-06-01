@@ -30,12 +30,10 @@ const APP_TABS = [
 ]
 
 async function openDemoApp(page) {
-  await page.goto(`${BASE_URL}/demo/app`, { waitUntil: 'networkidle' })
-  await page.waitForTimeout(1500)
-  await page.getByRole('button', { name: 'Quick Walk' }).waitFor({
-    state: 'visible',
-    timeout: 15000,
-  })
+  await page.goto(`${BASE_URL}/demo/app`, { waitUntil: 'networkidle', timeout: 60000 })
+  await page.evaluate(() => localStorage.clear())
+  await page.reload({ waitUntil: 'networkidle', timeout: 60000 })
+  await page.locator('.home-dog-pill').first().waitFor({ state: 'visible', timeout: 15000 })
 }
 
 async function checkScreen(page, screen) {

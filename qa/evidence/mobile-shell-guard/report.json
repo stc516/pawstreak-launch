@@ -1,0 +1,51 @@
+{
+  "baseUrl": "http://127.0.0.1:4180",
+  "checkedAt": "2026-06-01T14:30:09.679Z",
+  "results": [
+    {
+      "screen": "home",
+      "pass": true,
+      "code": null,
+      "detail": null,
+      "shellFillRatio": 1,
+      "navCenterY": 635,
+      "scrollClientHeight": 551
+    },
+    {
+      "screen": "plan",
+      "pass": true,
+      "code": null,
+      "detail": null,
+      "shellFillRatio": 1,
+      "navCenterY": 635,
+      "scrollClientHeight": 551
+    },
+    {
+      "screen": "journey",
+      "pass": true,
+      "code": null,
+      "detail": null,
+      "shellFillRatio": 1,
+      "navCenterY": 635,
+      "scrollClientHeight": 551
+    },
+    {
+      "screen": "challenges",
+      "pass": true,
+      "code": null,
+      "detail": null,
+      "shellFillRatio": 1,
+      "navCenterY": 635,
+      "scrollClientHeight": 551
+    },
+    {
+      "screen": "profile",
+      "pass": true,
+      "code": null,
+      "detail": null,
+      "shellFillRatio": 1,
+      "navCenterY": 635,
+      "scrollClientHeight": 551
+    }
+  ]
+}

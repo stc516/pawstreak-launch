@@ -134,8 +134,18 @@ async function main() {
     await page.waitForTimeout(400)
 
     await clickNav(page, 'Plan')
-    const planMapCard = page.locator('.mapbox').first()
-    await note('plan-map-card-visible', await planMapCard.isVisible(), 'Plan region map card is visible')
+    const planMapCard = page.locator('.plan-map-card--adventure').first()
+    const planMapbox = page.locator('.plan-map-canvas--mapbox .mapboxgl-map').first()
+    const planMapFallback = page.locator('.plan-map-empty').first()
+    const planMapRendered =
+      (await planMapbox.count()) > 0 || (await planMapFallback.isVisible())
+    await note(
+      'plan-map-card-visible',
+      await planMapCard.isVisible() && planMapRendered,
+      (await planMapbox.count()) > 0
+        ? 'Plan Mapbox map is visible'
+        : 'Plan map card visible (Mapbox token fallback UI)',
+    )
     await capture(page, '03-app-plan-map-card-viewport', page.locator('.app-viewport').first())
     await capture(page, '03b-app-plan-map-card', planMapCard)
 

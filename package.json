@@ -17,11 +17,14 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.106.2",
+    "mapbox-gl": "^3.24.0",
     "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+    "react-dom": "^19.2.6",
+    "react-map-gl": "^8.1.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/mapbox-gl": "^3.4.1",
     "@types/node": "^24.12.3",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",

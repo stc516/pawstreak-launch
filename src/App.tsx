@@ -68,6 +68,7 @@ import {
 import { generateRandomPlan } from './lib/randomPlan'
 import type { OnboardingResult } from './lib/onboardingProfile'
 import { applyOnboardingToAppState, resolveLocationProfile } from './lib/onboardingProfile'
+import { resolveMapCenterForLocation } from './lib/mapbox'
 import {
   accessDescriptionFor,
   roleLabelForInvite,
@@ -246,6 +247,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
           title: location.mapTitle,
           subtitle: location.mapSubtitle,
         },
+        mapCenter: resolveMapCenterForLocation(location),
         communityLive: {
           ...current.communityLive,
           label: location.communityLabel,

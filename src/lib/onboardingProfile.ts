@@ -1,6 +1,7 @@
 import type { Dog } from '../data/demo'
 import { getPackDisplayName } from './dogLabels'
 import type { AppState } from '../data/demo'
+import { resolveMapCenterForLocation } from './mapbox'
 import type { CuratedPlanDraft } from './curatedPlan'
 import type { Place, PlaceCategory } from '../types/place'
 import { personalizeAppContentForDogs } from './personalizeContent'
@@ -346,6 +347,7 @@ export function applyOnboardingToAppState(
       title: location.mapTitle,
       subtitle: location.mapSubtitle,
     },
+    mapCenter: resolveMapCenterForLocation(location),
     communityLive: {
       ...current.communityLive,
       label: location.communityLabel,

@@ -12281,6 +12281,82 @@ select.field-input {
     linear-gradient(180deg, #bae6fd 0%, #7dd3fc 18%, #fef3c7 52%, #fde68a 100%);
 }
 
+.plan-map-canvas--adventure.plan-map-canvas--mapbox {
+  background: #e7f5ef;
+  min-height: 200px;
+}
+
+.plan-map-canvas--mapbox::before {
+  display: none;
+}
+
+.plan-map-canvas--mapbox .mapboxgl-map {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px 16px 0 0;
+}
+
+.plan-map-canvas--mapbox .mapboxgl-canvas-container.mapboxgl-interactive,
+.plan-map-canvas--mapbox .mapboxgl-canvas {
+  pointer-events: none;
+}
+
+.plan-map-canvas--mapbox .mapboxgl-marker {
+  z-index: 2;
+  pointer-events: auto;
+}
+
+.plan-map-canvas--mapbox .mapboxgl-ctrl-bottom-right {
+  right: 6px;
+  bottom: 6px;
+}
+
+.plan-map-canvas--mapbox .mapboxgl-ctrl-attrib,
+.plan-map-canvas--mapbox .mapboxgl-ctrl-logo {
+  opacity: 0.72;
+  transform: scale(0.82);
+  transform-origin: bottom right;
+}
+
+.plan-map-pin--mapbox {
+  position: relative;
+  transform: none;
+}
+
+.plan-map-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  height: 100%;
+  min-height: 180px;
+  padding: 18px 16px;
+  text-align: center;
+}
+
+.plan-map-empty-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #1c1410;
+}
+
+.plan-map-empty-copy {
+  margin: 0;
+  max-width: 240px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: #7c5c48;
+}
+
+.plan-map-empty-copy code {
+  font-size: 10px;
+  font-weight: 700;
+  color: #9a3412;
+}
+
 .plan-map-terrain {
   position: absolute;
   inset: 0;

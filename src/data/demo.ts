@@ -2,6 +2,8 @@ export type TabId = 'home' | 'plan' | 'journey' | 'community' | 'milestones' | '
 
 import type { CuratedPlanDraft, CuratedPlanResult } from '../lib/curatedPlan'
 import { EMPTY_CURATED_PLAN_DRAFT } from '../lib/curatedPlan'
+import type { MapCenter } from '../lib/mapbox'
+import { DEFAULT_MAP_CENTER } from '../lib/mapbox'
 import type { RandomPlanResult } from '../lib/randomPlan'
 import type { PackAccessMember } from './packAccess'
 import { DEFAULT_PACK_ACCESS_MEMBERS } from './packAccess'
@@ -148,6 +150,8 @@ export interface FavoritePlace {
 export type AppMode = 'app' | 'demo'
 export type DemoEntry = 'seeded' | 'onboarding'
 
+export type { MapCenter } from '../lib/mapbox'
+
 export interface AppState {
   mode?: AppMode
   demoEntry?: DemoEntry
@@ -190,6 +194,7 @@ export interface AppState {
     title: string
     subtitle: string
   }
+  mapCenter: MapCenter
   planCategories: PlanCategory[]
   monthlyPlanOptions: MonthlyPlanOption[]
   moodRecapOptions: RecapChip[]
@@ -330,6 +335,7 @@ export const defaultAppState: AppState = {
     title: 'San Diego + OC spots',
     subtitle: 'Dog-friendly spots nearby · Tap a pin to explore',
   },
+  mapCenter: DEFAULT_MAP_CENTER,
   planCategories: [
     { id: 'all', label: 'All' },
     { id: 'beach', label: 'Beach' },

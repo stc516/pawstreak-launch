@@ -1,11 +1,12 @@
-import { useMemo } from 'react'
-import type { CSSProperties } from 'react'
+import type { MapCenter } from '../lib/mapbox'
 import type { Place } from '../types/place'
-import { layoutPlanMapPins, shortPlaceMapLabel } from '../lib/planMap'
+import { PlanMapView } from './PlanMapView'
+import { shortPlaceMapLabel } from '../lib/planMap'
 
 interface PlanAdventureMapProps {
   places: Place[]
   selectedPlaceId: string | null
+  mapCenter: MapCenter
   mapTitle: string
   mapSubtitle: string
   zipCode: string
@@ -17,6 +18,7 @@ interface PlanAdventureMapProps {
 export function PlanAdventureMap({
   places,
   selectedPlaceId,
+  mapCenter,
   mapTitle,
   mapSubtitle,
   zipCode,
@@ -24,59 +26,26 @@ export function PlanAdventureMap({
   onZipChange,
   onApplyLocation,
 }: PlanAdventureMapProps) {
-  const pins = useMemo(() => layoutPlanMapPins(places), [places])
-  const placeById = useMemo(
-    () => Object.fromEntries(places.map((place) => [place.id, place])),
-    [places],
-  )
-  const selectedPlace = selectedPlaceId ? placeById[selectedPlaceId] : null
+  const selectedPlace = selectedPlaceId
+    ? places.find((place) => place.id === selectedPlaceId)
+    : null
 
   return (
     <section className="plan-map-card plan-map-card--adventure detail-card-warm" aria-label="Local map">
-      <div className="plan-map-canvas plan-map-canvas--adventure">
-        <div className="plan-map-terrain" aria-hidden="true">
-          <div className="plan-map-coast" />
-          <div className="plan-map-hills" />
-          <div className="plan-map-road plan-map-road--north" />
-          <div className="plan-map-road plan-map-road--east" />
-          <div className="plan-map-road plan-map-road--south" />
-        </div>
-
-        {pins.map((pin, index) => {
-          const place = placeById[pin.placeId]
-          if (!place) return null
-          const isSelected = selectedPlaceId === pin.placeId
-
-          return (
-            <button
-              key={pin.placeId}
-              type="button"
-              className={`plan-map-pin plan-map-pin--adventure tap-target${isSelected ? ' on' : ''}`}
-              style={
-                {
-                  left: pin.left,
-                  top: pin.top,
-                  '--pin-delay': `${index * 0.35}s`,
-                } as CSSProperties
-              }
-              aria-pressed={isSelected}
-              aria-label={place.name}
-              onClick={() => onSelectPlace(pin.placeId)}
-            >
-              <span className="plan-map-pin-pulse" aria-hidden="true" />
-              <span className="plan-map-pin-dot plan-map-pin-dot--adventure" aria-hidden="true" />
-              <span className="plan-map-pin-label">{shortPlaceMapLabel(place.name)}</span>
-            </button>
-          )
-        })}
+      <div className="plan-map-canvas plan-map-canvas--adventure plan-map-canvas--mapbox">
+        <PlanMapView
+          places={places}
+          selectedPlaceId={selectedPlaceId}
+          mapCenter={mapCenter}
+          onSelectPlace={onSelectPlace}
+        />
 
         {selectedPlace ? (
-          <div
-            className="plan-map-tooltip detail-card-warm"
-            aria-live="polite"
-          >
+          <div className="plan-map-tooltip detail-card-warm" aria-live="polite">
             <div className="plan-map-tooltip-kicker">{selectedPlace.category}</div>
-            <div className="plan-map-tooltip-title">{selectedPlace.name.split(',')[0]}</div>
+            <div className="plan-map-tooltip-title">
+              {shortPlaceMapLabel(selectedPlace.name)}
+            </div>
             <div className="plan-map-tooltip-meta">
               {selectedPlace.distanceLabel} · {selectedPlace.leashInfo}
             </div>
