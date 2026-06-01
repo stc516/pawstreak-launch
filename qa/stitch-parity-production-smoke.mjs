@@ -31,14 +31,7 @@ const SCREENS = [
           return quick.compareDocumentPosition(curated) & Node.DOCUMENT_POSITION_FOLLOWING
         })
       }},
-      { id: 'bottom-nav-pinned', fn: async (page) => {
-        return page.evaluate(() => {
-          const nav = document.querySelector('.app-shell > .bnav')
-          if (!nav) return false
-          const style = getComputedStyle(nav)
-          return style.position === 'fixed' || nav.classList.contains('bnav')
-        })
-      }},
+      { id: 'bottom-nav-pinned', selector: '.app-shell-footer .bnav' },
     ],
   },
   {
@@ -51,7 +44,7 @@ const SCREENS = [
     checks: [
       { id: 'enamel-grid', selector: '.st-enamel-grid' },
       { id: 'enamel-badge', selector: '.st-enamel-badge' },
-      { id: 'bottom-nav', selector: '.app-shell > .bnav' },
+      { id: 'bottom-nav', selector: '.app-shell-footer .bnav' },
     ],
   },
   {
@@ -91,7 +84,7 @@ const SCREENS = [
       { id: 'manage-dogs', selector: '.settings-row-title:has-text("Manage dogs")' },
       { id: 'privacy', selector: '.settings-section-label:has-text("Privacy")' },
       { id: 'sign-out', selector: '.settings-signout--stitch' },
-      { id: 'bottom-nav', selector: '.app-shell > .bnav' },
+      { id: 'bottom-nav', selector: '.app-shell-footer .bnav' },
     ],
   },
 ]
