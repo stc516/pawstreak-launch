@@ -7,7 +7,7 @@ import {
   getHomeWelcomeGreeting,
   getMemoryWarmLabel,
 } from '../../lib/homeCopy'
-import { getFeaturedChallenge, resolveJoinedChallenges } from '../../lib/challengeEngine'
+import { resolveJoinedChallenges } from '../../lib/challengeEngine'
 import { getHomeProgressStats } from '../../lib/homeStats'
 import { getMapPreviewPlaces } from '../../lib/planDiscovery'
 import { getPlanMagicMeta } from '../../data/places'
@@ -27,11 +27,8 @@ interface HomeScreenProps {
   onStartNeighborhoodWalk: () => void
   onOpenProfile: () => void
   onOpenChallenge: (challengeId: string) => void
-  onJoinChallenge: (challengeId: string) => void
-  onOpenTrainingProgram: (programId: string) => void
   onOpenMemory?: (entryId: string) => void
   onGoToPlan: () => void
-  onGoToChallenges: () => void
 }
 
 const QUICK_GRID_ACTIONS = [
@@ -48,11 +45,8 @@ export function HomeScreen({
   onStartNeighborhoodWalk,
   onOpenProfile,
   onOpenChallenge,
-  onJoinChallenge,
-  onOpenTrainingProgram: _onOpenTrainingProgram,
   onOpenMemory,
   onGoToPlan,
-  onGoToChallenges: _onGoToChallenges,
 }: HomeScreenProps) {
   const profileDogs = getProfileDogs(state)
   const dogLabel = getDisplayDogLabel(state)
@@ -63,8 +57,7 @@ export function HomeScreen({
   const progress = getHomeProgressStats(state)
   const joinedChallenges = useMemo(() => resolveJoinedChallenges(state), [state])
   const activeChallenge = joinedChallenges[0]
-  const curatedChallenge = useMemo(() => getFeaturedChallenge(state), [state])
-  const curatedPlaces = useMemo(
+  const suggestedPlaces = useMemo(
     () => getMapPreviewPlaces(getRecommendationPrefs(state)),
     [state],
   )
@@ -92,16 +85,13 @@ export function HomeScreen({
     onStartAdventure(place.id, 'Open end')
   }
 
-  const handleCuratedPlaceGo = (placeId: string) => {
+  const handleSuggestedPlaceGo = (placeId: string) => {
     if (placeId === 'neighborhood-walk') {
       onStartNeighborhoodWalk()
       return
     }
     onStartAdventure(placeId, 'Open end')
   }
-
-  const showCuratedChallenge =
-    !activeChallenge && curatedChallenge && !curatedChallenge.progress.joined
 
   return (
     <div className="home-screen home-screen--stitch">
@@ -137,7 +127,7 @@ export function HomeScreen({
 
       {!state.locationSupported ? (
         <div className="home-area-fallback st-card st-card--elevated">
-          We&apos;re still building your area. Suggested adventures are ready below.
+          We&apos;re still building your area. Suggested Spots are ready below.
         </div>
       ) : null}
 
@@ -195,32 +185,32 @@ export function HomeScreen({
         ))}
       </section>
 
-      {curatedPlaces.length > 0 ? (
-        <section className="home-curated" aria-label="Curated Adventures">
+      {suggestedPlaces.length > 0 ? (
+        <section className="home-suggested-spots" aria-label="Suggested Spots">
           <div className="st-section-head">
-            <h2 className="st-headline-md">Curated Adventures</h2>
+            <h2 className="st-headline-md">Suggested Spots</h2>
             <button type="button" className="st-link-btn tap-target" onClick={onGoToPlan}>
               See all on Plan
             </button>
           </div>
-          <div className="st-curated-strip st-hide-scroll">
-            {curatedPlaces.slice(0, 3).map((place) => {
+          <div className="st-suggested-spots-strip st-hide-scroll">
+            {suggestedPlaces.slice(0, 3).map((place) => {
               const imageUrl = getAdventureDisplayImageUrl(state.journeyEntries, place)
               return (
                 <button
                   key={place.id}
                   type="button"
-                  className="st-curated-tile tap-target"
-                  onClick={() => handleCuratedPlaceGo(place.id)}
+                  className="st-suggested-spots-tile tap-target"
+                  onClick={() => handleSuggestedPlaceGo(place.id)}
                 >
                   <CardImage
-                    className="st-curated-tile-photo"
+                    className="st-suggested-spots-tile-photo"
                     imageUrl={imageUrl}
                     imageAlt={place.imageAlt ?? place.name}
                     imageTone={place.imageTone}
                   />
-                  <div className="st-curated-tile-name">{place.name.split(',')[0]}</div>
-                  <div className="st-curated-tile-meta">{getPlanMagicMeta(place)}</div>
+                  <div className="st-suggested-spots-tile-name">{place.name.split(',')[0]}</div>
+                  <div className="st-suggested-spots-tile-meta">{getPlanMagicMeta(place)}</div>
                 </button>
               )
             })}
@@ -256,30 +246,6 @@ export function HomeScreen({
               onClick={() => onOpenChallenge(activeChallenge.id)}
             >
               View
-            </button>
-          </div>
-        </section>
-      ) : null}
-
-      {showCuratedChallenge && curatedChallenge ? (
-        <section aria-label="Curated challenge">
-          <div className="st-section-head">
-            <h2 className="st-headline-md">Active Challenge</h2>
-          </div>
-          <div className="st-challenge-row detail-card-warm">
-            <div className="st-challenge-row-icon" aria-hidden="true">
-              {curatedChallenge.emoji}
-            </div>
-            <div className="st-challenge-row-body">
-              <div className="st-challenge-row-title">{curatedChallenge.title}</div>
-              <div className="st-challenge-row-sub">{curatedChallenge.subtitle}</div>
-            </div>
-            <button
-              type="button"
-              className="st-btn st-btn--forest tap-target"
-              onClick={() => onJoinChallenge(curatedChallenge.id)}
-            >
-              Join
             </button>
           </div>
         </section>

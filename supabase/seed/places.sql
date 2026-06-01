@@ -1,4 +1,4 @@
--- Generated from src/data/places.ts — 42 places
+-- Generated from src/data/places.ts — 46 places
 -- Run after 004_places.sql
 
 insert into public.places (
@@ -25,7 +25,7 @@ insert into public.places (
   -117.2534,
   true,
   true,
-  '/sample-images/dogs-outdoors.jpg',
+  '/sample-images/coastal.jpg',
   'Dog Beach, Ocean Beach — beach spot',
   'coastal',
   true
@@ -94,7 +94,7 @@ insert into public.places (
   -117.2189,
   false,
   false,
-  '/sample-images/coastal.jpg',
+  '/sample-images/beach.jpg',
   'Fiesta Island — beach spot',
   'coastal',
   true
@@ -117,8 +117,77 @@ insert into public.places (
   -117.2573,
   false,
   false,
-  '/sample-images/dogs-outdoors.jpg',
+  '/sample-images/coastal.jpg',
   'La Jolla Shores Beach — beach spot',
+  'coastal',
+  true
+),
+(
+  'mission-bay',
+  'Mission Bay',
+  'San Diego',
+  'San Diego',
+  'Beach',
+  '{"on-leash","water","bay"}',
+  '5.5 mi',
+  'On-leash',
+  'Shoreline paths and grassy park edges around Mission Bay.',
+  'Flat bay walks, breeze, and room to sniff without steep hills.',
+  'Sunset shoreline loop',
+  'Moderate',
+  null,
+  32.7648,
+  -117.2268,
+  false,
+  false,
+  '/sample-images/coastal.jpg',
+  'Mission Bay — beach spot',
+  'coastal',
+  true
+),
+(
+  'pacific-beach',
+  'Pacific Beach',
+  'San Diego',
+  'San Diego',
+  'Beach',
+  '{"on-leash","water","boardwalk"}',
+  '7.2 mi',
+  'On-leash',
+  'Boardwalk and beach strand — busy on weekends, calmer at sunrise.',
+  'Boardwalk energy, sand, and a classic San Diego beach day.',
+  'Early morning before crowds',
+  'Moderate',
+  null,
+  32.799,
+  -117.254,
+  false,
+  false,
+  '/sample-images/coastal.jpg',
+  'Pacific Beach — beach spot',
+  'coastal',
+  true
+),
+(
+  'cardiff-dog-beach',
+  'Cardiff Dog Beach',
+  'Encinitas',
+  'San Diego',
+  'Beach',
+  '{"off-leash","water","north-county"}',
+  '24 mi',
+  'Off-leash',
+  'North County off-leash stretch at the south end of Cardiff State Beach.',
+  'Wide sand, steady surf, and a north-county change of pace.',
+  'Weekday mornings',
+  'High',
+  null,
+  33.0102,
+  -117.2794,
+  false,
+  false,
+  '/sample-images/beach.jpg',
+  'Cardiff Dog Beach — beach spot',
   'coastal',
   true
 ),
@@ -140,7 +209,7 @@ insert into public.places (
   -118.0012,
   true,
   true,
-  '/sample-images/beach.jpg',
+  '/sample-images/coastal.jpg',
   'Huntington Dog Beach — beach spot',
   'coastal',
   true
@@ -163,7 +232,7 @@ insert into public.places (
   -117.9298,
   false,
   false,
-  '/sample-images/dogs-outdoors.jpg',
+  '/sample-images/beach.jpg',
   'Newport Beach Dog Zone — beach spot',
   'coastal',
   true
@@ -209,7 +278,7 @@ insert into public.places (
   -117.0312,
   true,
   false,
-  '/sample-images/trail.jpg',
+  '/sample-images/park.jpg',
   'Cowles Mountain Trail — trail spot',
   'forest',
   true
@@ -255,7 +324,7 @@ insert into public.places (
   -117.0512,
   false,
   false,
-  '/sample-images/park.jpg',
+  '/sample-images/trail.jpg',
   'Mission Trails — Kwaay Paay Peak — trail spot',
   'forest',
   true
@@ -278,7 +347,7 @@ insert into public.places (
   -117.1223,
   true,
   false,
-  '/sample-images/dogs-outdoors.jpg',
+  '/sample-images/cafe.jpg',
   'Lestat''s Coffee House — coffee spot',
   'urban',
   true
@@ -301,7 +370,7 @@ insert into public.places (
   -117.1667,
   false,
   true,
-  '/sample-images/dogs-outdoors.jpg',
+  '/sample-images/cafe.jpg',
   'Better Buzz Coffee — Hillcrest — coffee spot',
   'urban',
   true
@@ -324,7 +393,7 @@ insert into public.places (
   -117.1298,
   false,
   false,
-  '/sample-images/dogs-outdoors.jpg',
+  '/sample-images/cafe.jpg',
   'Holsem Coffee — coffee spot',
   'urban',
   true
@@ -347,7 +416,7 @@ insert into public.places (
   -117.1689,
   true,
   false,
-  '/sample-images/dogs-outdoors.jpg',
+  '/sample-images/cafe.jpg',
   'Ballast Point — Little Italy — brewery spot',
   'urban',
   true
@@ -393,7 +462,7 @@ insert into public.places (
   -117.1445,
   true,
   false,
-  '/sample-images/dog-park.jpg',
+  '/sample-images/park.jpg',
   'Nate''s Point Dog Park — dog park spot',
   'park',
   true
@@ -416,7 +485,7 @@ insert into public.places (
   -117.1291,
   false,
   false,
-  '/sample-images/dogs-outdoors.jpg',
+  '/sample-images/dog-park.jpg',
   'Grape Street Dog Park — dog park spot',
   'park',
   true
@@ -439,7 +508,7 @@ insert into public.places (
   -117.2489,
   false,
   true,
-  '/sample-images/dogs-outdoors.jpg',
+  '/sample-images/dog-park.jpg',
   'Dusty Rhodes Dog Park — dog park spot',
   'park',
   true
@@ -462,7 +531,7 @@ insert into public.places (
   -117.6891,
   false,
   false,
-  '/sample-images/dog-park.jpg',
+  '/sample-images/park.jpg',
   'Central Bark Dog Park — dog park spot',
   'park',
   true
@@ -485,7 +554,7 @@ insert into public.places (
   -117.1446,
   true,
   false,
-  '/sample-images/dogs-outdoors.jpg',
+  '/sample-images/park.jpg',
   'Balboa Park — park spot',
   'park',
   true
@@ -508,7 +577,7 @@ insert into public.places (
   -117.2412,
   false,
   false,
-  '/sample-images/dog-park.jpg',
+  '/sample-images/gardens.jpg',
   'Kate Sessions Memorial Park — park spot',
   'park',
   true
@@ -577,7 +646,7 @@ insert into public.places (
   -117.2812,
   false,
   false,
-  '/sample-images/park.jpg',
+  '/sample-images/gardens.jpg',
   'San Diego Botanic Garden — gardens spot',
   'park',
   true
@@ -623,7 +692,7 @@ insert into public.places (
   -117.2145,
   false,
   false,
-  '/sample-images/dogs-outdoors.jpg',
+  '/sample-images/neighborhood.jpg',
   'Liberty Station Waterfront Walk — neighborhood spot',
   'warm',
   true
@@ -646,7 +715,7 @@ insert into public.places (
   -116.602,
   true,
   false,
-  '/sample-images/road-trip.jpg',
+  '/sample-images/mountain.jpg',
   'Julian Dog-Friendly Day Trip — road trip spot',
   'mountain',
   true
@@ -669,7 +738,7 @@ insert into public.places (
   -116.5712,
   false,
   false,
-  '/sample-images/road-trip.jpg',
+  '/sample-images/mountain.jpg',
   'Lake Cuyamaca Recreation Area — road trip spot',
   'mountain',
   true
@@ -692,7 +761,7 @@ insert into public.places (
   -116.4512,
   false,
   false,
-  '/sample-images/road-trip.jpg',
+  '/sample-images/mountain.jpg',
   'Mount Laguna Trail Day Trip — road trip spot',
   'mountain',
   true
@@ -761,7 +830,7 @@ insert into public.places (
   -117.7512,
   false,
   false,
-  '/sample-images/park.jpg',
+  '/sample-images/trail.jpg',
   'Laguna Coast Wilderness Park — trail spot',
   'forest',
   true
@@ -784,7 +853,7 @@ insert into public.places (
   -117.9912,
   false,
   false,
-  '/sample-images/dog-park.jpg',
+  '/sample-images/gardens.jpg',
   'Huntington Central Park — park spot',
   'park',
   true
@@ -830,7 +899,7 @@ insert into public.places (
   -117.3912,
   false,
   false,
-  '/sample-images/park.jpg',
+  '/sample-images/neighborhood.jpg',
   'Oceanside Harbor Walk — neighborhood spot',
   'warm',
   true
@@ -853,7 +922,7 @@ insert into public.places (
   -117.1484,
   false,
   false,
-  '/sample-images/dogs-outdoors.jpg',
+  '/sample-images/road-trip.jpg',
   'Temecula Dog-Friendly Patio Day — road trip spot',
   'mountain',
   true
@@ -876,7 +945,7 @@ insert into public.places (
   null,
   false,
   false,
-  '/sample-images/park.jpg',
+  '/sample-images/gardens.jpg',
   'Leash manners loop — park spot',
   'park',
   true
@@ -899,7 +968,7 @@ insert into public.places (
   null,
   false,
   false,
-  '/sample-images/dogs-outdoors.jpg',
+  '/sample-images/gardens.jpg',
   'Confidence walk — park spot',
   'park',
   true
@@ -922,7 +991,7 @@ insert into public.places (
   null,
   false,
   false,
-  '/sample-images/dogs-outdoors.jpg',
+  '/sample-images/dog-park.jpg',
   'Recall practice at the park — dog park spot',
   'park',
   true
@@ -951,6 +1020,29 @@ insert into public.places (
   true
 ),
 (
+  'dark-horse-coffee',
+  'Dark Horse Coffee Roasters',
+  'San Diego',
+  'San Diego',
+  'Coffee',
+  '{"patio","local","north-park"}',
+  '3.8 mi',
+  'Patio dogs welcome',
+  'North Park roastery with sidewalk tables and a relaxed patio vibe.',
+  'Patio hangs, new smells, and a short walk through the neighborhood.',
+  'Slow weekend morning',
+  'Low',
+  null,
+  32.7398,
+  -117.1294,
+  false,
+  false,
+  '/sample-images/cafe.jpg',
+  'Dark Horse Coffee Roasters — coffee spot',
+  'urban',
+  true
+),
+(
   'training-puppy-basics',
   'Puppy basics session',
   'Near you',
@@ -968,7 +1060,7 @@ insert into public.places (
   null,
   false,
   false,
-  '/sample-images/park.jpg',
+  '/sample-images/gardens.jpg',
   'Puppy basics session — park spot',
   'park',
   true

@@ -328,7 +328,7 @@ export const defaultAppState: AppState = {
   ],
   mapRegion: {
     title: 'San Diego + OC spots',
-    subtitle: 'Curated dog-friendly picks in your area · Tap a pin to explore',
+    subtitle: 'Dog-friendly spots nearby · Tap a pin to explore',
   },
   planCategories: [
     { id: 'all', label: 'All' },
@@ -344,7 +344,7 @@ export const defaultAppState: AppState = {
     {
       id: 'curated',
       icon: 'ti-sparkles',
-      title: 'Curated plan',
+      title: 'Curated Plan',
       subtitle: 'Built around what your dog loves',
     },
     {
@@ -438,7 +438,7 @@ export const defaultAppState: AppState = {
       date: 'Sunday',
       magicLine: 'Bailey kept pulling toward the fountain.',
       tags: ['Park', 'On-leash', 'Both dogs', 'Golden hour'],
-      photoUrls: ['/sample-images/park.jpg', '/sample-images/dogs-outdoors.jpg'],
+      photoUrls: ['/sample-images/park.jpg', '/sample-images/gardens.jpg'],
     },
     {
       id: 'lestats-coffee-monday',

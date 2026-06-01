@@ -73,7 +73,7 @@ export const TRAINING_REWARDS: TrainingReward[] = [
     title: 'Explorer Dog',
     description: 'Advanced recall and distance skills unlocked.',
     emoji: '🧭',
-    badgeImageUrl: SAMPLE_IMAGES.dogsOutdoors,
+    badgeImageUrl: SAMPLE_IMAGES.trail,
   },
 ]
 

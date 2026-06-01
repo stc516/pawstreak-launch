@@ -882,7 +882,7 @@ export function OnboardingFlow({
                     Monthly adventure plan
                   </div>
                   <div className="caption">
-                    Curated for your dog · syncs to calendar
+                    Generate a Curated Plan when you&apos;re ready
                   </div>
                 </div>
               </div>

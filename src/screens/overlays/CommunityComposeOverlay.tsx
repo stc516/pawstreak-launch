@@ -27,7 +27,7 @@ export function CommunityComposeOverlay({
     ? getPlaceById(selectedEntry.placeId)
     : undefined
   const previewUrl =
-    selectedEntry?.photoUrls?.[0] ?? place?.imageUrl ?? '/sample-images/dogs-outdoors.jpg'
+    selectedEntry?.photoUrls?.[0] ?? place?.imageUrl ?? undefined
 
   const handleSubmit = () => {
     if (!caption.trim()) return

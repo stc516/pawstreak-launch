@@ -30,22 +30,6 @@ export interface ChallengeProgress {
   isActiveWindow: boolean
 }
 
-export interface ChallengeLeaderboardEntry {
-  participantId: string
-  displayName: string
-  score: number
-  rank: number
-  avatarInitial: string
-}
-
-/** Leaderboard-ready snapshot — replace entries with API data later. */
-export interface ChallengeLeaderboardSnapshot {
-  challengeId: string
-  leaderboardKey: string
-  updatedAt: string
-  entries: ChallengeLeaderboardEntry[]
-}
-
 export interface ResolvedChallengeNode extends ChallengeNode {
   state: ChallengeNodeState
   statusLabel: string
@@ -62,7 +46,6 @@ export interface ResolvedChallengeNode extends ChallengeNode {
 
 export interface ResolvedChallenge extends Challenge {
   progress: ChallengeProgress
-  leaderboard: ChallengeLeaderboardSnapshot
   nodes: ResolvedChallengeNode[]
 }
 
@@ -327,76 +310,17 @@ export function computeChallengeProgress(
   }
 }
 
-const LEADERBOARD_NAMES = [
-  'Bailey & Omi',
-  'Mochi pack',
-  'Luna + Rex',
-  'The Barkleys',
-  'River city pups',
-  'Coastal crew',
-  'Trail twins',
-  'Maple & Moose',
-]
-
-function hashSeed(input: string): number {
-  return input.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0)
-}
-
-export function buildChallengeLeaderboard(
-  challenge: Challenge,
-  userScore: number,
-  userLabel: string,
-): ChallengeLeaderboardSnapshot {
-  const seed = hashSeed(challenge.leaderboardKey)
-  const entries: ChallengeLeaderboardEntry[] = LEADERBOARD_NAMES.map((displayName, index) => ({
-    participantId: `${challenge.leaderboardKey}:${index}`,
-    displayName,
-    score: Math.max(1, challenge.metric.target - index + (seed % 4)),
-    rank: index + 1,
-    avatarInitial: displayName.charAt(0).toUpperCase(),
-  }))
-
-  if (userScore > 0) {
-    entries.push({
-      participantId: 'local-user',
-      displayName: userLabel,
-      score: userScore,
-      rank: 0,
-      avatarInitial: userLabel.charAt(0).toUpperCase(),
-    })
-  }
-
-  entries.sort((left, right) => right.score - left.score)
-  const ranked = entries.map((entry, index) => ({ ...entry, rank: index + 1 }))
-
-  return {
-    challengeId: challenge.id,
-    leaderboardKey: challenge.leaderboardKey,
-    updatedAt: new Date().toISOString(),
-    entries: ranked.slice(0, 8),
-  }
-}
-
 export function resolveChallenge(
   challenge: Challenge,
   state: AppState,
 ): ResolvedChallenge {
   const progress = computeChallengeProgress(challenge, state)
   const nodes = resolveChallengeNodes(challenge, state)
-  const userLabel =
-    state.dogs.length > 0
-      ? state.dogs.map((dog) => dog.name).join(' & ')
-      : state.userName || 'Your pack'
 
   return {
     ...challenge,
     progress,
     nodes,
-    leaderboard: buildChallengeLeaderboard(
-      challenge,
-      progress.joined ? progress.metricValue : 0,
-      userLabel,
-    ),
   }
 }
 

@@ -57,7 +57,7 @@ const KEY_FEATURES = [
     icon: 'ti-users',
     title: 'Family and co-parent sharing',
     copy: 'Keep your pack in sync — partners, walkers, and dog grandparents.',
-    image: SAMPLE_IMAGES.dogsOutdoors,
+    image: SAMPLE_IMAGES.park,
     tone: 'family',
   },
 ] as const
@@ -248,7 +248,7 @@ export function LandingPage() {
               />
               <div
                 className="landing-story-photo landing-story-photo--front"
-                style={{ backgroundImage: `url(${SAMPLE_IMAGES.dogsOutdoors})` }}
+                style={{ backgroundImage: `url(${SAMPLE_IMAGES.park})` }}
               />
             </div>
           </div>

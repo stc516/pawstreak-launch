@@ -209,7 +209,7 @@ export function CuratedPlanFlow({
           ) : (
             <>
               <div className="curated-step-header detail-tint detail-tint--warm">
-              <div className="curated-intro">Curated for your dogs</div>
+              <div className="curated-intro">Build a Curated Plan</div>
               <h1 className="curated-step-title">
                 {step === 3
                   ? `What does ${dogLabel} love most?`

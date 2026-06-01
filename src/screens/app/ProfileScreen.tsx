@@ -1,7 +1,11 @@
 import { useMemo, useRef, useState } from 'react'
 import type { AppState, Dog } from '../../data/demo'
 import type { Achievement } from '../../data/achievements'
-import { resolveIdentitiesForDog } from '../../lib/achievementEngine'
+import { resolveIdentitiesForDog, resolveAchievementsByCategory } from '../../lib/achievementEngine'
+import {
+  resolveAllTrainingPrograms,
+  type ResolvedTrainingProgram,
+} from '../../lib/trainingEngine'
 import {
   getDisplayDogLabel,
   getDogAgeLabel,
@@ -12,6 +16,7 @@ import { getHomeProgressStats } from '../../lib/homeStats'
 import { getJourneyEntryDisplayImageUrl } from '../../lib/adventureDisplayImage'
 import { CardImage } from '../../components/CardImage'
 import { AchievementIdentityCard } from '../../components/AchievementIdentityCard'
+import { TrainingProgramCard } from '../../components/TrainingProgramCard'
 import { getMagicLine, getPlaceById } from '../../data/places'
 import { SettingsScreen } from './SettingsScreen'
 
@@ -26,6 +31,7 @@ interface ProfileScreenProps {
   ) => void
   onRemoveDog?: (dogId: string) => void
   onOpenAchievement?: (achievementId: string) => void
+  onOpenTrainingProgram?: (programId: string) => void
   onZipChange?: (zipCode: string) => void
   onApplyLocation?: () => void
   onSignOut?: () => Promise<void>
@@ -262,6 +268,7 @@ export function ProfileScreen({
   onUpdateDog,
   onRemoveDog,
   onOpenAchievement,
+  onOpenTrainingProgram,
   onZipChange,
   onApplyLocation,
   onSignOut,
@@ -282,6 +289,7 @@ export function ProfileScreen({
   const [draftAge, setDraftAge] = useState('')
   const [removeTarget, setRemoveTarget] = useState<Dog | null>(null)
   const [showSettings, setShowSettings] = useState(false)
+  const [showAllTraining, setShowAllTraining] = useState(false)
 
   const beginEdit = (dog: Dog) => {
     setEditingDogId(dog.id)
@@ -316,18 +324,16 @@ export function ProfileScreen({
   const memoryCount = state.journeyEntries.length
   const progress = getHomeProgressStats(state)
   const recentMemories = state.journeyEntries.slice(0, 3)
-  const packIdentities = useMemo(() => {
-    const seen = new Set<string>()
-    const items: Achievement[] = []
-    for (const dog of profileDogs) {
-      for (const identity of resolveIdentitiesForDog(state, dog)) {
-        if (seen.has(identity.id)) continue
-        seen.add(identity.id)
-        items.push(identity)
-      }
-    }
-    return items.slice(0, 4)
-  }, [profileDogs, state])
+  const trainingPrograms = useMemo(() => resolveAllTrainingPrograms(state), [state])
+  const visibleTrainingPrograms = showAllTraining
+    ? trainingPrograms
+    : trainingPrograms.slice(0, 2)
+  const earnedTags = useMemo(() => {
+    const groups = resolveAchievementsByCategory(state)
+    return groups
+      .flatMap(({ achievements }) => achievements)
+      .filter((achievement) => achievement.status !== 'locked')
+  }, [state])
   const editingDog = editingDogId ? profileDogs.find((dog) => dog.id === editingDogId) : null
 
   if (showSettings && onZipChange && onApplyLocation) {
@@ -448,13 +454,13 @@ export function ProfileScreen({
         )}
       </section>
 
-      {packIdentities.length > 0 ? (
-        <section className="profile-section">
-          <div className="st-section-head">
-            <h2 className="st-headline-lg">Earned Tags</h2>
-          </div>
+      <section className="profile-section">
+        <div className="st-section-head">
+          <h2 className="st-headline-lg">Earned Tags</h2>
+        </div>
+        {earnedTags.length > 0 ? (
           <div className="st-enamel-grid">
-            {packIdentities.map((achievement) => (
+            {earnedTags.map((achievement) => (
               <AchievementIdentityCard
                 key={achievement.id}
                 achievement={achievement}
@@ -463,8 +469,44 @@ export function ProfileScreen({
               />
             ))}
           </div>
-        </section>
-      ) : null}
+        ) : (
+          <p className="profile-section-empty">
+            Your first tags show up after a few real adventures.
+          </p>
+        )}
+      </section>
+
+      <section className="profile-section">
+        <div className="st-section-head">
+          <h2 className="st-headline-lg">Training</h2>
+        </div>
+        {trainingPrograms.length === 0 ? (
+          <p className="profile-section-empty">Training programs will show up here.</p>
+        ) : (
+          <>
+            <div className="ms-training-list profile-training-list">
+              {visibleTrainingPrograms.map((program: ResolvedTrainingProgram) => (
+                <TrainingProgramCard
+                  key={program.id}
+                  program={program}
+                  onOpenTrainingProgram={(programId) => onOpenTrainingProgram?.(programId)}
+                />
+              ))}
+            </div>
+            {trainingPrograms.length > 2 ? (
+              <button
+                type="button"
+                className="ms-view-all tap-target"
+                onClick={() => setShowAllTraining((value) => !value)}
+              >
+                {showAllTraining
+                  ? 'Show less'
+                  : `View all · ${trainingPrograms.length - 2} more`}
+              </button>
+            ) : null}
+          </>
+        )}
+      </section>
 
       {recentMemories.length > 0 ? (
         <section className="profile-section">

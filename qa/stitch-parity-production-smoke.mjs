@@ -22,13 +22,13 @@ const SCREENS = [
     checks: [
       { id: 'no-training-tools', selector: '.st-training-row-wrap', expectMissing: true },
       { id: 'quick-grid', selector: '.st-quick-grid' },
-      { id: 'curated-adventures', selector: '.home-curated' },
-      { id: 'curated-after-quick', fn: async (page) => {
+      { id: 'suggested-spots', selector: '.home-suggested-spots' },
+      { id: 'suggested-after-quick', fn: async (page) => {
         return page.evaluate(() => {
           const quick = document.querySelector('.st-quick-grid')
-          const curated = document.querySelector('.home-curated')
-          if (!quick || !curated) return false
-          return quick.compareDocumentPosition(curated) & Node.DOCUMENT_POSITION_FOLLOWING
+          const suggested = document.querySelector('.home-suggested-spots')
+          if (!quick || !suggested) return false
+          return quick.compareDocumentPosition(suggested) & Node.DOCUMENT_POSITION_FOLLOWING
         })
       }},
       { id: 'bottom-nav-pinned', selector: '.app-shell-footer .bnav' },
@@ -42,8 +42,9 @@ const SCREENS = [
       await page.waitForTimeout(900)
     },
     checks: [
-      { id: 'enamel-grid', selector: '.st-enamel-grid' },
-      { id: 'enamel-badge', selector: '.st-enamel-badge' },
+      { id: 'discover-challenges', selector: '.ms-discover-sec' },
+      { id: 'no-earned-tags', selector: '.ms-achievement-sec', expectMissing: true },
+      { id: 'no-training', selector: '.ms-training-sec', expectMissing: true },
       { id: 'bottom-nav', selector: '.app-shell-footer .bnav' },
     ],
   },
@@ -68,7 +69,8 @@ const SCREENS = [
           return stack.scrollWidth <= stack.clientWidth + 2
         })
       }},
-      { id: 'enamel-grid', selector: '.profile-section .st-enamel-grid' },
+      { id: 'earned-tags', selector: '.profile-section:has-text("Earned Tags")' },
+      { id: 'training', selector: '.profile-section:has-text("Training")' },
     ],
   },
   {

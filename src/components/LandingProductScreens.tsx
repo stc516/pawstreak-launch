@@ -31,7 +31,7 @@ const SCREENS = [
     label: 'Memories',
     title: 'Saved where they belong',
     copy: 'Photos, notes, and the little moments that made you smile.',
-    image: SAMPLE_IMAGES.dogsOutdoors,
+    image: SAMPLE_IMAGES.park,
     accent: 'memories',
   },
 ] as const

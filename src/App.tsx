@@ -364,19 +364,6 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     setState((current) => ({ ...current, selectedAchievementId: null }))
   }
 
-  const openJourneyLevelDetail = () => {
-    setState((current) => ({
-      ...current,
-      showJourneyLevelOverlay: true,
-      selectedChallengeId: null,
-      selectedAchievementId: null,
-      selectedTrainingProgramId: null,
-      selectedJourneyEntryId: null,
-      showPresetPlanOverlay: false,
-      showJourneyMapOverlay: false,
-    }))
-  }
-
   const closeJourneyLevelDetail = () => {
     setState((current) => ({ ...current, showJourneyLevelOverlay: false }))
   }
@@ -1207,11 +1194,8 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onStartNeighborhoodWalk={startNeighborhoodWalk}
             onOpenProfile={() => setActiveTab('profile')}
             onOpenChallenge={openChallengeDetail}
-            onJoinChallenge={joinChallenge}
-            onOpenTrainingProgram={openTrainingProgram}
             onOpenMemory={openJourneyMemory}
             onGoToPlan={() => setActiveTab('plan')}
-            onGoToChallenges={() => setActiveTab('milestones')}
           />
         )
       case 'plan':
@@ -1264,9 +1248,6 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             isDemoMode={isDemoMode}
             onOpenChallenge={openChallengeDetail}
             onJoinChallenge={joinChallenge}
-            onOpenTrainingProgram={openTrainingProgram}
-            onOpenAchievement={openAchievementDetail}
-            onOpenJourneyLevel={openJourneyLevelDetail}
           />
         )
       case 'profile':
@@ -1279,6 +1260,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onUpdateDog={handleUpdateDog}
             onRemoveDog={handleRemoveDog}
             onOpenAchievement={openAchievementDetail}
+            onOpenTrainingProgram={openTrainingProgram}
             onZipChange={setZipCode}
             onApplyLocation={applyLocationFromZip}
             onSignOut={useProductionBackend ? handleSignOut : undefined}

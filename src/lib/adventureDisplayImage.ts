@@ -3,10 +3,10 @@ import type { Place, PlaceCategory } from '../types/place'
 import { getPlaceById } from '../data/places'
 import { getSampleImageForPlace } from '../data/sampleImages'
 
-export type AdventureImageSource = 'user-place' | 'user-category' | 'sample'
+export type AdventureImageSource = 'user-place' | 'user-category' | 'destination'
 
 export interface AdventureDisplayImage {
-  imageUrl: string
+  imageUrl?: string
   source: AdventureImageSource
 }
 
@@ -57,11 +57,11 @@ export function resolveCategoryFromJourneyEntry(
   )
 }
 
-function getSampleImageForPlaceObject(place: Place): string {
+function getDestinationImageForPlace(place: Place): string | undefined {
   return place.imageUrl ?? getSampleImageForPlace(place.category, place.id)
 }
 
-function getSampleImageForCategory(
+function getDestinationImageForCategory(
   category: PlaceCategory,
   seedId: string,
 ): string {
@@ -72,8 +72,6 @@ export function resolveAdventureDisplayImage(
   journeyEntries: JourneyEntry[],
   place: Place,
 ): AdventureDisplayImage {
-  const sampleUrl = getSampleImageForPlaceObject(place)
-
   const placePhoto = getLatestPhotoFromEntries(
     journeyEntries.filter(
       (entry) => entry.placeId === place.id && entry.photoUrls?.some(Boolean),
@@ -93,13 +91,14 @@ export function resolveAdventureDisplayImage(
     return { imageUrl: categoryPhoto, source: 'user-category' }
   }
 
-  return { imageUrl: sampleUrl, source: 'sample' }
+  const destinationUrl = getDestinationImageForPlace(place)
+  return { imageUrl: destinationUrl, source: 'destination' }
 }
 
 export function getAdventureDisplayImageUrl(
   journeyEntries: JourneyEntry[],
   place: Place,
-): string {
+): string | undefined {
   return resolveAdventureDisplayImage(journeyEntries, place).imageUrl
 }
 
@@ -130,20 +129,20 @@ export function resolveJourneyEntryDisplayImage(
     }
 
     return {
-      imageUrl: getSampleImageForCategory(category, entry.id),
-      source: 'sample',
+      imageUrl: getDestinationImageForCategory(category, entry.id),
+      source: 'destination',
     }
   }
 
   return {
-    imageUrl: getSampleImageForPlace('Neighborhood', entry.id),
-    source: 'sample',
+    imageUrl: getDestinationImageForCategory('Neighborhood', entry.id),
+    source: 'destination',
   }
 }
 
 export function getJourneyEntryDisplayImageUrl(
   journeyEntries: JourneyEntry[],
   entry: JourneyEntry,
-): string {
+): string | undefined {
   return resolveJourneyEntryDisplayImage(journeyEntries, entry).imageUrl
 }

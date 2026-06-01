@@ -132,10 +132,10 @@ export function buildDogsFromOnboarding(inputs: OnboardingDogInput[]): Dog[] {
 }
 
 export function getSpotsReadyLabel(location: LocationProfile): string {
-  if (!location.supported) return 'Suggested adventures for now'
+  if (!location.supported) return 'Suggested Spots for now'
   return location.label.includes('Orange County')
-    ? 'Curated Orange County picks'
-    : 'Curated San Diego & OC picks'
+    ? 'Suggested Spots in Orange County'
+    : 'Suggested Spots in San Diego & OC'
 }
 
 export function resolveLocationProfile(query: string): LocationProfile {
@@ -157,8 +157,8 @@ export function resolveLocationProfile(query: string): LocationProfile {
       label,
       supported: true,
       mapTitle: isOc ? 'Orange County spots' : 'San Diego + OC spots',
-      mapSubtitle: 'Curated dog-friendly picks in your area · Tap a pin to explore',
-      communityLabel: isOc ? 'Right now in Orange County' : 'Right now in San Diego',
+      mapSubtitle: 'Dog-friendly spots nearby · Tap a pin to explore',
+      communityLabel: isOc ? 'Orange County' : 'San Diego',
     }
   }
 
@@ -167,10 +167,10 @@ export function resolveLocationProfile(query: string): LocationProfile {
     zipCode: zipCode,
     label: trimmed || 'Your area',
     supported: false,
-    mapTitle: 'Suggested adventures for now',
+    mapTitle: 'Suggested Spots for now',
     mapSubtitle:
-      "We're still building your area. You can request it, but here are suggested adventures for now.",
-    communityLabel: 'Dogs out right now',
+      "We're still building your area. You can request it, but here are Suggested Spots for now.",
+    communityLabel: 'Your area',
   }
 }
 

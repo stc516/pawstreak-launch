@@ -51,7 +51,7 @@ export function PlanScreen({
     () => places.filter((place) => place.lat != null && place.lng != null),
     [places],
   )
-  const curatedPicks = useMemo(() => getMapPreviewPlaces(prefs), [prefs])
+  const suggestedPicks = useMemo(() => getMapPreviewPlaces(prefs), [prefs])
   const dogLabel = getDisplayDogLabel(state)
 
   const handleSelectMapPlace = (placeId: string) => {
@@ -104,25 +104,25 @@ export function PlanScreen({
         <div className="plan-area-fallback detail-card-warm">{state.mapRegion.subtitle}</div>
       ) : null}
 
-      <div className="sec plan-curated-sec">Curated Adventures</div>
-      <p className="plan-curated-lead">Real outings for {dogLabel} this week.</p>
-      <div className="plan-curated-strip">
-        {curatedPicks.map((place) => {
+      <div className="sec plan-suggested-sec">Suggested Spots</div>
+      <p className="plan-suggested-lead">Real outings for {dogLabel} this week.</p>
+      <div className="plan-suggested-strip">
+        {suggestedPicks.map((place) => {
           const imageUrl = getAdventureDisplayImageUrl(state.journeyEntries, place)
           return (
-            <article key={place.id} className="plan-curated-card detail-card-warm">
+            <article key={place.id} className="plan-suggested-card detail-card-warm">
               <CardImage
-                className="plan-curated-card-photo"
+                className="plan-suggested-card-photo"
                 imageUrl={imageUrl}
                 imageAlt={place.imageAlt ?? place.name}
                 imageTone={place.imageTone}
               />
-              <div className="plan-curated-card-body">
-                <div className="plan-curated-card-name">{place.name.split(',')[0]}</div>
-                <div className="plan-curated-card-meta">{getPlanMagicMeta(place)}</div>
+              <div className="plan-suggested-card-body">
+                <div className="plan-suggested-card-name">{place.name.split(',')[0]}</div>
+                <div className="plan-suggested-card-meta">{getPlanMagicMeta(place)}</div>
                 <button
                   type="button"
-                  className="plan-curated-card-go tap-target"
+                  className="plan-suggested-card-go tap-target"
                   onClick={() => handlePlaceGo(place.id)}
                 >
                   Go
@@ -132,8 +132,8 @@ export function PlanScreen({
           )
         })}
       </div>
-      <button type="button" className="plan-curated-build tap-target" onClick={onOpenCuratedPlanFlow}>
-        Build a curated plan
+      <button type="button" className="plan-build-curated-plan tap-target" onClick={onOpenCuratedPlanFlow}>
+        Build a Curated Plan
       </button>
 
       <div className="sec">What&apos;s close right now</div>

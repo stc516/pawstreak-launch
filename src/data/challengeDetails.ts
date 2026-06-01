@@ -63,7 +63,7 @@ const CHALLENGE_DETAILS: Record<string, ChallengeDetail> = {
     memoryThumbnails: [
       '/sample-images/beach.jpg',
       '/sample-images/coastal.jpg',
-      '/sample-images/dogs-outdoors.jpg',
+      '/sample-images/park.jpg',
     ],
     packDogs: [
       { name: 'Mochi', initial: 'M', progress: '5 of 6' },
@@ -103,7 +103,7 @@ const CHALLENGE_DETAILS: Record<string, ChallengeDetail> = {
     memoryThumbnails: [
       '/sample-images/trail.jpg',
       '/sample-images/park.jpg',
-      '/sample-images/dogs-outdoors.jpg',
+      '/sample-images/park.jpg',
     ],
     packDogs: [
       { name: 'Cooper', initial: 'C', progress: '18 of 20' },

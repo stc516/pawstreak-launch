@@ -1,46 +1,19 @@
 import { useMemo, useState } from 'react'
 import type { AppState } from '../../data/demo'
-import type { Achievement } from '../../data/achievements'
-import { getDisplayBondSubtitle } from '../../lib/profileDisplay'
-import { LIVE_PRODUCT } from '../../lib/liveProductFeatures'
-import { shouldShowBondLevel } from '../../lib/bondLevel'
-import { resolveAchievementsByCategory } from '../../lib/achievementEngine'
 import {
   resolveAllCuratedChallenges,
   resolveJoinedChallenges,
   type ResolvedChallenge,
 } from '../../lib/challengeEngine'
-import {
-  resolveAllTrainingPrograms,
-  resolveUnlockedTrainingRewards,
-  type ResolvedTrainingProgram,
-} from '../../lib/trainingEngine'
-import { CardImage } from '../../components/CardImage'
-import { AchievementIdentityCard } from '../../components/AchievementIdentityCard'
 
 interface MilestonesScreenProps {
   state: AppState
   isDemoMode?: boolean
   onOpenChallenge: (challengeId: string) => void
   onJoinChallenge: (challengeId: string) => void
-  onOpenAchievement: (achievementId: string) => void
-  onOpenTrainingProgram: (programId: string) => void
-  onOpenJourneyLevel: () => void
 }
 
-const IDENTITY_PREVIEW_COUNT = 3
-const TRAINING_PREVIEW_COUNT = 2
-const CURATED_PREVIEW_COUNT = 3
-
-function formatParticipants(count: number, label: string): string {
-  return `${new Intl.NumberFormat(undefined, { notation: count >= 1000 ? 'compact' : 'standard' }).format(count)} ${label}`
-}
-
-function identityRank(status: Achievement['status']): number {
-  if (status === 'active') return 0
-  if (status === 'done') return 1
-  return 2
-}
+const DISCOVER_PREVIEW_COUNT = 3
 
 function ViewAllButton({
   expanded,
@@ -100,7 +73,7 @@ function ActiveChallengeCard({
   )
 }
 
-function CuratedChallengeCard({
+function DiscoverChallengeCard({
   challenge,
   onOpenChallenge,
   onJoinChallenge,
@@ -128,7 +101,7 @@ function CuratedChallengeCard({
       <div className="ms-challenge-card-meta">
         <span>{challenge.progress.durationLabel}</span>
         <span>
-          {formatParticipants(challenge.participants.count, challenge.participants.label)}
+          {challenge.progress.totalNodes} stops · {challenge.progress.metricTarget} goal
         </span>
       </div>
 
@@ -170,99 +143,19 @@ function CuratedChallengeCard({
   )
 }
 
-function TrainingProgramCard({
-  program,
-  onOpenTrainingProgram,
-}: {
-  program: ResolvedTrainingProgram
-  onOpenTrainingProgram: (programId: string) => void
-}) {
-  const levelDots = Math.min(3, program.progress.lessonsTotal)
-  const filledDots = Math.min(
-    levelDots,
-    Math.ceil((program.progress.lessonsCompleted / Math.max(program.progress.lessonsTotal, 1)) * levelDots),
-  )
-
-  return (
-    <article className="ms-training-card ms-training-card--stitch">
-      <div className="ms-training-card-icon" aria-hidden="true">
-        {program.emoji}
-      </div>
-      <div className="ms-training-card-body">
-        <h2 className="ms-training-card-title">{program.title}</h2>
-        <div className="ms-training-dots" aria-hidden="true">
-          {Array.from({ length: levelDots }, (_, index) => (
-            <span
-              key={index}
-              className={`ms-training-dot${index < filledDots ? ' on' : ''}`}
-            />
-          ))}
-        </div>
-        <p className="st-label-sm">
-          {program.progress.completed
-            ? 'Complete'
-            : `${program.progress.lessonsCompleted} of ${program.progress.lessonsTotal} lessons`}
-        </p>
-      </div>
-      <button
-        type="button"
-        className="ms-training-card-play tap-target"
-        aria-label={`Open ${program.title}`}
-        onClick={() => onOpenTrainingProgram(program.id)}
-      >
-        <i className="ti ti-player-play-filled" aria-hidden="true" />
-      </button>
-    </article>
-  )
-}
-
 export function MilestonesScreen({
   state,
   onOpenChallenge,
   onJoinChallenge,
-  onOpenAchievement,
-  onOpenTrainingProgram,
-  onOpenJourneyLevel,
 }: MilestonesScreenProps) {
-  const [showAllIdentities, setShowAllIdentities] = useState(false)
-  const [showAllTraining, setShowAllTraining] = useState(false)
-  const [showAllCurated, setShowAllCurated] = useState(false)
+  const [showAllDiscover, setShowAllDiscover] = useState(false)
 
   const joinedChallenges = useMemo(() => resolveJoinedChallenges(state), [state])
-  const curatedChallenges = useMemo(() => resolveAllCuratedChallenges(state), [state])
-  const trainingPrograms = useMemo(() => resolveAllTrainingPrograms(state), [state])
-  const trainingRewards = useMemo(() => resolveUnlockedTrainingRewards(state), [state])
+  const discoverChallenges = useMemo(() => resolveAllCuratedChallenges(state), [state])
 
-  const achievementGroups = useMemo(
-    () => resolveAchievementsByCategory(state),
-    [state],
-  )
-
-  const identityItems = useMemo(
-    () =>
-      achievementGroups
-        .flatMap(({ achievements }) => achievements)
-        .filter((achievement) => achievement.status !== 'locked')
-        .sort((left, right) => identityRank(left.status) - identityRank(right.status)),
-    [achievementGroups],
-  )
-
-  const unlockedCount = useMemo(
-    () => identityItems.filter((item) => item.progress.unlocked).length,
-    [identityItems],
-  )
-
-  const visibleIdentities = showAllIdentities
-    ? identityItems
-    : identityItems.slice(0, IDENTITY_PREVIEW_COUNT)
-
-  const visibleTrainingPrograms = showAllTraining
-    ? trainingPrograms
-    : trainingPrograms.slice(0, TRAINING_PREVIEW_COUNT)
-
-  const visibleCuratedChallenges = showAllCurated
-    ? curatedChallenges
-    : curatedChallenges.slice(0, CURATED_PREVIEW_COUNT)
+  const visibleDiscoverChallenges = showAllDiscover
+    ? discoverChallenges
+    : discoverChallenges.slice(0, DISCOVER_PREVIEW_COUNT)
 
   return (
     <div className="ms-screen ms-screen--stitch">
@@ -281,26 +174,6 @@ export function MilestonesScreen({
         </div>
       </header>
 
-      {shouldShowBondLevel(state) ? (
-        <button
-          type="button"
-          className="ms-bond ms-bond--tap tap-target detail-card-warm"
-          onClick={onOpenJourneyLevel}
-        >
-          <div className="msb-top">
-            <div className="msb-label">{state.bondLevel.label}</div>
-            <div className="msb-rank">{state.bondLevel.rank}</div>
-          </div>
-          {LIVE_PRODUCT.bondProgressBar ? (
-            <div className="msb-bar">
-              <div className="msb-fill" style={{ width: state.bondLevel.fillWidth }} />
-            </div>
-          ) : null}
-          <div className="msb-sub">{getDisplayBondSubtitle(state)}</div>
-          <div className="msb-helper">{state.bondLevel.nextUnlock}</div>
-        </button>
-      ) : null}
-
       <div className="st-section-head ms-challenge-sec">
         <h2 className="st-headline-lg">Active Challenges</h2>
         <span className="st-label-lg ms-challenge-sec-count">{joinedChallenges.length} joined</span>
@@ -308,7 +181,7 @@ export function MilestonesScreen({
 
       {joinedChallenges.length === 0 ? (
         <p className="ms-challenge-lead">
-          Join a curated challenge below — opt in, track progress, climb the board.
+          No challenges joined yet. Browse discover challenges below when you&apos;re ready.
         </p>
       ) : (
         <div className="ms-challenge-list">
@@ -322,99 +195,31 @@ export function MilestonesScreen({
         </div>
       )}
 
-      <div className="st-section-head ms-achievement-sec">
-        <h2 className="st-headline-lg">Earned Tags</h2>
-        <span className="st-body-md">{unlockedCount} earned</span>
+      <div className="st-section-head ms-discover-sec">
+        <h2 className="st-headline-lg">Discover challenges</h2>
       </div>
+      <p className="ms-challenge-lead">Seasonal packs and local goals — join when you are ready.</p>
 
-      <p className="ms-achievement-lead">
-        Collectible tags from real adventures — wear them on profile, share them, and save them for merch someday.
-      </p>
-
-      {identityItems.length > 0 ? (
-        <div className="st-enamel-grid ms-identity-list">
-          {visibleIdentities.map((achievement) => (
-            <AchievementIdentityCard
-              key={achievement.id}
-              achievement={achievement}
-              variant="bento"
-              onClick={() => onOpenAchievement(achievement.id)}
+      {discoverChallenges.length === 0 ? (
+        <p className="ms-section-empty">New challenges will show up here.</p>
+      ) : (
+        <div className="ms-challenge-list">
+          {visibleDiscoverChallenges.map((challenge) => (
+            <DiscoverChallengeCard
+              key={challenge.id}
+              challenge={challenge}
+              onOpenChallenge={onOpenChallenge}
+              onJoinChallenge={onJoinChallenge}
             />
           ))}
         </div>
-      ) : (
-        <p className="ms-section-empty">Your first tags show up after a few adventures.</p>
       )}
 
       <ViewAllButton
-        expanded={showAllIdentities}
-        total={identityItems.length}
-        previewCount={IDENTITY_PREVIEW_COUNT}
-        onClick={() => setShowAllIdentities((value) => !value)}
-      />
-
-      <h2 className="st-headline-lg ms-training-sec">Training Skills</h2>
-
-      <div className="ms-training-list">
-        {visibleTrainingPrograms.map((program) => (
-          <TrainingProgramCard
-            key={program.id}
-            program={program}
-            onOpenTrainingProgram={onOpenTrainingProgram}
-          />
-        ))}
-      </div>
-
-      <ViewAllButton
-        expanded={showAllTraining}
-        total={trainingPrograms.length}
-        previewCount={TRAINING_PREVIEW_COUNT}
-        onClick={() => setShowAllTraining((value) => !value)}
-      />
-
-      {showAllTraining && trainingRewards.length > 0 ? (
-        <>
-          <div className="sec">Training rewards</div>
-          <div className="ms-training-rewards">
-            {trainingRewards.map((reward) => (
-              <div key={`${reward.id}-${reward.programId}`} className="ms-training-reward detail-card-warm">
-                <CardImage
-                  className="ms-training-reward-img"
-                  imageUrl={reward.badgeImageUrl}
-                  imageAlt=""
-                  imageTone="warm"
-                />
-                <div>
-                  <div className="ms-training-reward-title">
-                    {reward.emoji} {reward.title}
-                  </div>
-                  <div className="ms-training-reward-sub">{reward.description}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </>
-      ) : null}
-
-      <div className="sec">Curated challenges</div>
-      <p className="ms-challenge-lead">Discover seasonal packs and join when you are ready.</p>
-
-      <div className="ms-challenge-list">
-        {visibleCuratedChallenges.map((challenge) => (
-          <CuratedChallengeCard
-            key={challenge.id}
-            challenge={challenge}
-            onOpenChallenge={onOpenChallenge}
-            onJoinChallenge={onJoinChallenge}
-          />
-        ))}
-      </div>
-
-      <ViewAllButton
-        expanded={showAllCurated}
-        total={curatedChallenges.length}
-        previewCount={CURATED_PREVIEW_COUNT}
-        onClick={() => setShowAllCurated((value) => !value)}
+        expanded={showAllDiscover}
+        total={discoverChallenges.length}
+        previewCount={DISCOVER_PREVIEW_COUNT}
+        onClick={() => setShowAllDiscover((value) => !value)}
       />
     </div>
   )

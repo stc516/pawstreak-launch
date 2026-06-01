@@ -385,7 +385,7 @@ html.app-route .st-training-row-copy {
   gap: 0.25rem;
 }
 
-html.app-route .st-curated-strip {
+html.app-route .st-suggested-spots-strip {
   display: flex;
   gap: 1rem;
   overflow-x: auto;
@@ -396,7 +396,7 @@ html.app-route .st-curated-strip {
   padding-bottom: 0.5rem;
 }
 
-html.app-route .st-curated-tile {
+html.app-route .st-suggested-spots-tile {
   flex: 0 0 auto;
   width: 10rem;
   border: none;
@@ -405,7 +405,7 @@ html.app-route .st-curated-tile {
   text-align: left;
 }
 
-html.app-route .st-curated-tile-photo {
+html.app-route .st-suggested-spots-tile-photo {
   height: 11rem;
   border-radius: var(--stitch-radius-card);
   overflow: hidden;
@@ -413,18 +413,18 @@ html.app-route .st-curated-tile-photo {
   margin-bottom: 0.75rem;
 }
 
-html.app-route .st-curated-tile-photo.card-img {
+html.app-route .st-suggested-spots-tile-photo.card-img {
   width: 100%;
 }
 
-html.app-route .st-curated-tile-name {
+html.app-route .st-suggested-spots-tile-name {
   font-family: var(--stitch-font);
   font-size: 0.9375rem;
   font-weight: 600;
   color: var(--color-text-primary);
 }
 
-html.app-route .st-curated-tile-meta {
+html.app-route .st-suggested-spots-tile-meta {
   font-family: var(--stitch-font);
   font-size: 0.6875rem;
   color: var(--color-text-tertiary);

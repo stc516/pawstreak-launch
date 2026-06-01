@@ -27,7 +27,7 @@ export function ChallengePathDetailView({
   onOpenMemory,
 }: ChallengePathDetailViewProps) {
   const resolved = resolveChallenge(challenge, state)
-  const { progress, leaderboard } = resolved
+  const { progress } = resolved
 
   return (
     <>
@@ -39,7 +39,7 @@ export function ChallengePathDetailView({
       </div>
 
       <div className="challenge-path-detail-intro detail-tint detail-tint--warm">
-        <div className="challenge-path-detail-kicker">Curated challenge</div>
+        <div className="challenge-path-detail-kicker">Challenge</div>
         <h1 className="challenge-path-detail-title">
           <span aria-hidden="true">{resolved.emoji}</span> {resolved.title}
         </h1>
@@ -49,15 +49,6 @@ export function ChallengePathDetailView({
           <div className="challenge-path-detail-meta-item">
             <span className="challenge-path-detail-meta-label">Duration</span>
             <span>{progress.durationLabel}</span>
-          </div>
-          <div className="challenge-path-detail-meta-item">
-            <span className="challenge-path-detail-meta-label">Participants</span>
-            <span>
-              {new Intl.NumberFormat(undefined, {
-                notation: resolved.participants.count >= 1000 ? 'compact' : 'standard',
-              }).format(resolved.participants.count)}{' '}
-              {resolved.participants.label}
-            </span>
           </div>
           {progress.joined ? (
             <div className="challenge-path-detail-meta-item">
@@ -107,26 +98,15 @@ export function ChallengePathDetailView({
           <section className="challenge-leaderboard detail-card-warm">
             <div className="challenge-leaderboard-head">
               <h2 className="challenge-leaderboard-title">Leaderboard</h2>
-              <span className="challenge-leaderboard-key">{leaderboard.leaderboardKey}</span>
             </div>
-            <ol className="challenge-leaderboard-list">
-              {leaderboard.entries.map((entry) => (
-                <li
-                  key={entry.participantId}
-                  className={`challenge-leaderboard-row${entry.participantId === 'local-user' ? ' challenge-leaderboard-row--you' : ''}`}
-                >
-                  <span className="challenge-leaderboard-rank">{entry.rank}</span>
-                  <span className="challenge-leaderboard-avatar">{entry.avatarInitial}</span>
-                  <span className="challenge-leaderboard-name">{entry.displayName}</span>
-                  <span className="challenge-leaderboard-score">{entry.score}</span>
-                </li>
-              ))}
-            </ol>
+            <p className="challenge-leaderboard-empty">
+              No leaderboard yet. Yours will fill in when more packs join this challenge.
+            </p>
           </section>
         </>
       ) : (
         <div className="challenge-path-detail-preview detail-card-warm">
-          <p>Join to start tracking progress and appear on the leaderboard.</p>
+          <p>Join to start tracking progress on this challenge path.</p>
           <ul className="challenge-path-detail-milestones">
             {resolved.nodes.map((node) => (
               <li key={node.id}>{node.title}</li>

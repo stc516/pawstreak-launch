@@ -5,6 +5,7 @@ interface CardImageProps {
   imageAlt?: string
   imageTone?: PlaceImageTone
   className?: string
+  placeholderLabel?: string
 }
 
 export function CardImage({
@@ -12,14 +13,16 @@ export function CardImage({
   imageAlt,
   imageTone = 'warm',
   className = '',
+  placeholderLabel = 'Photo coming soon',
 }: CardImageProps) {
   const toneClass = `card-img--${imageTone}`
+  const isEmpty = !imageUrl
 
   return (
     <div
-      className={`card-img ${toneClass} ${className}`.trim()}
+      className={`card-img ${toneClass}${isEmpty ? ' card-img--empty' : ''} ${className}`.trim()}
       role={imageAlt ? 'img' : undefined}
-      aria-label={imageAlt}
+      aria-label={imageAlt ?? (isEmpty ? placeholderLabel : undefined)}
       style={
         imageUrl
           ? {
@@ -27,6 +30,8 @@ export function CardImage({
             }
           : undefined
       }
-    />
+    >
+      {isEmpty ? <span className="card-img-placeholder">{placeholderLabel}</span> : null}
+    </div>
   )
 }

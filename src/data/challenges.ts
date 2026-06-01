@@ -42,12 +42,7 @@ export interface ChallengeNode {
   planHint: string
 }
 
-export interface ChallengeParticipants {
-  count: number
-  label: string
-}
-
-/** Curated, opt-in challenge catalog — location-agnostic metrics. */
+/** Opt-in challenge catalog — location-agnostic metrics. */
 export interface Challenge {
   id: string
   seriesId: string
@@ -58,14 +53,11 @@ export interface Challenge {
   emoji: string
   heroImageUrl: string
   duration: ChallengeDuration
-  participants: ChallengeParticipants
   metric: {
     kind: ChallengeMetricKind
     target: number
   }
   nodes: ChallengeNode[]
-  /** Stable key for leaderboard partitions (region-agnostic). */
-  leaderboardKey: string
 }
 
 export interface JoinedChallengeRecord {
@@ -126,7 +118,7 @@ const HOLIDAY_NODES: ChallengeNode[] = HOLIDAY_MILESTONES.map((threshold, index)
   order: index + 1,
   title: `${threshold} holiday outings`,
   description: 'Festive walks, winter trails, and seasonal adventures count.',
-  imageUrl: SAMPLE_IMAGES.dogsOutdoors,
+    imageUrl: SAMPLE_IMAGES.trail,
   threshold,
   planHint: 'Plan a seasonal adventure with your dog',
 }))
@@ -162,10 +154,8 @@ export const CURATED_CHALLENGES: Challenge[] = [
       endMonth: 8,
       endDay: 31,
     },
-    participants: { count: 2410, label: 'packs joined' },
     metric: { kind: 'beach_adventures', target: 8 },
     nodes: SUMMER_BEACH_NODES,
-    leaderboardKey: 'global:summer-beach',
   },
   {
     id: '30-walk-challenge',
@@ -182,10 +172,8 @@ export const CURATED_CHALLENGES: Challenge[] = [
       label: '90 days from join',
       days: 90,
     },
-    participants: { count: 5820, label: 'packs joined' },
     metric: { kind: 'total_adventures', target: 30 },
     nodes: THIRTY_WALK_NODES,
-    leaderboardKey: 'global:30-walk',
   },
   {
     id: 'holiday-adventure-challenge',
@@ -196,7 +184,7 @@ export const CURATED_CHALLENGES: Challenge[] = [
       'Celebrate the season with festive walks and winter outings — wherever the holidays find you.',
     accent: 'festive',
     emoji: '🎄',
-    heroImageUrl: SAMPLE_IMAGES.dogsOutdoors,
+    heroImageUrl: SAMPLE_IMAGES.park,
     duration: {
       kind: 'seasonal',
       label: 'Dec 1 – Jan 5',
@@ -205,10 +193,8 @@ export const CURATED_CHALLENGES: Challenge[] = [
       endMonth: 1,
       endDay: 5,
     },
-    participants: { count: 1935, label: 'packs joined' },
     metric: { kind: 'holiday_adventures', target: 12 },
     nodes: HOLIDAY_NODES,
-    leaderboardKey: 'global:holiday-adventure',
   },
   {
     id: 'local-explorer-challenge',
@@ -225,10 +211,8 @@ export const CURATED_CHALLENGES: Challenge[] = [
       label: '60 days from join',
       days: 60,
     },
-    participants: { count: 3140, label: 'packs joined' },
     metric: { kind: 'distinct_places', target: 10 },
     nodes: LOCAL_EXPLORER_NODES,
-    leaderboardKey: 'global:local-explorer',
   },
 ]
 

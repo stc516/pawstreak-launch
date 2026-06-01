@@ -30,7 +30,7 @@ const MEMORY_BY_ENTRY: Record<string, Partial<JourneyMemoryDetail>> = {
     whatDogsLoved: ['Shallow water sprints', 'Wide open sand', 'Room to run together'],
     adventureChips: ['Off-leash run', 'Playing in water', 'Loved every second'],
     photoUrls: [
-      '/sample-images/dogs-outdoors.jpg',
+      '/sample-images/park.jpg',
       '/sample-images/beach.jpg',
       '/sample-images/dog-park.jpg',
     ],
@@ -51,7 +51,7 @@ const MEMORY_BY_ENTRY: Record<string, Partial<JourneyMemoryDetail>> = {
     whatDogsLoved: ['Mountain air', 'New trail smells', 'Cool shade breaks'],
     adventureChips: ['Road trip', 'Found a new spot', 'Just being together'],
     photoUrls: [
-      '/sample-images/dogs-outdoors.jpg',
+      '/sample-images/park.jpg',
       '/sample-images/road-trip.jpg',
       '/sample-images/trail.jpg',
     ],
