@@ -928,6 +928,7 @@ export const CUSTOM_ADVENTURE_PLACE = applyPlaceImages(CUSTOM_ADVENTURE_PLACE_RA
 const RAW_PLACES: Place[] = EXPANDED_LOCAL_PLACES
 
 export const PLACES: Place[] = RAW_PLACES.map(applyPlaceImages)
+export const LEGACY_PLACE_LOOKUP: Place[] = LEGACY_LOCAL_PLACES.map(applyPlaceImages)
 
 export function getFeaturedPlaces(): Place[] {
   return sortPlacesForDisplay(PLACES.filter((place) => place.featured))
@@ -1015,7 +1016,10 @@ function regionShort(region: Place['region']): string {
 export function getPlaceById(id: string): Place | undefined {
   if (id === NEIGHBORHOOD_WALK_PLACE_ID) return NEIGHBORHOOD_WALK_PLACE
   if (id === CUSTOM_ADVENTURE_PLACE_ID) return CUSTOM_ADVENTURE_PLACE
-  return PLACES.find((place) => place.id === id)
+  return (
+    PLACES.find((place) => place.id === id) ??
+    LEGACY_PLACE_LOOKUP.find((place) => place.id === id)
+  )
 }
 
 export function getPlaceEmoji(category: PlaceCategory): string {
