@@ -2,6 +2,7 @@ import type { AppState, Dog, DogMode, RecapChip } from '../data/demo'
 import { isDefaultDemoDogs } from './dogLabels'
 import { calculateAdventureStreak } from './adventureStreak'
 import { computeBondLevel } from './bondLevel'
+import { getDistinctPlaceKey } from './customAdventure'
 import { resolveAchievements } from './achievementEngine'
 import { buildRecentAdventuresFromJourney } from './recentAdventures'
 import {
@@ -106,9 +107,7 @@ export const EMPTY_FLASHBACK: AppState['flashback'] = {
 }
 
 function countDistinctPlaces(entries: AppState['journeyEntries']): number {
-  const ids = new Set(
-    entries.map((entry) => entry.placeId).filter((id): id is string => Boolean(id)),
-  )
+  const ids = new Set(entries.map((entry) => getDistinctPlaceKey(entry)))
   return ids.size
 }
 

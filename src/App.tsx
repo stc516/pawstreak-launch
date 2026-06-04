@@ -8,10 +8,27 @@ import type { AdventureFinishPayload } from './lib/adventureFinish'
 import {
   createJourneyEntryFromNeighborhoodWalk,
   createJourneyEntryFromPlace,
+  CUSTOM_ADVENTURE_PLACE_ID,
   getPlaceById,
   isNeighborhoodWalkPlace,
   NEIGHBORHOOD_WALK_PLACE_ID,
 } from './data/places'
+import {
+  createCustomActiveAdventure,
+  createDefaultAddAdventureDraft,
+  createJourneyEntryFromCustom,
+  getDistinctPlaceKey,
+  getDogsForAdventure,
+  isCustomAdventure,
+  scheduledFromDraft,
+  type AddAdventureDraft,
+} from './lib/customAdventure'
+import {
+  applyEndLocation,
+  applyStartLocation,
+  captureCurrentLocation,
+  createLocationCandidate,
+} from './lib/locationCandidates'
 import { loadAppState, saveAppState, clearDemoState, resetProductionAppState, saveSeededDemoState, saveDemoOnboardingState } from './lib/storage'
 import { getDemoRoute, navigateTo } from './lib/demoRoute'
 import { usePathname } from './lib/usePathname'
@@ -64,6 +81,7 @@ import {
 } from './lib/trainingEngine'
 import { TrainingProgramDetailView } from './screens/overlays/TrainingProgramDetailView'
 import { BuildMyMonthFlow } from './screens/overlays/BuildMyMonthFlow'
+import { AddAdventureFlow } from './screens/overlays/AddAdventureFlow'
 import { TrainingProgramFlow } from './screens/overlays/TrainingProgramFlow'
 import { CuratedPlanFlow } from './screens/overlays/CuratedPlanFlow'
 import { AchievementDetailView } from './screens/overlays/AchievementDetailView'
@@ -98,6 +116,9 @@ import {
   finishAdventureOnServer,
   hydrateProductionState,
   persistOnboardingToSupabase,
+  removeScheduledAdventureOnServer,
+  saveLocationCandidateOnServer,
+  saveScheduledAdventureOnServer,
   startAdventureOnServer,
 } from './lib/appDataSync'
 import { applyRealUserContent } from './lib/productionState'
@@ -773,7 +794,223 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     }))
   }
 
+  const blockIfActiveAdventure = (): boolean => {
+    if (!state.activeAdventure) return false
+    setState((current) => ({
+      ...current,
+      memorySaveToast:
+        'Finish or cancel your current adventure before starting another.',
+    }))
+    return true
+  }
+
+  const openAddAdventureFlow = () => {
+    if (useProductionBackend && !auth.user) {
+      setState((current) => ({
+        ...current,
+        memorySaveToast: 'Sign in to add your own adventures.',
+      }))
+      return
+    }
+    if (blockIfActiveAdventure()) return
+
+    setState((current) => ({
+      ...current,
+      showAddAdventureFlow: true,
+      addAdventureDraft: createDefaultAddAdventureDraft(current),
+      selectedJourneyEntryId: null,
+      selectedChallengeId: null,
+    }))
+  }
+
+  const closeAddAdventureFlow = () => {
+    setState((current) => ({
+      ...current,
+      showAddAdventureFlow: false,
+      addAdventureDraft: createDefaultAddAdventureDraft(current),
+    }))
+  }
+
+  const updateAddAdventureDraft = (patch: Partial<AddAdventureDraft>) => {
+    setState((current) => ({
+      ...current,
+      addAdventureDraft: { ...current.addAdventureDraft, ...patch },
+    }))
+  }
+
+  const toggleAddAdventureDog = (dogId: string) => {
+    setState((current) => {
+      const selected = new Set(current.addAdventureDraft.selectedDogIds)
+      if (selected.has(dogId)) {
+        if (selected.size <= 1) return current
+        selected.delete(dogId)
+      } else {
+        selected.add(dogId)
+      }
+      return {
+        ...current,
+        addAdventureDraft: {
+          ...current.addAdventureDraft,
+          selectedDogIds: [...selected],
+        },
+      }
+    })
+  }
+
+  const promoteCustomAdventure = async (
+    draft: AddAdventureDraft,
+    options: { removeScheduledId?: string } = {},
+  ) => {
+    if (blockIfActiveAdventure()) return
+
+    const startedAt = new Date().toISOString()
+    const locationCapture = await captureCurrentLocation()
+    const activeDogId =
+      draft.selectedDogIds[0] ?? state.activeDogId ?? state.dogs[0]?.id
+    const photoSlots = draft.photoDataUrl
+      ? fillPhotoSlots(['', '', ''], draft.photoDataUrl)
+      : ['', '', '']
+
+    if (useProductionBackend && auth.user && activeDogId) {
+      const serverAdventure = await startAdventureOnServer({
+        userId: auth.user.id,
+        dogId: activeDogId,
+        placeId: CUSTOM_ADVENTURE_PLACE_ID,
+        durationLabel: 'Open end',
+        selectedDogIds: draft.selectedDogIds,
+        source: 'custom',
+        customTitle: draft.title.trim(),
+        customLocationLabel: draft.locationLabel.trim() || undefined,
+        userNotes: draft.notes.trim() || undefined,
+        started: true,
+        startedAt,
+      })
+
+      if (serverAdventure) {
+        const activeAdventure = applyStartLocation(
+          serverAdventure,
+          locationCapture,
+        )
+        if (options.removeScheduledId) {
+          await removeScheduledAdventureOnServer(
+            options.removeScheduledId,
+            auth.user.id,
+          )
+        }
+        const scheduledAdventures = options.removeScheduledId
+          ? state.scheduledAdventures.filter((s) => s.id !== options.removeScheduledId)
+          : state.scheduledAdventures
+
+        setState((current) => ({
+          ...current,
+          showAddAdventureFlow: false,
+          addAdventureDraft: createDefaultAddAdventureDraft(current),
+          activeAdventure,
+          activeAdventureView: viewForNewAdventure(activeAdventure),
+          adventurePhotos: photoSlots,
+          scheduledAdventures,
+          selectedJourneyEntryId: null,
+          selectedChallengeId: null,
+        }))
+        return
+      }
+    }
+
+    const activeAdventure = applyStartLocation(
+      createCustomActiveAdventure(draft, {
+        started: true,
+        startedAt,
+      }),
+      locationCapture,
+    )
+
+    setState((current) => ({
+      ...current,
+      showAddAdventureFlow: false,
+      addAdventureDraft: createDefaultAddAdventureDraft(current),
+      activeAdventure,
+      activeAdventureView: viewForNewAdventure(activeAdventure),
+      adventurePhotos: photoSlots,
+      scheduledAdventures: options.removeScheduledId
+        ? current.scheduledAdventures.filter((s) => s.id !== options.removeScheduledId)
+        : current.scheduledAdventures,
+      selectedJourneyEntryId: null,
+      selectedChallengeId: null,
+    }))
+  }
+
+  const submitAddAdventureStartNow = () => {
+    void promoteCustomAdventure(state.addAdventureDraft)
+  }
+
+  const submitAddAdventureSaveForLater = async () => {
+    const draft = state.addAdventureDraft
+    const planned = scheduledFromDraft(draft)
+
+    if (useProductionBackend && auth.user) {
+      const saved = await saveScheduledAdventureOnServer({
+        userId: auth.user.id,
+        title: planned.title,
+        locationLabel: planned.locationLabel,
+        notes: planned.notes,
+        selectedDogIds: planned.selectedDogIds,
+      })
+      if (saved) {
+        setState((current) => ({
+          ...current,
+          showAddAdventureFlow: false,
+          addAdventureDraft: createDefaultAddAdventureDraft(current),
+          scheduledAdventures: [saved, ...current.scheduledAdventures],
+          activeTab: 'journey',
+          memorySaveToast: 'Saved for later — find it in Journey under Planned.',
+        }))
+        return
+      }
+      setState((current) => ({
+        ...current,
+        memorySaveToast: 'Could not save. Check your connection and try again.',
+      }))
+      return
+    }
+
+    setState((current) => ({
+      ...current,
+      showAddAdventureFlow: false,
+      addAdventureDraft: createDefaultAddAdventureDraft(current),
+      scheduledAdventures: [planned, ...current.scheduledAdventures],
+      activeTab: 'journey',
+      memorySaveToast: 'Saved for later — find it in Journey under Planned.',
+    }))
+  }
+
+  const startPlannedAdventure = (scheduledId: string) => {
+    const planned = state.scheduledAdventures.find((s) => s.id === scheduledId)
+    if (!planned) return
+    const draft: AddAdventureDraft = {
+      title: planned.title,
+      locationLabel: planned.locationLabel ?? '',
+      notes: planned.notes ?? '',
+      photoDataUrl: planned.photoDataUrl ?? null,
+      selectedDogIds: [...planned.selectedDogIds],
+    }
+    void promoteCustomAdventure(draft, { removeScheduledId: scheduledId })
+  }
+
+  const deletePlannedAdventure = async (scheduledId: string) => {
+    if (useProductionBackend && auth.user) {
+      await removeScheduledAdventureOnServer(scheduledId, auth.user.id)
+    }
+    setState((current) => ({
+      ...current,
+      scheduledAdventures: current.scheduledAdventures.filter(
+        (s) => s.id !== scheduledId,
+      ),
+    }))
+  }
+
   const startNeighborhoodWalk = () => {
+    if (blockIfActiveAdventure()) return
+
     setState((current) => {
       const startedAt = new Date().toISOString()
       const activeAdventure = createActiveAdventure(
@@ -783,6 +1020,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         {
           started: true,
           startedAt,
+          source: 'neighborhood',
           dogId: current.activeDogId ?? current.dogs[0]?.id,
           selectedDogIds: current.dogs.map((dog) => dog.id),
         },
@@ -804,6 +1042,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   const startAdventure = async (placeId: string, durationLabel = 'Open end') => {
     const place = getPlaceById(placeId)
     if (!place) return
+    if (blockIfActiveAdventure()) return
 
     const activeDogId = state.activeDogId ?? state.dogs[0]?.id
 
@@ -877,22 +1116,44 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       return
     }
 
-    const place = getPlaceById(state.activeAdventure.placeId)
+    const endLocationCapture = isCustomAdventure(state.activeAdventure)
+      ? await captureCurrentLocation()
+      : null
+    const activeAdventureForFinish = endLocationCapture
+      ? applyEndLocation(state.activeAdventure, endLocationCapture)
+      : state.activeAdventure
+    const place = getPlaceById(activeAdventureForFinish.placeId)
     const capturedPhotos = state.adventurePhotos.filter(Boolean)
     const activeDogId = state.activeDogId ?? state.dogs[0]?.id
-    const isNeighborhoodWalk = isNeighborhoodWalkPlace(state.activeAdventure.placeId)
-    const durationLabel = getFinishedDurationLabel(state.activeAdventure)
+    const isNeighborhoodWalk = isNeighborhoodWalkPlace(activeAdventureForFinish.placeId)
+    const isCustom = isCustomAdventure(activeAdventureForFinish)
+    const durationLabel = getFinishedDurationLabel(activeAdventureForFinish)
 
     if (useProductionBackend && auth.user && activeDogId && place && !isNeighborhoodWalk) {
       try {
+        const adventureDogs = getDogsForAdventure(
+          state.dogs,
+          activeAdventureForFinish.selectedDogIds,
+        )
         const memory = await finishAdventureOnServer({
           userId: auth.user.id,
           dogId: activeDogId,
-          activeAdventure: state.activeAdventure,
-          dogs: state.dogs,
+          activeAdventure: activeAdventureForFinish,
+          dogs: adventureDogs,
           photoDataUrls: capturedPhotos,
           payload,
         })
+        const candidate = isCustom
+          ? createLocationCandidate({
+              activeAdventure: activeAdventureForFinish,
+              sourceMemoryId: memory.id,
+              userId: auth.user.id,
+              photoCount: capturedPhotos.length,
+            })
+          : null
+        if (candidate) {
+          await saveLocationCandidateOnServer(candidate)
+        }
         await memoryRowToJourneyEntry(memory)
         const journeyEntries = await fetchMemoriesForUser(auth.user.id, activeDogId)
         const placeCount = await countDistinctPlaces(auth.user.id, activeDogId)
@@ -907,7 +1168,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             journeyEntries,
             memorySaveToast: 'Memory saved — worth remembering.',
             monthlyPlanResult:
-              current.monthlyPlanResult && place
+              current.monthlyPlanResult && place && !isCustom
                 ? advanceMonthlyPlanAfterAdventure(current.monthlyPlanResult, place.id)
                 : current.monthlyPlanResult,
           }),
@@ -926,31 +1187,63 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       if (!current.activeAdventure) {
         return { ...current, activeTab: 'journey', adventurePhotos: ['', '', ''] }
       }
+      const currentAdventure =
+        current.activeAdventure.id === activeAdventureForFinish.id
+          ? activeAdventureForFinish
+          : current.activeAdventure
 
-      const journeyEntries = isNeighborhoodWalk
-        ? [
-            createJourneyEntryFromNeighborhoodWalk(current.dogs, {
-              photoUrls: capturedPhotos,
-              durationLabel,
-              recapLabels: payload.recapLabels,
-            }),
-            ...current.journeyEntries,
-          ]
-        : place
+      const adventureDogs = getDogsForAdventure(
+        current.dogs,
+        currentAdventure.selectedDogIds,
+      )
+
+      const customMemory = isCustom
+        ? createJourneyEntryFromCustom(adventureDogs, {
+            title:
+              currentAdventure.customTitle ??
+              currentAdventure.location,
+            locationLabel: currentAdventure.customLocationLabel,
+            userNotes: currentAdventure.userNotes,
+            photoUrls: capturedPhotos,
+            durationLabel,
+            recapLabels: payload.recapLabels,
+          })
+        : null
+
+      const journeyEntries = isCustom
+        ? customMemory
+          ? [customMemory, ...current.journeyEntries]
+          : current.journeyEntries
+        : isNeighborhoodWalk
           ? [
-              createJourneyEntryFromPlace(place, current.dogs, {
+              createJourneyEntryFromNeighborhoodWalk(adventureDogs, {
                 photoUrls: capturedPhotos,
                 durationLabel,
                 recapLabels: payload.recapLabels,
               }),
               ...current.journeyEntries,
             ]
-          : current.journeyEntries
+          : place
+            ? [
+                createJourneyEntryFromPlace(place, adventureDogs, {
+                  photoUrls: capturedPhotos,
+                  durationLabel,
+                  recapLabels: payload.recapLabels,
+                }),
+                ...current.journeyEntries,
+              ]
+            : current.journeyEntries
 
       const adventureCount = journeyEntries.length
-      const placeCount = new Set(
-        journeyEntries.map((entry) => entry.placeId).filter(Boolean),
-      ).size
+      const placeCount = new Set(journeyEntries.map(getDistinctPlaceKey)).size
+      const locationCandidate =
+        isCustom && customMemory
+          ? createLocationCandidate({
+              activeAdventure: currentAdventure,
+              sourceMemoryId: customMemory.id,
+              photoCount: capturedPhotos.length,
+            })
+          : null
 
       return applyRealUserContent({
         ...current,
@@ -959,9 +1252,12 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         adventureCount,
         placeCount,
         journeyEntries,
+        locationCandidates: locationCandidate
+          ? [locationCandidate, ...current.locationCandidates]
+          : current.locationCandidates,
         memorySaveToast: 'Memory saved — worth remembering.',
         monthlyPlanResult:
-          current.monthlyPlanResult && place
+          current.monthlyPlanResult && place && !isCustom
             ? advanceMonthlyPlanAfterAdventure(current.monthlyPlanResult, place.id)
             : current.monthlyPlanResult,
       })
@@ -1292,6 +1588,25 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     </div>
   ) : null
 
+  if (state.showAddAdventureFlow) {
+    return (
+      <AddAdventureFlow
+        state={state}
+        draft={state.addAdventureDraft}
+        onBack={closeAddAdventureFlow}
+        onTitleChange={(title) => updateAddAdventureDraft({ title })}
+        onLocationChange={(locationLabel) =>
+          updateAddAdventureDraft({ locationLabel })
+        }
+        onNotesChange={(notes) => updateAddAdventureDraft({ notes })}
+        onToggleDog={toggleAddAdventureDog}
+        onPhotoChange={(photoDataUrl) => updateAddAdventureDraft({ photoDataUrl })}
+        onStartNow={submitAddAdventureStartNow}
+        onSaveForLater={() => void submitAddAdventureSaveForLater()}
+      />
+    )
+  }
+
   if (state.buildMyMonthFlowStep > 0) {
     return (
       <BuildMyMonthFlow
@@ -1502,6 +1817,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onOpenTrainingProgram={openTrainingProgramFlow}
             onStartMonthlyPlanAdventure={startAdventureFromMonthlyPlan}
             onContinueTraining={continueTrainingFromHome}
+            onOpenAddAdventure={openAddAdventureFlow}
           />
         )
       case 'plan':
@@ -1530,6 +1846,9 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onOpenMemory={openJourneyMemory}
             onOpenMap={openJourneyMap}
             onGoToPlan={() => setActiveTab('plan')}
+            onOpenAddAdventure={openAddAdventureFlow}
+            onStartPlannedAdventure={startPlannedAdventure}
+            onDeletePlannedAdventure={(id) => void deletePlannedAdventure(id)}
             onStartAdventure={startAdventure}
             onStartNeighborhoodWalk={startNeighborhoodWalk}
             onOpenChallenge={openChallengeDetail}

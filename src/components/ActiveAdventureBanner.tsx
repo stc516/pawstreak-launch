@@ -4,7 +4,7 @@ import {
   formatTimerWithTarget,
   getActiveAdventureElapsedSeconds,
 } from '../data/demo'
-import { getDisplayDogLabel, getProfileDogs } from '../lib/profileDisplay'
+import { getDisplayDogLabelForIds, getProfileDogs } from '../lib/profileDisplay'
 
 interface ActiveAdventureBannerProps {
   state: AppState
@@ -51,7 +51,9 @@ export function ActiveAdventureBanner({
             <span className="active-adventure-banner-timer">
               {formatTimerWithTarget(elapsedSeconds, adventure.durationLabel)}
             </span>
-            <span className="active-adventure-banner-dogs">{getDisplayDogLabel(state)}</span>
+            <span className="active-adventure-banner-dogs">
+              {getDisplayDogLabelForIds(state, adventure.selectedDogIds)}
+            </span>
           </div>
         </div>
         {dogs.length > 0 ? (

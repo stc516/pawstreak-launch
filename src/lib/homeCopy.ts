@@ -115,7 +115,7 @@ const FIT_LINES: Partial<Record<PlaceCategory, (lead: string) => string>> = {
   Beach: (lead) => `Close by, off-leash friendly, and room for ${lead} to run.`,
   Trail: (lead) => `Fresh air, new smells, and a pace ${lead} can settle into.`,
   Coffee: () => 'Patio-friendly stop — close by and easy to fit in today.',
-  'Dog park': (lead) => `Room to roam and meet the pack — ${lead} will love the energy.`,
+  'Dog Park': (lead) => `Room to roam and meet the pack — ${lead} will love the energy.`,
   Park: (lead) => `Shaded paths and space to sniff — a calmer win for ${lead}.`,
   Brewery: () => 'Dog-friendly patio, close by, and low-pressure for a short outing.',
   Gardens: (lead) => `Quiet loops and new scents — a slower-paced day for ${lead}.`,

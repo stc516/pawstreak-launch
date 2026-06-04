@@ -93,7 +93,7 @@ function categoryForEntry(entry: JourneyEntry): JourneyMapFilterId {
   if (place?.category === 'Road trip') return 'road-trips'
   if (place?.category === 'Beach') return 'beach'
   if (place?.category === 'Trail') return 'trail'
-  if (place?.category === 'Park' || place?.category === 'Dog park') return 'parks'
+  if (place?.category === 'Park' || place?.category === 'Dog Park') return 'parks'
   if (place?.category === 'Coffee' || place?.category === 'Brewery') return 'cafes'
 
   const tagText = entry.tags.join(' ').toLowerCase()

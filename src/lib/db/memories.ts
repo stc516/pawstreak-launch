@@ -4,7 +4,8 @@ import {
   buildEmotionalMemoryLine,
   buildFavoriteMoment,
 } from '../adventureFinish'
-import { getMagicLine } from '../../data/places'
+import { CUSTOM_ADVENTURE_PLACE_ID, getMagicLine } from '../../data/places'
+import { normalizeCustomTitle } from '../customAdventure'
 import { getSupabaseClient } from '../supabase'
 import type { MemoryRow } from './types'
 
@@ -60,6 +61,43 @@ function formatMemoryDate(iso: string): string {
   })
 }
 
+export function buildCustomMemoryPayload(
+  dogs: Dog[],
+  options: {
+    title: string
+    locationLabel?: string
+    userNotes?: string
+    durationLabel?: string
+    recapLabels?: string[]
+  },
+) {
+  const recapLabels = options.recapLabels ?? []
+  const emotionalLine = buildEmotionalMemoryLine(recapLabels, dogs)
+  const favoriteMoment = buildFavoriteMoment(recapLabels, dogs)
+  const memoryMood =
+    recapLabels.includes('Needed a slower pace')
+      ? 'Calm + close'
+      : recapLabels.includes('Loved every second')
+        ? 'Joyful + tired'
+        : 'Warm + steady'
+
+  const locationSnippet = options.locationLabel?.trim()
+  const notesSnippet = options.userNotes?.trim()
+  const magicLine =
+    notesSnippet ||
+    (locationSnippet ? `At ${locationSnippet}` : 'Your adventure')
+
+  return {
+    magic_line: magicLine,
+    emotional_line: emotionalLine,
+    favorite_moment: favoriteMoment,
+    memory_mood: memoryMood,
+    tags: ['Custom', ...(locationSnippet ? [locationSnippet] : [])],
+    recap_labels: recapLabels,
+    duration_label: options.durationLabel ?? '',
+  }
+}
+
 export function buildMemoryPayload(
   place: Place,
   dogs: Dog[],
@@ -98,14 +136,26 @@ export async function createMemory(input: {
   durationLabel?: string
   recapLabels?: string[]
   photoDataUrls?: string[]
+  displayPlaceName?: string
+  customLocationLabel?: string
+  userNotes?: string
 }): Promise<MemoryRow | null> {
   const supabase = getSupabaseClient()
   if (!supabase) return null
 
-  const payload = buildMemoryPayload(input.place, input.dogs, {
-    durationLabel: input.durationLabel,
-    recapLabels: input.recapLabels,
-  })
+  const isCustom = input.place.id === CUSTOM_ADVENTURE_PLACE_ID
+  const payload = isCustom
+    ? buildCustomMemoryPayload(input.dogs, {
+        title: input.displayPlaceName ?? input.place.name,
+        locationLabel: input.customLocationLabel,
+        userNotes: input.userNotes,
+        durationLabel: input.durationLabel,
+        recapLabels: input.recapLabels,
+      })
+    : buildMemoryPayload(input.place, input.dogs, {
+        durationLabel: input.durationLabel,
+        recapLabels: input.recapLabels,
+      })
 
   const { data, error } = await supabase
     .from('memories')
@@ -114,8 +164,10 @@ export async function createMemory(input: {
       dog_id: input.dogId,
       adventure_id: input.adventureId,
       place_id: input.place.id,
-      place_name: input.place.name,
+      place_name: input.displayPlaceName ?? input.place.name,
       occurred_at: new Date().toISOString(),
+      custom_location_label: input.customLocationLabel ?? null,
+      user_notes: input.userNotes ?? null,
       ...payload,
     })
     .select('*')
@@ -160,6 +212,8 @@ export async function memoryRowToJourneyEntry(row: MemoryRow): Promise<JourneyEn
     emotionalLine: row.emotional_line,
     favoriteMoment: row.favorite_moment,
     memoryMood: row.memory_mood,
+    customLocationLabel: row.custom_location_label ?? undefined,
+    userNotes: row.user_notes ?? undefined,
     dogTags: [],
   }
 }
@@ -191,10 +245,22 @@ export async function countDistinctPlaces(userId: string, dogId?: string | null)
   const supabase = getSupabaseClient()
   if (!supabase) return 0
 
-  let query = supabase.from('memories').select('place_id').eq('user_id', userId)
+  let query = supabase
+    .from('memories')
+    .select('place_id, place_name')
+    .eq('user_id', userId)
   if (dogId) query = query.eq('dog_id', dogId)
 
   const { data, error } = await query
   if (error || !data) return 0
-  return new Set(data.map((row) => row.place_id as string)).size
+
+  const keys = new Set(
+    data.map((row) => {
+      if (row.place_id === CUSTOM_ADVENTURE_PLACE_ID) {
+        return `custom:${normalizeCustomTitle(String(row.place_name ?? ''))}`
+      }
+      return row.place_id as string
+    }),
+  )
+  return keys.size
 }

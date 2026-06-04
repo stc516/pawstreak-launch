@@ -14,7 +14,7 @@ const PLACE_CATEGORIES: PlaceCategory[] = [
   'Beach',
   'Trail',
   'Coffee',
-  'Dog park',
+  'Dog Park',
   'Park',
   'Brewery',
   'Gardens',

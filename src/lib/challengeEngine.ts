@@ -10,6 +10,7 @@ import {
   isCuratedChallengeId,
 } from '../data/challenges'
 import { NEIGHBORHOOD_WALK_PLACE_ID, getPlaceById } from '../data/places'
+import { getDistinctPlaceKey } from './customAdventure'
 import { DEMO_SEEDED_JOURNEY_ENTRY_IDS } from './productionState'
 import { enrichChallengeNodeContent } from './challengePlaceTemplates'
 
@@ -195,7 +196,7 @@ function countMetricMatches(
     const seen = new Set<string>()
     const distinct: JourneyEntry[] = []
     for (const entry of qualifying) {
-      const key = entry.placeId ?? entry.place
+      const key = getDistinctPlaceKey(entry)
       if (seen.has(key)) continue
       seen.add(key)
       distinct.push(entry)

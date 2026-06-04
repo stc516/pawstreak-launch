@@ -73,6 +73,9 @@ export interface AdventureRow {
   duration_label: string
   notes: string
   recap_labels: string[]
+  source?: 'catalog' | 'neighborhood' | 'custom'
+  custom_title?: string | null
+  custom_location_label?: string | null
   created_at: string
   updated_at: string
 }
@@ -93,6 +96,8 @@ export interface MemoryRow {
   recap_labels: string[]
   duration_label: string
   photo_paths: string[]
+  custom_location_label?: string | null
+  user_notes?: string | null
   created_at: string
   updated_at: string
 }

@@ -6,6 +6,10 @@ export async function createAdventure(input: {
   dogId: string
   placeId: string
   durationLabel: string
+  source?: AdventureRow['source']
+  customTitle?: string
+  customLocationLabel?: string
+  notes?: string
 }): Promise<AdventureRow | null> {
   const supabase = getSupabaseClient()
   if (!supabase) return null
@@ -18,6 +22,10 @@ export async function createAdventure(input: {
       place_id: input.placeId,
       duration_label: input.durationLabel,
       status: 'active',
+      source: input.source ?? 'catalog',
+      custom_title: input.customTitle ?? null,
+      custom_location_label: input.customLocationLabel ?? null,
+      notes: input.notes ?? '',
     })
     .select('*')
     .single()

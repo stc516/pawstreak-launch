@@ -13599,3 +13599,294 @@ select.field-input {
   font-size: 12px;
   color: #7c5c48;
 }
+
+/* Add Adventure v2 */
+.home-add-adventure {
+  margin: 0 0 14px;
+}
+
+.home-add-adventure-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px dashed rgba(124, 92, 72, 0.35);
+  border-radius: 14px;
+  background: #fffaf6;
+  font-size: 14px;
+  font-weight: 600;
+  color: #7c5c48;
+  cursor: pointer;
+}
+
+.journey-add-adventure {
+  margin: 0 0 16px;
+}
+
+.journey-add-adventure-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid rgba(249, 115, 22, 0.22);
+  border-radius: 16px;
+  background: linear-gradient(135deg, #fff7ed 0%, #fffdf9 100%);
+  text-align: left;
+  cursor: pointer;
+}
+
+.journey-add-adventure-icon {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: rgba(249, 115, 22, 0.12);
+  color: #f97316;
+  font-size: 18px;
+}
+
+.journey-add-adventure-copy {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.journey-add-adventure-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1c1410;
+}
+
+.journey-add-adventure-sub {
+  font-size: 12px;
+  color: #7c5c48;
+}
+
+.journey-add-adventure-arrow {
+  color: #f97316;
+  font-size: 18px;
+}
+
+.journey-planned {
+  margin: 0 0 16px;
+}
+
+.journey-planned-kicker {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #a67c5b;
+}
+
+.journey-planned-title {
+  margin: 4px 0 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1c1410;
+}
+
+.journey-planned-sub {
+  margin: 4px 0 12px;
+  font-size: 13px;
+  color: #7c5c48;
+}
+
+.journey-planned-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.journey-planned-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid rgba(28, 20, 16, 0.08);
+}
+
+.journey-planned-card-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1c1410;
+}
+
+.journey-planned-card-location,
+.journey-planned-card-meta {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: #7c5c48;
+}
+
+.journey-planned-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.journey-planned-start {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: none;
+  background: #f97316;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.journey-planned-delete {
+  padding: 8px;
+  border: none;
+  background: transparent;
+  color: #a67c5b;
+  cursor: pointer;
+}
+
+.add-adventure-hero {
+  margin: 0 0 16px;
+  padding: 20px 16px;
+  border-radius: 16px;
+}
+
+.add-adventure-kicker {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #a67c5b;
+}
+
+.add-adventure-title {
+  margin: 6px 0 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1c1410;
+}
+
+.add-adventure-copy {
+  margin: 8px 0 0;
+  font-size: 14px;
+  color: #7c5c48;
+}
+
+.add-adventure-form {
+  margin: 0 0 16px;
+  padding: 16px;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.add-adventure-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.add-adventure-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1c1410;
+}
+
+.add-adventure-required {
+  color: #f97316;
+}
+
+.add-adventure-input,
+.add-adventure-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid rgba(28, 20, 16, 0.12);
+  border-radius: 10px;
+  font-size: 15px;
+  font-family: inherit;
+  background: #fff;
+}
+
+.add-adventure-input--error {
+  border-color: #ef4444;
+}
+
+.add-adventure-error {
+  font-size: 12px;
+  color: #dc2626;
+}
+
+.add-adventure-dogs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.add-adventure-dog {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(28, 20, 16, 0.12);
+  background: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.add-adventure-dog.on {
+  border-color: #f97316;
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.add-adventure-photo-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px dashed rgba(124, 92, 72, 0.35);
+  background: #fffaf6;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.add-adventure-photo-preview img {
+  width: 100%;
+  max-height: 160px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.add-adventure-photo-remove {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #7c5c48;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.add-adventure-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 0 24px;
+}

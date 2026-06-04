@@ -9,10 +9,11 @@ import {
 import type { RecommendationPrefs } from '../lib/onboardingProfile'
 import { scorePlaceForProfile } from '../lib/onboardingProfile'
 import { getSampleImageForPlace } from './sampleImages'
+import { EXPANDED_LOCAL_PLACES } from './placesExpanded'
 
 export { getMagicLine, getHeroMagicSubtitle, getPlanMagicMeta }
 
-const RAW_PLACES: Place[] = [
+export const LEGACY_LOCAL_PLACES: Place[] = [
   {
     id: 'dog-beach-ocean-beach',
     name: 'Dog Beach, Ocean Beach',
@@ -362,7 +363,7 @@ const RAW_PLACES: Place[] = [
     name: "Nate's Point Dog Park",
     city: 'San Diego',
     region: 'San Diego',
-    category: 'Dog park',
+    category: 'Dog Park',
     tags: ['off-leash', 'enclosed', 'balboa'],
     distanceLabel: '3.4 mi',
     leashInfo: 'Off-leash enclosed',
@@ -380,7 +381,7 @@ const RAW_PLACES: Place[] = [
     name: 'Grape Street Dog Park',
     city: 'San Diego',
     region: 'San Diego',
-    category: 'Dog park',
+    category: 'Dog Park',
     tags: ['off-leash', 'enclosed', 'south-park'],
     distanceLabel: '4.2 mi',
     leashInfo: 'Off-leash enclosed',
@@ -398,7 +399,7 @@ const RAW_PLACES: Place[] = [
     name: 'Dusty Rhodes Dog Park',
     city: 'San Diego',
     region: 'San Diego',
-    category: 'Dog park',
+    category: 'Dog Park',
     tags: ['off-leash', 'ocean-breeze', 'ob'],
     distanceLabel: '1.8 mi',
     leashInfo: 'Off-leash enclosed',
@@ -416,7 +417,7 @@ const RAW_PLACES: Place[] = [
     name: 'Central Bark Dog Park',
     city: 'Lake Forest',
     region: 'Orange County',
-    category: 'Dog park',
+    category: 'Dog Park',
     tags: ['off-leash', 'enclosed', 'large'],
     distanceLabel: '72 mi',
     leashInfo: 'Off-leash enclosed',
@@ -790,7 +791,7 @@ const RAW_PLACES: Place[] = [
     name: 'Recall practice at the park',
     city: 'Near you',
     region: 'San Diego',
-    category: 'Dog park',
+    category: 'Dog Park',
     tags: ['training', 'activity', 'recall'],
     distanceLabel: 'Local park',
     leashInfo: 'Mixed',
@@ -857,12 +858,18 @@ const CATEGORY_IMAGE_TONE: Record<PlaceCategory, PlaceImageTone> = {
   Beach: 'coastal',
   Trail: 'forest',
   Coffee: 'urban',
-  'Dog park': 'park',
+  'Dog Park': 'park',
   Park: 'park',
+  Patio: 'urban',
   Brewery: 'urban',
+  Restaurant: 'urban',
+  Lake: 'coastal',
+  Campground: 'forest',
+  'Scenic Spot': 'mountain',
   Gardens: 'park',
   'Road trip': 'mountain',
   Neighborhood: 'warm',
+  Custom: 'warm',
 }
 
 function applyPlaceImages(place: Place): Place {
@@ -875,6 +882,8 @@ function applyPlaceImages(place: Place): Place {
       place.imageAlt ?? `${place.name} — ${place.category.toLowerCase()} spot`,
   }
 }
+
+export const CUSTOM_ADVENTURE_PLACE_ID = 'custom-adventure'
 
 export const NEIGHBORHOOD_WALK_PLACE_ID = 'neighborhood-walk'
 
@@ -897,7 +906,63 @@ const NEIGHBORHOOD_WALK_PLACE_RAW: Place = {
 
 export const NEIGHBORHOOD_WALK_PLACE = applyPlaceImages(NEIGHBORHOOD_WALK_PLACE_RAW)
 
+const CUSTOM_ADVENTURE_PLACE_RAW: Place = {
+  id: CUSTOM_ADVENTURE_PLACE_ID,
+  name: 'Custom adventure',
+  city: 'Your adventures',
+  region: 'San Diego',
+  category: 'Custom',
+  tags: ['custom', 'user-created'],
+  distanceLabel: '—',
+  leashInfo: 'Your outing',
+  dogFriendlyNotes: 'Adventures you add yourself — golf, camping, brewery days, and more.',
+  whyDogsLoveIt: 'Whatever you and your pack are up to.',
+  bestTime: 'Anytime',
+  energyLevel: 'Moderate',
+  featured: false,
+  popularNow: false,
+}
+
+export const CUSTOM_ADVENTURE_PLACE = applyPlaceImages(CUSTOM_ADVENTURE_PLACE_RAW)
+
+const RAW_PLACES: Place[] = EXPANDED_LOCAL_PLACES
+
 export const PLACES: Place[] = RAW_PLACES.map(applyPlaceImages)
+export const LEGACY_PLACE_LOOKUP: Place[] = LEGACY_LOCAL_PLACES.map(applyPlaceImages)
+
+export function getFeaturedPlaces(): Place[] {
+  return sortPlacesForDisplay(PLACES.filter((place) => place.featured))
+}
+
+export function getPlacesByCategory(category: PlaceCategory): Place[] {
+  return sortPlacesForDisplay(PLACES.filter((place) => place.category === category))
+}
+
+export function getPlacesByCity(city: string): Place[] {
+  const normalizedCity = city.trim().toLowerCase()
+  return sortPlacesForDisplay(
+    PLACES.filter((place) => place.city.toLowerCase() === normalizedCity),
+  )
+}
+
+export function searchPlaces(query: string): Place[] {
+  const normalizedQuery = query.trim().toLowerCase()
+  if (!normalizedQuery) return []
+
+  return sortPlacesForDisplay(
+    PLACES.filter((place) =>
+      [
+        place.name,
+        place.city,
+        place.category,
+        place.address,
+        place.dogFriendlyNotes,
+      ]
+        .filter(Boolean)
+        .some((value) => value!.toLowerCase().includes(normalizedQuery)),
+    ),
+  )
+}
 
 export function isNeighborhoodWalkPlace(placeId: string | undefined): boolean {
   return placeId === NEIGHBORHOOD_WALK_PLACE_ID
@@ -908,19 +973,19 @@ const PLAN_CATEGORY_MAP: Record<string, PlaceCategory | null> = {
   beach: 'Beach',
   trail: 'Trail',
   coffee: 'Coffee',
-  'dog-park': 'Dog park',
-  'road-trip': 'Road trip',
-  gardens: 'Gardens',
+  'dog-park': 'Dog Park',
+  'road-trip': 'Scenic Spot',
+  gardens: 'Park',
 }
 
 const ACTIVITY_CATEGORY_MAP: Record<string, PlaceCategory> = {
   beach: 'Beach',
   coffee: 'Coffee',
   trail: 'Trail',
-  'road-trip': 'Road trip',
-  gardens: 'Gardens',
-  neighborhood: 'Neighborhood',
-  'dog-park': 'Dog park',
+  'road-trip': 'Scenic Spot',
+  gardens: 'Park',
+  neighborhood: 'Park',
+  'dog-park': 'Dog Park',
   brewery: 'Brewery',
 }
 
@@ -928,12 +993,18 @@ const CATEGORY_EMOJI: Record<PlaceCategory, string> = {
   Beach: '🏖️',
   Trail: '🌲',
   Coffee: '☕',
-  'Dog park': '🐕',
+  'Dog Park': '🐕',
   Park: '🌳',
+  Patio: '🍽️',
   Brewery: '🍺',
+  Restaurant: '🍽️',
+  Lake: '💧',
+  Campground: '⛺',
+  'Scenic Spot': '📍',
   Gardens: '🌸',
   'Road trip': '🚗',
   Neighborhood: '🏘️',
+  Custom: '✨',
 }
 
 function regionShort(region: Place['region']): string {
@@ -944,7 +1015,11 @@ function regionShort(region: Place['region']): string {
 
 export function getPlaceById(id: string): Place | undefined {
   if (id === NEIGHBORHOOD_WALK_PLACE_ID) return NEIGHBORHOOD_WALK_PLACE
-  return PLACES.find((place) => place.id === id)
+  if (id === CUSTOM_ADVENTURE_PLACE_ID) return CUSTOM_ADVENTURE_PLACE
+  return (
+    PLACES.find((place) => place.id === id) ??
+    LEGACY_PLACE_LOOKUP.find((place) => place.id === id)
+  )
 }
 
 export function getPlaceEmoji(category: PlaceCategory): string {

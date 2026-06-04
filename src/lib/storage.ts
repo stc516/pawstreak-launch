@@ -8,7 +8,16 @@ import {
 } from '../data/demo'
 import { normalizePhotoSlots } from '../lib/imageUtils'
 import { resolveActiveAdventureView } from './activeAdventureSession'
-import { resolvePlaceFromAdventure } from '../data/places'
+import {
+  CUSTOM_ADVENTURE_PLACE_ID,
+  isNeighborhoodWalkPlace,
+  resolvePlaceFromAdventure,
+} from '../data/places'
+import {
+  EMPTY_ADD_ADVENTURE_DRAFT,
+  inferAdventureSource,
+  isCustomAdventurePlace,
+} from './customAdventure'
 import { EMPTY_CURATED_PLAN_DRAFT, type LegacyCuratedPlanDraft } from '../lib/curatedPlan'
 import { EMPTY_MONTHLY_PLAN_DRAFT } from '../lib/monthlyPlan'
 import { EMPTY_TRAINING_PROGRAM_DRAFT } from '../lib/trainingSchedule'
@@ -50,13 +59,94 @@ function normalizeActiveAdventure(
         startedAt?: string
         durationLabel?: string
         status?: 'active'
+        source?: ActiveAdventure['source']
+        customTitle?: string
+        customLocationLabel?: string
+        userNotes?: string
+        locationPermissionStatus?: ActiveAdventure['locationPermissionStatus']
+        startLat?: number
+        startLng?: number
+        endLat?: number
+        endLng?: number
+        locationCapturedAt?: string
+        gpsSummary?: string
+        routePoints?: ActiveAdventure['routePoints']
       }
     | null,
 ): ActiveAdventure | null {
   if (!adventure) return null
 
-  const place = resolvePlaceFromAdventure(adventure)
   const serverId = 'serverId' in adventure ? adventure.serverId : undefined
+  const placeId = adventure.placeId
+  const source =
+    ('source' in adventure && adventure.source) ||
+    inferAdventureSource(placeId)
+
+  if (source === 'custom' || isCustomAdventurePlace(placeId)) {
+    const customTitle =
+      ('customTitle' in adventure && adventure.customTitle) ||
+      adventure.location
+    return {
+      id: adventure.id ?? serverId ?? crypto.randomUUID(),
+      serverId,
+      dogId: 'dogId' in adventure ? adventure.dogId : undefined,
+      selectedDogIds:
+        'selectedDogIds' in adventure ? adventure.selectedDogIds : undefined,
+      placeId: CUSTOM_ADVENTURE_PLACE_ID,
+      location: customTitle,
+      durationLabel:
+        'durationLabel' in adventure && adventure.durationLabel
+          ? adventure.durationLabel
+          : 'Open end',
+      started: adventure.started ?? false,
+      startedAt: 'startedAt' in adventure ? adventure.startedAt : undefined,
+      status: 'active',
+      source: 'custom',
+      customTitle,
+      customLocationLabel:
+        'customLocationLabel' in adventure
+          ? adventure.customLocationLabel
+          : undefined,
+      userNotes: 'userNotes' in adventure ? adventure.userNotes : undefined,
+      locationPermissionStatus:
+        'locationPermissionStatus' in adventure
+          ? adventure.locationPermissionStatus
+          : 'unknown',
+      startLat: 'startLat' in adventure ? adventure.startLat : undefined,
+      startLng: 'startLng' in adventure ? adventure.startLng : undefined,
+      endLat: 'endLat' in adventure ? adventure.endLat : undefined,
+      endLng: 'endLng' in adventure ? adventure.endLng : undefined,
+      locationCapturedAt:
+        'locationCapturedAt' in adventure ? adventure.locationCapturedAt : undefined,
+      gpsSummary: 'gpsSummary' in adventure ? adventure.gpsSummary : undefined,
+      routePoints:
+        'routePoints' in adventure && Array.isArray(adventure.routePoints)
+          ? adventure.routePoints
+          : undefined,
+    }
+  }
+
+  if (isNeighborhoodWalkPlace(placeId)) {
+    return {
+      id: adventure.id ?? serverId ?? crypto.randomUUID(),
+      serverId,
+      dogId: 'dogId' in adventure ? adventure.dogId : undefined,
+      selectedDogIds:
+        'selectedDogIds' in adventure ? adventure.selectedDogIds : undefined,
+      placeId: placeId ?? 'neighborhood-walk',
+      location: adventure.location || 'Neighborhood Walk',
+      durationLabel:
+        'durationLabel' in adventure && adventure.durationLabel
+          ? adventure.durationLabel
+          : 'Open end',
+      started: adventure.started ?? false,
+      startedAt: 'startedAt' in adventure ? adventure.startedAt : undefined,
+      status: 'active',
+      source: 'neighborhood',
+    }
+  }
+
+  const place = resolvePlaceFromAdventure(adventure)
   return {
     id: adventure.id ?? serverId ?? crypto.randomUUID(),
     serverId,
@@ -72,6 +162,7 @@ function normalizeActiveAdventure(
     started: adventure.started ?? false,
     startedAt: 'startedAt' in adventure ? adventure.startedAt : undefined,
     status: 'active',
+    source: 'catalog',
   }
 }
 
@@ -128,6 +219,7 @@ export function applyLaunchSessionState(state: AppState): AppState {
     showJourneyMapOverlay: false,
     showJourneyLevelOverlay: false,
     showPresetPlanOverlay: false,
+    showAddAdventureFlow: false,
     showCommunityCompose: false,
     showPackInviteOverlay: false,
     curatedPlanFlowStep: 0,
@@ -165,6 +257,10 @@ function normalizeAppState(state: AppState, mode: AppMode): AppState {
     showPresetPlanOverlay: rest.showPresetPlanOverlay ?? false,
     showJourneyMapOverlay: rest.showJourneyMapOverlay ?? false,
     showJourneyLevelOverlay: rest.showJourneyLevelOverlay ?? false,
+    showAddAdventureFlow: rest.showAddAdventureFlow ?? false,
+    addAdventureDraft: rest.addAdventureDraft ?? EMPTY_ADD_ADVENTURE_DRAFT,
+    scheduledAdventures: rest.scheduledAdventures ?? [],
+    locationCandidates: rest.locationCandidates ?? [],
     adventurePhotos: normalizePhotoSlots(rest.adventurePhotos),
     activeAdventure: normalizeActiveAdventure(rest.activeAdventure),
     activeAdventureView: resolveActiveAdventureView(

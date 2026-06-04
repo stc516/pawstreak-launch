@@ -111,7 +111,7 @@ function isSocialEntry(entry: JourneyEntry): boolean {
   if (!place) return false
 
   return (
-    place.category === 'Dog park' ||
+    place.category === 'Dog Park' ||
     (place.category === 'Beach' && place.tags.includes('social'))
   )
 }

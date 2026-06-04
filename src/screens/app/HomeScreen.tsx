@@ -39,6 +39,7 @@ interface HomeScreenProps {
   onOpenTrainingProgram: () => void
   onStartMonthlyPlanAdventure: (placeId: string) => void
   onContinueTraining: (programId: string) => void
+  onOpenAddAdventure: () => void
 }
 
 export function HomeScreen({
@@ -54,6 +55,7 @@ export function HomeScreen({
   onOpenTrainingProgram,
   onStartMonthlyPlanAdventure,
   onContinueTraining,
+  onOpenAddAdventure,
 }: HomeScreenProps) {
   const profileDogs = getProfileDogs(state)
   const dogLabel = getDisplayDogLabel(state)
@@ -156,6 +158,18 @@ export function HomeScreen({
           <span className="home-quick-walk-arrow" aria-hidden="true">
             <i className="ti ti-arrow-right" />
           </span>
+        </button>
+      </section>
+
+      <section className="home-add-adventure" aria-label="Add your own adventure">
+        <button
+          type="button"
+          className="home-add-adventure-btn tap-target"
+          onClick={onOpenAddAdventure}
+          data-testid="home-add-adventure"
+        >
+          <i className="ti ti-sparkles" aria-hidden="true" />
+          <span>Add your own adventure</span>
         </button>
       </section>
 

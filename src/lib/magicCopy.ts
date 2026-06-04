@@ -6,7 +6,7 @@ const CATEGORY_LINES: Partial<Record<PlaceCategory, string>> = {
   Beach: 'Beach day energy — worth getting out.',
   Trail: 'Trail day — worth getting out.',
   Coffee: 'Easy win for a short outing.',
-  'Dog park': 'Off-leash fun close by.',
+  'Dog Park': 'Off-leash fun close by.',
   Park: 'Low crowd pick for a calmer day.',
   Brewery: 'Perfect right now for a patio stop.',
   Gardens: 'Best window today for a slow loop.',
