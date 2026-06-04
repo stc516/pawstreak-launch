@@ -4,7 +4,11 @@ import {
   formatTimerWithTarget,
   getActiveAdventureElapsedSeconds,
 } from '../../data/demo'
-import { getDisplayDogLabel, getDisplayDogsAreOutLabel, getProfileDogs } from '../../lib/profileDisplay'
+import {
+  getDisplayDogLabelForIds,
+  getDisplayDogsAreOutLabel,
+  getProfileDogs,
+} from '../../lib/profileDisplay'
 import type { AdventureFinishPayload } from '../../lib/adventureFinish'
 import { readImageFileAsDataUrl } from '../../lib/imageUtils'
 import { getPlaceById, getPlanMagicMeta } from '../../data/places'
@@ -139,7 +143,9 @@ export function ActiveAdventureScreen({
               </div>
               <div className="adv-ready-row">
                 <span className="adv-ready-meta-label">Dogs</span>
-                <span>{getDisplayDogLabel(state)}</span>
+                <span>
+                  {getDisplayDogLabelForIds(state, adventure.selectedDogIds)}
+                </span>
               </div>
               {place ? (
                 <div className="adv-ready-context">{getPlanMagicMeta(place)}</div>

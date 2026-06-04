@@ -8,6 +8,7 @@ export type PlaceCategory =
   | 'Gardens'
   | 'Road trip'
   | 'Neighborhood'
+  | 'Custom'
 
 export type PlaceRegion = 'San Diego' | 'Orange County' | 'Julian / Mountain'
 

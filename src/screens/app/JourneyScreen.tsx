@@ -4,6 +4,7 @@ import { getDisplayJourneyTitle } from '../../lib/profileDisplay'
 import { getJourneyMapSummary } from '../../lib/productionState'
 import { getFeaturedChallenge } from '../../lib/challengeEngine'
 import { JourneyStoryPath } from '../../components/JourneyStoryPath'
+import { JourneyPlannedSection } from '../../components/JourneyPlannedSection'
 import { ChallengePathExperience } from '../../components/ChallengePathExperience'
 
 interface JourneyScreenProps {
@@ -12,6 +13,9 @@ interface JourneyScreenProps {
   onOpenMemory: (entryId: string) => void
   onOpenMap: () => void
   onGoToPlan: () => void
+  onOpenAddAdventure: () => void
+  onStartPlannedAdventure: (id: string) => void
+  onDeletePlannedAdventure: (id: string) => void
   onStartAdventure: (placeId: string) => void
   onStartNeighborhoodWalk?: () => void
   onOpenChallenge?: (challengeId: string) => void
@@ -23,6 +27,9 @@ export function JourneyScreen({
   onOpenMemory,
   onOpenMap,
   onGoToPlan,
+  onOpenAddAdventure,
+  onStartPlannedAdventure,
+  onDeletePlannedAdventure,
   onStartAdventure,
   onStartNeighborhoodWalk,
   onOpenChallenge,
@@ -55,6 +62,34 @@ export function JourneyScreen({
             : 'Your story starts with one adventure. Save it here and watch the path grow.'}
         </p>
       </div>
+
+      <section className="journey-add-adventure detail-card-warm">
+        <button
+          type="button"
+          className="journey-add-adventure-btn tap-target"
+          onClick={onOpenAddAdventure}
+          data-testid="journey-add-adventure"
+        >
+          <span className="journey-add-adventure-icon" aria-hidden="true">
+            <i className="ti ti-plus" />
+          </span>
+          <span className="journey-add-adventure-copy">
+            <span className="journey-add-adventure-title">Add your own adventure</span>
+            <span className="journey-add-adventure-sub">
+              Golf, camping, brewery day — title it and go when you are ready
+            </span>
+          </span>
+          <span className="journey-add-adventure-arrow" aria-hidden="true">
+            <i className="ti ti-arrow-right" />
+          </span>
+        </button>
+      </section>
+
+      <JourneyPlannedSection
+        state={state}
+        onStartPlanned={onStartPlannedAdventure}
+        onDeletePlanned={onDeletePlannedAdventure}
+      />
 
       <JourneyStoryPath
         state={state}

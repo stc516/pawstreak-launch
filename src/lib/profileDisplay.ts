@@ -37,6 +37,16 @@ export function usesDemoDogNames(state: AppState): boolean {
   return state.onboardingComplete && isDefaultDemoDogs(state.dogs) && !state.hasUserDogProfile
 }
 
+export function getDisplayDogLabelForIds(
+  state: AppState,
+  dogIds?: string[],
+): string {
+  if (!dogIds?.length) return getDisplayDogLabel(state)
+  const dogs = getProfileDogs(state).filter((dog) => dogIds.includes(dog.id))
+  if (dogs.length === 0) return getDisplayDogLabel(state)
+  return getPackDisplayName(dogs)
+}
+
 export function getDisplayDogLabel(state: AppState): string {
   if (!state.onboardingComplete) return 'your dog'
   if (usesDemoDogNames(state)) return getPackDisplayName(state.dogs)

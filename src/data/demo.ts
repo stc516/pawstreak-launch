@@ -22,6 +22,11 @@ import { EMPTY_TRAINING_PROGRAM_DRAFT } from '../lib/trainingSchedule'
 import type { MapCenter } from '../lib/mapbox'
 import { DEFAULT_MAP_CENTER } from '../lib/mapbox'
 import type { RandomPlanResult } from '../lib/randomPlan'
+import {
+  EMPTY_ADD_ADVENTURE_DRAFT,
+  type AddAdventureDraft,
+  type ScheduledAdventure,
+} from '../lib/customAdventure'
 import type { PackAccessMember } from './packAccess'
 import { DEFAULT_PACK_ACCESS_MEMBERS } from './packAccess'
 import type { Achievement } from './achievements'
@@ -77,6 +82,8 @@ export interface MonthlyPlanOption {
   subtitle: string
 }
 
+export type AdventureSource = 'catalog' | 'neighborhood' | 'custom'
+
 export interface ActiveAdventure {
   id: string
   serverId?: string
@@ -88,6 +95,43 @@ export interface ActiveAdventure {
   started: boolean
   startedAt?: string
   status: 'active'
+  source?: AdventureSource
+  customTitle?: string
+  customLocationLabel?: string
+  userNotes?: string
+  locationPermissionStatus?: 'unknown' | 'granted' | 'denied' | 'unavailable'
+  startLat?: number
+  startLng?: number
+  endLat?: number
+  endLng?: number
+  locationCapturedAt?: string
+  gpsSummary?: string
+  routePoints?: {
+    lat: number
+    lng: number
+    capturedAt: string
+  }[]
+}
+
+export interface LocationCandidate {
+  id: string
+  sourceAdventureId: string
+  sourceMemoryId?: string
+  userId?: string
+  customTitle: string
+  customLocationLabel?: string
+  normalizedTitle: string
+  approximateLat: number
+  approximateLng: number
+  endLat?: number
+  endLng?: number
+  photoCount: number
+  dogIds: string[]
+  userNotes?: string
+  createdAt: string
+  reviewStatus: 'new' | 'reviewing' | 'approved' | 'rejected'
+  candidateType: 'custom_adventure'
+  source: 'user_custom_adventure'
 }
 
 export type DogMode = 'both' | 'bailey' | 'omi'
@@ -117,6 +161,8 @@ export interface JourneyEntry {
   favoriteMoment?: string
   memoryMood?: string
   dogTags?: string[]
+  customLocationLabel?: string
+  userNotes?: string
 }
 
 export interface Flashback {
@@ -201,6 +247,10 @@ export interface AppState {
   showPresetPlanOverlay: boolean
   showJourneyMapOverlay: boolean
   showJourneyLevelOverlay: boolean
+  showAddAdventureFlow: boolean
+  addAdventureDraft: AddAdventureDraft
+  scheduledAdventures: ScheduledAdventure[]
+  locationCandidates: LocationCandidate[]
   adventurePhotos: string[]
   zipCode: string
   locationQuery: string
@@ -300,6 +350,10 @@ export const defaultAppState: AppState = {
   showPresetPlanOverlay: false,
   showJourneyMapOverlay: false,
   showJourneyLevelOverlay: false,
+  showAddAdventureFlow: false,
+  addAdventureDraft: EMPTY_ADD_ADVENTURE_DRAFT,
+  scheduledAdventures: [],
+  locationCandidates: [],
   adventurePhotos: ['', '', ''],
   zipCode: '',
   locationQuery: '',
@@ -630,9 +684,29 @@ export function createActiveAdventure(
     serverId?: string
     dogId?: string
     selectedDogIds?: string[]
+    source?: AdventureSource
+    customTitle?: string
+    customLocationLabel?: string
+    userNotes?: string
+    locationPermissionStatus?: ActiveAdventure['locationPermissionStatus']
+    startLat?: number
+    startLng?: number
+    endLat?: number
+    endLng?: number
+    locationCapturedAt?: string
+    gpsSummary?: string
+    routePoints?: ActiveAdventure['routePoints']
   } = {},
 ): ActiveAdventure {
   const serverId = options.serverId
+  const source =
+    options.source ??
+    (placeId === 'custom-adventure'
+      ? 'custom'
+      : placeId === 'neighborhood-walk'
+        ? 'neighborhood'
+        : 'catalog')
+
   return {
     id: serverId ?? crypto.randomUUID(),
     serverId,
@@ -644,6 +718,18 @@ export function createActiveAdventure(
     started: options.started ?? false,
     startedAt: options.startedAt,
     status: 'active',
+    source,
+    customTitle: options.customTitle,
+    customLocationLabel: options.customLocationLabel,
+    userNotes: options.userNotes,
+    locationPermissionStatus: options.locationPermissionStatus,
+    startLat: options.startLat,
+    startLng: options.startLng,
+    endLat: options.endLat,
+    endLng: options.endLng,
+    locationCapturedAt: options.locationCapturedAt,
+    gpsSummary: options.gpsSummary,
+    routePoints: options.routePoints,
   }
 }
 

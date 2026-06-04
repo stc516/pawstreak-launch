@@ -9,9 +9,16 @@ import { fetchProfile, upsertProfileFromOnboarding } from './db/profiles'
 import { trackUserEvent } from './db/userEvents'
 import { createAdventure, completeAdventure, cancelAdventure } from './db/adventures'
 import { createMemory } from './db/memories'
-import { getPlaceById } from '../data/places'
+import { insertLocationCandidate } from './db/locationCandidates'
+import { CUSTOM_ADVENTURE_PLACE_ID, getPlaceById } from '../data/places'
+import { isCustomAdventure } from './customAdventure'
+import {
+  deleteScheduledAdventure,
+  fetchScheduledAdventuresForUser,
+  insertScheduledAdventure,
+} from './db/scheduledAdventures'
 import type { AdventureFinishPayload } from './adventureFinish'
-import type { ActiveAdventure, Dog } from '../data/demo'
+import type { ActiveAdventure, Dog, LocationCandidate } from '../data/demo'
 import { createActiveAdventure } from '../data/demo'
 
 import {
@@ -44,6 +51,7 @@ export function createProductionInitialState(): AppState {
     flashback: EMPTY_FLASHBACK,
     activeAdventure: null,
     adventurePhotos: ['', '', ''],
+    locationCandidates: [],
   })
 }
 
@@ -56,6 +64,7 @@ export async function hydrateProductionState(
   const activeDog = getActiveDog(dogs, profile?.active_dog_id)
   const journeyEntries = await fetchMemoriesForUser(userId, activeDog?.id ?? null)
   const placeCount = await countDistinctPlaces(userId, activeDog?.id ?? null)
+  const scheduledAdventures = await fetchScheduledAdventuresForUser(userId)
 
   const hydrated = {
     ...base,
@@ -78,6 +87,7 @@ export async function hydrateProductionState(
     adventureCount: journeyEntries.length,
     placeCount,
     activeDogId: activeDog?.id ?? null,
+    scheduledAdventures,
   }
 
   return applyRealUserContent(hydrated)
@@ -124,8 +134,23 @@ export async function startAdventureOnServer(input: {
   placeId: string
   durationLabel: string
   selectedDogIds?: string[]
+  source?: 'catalog' | 'neighborhood' | 'custom'
+  customTitle?: string
+  customLocationLabel?: string
+  userNotes?: string
+  started?: boolean
+  startedAt?: string
 }): Promise<ActiveAdventure | null> {
-  const adventure = await createAdventure(input)
+  const adventure = await createAdventure({
+    userId: input.userId,
+    dogId: input.dogId,
+    placeId: input.placeId,
+    durationLabel: input.durationLabel,
+    source: input.source,
+    customTitle: input.customTitle,
+    customLocationLabel: input.customLocationLabel,
+    notes: input.userNotes,
+  })
   if (!adventure) return null
 
   const place = getPlaceById(input.placeId)
@@ -137,11 +162,21 @@ export async function startAdventureOnServer(input: {
     input.userId,
   )
 
-  return createActiveAdventure(place.id, place.name, input.durationLabel, {
+  const isCustom = input.placeId === CUSTOM_ADVENTURE_PLACE_ID
+  const location = isCustom
+    ? (input.customTitle ?? place.name)
+    : place.name
+
+  return createActiveAdventure(place.id, location, input.durationLabel, {
     serverId: adventure.id,
     dogId: input.dogId,
     selectedDogIds: input.selectedDogIds ?? [input.dogId],
-    started: false,
+    started: input.started ?? false,
+    startedAt: input.startedAt,
+    source: input.source ?? (isCustom ? 'custom' : 'catalog'),
+    customTitle: input.customTitle,
+    customLocationLabel: input.customLocationLabel,
+    userNotes: input.userNotes,
   })
 }
 
@@ -156,6 +191,7 @@ export async function finishAdventureOnServer(input: {
   const place = getPlaceById(input.activeAdventure.placeId)
   if (!place) throw new Error('Place not found')
 
+  const custom = isCustomAdventure(input.activeAdventure)
   const memory = await createMemory({
     userId: input.userId,
     dogId: input.dogId,
@@ -165,6 +201,11 @@ export async function finishAdventureOnServer(input: {
     durationLabel: input.activeAdventure.durationLabel,
     recapLabels: input.payload.recapLabels,
     photoDataUrls: input.photoDataUrls,
+    displayPlaceName: custom
+      ? (input.activeAdventure.customTitle ?? input.activeAdventure.location)
+      : undefined,
+    customLocationLabel: input.activeAdventure.customLocationLabel,
+    userNotes: input.activeAdventure.userNotes,
   })
 
   if (!memory) throw new Error('Could not save memory')
@@ -195,4 +236,22 @@ export async function cancelAdventureOnServer(userId: string, activeAdventure: A
   if (activeAdventure.serverId) {
     await cancelAdventure(activeAdventure.serverId, userId)
   }
+}
+
+export async function saveScheduledAdventureOnServer(input: {
+  userId: string
+  title: string
+  locationLabel?: string
+  notes?: string
+  selectedDogIds: string[]
+}) {
+  return insertScheduledAdventure(input)
+}
+
+export async function removeScheduledAdventureOnServer(id: string, userId: string) {
+  return deleteScheduledAdventure(id, userId)
+}
+
+export async function saveLocationCandidateOnServer(candidate: LocationCandidate) {
+  return insertLocationCandidate(candidate)
 }

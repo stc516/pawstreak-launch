@@ -1,5 +1,6 @@
 import type { AppState } from '../data/demo'
 import { resolveCategoryFromJourneyEntry } from './adventureDisplayImage'
+import { getDistinctPlaceKey } from './customAdventure'
 import { bondSubtitleFor } from './onboardingProfile'
 
 const EMPTY_BOND_LEVEL: AppState['bondLevel'] = {
@@ -15,9 +16,7 @@ const EMPTY_BOND_LEVEL: AppState['bondLevel'] = {
 }
 
 function countDistinctPlaces(entries: AppState['journeyEntries']): number {
-  const ids = new Set(
-    entries.map((entry) => entry.placeId ?? entry.place).filter(Boolean),
-  )
+  const ids = new Set(entries.map((entry) => getDistinctPlaceKey(entry)))
   return ids.size
 }
 

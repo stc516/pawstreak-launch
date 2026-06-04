@@ -11,6 +11,7 @@ const CATEGORY_DESTINATION_IMAGES: Record<PlaceCategory, string[]> = {
   Gardens: ['/sample-images/gardens.jpg', '/sample-images/park.jpg'],
   'Road trip': ['/sample-images/road-trip.jpg', '/sample-images/mountain.jpg', '/sample-images/trail.jpg'],
   Neighborhood: ['/sample-images/neighborhood.jpg', '/sample-images/park.jpg'],
+  Custom: ['/sample-images/park.jpg', '/sample-images/neighborhood.jpg'],
 }
 
 export function getSampleImageForPlace(

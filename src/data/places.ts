@@ -863,6 +863,7 @@ const CATEGORY_IMAGE_TONE: Record<PlaceCategory, PlaceImageTone> = {
   Gardens: 'park',
   'Road trip': 'mountain',
   Neighborhood: 'warm',
+  Custom: 'warm',
 }
 
 function applyPlaceImages(place: Place): Place {
@@ -875,6 +876,8 @@ function applyPlaceImages(place: Place): Place {
       place.imageAlt ?? `${place.name} — ${place.category.toLowerCase()} spot`,
   }
 }
+
+export const CUSTOM_ADVENTURE_PLACE_ID = 'custom-adventure'
 
 export const NEIGHBORHOOD_WALK_PLACE_ID = 'neighborhood-walk'
 
@@ -896,6 +899,25 @@ const NEIGHBORHOOD_WALK_PLACE_RAW: Place = {
 }
 
 export const NEIGHBORHOOD_WALK_PLACE = applyPlaceImages(NEIGHBORHOOD_WALK_PLACE_RAW)
+
+const CUSTOM_ADVENTURE_PLACE_RAW: Place = {
+  id: CUSTOM_ADVENTURE_PLACE_ID,
+  name: 'Custom adventure',
+  city: 'Your adventures',
+  region: 'San Diego',
+  category: 'Custom',
+  tags: ['custom', 'user-created'],
+  distanceLabel: '—',
+  leashInfo: 'Your outing',
+  dogFriendlyNotes: 'Adventures you add yourself — golf, camping, brewery days, and more.',
+  whyDogsLoveIt: 'Whatever you and your pack are up to.',
+  bestTime: 'Anytime',
+  energyLevel: 'Moderate',
+  featured: false,
+  popularNow: false,
+}
+
+export const CUSTOM_ADVENTURE_PLACE = applyPlaceImages(CUSTOM_ADVENTURE_PLACE_RAW)
 
 export const PLACES: Place[] = RAW_PLACES.map(applyPlaceImages)
 
@@ -934,6 +956,7 @@ const CATEGORY_EMOJI: Record<PlaceCategory, string> = {
   Gardens: '🌸',
   'Road trip': '🚗',
   Neighborhood: '🏘️',
+  Custom: '✨',
 }
 
 function regionShort(region: Place['region']): string {
@@ -944,6 +967,7 @@ function regionShort(region: Place['region']): string {
 
 export function getPlaceById(id: string): Place | undefined {
   if (id === NEIGHBORHOOD_WALK_PLACE_ID) return NEIGHBORHOOD_WALK_PLACE
+  if (id === CUSTOM_ADVENTURE_PLACE_ID) return CUSTOM_ADVENTURE_PLACE
   return PLACES.find((place) => place.id === id)
 }
 
