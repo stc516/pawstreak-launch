@@ -1,0 +1,81 @@
+{
+  "baseUrl": "http://127.0.0.1:4190",
+  "results": [
+    {
+      "id": "quick-walk-banner-and-nav",
+      "pass": true,
+      "detail": "banner=true bnav=true"
+    },
+    {
+      "id": "nav-home-active",
+      "pass": true,
+      "detail": "Home: adventure=true banner=true"
+    },
+    {
+      "id": "nav-plan-active",
+      "pass": true,
+      "detail": "Plan: adventure=true banner=true"
+    },
+    {
+      "id": "nav-journey-active",
+      "pass": true,
+      "detail": "Journey: adventure=true banner=true"
+    },
+    {
+      "id": "nav-challenges-active",
+      "pass": true,
+      "detail": "Challenges: adventure=true banner=true"
+    },
+    {
+      "id": "nav-achievements-active",
+      "pass": true,
+      "detail": "Achievements: adventure=true banner=true"
+    },
+    {
+      "id": "nav-community-active",
+      "pass": true,
+      "detail": "Community: adventure=true banner=true"
+    },
+    {
+      "id": "reload-persists-adventure",
+      "pass": true,
+      "detail": "{\"activeAdventure\":true,\"started\":true,\"view\":\"minimized\",\"journeyCount\":5}"
+    },
+    {
+      "id": "resume-opens-focused",
+      "pass": true,
+      "detail": "clock=true"
+    },
+    {
+      "id": "minimize-back-to-banner",
+      "pass": true,
+      "detail": "banner=true"
+    },
+    {
+      "id": "finish-clears-adventure-saves-memory",
+      "pass": true,
+      "detail": "journey 5→6 active=false"
+    },
+    {
+      "id": "cancel-clears-no-memory",
+      "pass": true,
+      "detail": "journey stayed 5"
+    },
+    {
+      "id": "monthly-plan-go-finishes",
+      "pass": true,
+      "detail": "monthly plan adventure completed from banner/focus"
+    },
+    {
+      "id": "community-coming-soon",
+      "pass": true,
+      "detail": "Community honest"
+    },
+    {
+      "id": "profile-not-in-nav",
+      "pass": true,
+      "detail": "Profile only via pill"
+    }
+  ],
+  "pass": true
+}

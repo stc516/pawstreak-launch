@@ -31,7 +31,15 @@ import type { DemoRoute } from './lib/demoRoute'
 import { shouldPersonalizeContent } from './lib/profileDisplay'
 import { fillPhotoSlots } from './lib/imageUtils'
 import { AppShell } from './components/AppShell'
+import { ActiveAdventureBanner } from './components/ActiveAdventureBanner'
 import { ActiveAdventureScreen } from './screens/app/ActiveAdventureScreen'
+import {
+  clearActiveAdventureFields,
+  hasMeaningfulAdventureProgress,
+  shouldShowFocusedAdventure,
+  showActiveAdventureBanner,
+  viewForNewAdventure,
+} from './lib/activeAdventureSession'
 import { HomeScreen } from './screens/app/HomeScreen'
 import { CommunityScreen } from './screens/app/CommunityScreen'
 import { JourneyScreen } from './screens/app/JourneyScreen'
@@ -474,11 +482,13 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         }
       }
 
+      const activeAdventure = createActiveAdventure(first.placeId, first.name, '30 min')
       return {
         ...current,
         curatedPlanFlowStep: 0,
         selectedMonthlyPlanId: 'curated',
-        activeAdventure: createActiveAdventure(first.placeId, first.name, '30 min'),
+        activeAdventure,
+        activeAdventureView: viewForNewAdventure(activeAdventure),
         adventurePhotos: ['', '', ''],
       }
     })
@@ -703,8 +713,25 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
           startedAt,
           status: 'active',
         },
+        activeAdventureView: 'minimized',
       }
     })
+  }
+
+  const focusActiveAdventure = () => {
+    setState((current) =>
+      current.activeAdventure
+        ? { ...current, activeAdventureView: 'focused' }
+        : current,
+    )
+  }
+
+  const minimizeActiveAdventure = () => {
+    setState((current) =>
+      current.activeAdventure?.started
+        ? { ...current, activeAdventureView: 'minimized' }
+        : current,
+    )
   }
 
   const cancelAdventure = () => {
@@ -714,9 +741,22 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
 
     setState((current) => ({
       ...current,
-      activeAdventure: null,
-      adventurePhotos: ['', '', ''],
+      ...clearActiveAdventureFields(),
     }))
+  }
+
+  const requestCancelAdventure = () => {
+    if (hasMeaningfulAdventureProgress(state)) {
+      const confirmed = window.confirm(
+        'Cancel this adventure? Your timer and any photos will be discarded and nothing will be saved to Journey.',
+      )
+      if (!confirmed) return
+    }
+    cancelAdventure()
+  }
+
+  const finishActiveAdventureFromBanner = () => {
+    void finishAdventure({ recapLabels: ['Loved every second'] })
   }
 
   const closeCommunityCompose = () => {
@@ -734,10 +774,9 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   }
 
   const startNeighborhoodWalk = () => {
-    const startedAt = new Date().toISOString()
-    setState((current) => ({
-      ...current,
-      activeAdventure: createActiveAdventure(
+    setState((current) => {
+      const startedAt = new Date().toISOString()
+      const activeAdventure = createActiveAdventure(
         NEIGHBORHOOD_WALK_PLACE_ID,
         'Neighborhood Walk',
         'Open end',
@@ -747,14 +786,19 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
           dogId: current.activeDogId ?? current.dogs[0]?.id,
           selectedDogIds: current.dogs.map((dog) => dog.id),
         },
-      ),
-      adventurePhotos: ['', '', ''],
-      selectedJourneyEntryId: null,
-      selectedChallengeId: null,
-      showPresetPlanOverlay: false,
-      curatedPlanFlowStep: 0,
-      buildMyMonthFlowStep: 0,
-    }))
+      )
+      return {
+        ...current,
+        activeAdventure,
+        activeAdventureView: viewForNewAdventure(activeAdventure),
+        adventurePhotos: ['', '', ''],
+        selectedJourneyEntryId: null,
+        selectedChallengeId: null,
+        showPresetPlanOverlay: false,
+        curatedPlanFlowStep: 0,
+        buildMyMonthFlowStep: 0,
+      }
+    })
   }
 
   const startAdventure = async (placeId: string, durationLabel = 'Open end') => {
@@ -776,6 +820,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         setState((current) => ({
           ...current,
           activeAdventure: serverAdventure,
+          activeAdventureView: viewForNewAdventure(serverAdventure),
           adventurePhotos: ['', '', ''],
           selectedJourneyEntryId: null,
           selectedChallengeId: null,
@@ -787,17 +832,19 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       }
     }
 
+    const activeAdventure = createActiveAdventure(
+      place.id,
+      place.name,
+      durationLabel,
+      {
+        dogId: activeDogId,
+        selectedDogIds: state.dogs.map((dog) => dog.id),
+      },
+    )
     setState((current) => ({
       ...current,
-      activeAdventure: createActiveAdventure(
-        place.id,
-        place.name,
-        durationLabel,
-        {
-          dogId: activeDogId,
-          selectedDogIds: current.dogs.map((dog) => dog.id),
-        },
-      ),
+      activeAdventure,
+      activeAdventureView: viewForNewAdventure(activeAdventure),
       adventurePhotos: ['', '', ''],
       selectedJourneyEntryId: null,
       selectedChallengeId: null,
@@ -811,13 +858,15 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     const place = getPlaceById(placeId)
     if (!place) return
 
+    const activeAdventure = createActiveAdventure(place.id, place.name, 'Open end', {
+      dogId: state.activeDogId ?? state.dogs[0]?.id,
+      selectedDogIds: state.dogs.map((dog) => dog.id),
+    })
     setState((current) => ({
       ...current,
       selectedJourneyEntryId: null,
-      activeAdventure: createActiveAdventure(place.id, place.name, 'Open end', {
-        dogId: current.activeDogId ?? current.dogs[0]?.id,
-        selectedDogIds: current.dogs.map((dog) => dog.id),
-      }),
+      activeAdventure,
+      activeAdventureView: viewForNewAdventure(activeAdventure),
       adventurePhotos: ['', '', ''],
     }))
   }
@@ -851,12 +900,11 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         setState((current) =>
           applyRealUserContent({
             ...current,
-            activeAdventure: null,
+            ...clearActiveAdventureFields(),
             activeTab: 'journey',
             adventureCount: journeyEntries.length,
             placeCount,
             journeyEntries,
-            adventurePhotos: ['', '', ''],
             memorySaveToast: 'Memory saved — worth remembering.',
             monthlyPlanResult:
               current.monthlyPlanResult && place
@@ -906,12 +954,11 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
 
       return applyRealUserContent({
         ...current,
-        activeAdventure: null,
+        ...clearActiveAdventureFields(),
         activeTab: 'journey',
         adventureCount,
         placeCount,
         journeyEntries,
-        adventurePhotos: ['', '', ''],
         memorySaveToast: 'Memory saved — worth remembering.',
         monthlyPlanResult:
           current.monthlyPlanResult && place
@@ -1215,18 +1262,35 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     )
   }
 
-  if (state.activeAdventure) {
-    return (
+  const activeAdventureBannerNode = showActiveAdventureBanner(
+    state.activeAdventure,
+    state.activeAdventureView,
+  ) ? (
+    <ActiveAdventureBanner
+      state={state}
+      onResume={focusActiveAdventure}
+      onFinish={finishActiveAdventureFromBanner}
+      onCancel={requestCancelAdventure}
+    />
+  ) : null
+
+  const activeAdventureOverlayNode = shouldShowFocusedAdventure(
+    state.activeAdventure,
+    state.activeAdventureView,
+  ) ? (
+    <div className="active-adventure-overlay">
       <ActiveAdventureScreen
         state={state}
         onStart={startAdventureSession}
-        onCancel={cancelAdventure}
+        onCancel={requestCancelAdventure}
         onFinish={finishAdventure}
-        onTabChange={setActiveTab}
+        onMinimize={
+          state.activeAdventure?.started ? minimizeActiveAdventure : undefined
+        }
         onAddPhoto={addAdventurePhoto}
       />
-    )
-  }
+    </div>
+  ) : null
 
   if (state.buildMyMonthFlowStep > 0) {
     return (
@@ -1326,15 +1390,24 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     const program = getTrainingProgramById(state.selectedTrainingProgramId)
     if (program) {
       return (
-        <AppShell activeTab={state.activeTab} onTabChange={setActiveTab} isDemoMode={isDemoMode} showNavigation={false}>
-          <TrainingProgramDetailView
-            program={program}
-            state={state}
-            onBack={closeTrainingProgram}
-            onCompleteLesson={completeTrainingLesson}
-            onResetLesson={resetTrainingLesson}
-          />
-        </AppShell>
+        <>
+          <AppShell
+            activeTab={state.activeTab}
+            onTabChange={setActiveTab}
+            isDemoMode={isDemoMode}
+            showNavigation={false}
+            activeAdventureBanner={activeAdventureBannerNode}
+          >
+            <TrainingProgramDetailView
+              program={program}
+              state={state}
+              onBack={closeTrainingProgram}
+              onCompleteLesson={completeTrainingLesson}
+              onResetLesson={resetTrainingLesson}
+            />
+          </AppShell>
+          {activeAdventureOverlayNode}
+        </>
       )
     }
   }
@@ -1343,19 +1416,28 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     const challenge = getChallengeById(state.selectedChallengeId)
     if (challenge) {
       return (
-        <AppShell activeTab={state.activeTab} onTabChange={setActiveTab} isDemoMode={isDemoMode} showNavigation={false}>
-          <ChallengePathDetailView
-            challenge={challenge}
-            state={state}
-            onBack={closeChallengeDetail}
-            onJoinChallenge={joinChallenge}
-            onLeaveChallenge={leaveChallenge}
-            onStartAdventure={startAdventure}
-            onStartNeighborhoodWalk={startNeighborhoodWalk}
-            onGoToPlan={() => setActiveTab('plan')}
-            onOpenMemory={openJourneyMemory}
-          />
-        </AppShell>
+        <>
+          <AppShell
+            activeTab={state.activeTab}
+            onTabChange={setActiveTab}
+            isDemoMode={isDemoMode}
+            showNavigation={false}
+            activeAdventureBanner={activeAdventureBannerNode}
+          >
+            <ChallengePathDetailView
+              challenge={challenge}
+              state={state}
+              onBack={closeChallengeDetail}
+              onJoinChallenge={joinChallenge}
+              onLeaveChallenge={leaveChallenge}
+              onStartAdventure={startAdventure}
+              onStartNeighborhoodWalk={startNeighborhoodWalk}
+              onGoToPlan={() => setActiveTab('plan')}
+              onOpenMemory={openJourneyMemory}
+            />
+          </AppShell>
+          {activeAdventureOverlayNode}
+        </>
       )
     }
   }
@@ -1496,14 +1578,22 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   }
 
   return (
-    <AppShell activeTab={state.activeTab} onTabChange={setActiveTab} isDemoMode={isDemoMode}>
-      {renderScreen()}
-      {LIVE_PRODUCT.packAccess && state.packAccessToast ? (
-        <div className="memory-toast memory-toast--shell" role="status">
-          {state.packAccessToast}
-        </div>
-      ) : null}
-    </AppShell>
+    <>
+      <AppShell
+        activeTab={state.activeTab}
+        onTabChange={setActiveTab}
+        isDemoMode={isDemoMode}
+        activeAdventureBanner={activeAdventureBannerNode}
+      >
+        {renderScreen()}
+        {LIVE_PRODUCT.packAccess && state.packAccessToast ? (
+          <div className="memory-toast memory-toast--shell" role="status">
+            {state.packAccessToast}
+          </div>
+        ) : null}
+      </AppShell>
+      {activeAdventureOverlayNode}
+    </>
   )
 }
 

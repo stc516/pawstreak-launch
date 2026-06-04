@@ -7,6 +7,7 @@ import {
   type AppState,
 } from '../data/demo'
 import { normalizePhotoSlots } from '../lib/imageUtils'
+import { resolveActiveAdventureView } from './activeAdventureSession'
 import { resolvePlaceFromAdventure } from '../data/places'
 import { EMPTY_CURATED_PLAN_DRAFT, type LegacyCuratedPlanDraft } from '../lib/curatedPlan'
 import { EMPTY_MONTHLY_PLAN_DRAFT } from '../lib/monthlyPlan'
@@ -166,6 +167,10 @@ function normalizeAppState(state: AppState, mode: AppMode): AppState {
     showJourneyLevelOverlay: rest.showJourneyLevelOverlay ?? false,
     adventurePhotos: normalizePhotoSlots(rest.adventurePhotos),
     activeAdventure: normalizeActiveAdventure(rest.activeAdventure),
+    activeAdventureView: resolveActiveAdventureView(
+      normalizeActiveAdventure(rest.activeAdventure),
+      rest.activeAdventureView,
+    ),
     memorySaveToast: rest.memorySaveToast ?? null,
     zipCode: rest.zipCode ?? '',
     locationQuery: rest.locationQuery ?? defaultAppState.locationQuery,

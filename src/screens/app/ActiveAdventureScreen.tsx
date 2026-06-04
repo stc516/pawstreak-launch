@@ -9,17 +9,15 @@ import type { AdventureFinishPayload } from '../../lib/adventureFinish'
 import { readImageFileAsDataUrl } from '../../lib/imageUtils'
 import { getPlaceById, getPlanMagicMeta } from '../../data/places'
 import { getMiniQuestHint } from '../../lib/miniQuestHints'
-import { BottomNav } from '../../components/BottomNav'
 import { CardImage } from '../../components/CardImage'
 import { StatusBar } from '../../components/StatusBar'
-import type { TabId } from '../../data/demo'
 
 interface ActiveAdventureScreenProps {
   state: AppState
   onStart: () => void
   onCancel: () => void
   onFinish: (payload: AdventureFinishPayload) => void
-  onTabChange: (tab: TabId) => void
+  onMinimize?: () => void
   onAddPhoto: (photoDataUrl: string) => void
 }
 
@@ -28,7 +26,7 @@ export function ActiveAdventureScreen({
   onStart,
   onCancel,
   onFinish,
-  onTabChange,
+  onMinimize,
   onAddPhoto,
 }: ActiveAdventureScreenProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -184,6 +182,17 @@ export function ActiveAdventureScreen({
 
         <div className="clock-bg clock-bg--active detail-tint detail-tint--accent">
           <div className="clk-top">
+            {onMinimize ? (
+              <button
+                type="button"
+                className="active-adventure-minimize tap-target"
+                onClick={onMinimize}
+                aria-label="Minimize active adventure"
+              >
+                <i className="ti ti-chevrons-down" aria-hidden="true" />
+                Browse app
+              </button>
+            ) : null}
             <div className="clk-sub">{adventure.location}</div>
             <div className="clk-time">
               {formatTimerWithTarget(elapsedSeconds, adventure.durationLabel)}
@@ -313,14 +322,6 @@ export function ActiveAdventureScreen({
             </button>
           </div>
         </main>
-
-        <footer className="app-shell-footer">
-          <BottomNav
-            activeTab="plan"
-            onTabChange={onTabChange}
-            className="bnav bnav--white"
-          />
-        </footer>
       </div>
     </div>
   )

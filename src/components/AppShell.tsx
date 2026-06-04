@@ -10,6 +10,7 @@ interface AppShellProps {
   onTabChange: (tab: TabId) => void
   isDemoMode?: boolean
   showNavigation?: boolean
+  activeAdventureBanner?: ReactNode
   children: ReactNode
 }
 
@@ -18,11 +19,15 @@ export function AppShell({
   onTabChange,
   isDemoMode = false,
   showNavigation = true,
+  activeAdventureBanner = null,
   children,
 }: AppShellProps) {
+  const hasActiveBanner = Boolean(activeAdventureBanner)
   return (
     <div className="app-viewport">
-      <div className={`app-shell${isDemoMode ? ' app-shell--demo' : ''}`}>
+      <div
+        className={`app-shell${isDemoMode ? ' app-shell--demo' : ''}${hasActiveBanner ? ' app-shell--active-adventure' : ''}`}
+      >
         {LIVE_PRODUCT.statusBarChrome ? <StatusBar /> : null}
         {isDemoMode ? (
           <div className="demo-mode-bar" aria-label="Demo preview mode">
@@ -32,6 +37,7 @@ export function AppShell({
         <main className={`scroll${activeTab === 'home' ? ' scroll--home' : ''}`}>{children}</main>
         {showNavigation ? (
           <footer className="app-shell-footer">
+            {activeAdventureBanner}
             {isDemoMode ? (
               <div className="demo-feedback-bar">
                 <DemoFeedbackCapture />

@@ -13056,6 +13056,112 @@ select.field-input {
   cursor: pointer;
 }
 
+/* Active adventure — global banner + focused overlay */
+
+.active-adventure-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 240;
+  overflow: hidden;
+}
+
+.active-adventure-banner {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 12px 8px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+  border: 1px solid rgba(234, 88, 12, 0.22);
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+}
+
+.active-adventure-banner-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.active-adventure-banner-kicker {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #c2410c;
+}
+
+.active-adventure-banner-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #1c1917;
+  line-height: 1.25;
+}
+
+.active-adventure-banner-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 2px;
+  font-size: 12px;
+  color: #57534e;
+}
+
+.active-adventure-banner-timer {
+  font-weight: 700;
+  color: #ea580c;
+}
+
+.active-adventure-banner-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.active-adventure-banner-btn {
+  flex: 1;
+  min-height: 36px;
+  padding: 6px 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(28, 25, 23, 0.12);
+  background: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  color: #44403c;
+  cursor: pointer;
+}
+
+.active-adventure-banner-btn--primary {
+  background: #166534;
+  border-color: #166534;
+  color: #fff;
+}
+
+.active-adventure-minimize {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.app-shell--active-adventure .scroll {
+  scroll-padding-bottom: 12px;
+}
+
 /* Feature ownership — six-tab nav, home hero, achievements, flows */
 
 .bnav--six .ni {

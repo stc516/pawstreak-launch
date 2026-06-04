@@ -166,6 +166,7 @@ export interface FavoritePlace {
 
 export type AppMode = 'app' | 'demo'
 export type DemoEntry = 'seeded' | 'onboarding'
+export type ActiveAdventureView = 'minimized' | 'focused'
 
 export type { MapCenter } from '../lib/mapbox'
 
@@ -175,6 +176,8 @@ export interface AppState {
   onboardingComplete: boolean
   activeTab: TabId
   activeAdventure: ActiveAdventure | null
+  /** UI: banner across tabs vs full-screen adventure overlay */
+  activeAdventureView: ActiveAdventureView | null
   selectedActivityId: string
   selectedPlanCategoryId: string
   selectedJourneyFilterId: string
@@ -273,6 +276,7 @@ export const defaultAppState: AppState = {
   onboardingComplete: false,
   activeTab: 'home',
   activeAdventure: null,
+  activeAdventureView: null,
   selectedActivityId: 'beach',
   selectedPlanCategoryId: 'all',
   selectedJourneyFilterId: 'all',
