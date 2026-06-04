@@ -35,7 +35,7 @@ const PLAN_CATEGORY_BY_PLACE: Partial<Record<PlaceCategory, string>> = {
   Beach: 'beach',
   Trail: 'trail',
   Coffee: 'coffee',
-  'Dog park': 'dog-park',
+  'Dog Park': 'dog-park',
   Park: 'park',
   Brewery: 'brewery',
   Gardens: 'gardens',
@@ -77,7 +77,7 @@ const PARK_SLOT: Omit<ChallengeNodeSlotTemplate, 'genericTitle'> = {
 
 const DOG_PARK_SLOT: Omit<ChallengeNodeSlotTemplate, 'genericTitle'> = {
   kind: 'park-explorer',
-  placeCategory: 'Dog park',
+  placeCategory: 'Dog Park',
   genericDescription: 'Log a off-leash or fenced dog park visit.',
   genericPlanHint: 'Activity goal · find a dog park near you',
   unlockHint: 'Complete the previous stop to unlock this dog park visit.',

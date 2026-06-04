@@ -106,7 +106,7 @@ const REAL_ADVENTURE_IDEAS: {
   {
     id: 'park-loop',
     title: 'Local park loop',
-    categories: ['Park', 'Dog park'],
+    categories: ['Park', 'Dog Park'],
     timeSuggestion: 'Wed · 5 PM',
     whyTemplate: 'Shaded paths and sniff stops without a long drive.',
   },
@@ -134,7 +134,7 @@ const REAL_ADVENTURE_IDEAS: {
   {
     id: 'dog-park-play',
     title: 'Dog park play session',
-    categories: ['Dog park'],
+    categories: ['Dog Park'],
     timeSuggestion: 'Thu · 4 PM',
     whyTemplate: 'Off-leash play and quick social hellos close to home.',
   },
@@ -313,7 +313,7 @@ function buildCuratedAdventureCards(
   if (loveIds.includes('trails') || loveIds.includes('sniffing')) categoryBoost.add('Trail')
   if (loveIds.includes('cafes')) categoryBoost.add('Coffee')
   if (loveIds.includes('road-trips')) categoryBoost.add('Road trip')
-  if (loveIds.includes('new-dogs') || loveIds.includes('off-leash')) categoryBoost.add('Dog park')
+  if (loveIds.includes('new-dogs') || loveIds.includes('off-leash')) categoryBoost.add('Dog Park')
   if (loveIds.includes('sniffing')) categoryBoost.add('Park')
 
   const rankedIdeas = [...REAL_ADVENTURE_IDEAS].sort((left, right) => {
@@ -409,7 +409,7 @@ function recommendSpots(
   if (loveIds.includes('trails') || loveIds.includes('sniffing')) categoryPriority.push('Trail')
   if (loveIds.includes('cafes')) categoryPriority.push('Coffee')
   if (loveIds.includes('road-trips')) categoryPriority.push('Road trip')
-  if (loveIds.includes('new-dogs')) categoryPriority.push('Dog park')
+  if (loveIds.includes('new-dogs')) categoryPriority.push('Dog Park')
   if (loveIds.includes('off-leash')) categoryPriority.push('Park')
 
   const spots = PLACES.filter((place) =>

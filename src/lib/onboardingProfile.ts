@@ -78,11 +78,11 @@ const VIBE_ACTIVITY_PRIORITY: Record<string, string[]> = {
 const VIBE_CATEGORY_BOOST: Record<string, PlaceCategory[]> = {
   'Beach Dog': ['Beach'],
   Explorer: ['Trail', 'Park'],
-  'Social Pup': ['Dog park', 'Coffee', 'Brewery'],
+  'Social Pup': ['Dog Park', 'Coffee', 'Brewery'],
   'Slow Sniffer': ['Park', 'Neighborhood', 'Trail'],
   'Cozy Companion': ['Park', 'Neighborhood'],
   'Road Tripper': ['Road trip', 'Trail'],
-  'Cafe Pup': ['Coffee', 'Brewery', 'Dog park'],
+  'Cafe Pup': ['Coffee', 'Brewery', 'Dog Park'],
   'Local Legend': ['Neighborhood', 'Park'],
 }
 
@@ -102,7 +102,7 @@ const CAT_PLACE_CATEGORY: Record<string, PlaceCategory> = {
   trail: 'Trail',
   cafe: 'Coffee',
   brewery: 'Brewery',
-  'dog-park': 'Dog park',
+  'dog-park': 'Dog Park',
   gardens: 'Gardens',
 }
 
