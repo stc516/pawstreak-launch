@@ -133,7 +133,7 @@ export function buildDogsFromOnboarding(inputs: OnboardingDogInput[]): Dog[] {
 }
 
 export function getSpotsReadyLabel(location: LocationProfile): string {
-  if (!location.supported) return 'Suggested Spots for now'
+  if (!location.supported) return 'Generic adventures for now'
   return location.label.includes('Orange County')
     ? 'Suggested Spots in Orange County'
     : 'Suggested Spots in San Diego & OC'
@@ -168,9 +168,10 @@ export function resolveLocationProfile(query: string): LocationProfile {
     zipCode: zipCode,
     label: trimmed || 'Your area',
     supported: false,
-    mapTitle: 'Suggested Spots for now',
+    mapTitle: 'Your adventures, anywhere',
     mapSubtitle:
-      "We're still building your area. You can request it, but here are Suggested Spots for now.",
+      "We don't have curated local spots here yet, but PawStreak still works. " +
+      "We'll build adventures around your area and use this to improve local recommendations.",
     communityLabel: 'Your area',
   }
 }
@@ -313,14 +314,21 @@ export interface RecommendationPrefs {
   locationSupported: boolean
 }
 
+export interface ResolvedOnboardingLocation {
+  profile: LocationProfile
+  resolved: import('./geocode').ResolvedLocation | null
+}
+
 export function applyOnboardingToAppState(
   current: AppState,
   result: OnboardingResult,
+  locatedOverride?: ResolvedOnboardingLocation,
 ): Partial<AppState> {
   const builtDogs = buildDogsFromOnboarding(result.dogs)
   const hasNamedDog = builtDogs.length > 0
   const finalDogs = hasNamedDog ? builtDogs : current.dogs
-  const location = resolveLocationProfile(result.locationQuery)
+  const location =
+    locatedOverride?.profile ?? resolveLocationProfile(result.locationQuery)
   const activityId = recommendActivityId(result.vibeNames, result.categoryIds)
   const curatedPartial = buildCuratedDraftFromOnboarding(
     result.vibeNames,
@@ -340,6 +348,7 @@ export function applyOnboardingToAppState(
     locationQuery: location.query,
     locationLabel: location.label,
     locationSupported: location.supported,
+    resolvedLocation: locatedOverride?.resolved ?? null,
     dogVibeNames: result.vibeNames,
     onboardingCategoryIds: result.categoryIds,
     selectedActivityId: activityId,

@@ -272,6 +272,7 @@ function normalizeAppState(state: AppState, mode: AppMode): AppState {
     locationQuery: rest.locationQuery ?? defaultAppState.locationQuery,
     locationLabel: rest.locationLabel ?? defaultAppState.locationLabel,
     locationSupported: rest.locationSupported ?? defaultAppState.locationSupported,
+    resolvedLocation: rest.resolvedLocation ?? null,
     mapCenter:
       rest.mapCenter ??
       resolveMapCenterForLocation({

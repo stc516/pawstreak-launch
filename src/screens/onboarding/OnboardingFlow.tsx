@@ -789,20 +789,32 @@ export function OnboardingFlow({
               ))}
             </div>
 
-            <div className="label onboarding-nearby-label">
-              <span className="onboarding-nearby-star">✦</span> Nearby spots
-            </div>
-
-            {onboardingPlaces.map((place) => (
-              <div key={place.id} className="place-item">
-                <div className="place-thumb">{place.emoji}</div>
-                <div>
-                  <div className="place-name">{place.name}</div>
-                  <div className="place-meta">{place.meta}</div>
+            {locationProfile.supported ? (
+              <>
+                <div className="label onboarding-nearby-label">
+                  <span className="onboarding-nearby-star">✦</span> Nearby spots
                 </div>
-                <div className="place-arrow">›</div>
+
+                {onboardingPlaces.map((place) => (
+                  <div key={place.id} className="place-item">
+                    <div className="place-thumb">{place.emoji}</div>
+                    <div>
+                      <div className="place-name">{place.name}</div>
+                      <div className="place-meta">{place.meta}</div>
+                    </div>
+                    <div className="place-arrow">›</div>
+                  </div>
+                ))}
+              </>
+            ) : (
+              <div className="onboarding-location-summary detail-card-warm">
+                <div className="onboarding-location-note">
+                  We don&apos;t have curated spots here yet — you&apos;ll get
+                  adventure ideas that work anywhere, and we&apos;ll use your
+                  area to plan where PawStreak grows next.
+                </div>
               </div>
-            ))}
+            )}
 
             <div className="onboarding-spacer-24" />
           </div>
@@ -813,6 +825,7 @@ export function OnboardingFlow({
             <button
               type="button"
               className="btn-primary onboarding-next-flex"
+              disabled={locationQuery.trim().length === 0}
               onClick={() => setStep(6)}
             >
               Create our world
@@ -868,8 +881,9 @@ export function OnboardingFlow({
               </div>
               {!locationProfile.supported ? (
                 <div className="confirm-note">
-                  We&apos;re still building your area. You can request it, but suggested
-                  adventures will show for now.
+                  We don&apos;t have curated spots in your area yet. You&apos;ll
+                  get adventure ideas that work anywhere while we plan our
+                  expansion.
                 </div>
               ) : null}
             </div>
