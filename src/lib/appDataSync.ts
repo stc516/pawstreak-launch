@@ -1,7 +1,11 @@
 import type { AppState } from '../data/demo'
 import { defaultAppState } from '../data/demo'
 import type { OnboardingResult } from './onboardingProfile'
-import { resolveLocationProfile, buildDogsFromOnboarding } from './onboardingProfile'
+import {
+  resolveLocationProfile,
+  buildDogsFromOnboarding,
+  type LocationProfile,
+} from './onboardingProfile'
 import { resolveMapCenterForLocation } from './mapbox'
 import { createDogsForUser, fetchDogsForUser, getActiveDog, updateDogPhotoPath, uploadDogPhoto } from './db/dogs'
 import { fetchMemoriesForUser, countDistinctPlaces } from './db/memories'
@@ -97,8 +101,9 @@ export async function persistOnboardingToSupabase(
   userId: string,
   email: string | undefined,
   result: OnboardingResult,
+  locationOverride?: LocationProfile,
 ) {
-  const location = resolveLocationProfile(result.locationQuery)
+  const location = locationOverride ?? resolveLocationProfile(result.locationQuery)
   await upsertProfileFromOnboarding(userId, email, result, {
     zipCode: location.zipCode,
     locationQuery: location.query,

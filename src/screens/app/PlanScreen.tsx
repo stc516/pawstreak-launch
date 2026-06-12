@@ -13,6 +13,7 @@ import {
   type PlanProximityBucket,
 } from '../../lib/planDiscovery'
 import { getRoadTripDriveTime, openRoadTripDirections } from '../../lib/roadTrip'
+import { GENERIC_ADVENTURE_TYPES } from '../../lib/genericAdventures'
 
 interface PlanScreenProps {
   state: AppState
@@ -22,6 +23,7 @@ interface PlanScreenProps {
   onApplyLocation: () => void
   onStartAdventure: (placeId: string, durationLabel?: string) => void
   onStartNeighborhoodWalk?: () => void
+  onOpenAddAdventure?: () => void
   onOpenBuildMyMonth: () => void
   onGenerateRandomPlan: () => void
   onOpenPresetPlan: () => void
@@ -37,19 +39,24 @@ export function PlanScreen({
   onApplyLocation,
   onStartAdventure,
   onStartNeighborhoodWalk,
+  onOpenAddAdventure,
   onOpenBuildMyMonth,
 }: PlanScreenProps) {
   const prefs = getRecommendationPrefs(state)
   const [proximityBucket, setProximityBucket] = useState<PlanProximityBucket>('15min')
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null)
   const placeCardRefs = useRef<Record<string, HTMLDivElement | null>>({})
+  const locationSupported = state.locationSupported
   const places = useMemo(
     () => getPlanNearbyPlaces(state.selectedPlanCategoryId, proximityBucket, prefs),
     [state.selectedPlanCategoryId, proximityBucket, prefs],
   )
   const mapPlaces = useMemo(
-    () => places.filter((place) => place.lat != null && place.lng != null),
-    [places],
+    () =>
+      locationSupported
+        ? places.filter((place) => place.lat != null && place.lng != null)
+        : [],
+    [places, locationSupported],
   )
   const suggestedPicks = useMemo(() => getMapPreviewPlaces(prefs), [prefs])
   const dogLabel = getDisplayDogLabel(state)
@@ -101,10 +108,45 @@ export function PlanScreen({
         onApplyLocation={onApplyLocation}
       />
 
-      {!state.locationSupported ? (
-        <div className="plan-area-fallback detail-card-warm">{state.mapRegion.subtitle}</div>
-      ) : null}
+      {!locationSupported ? (
+        <>
+          <div className="plan-area-fallback detail-card-warm" data-testid="plan-area-fallback">
+            {state.mapRegion.subtitle}
+          </div>
 
+          <div className="sec plan-suggested-sec">Adventure ideas</div>
+          <p className="plan-suggested-lead">
+            Pick an adventure type and make it yours with {dogLabel}.
+          </p>
+          <div className="plan-card-list" data-testid="plan-generic-adventures">
+            {GENERIC_ADVENTURE_TYPES.map((type) => (
+              <div key={type.id} className="pcard pcard--compact">
+                <div className="plan-generic-emoji" aria-hidden="true">
+                  {type.emoji}
+                </div>
+                <div className="pinfo">
+                  <div className="pname">{type.label}</div>
+                  <div className="pmeta">{type.prompt}</div>
+                </div>
+                <button
+                  type="button"
+                  className="pgo tap-target"
+                  onClick={() => {
+                    if (type.action === 'quick-walk') {
+                      onStartNeighborhoodWalk?.()
+                      return
+                    }
+                    onOpenAddAdventure?.()
+                  }}
+                >
+                  Go
+                </button>
+              </div>
+            ))}
+          </div>
+        </>
+      ) : (
+        <>
       <div className="sec plan-suggested-sec">Suggested Spots</div>
       <p className="plan-suggested-lead">Real outings for {dogLabel} this week.</p>
       <div className="plan-suggested-strip">
@@ -221,6 +263,8 @@ export function PlanScreen({
           )
         })}
       </div>
+        </>
+      )}
 
       {state.favoritePlaces.length > 0 ? (
         <>

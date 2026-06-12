@@ -24,6 +24,7 @@ import {
 } from '../../lib/monthlyPlan'
 import { getCurrentTrainingSession } from '../../lib/trainingSchedule'
 import { getTrainingProgramById } from '../../data/training'
+import { GENERIC_ADVENTURE_TYPES } from '../../lib/genericAdventures'
 
 interface HomeScreenProps {
   state: AppState
@@ -125,8 +126,9 @@ export function HomeScreen({
       </header>
 
       {!state.locationSupported ? (
-        <div className="home-area-fallback st-card st-card--elevated">
-          We&apos;re still building your area. Suggested Spots are ready below.
+        <div className="home-area-fallback st-card st-card--elevated" data-testid="home-area-fallback">
+          We don&apos;t have curated local spots in {state.locationLabel} yet, but
+          PawStreak still works — start a walk or add your own adventures below.
         </div>
       ) : null}
 
@@ -181,28 +183,57 @@ export function HomeScreen({
         </button>
       </section>
 
-      <section className="home-quick-adventure detail-card-warm" aria-label="Quick Adventure">
-        <div className="home-quick-adventure-media">
-          <CardImage
-            className="home-quick-adventure-photo"
-            imageUrl={heroImageUrl}
-            imageAlt={heroPlace.imageAlt ?? heroPlace.name}
-            imageTone={heroPlace.imageTone ?? 'warm'}
-          />
-        </div>
-        <div className="home-quick-adventure-body">
-          <div className="home-quick-adventure-kicker">{heroEyebrow}</div>
-          <h3 className="home-quick-adventure-title">{heroPlace.name}</h3>
-          <p className="home-quick-adventure-copy">{getHeroFitLine(heroPlace, profileDogs)}</p>
-          <button
-            type="button"
-            className="st-btn st-btn--primary tap-target"
-            onClick={handleQuickAdventure}
-          >
-            Quick Adventure
-          </button>
-        </div>
-      </section>
+      {state.locationSupported ? (
+        <section className="home-quick-adventure detail-card-warm" aria-label="Quick Adventure">
+          <div className="home-quick-adventure-media">
+            <CardImage
+              className="home-quick-adventure-photo"
+              imageUrl={heroImageUrl}
+              imageAlt={heroPlace.imageAlt ?? heroPlace.name}
+              imageTone={heroPlace.imageTone ?? 'warm'}
+            />
+          </div>
+          <div className="home-quick-adventure-body">
+            <div className="home-quick-adventure-kicker">{heroEyebrow}</div>
+            <h3 className="home-quick-adventure-title">{heroPlace.name}</h3>
+            <p className="home-quick-adventure-copy">{getHeroFitLine(heroPlace, profileDogs)}</p>
+            <button
+              type="button"
+              className="st-btn st-btn--primary tap-target"
+              onClick={handleQuickAdventure}
+            >
+              Quick Adventure
+            </button>
+          </div>
+        </section>
+      ) : (
+        <section
+          className="home-generic-adventures detail-card-warm"
+          aria-label="Adventure ideas"
+          data-testid="home-generic-adventures"
+        >
+          <div className="st-section-head">
+            <h2 className="st-headline-md">Adventure ideas</h2>
+          </div>
+          <div className="home-generic-adventure-grid">
+            {GENERIC_ADVENTURE_TYPES.slice(0, 6).map((type) => (
+              <button
+                key={type.id}
+                type="button"
+                className="home-generic-adventure-chip tap-target"
+                onClick={
+                  type.action === 'quick-walk'
+                    ? onStartNeighborhoodWalk
+                    : onOpenAddAdventure
+                }
+              >
+                <span aria-hidden="true">{type.emoji}</span>
+                <span className="home-generic-adventure-chip-label">{type.label}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="home-action-card" aria-label="Training Program">
         <button
@@ -292,7 +323,7 @@ export function HomeScreen({
         </section>
       ) : null}
 
-      {suggestedPlaces.length > 0 ? (
+      {state.locationSupported && suggestedPlaces.length > 0 ? (
         <section className="home-suggested-spots" aria-label="Suggested Spots">
           <div className="st-section-head">
             <h2 className="st-headline-md">Suggested Spots</h2>

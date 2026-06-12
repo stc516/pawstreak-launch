@@ -104,7 +104,9 @@ import {
 } from './lib/trainingSchedule'
 import { generateRandomPlan } from './lib/randomPlan'
 import type { OnboardingResult } from './lib/onboardingProfile'
-import { applyOnboardingToAppState, resolveLocationProfile } from './lib/onboardingProfile'
+import { applyOnboardingToAppState } from './lib/onboardingProfile'
+import { resolveLocationProfileGeocoded } from './lib/geocode'
+import { recordLocationExpansionRequest } from './lib/db/expansionRequests'
 import { resolveMapCenterForLocation } from './lib/mapbox'
 import {
   accessDescriptionFor,
@@ -272,9 +274,10 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     setState((current) => ({ ...current, zipCode }))
   }
 
-  const applyLocationFromZip = () => {
+  const applyLocationFromZip = async () => {
     const query = state.zipCode.trim() || state.locationQuery
-    const location = resolveLocationProfile(query)
+    const located = await resolveLocationProfileGeocoded(query)
+    const location = located.profile
 
     setState((current) =>
       applyRealUserContent({
@@ -283,6 +286,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         locationQuery: location.query,
         locationLabel: location.label,
         locationSupported: location.supported,
+        resolvedLocation: located.resolved,
         mapRegion: {
           title: location.mapTitle,
           subtitle: location.mapSubtitle,
@@ -301,6 +305,16 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         locationQuery: location.query,
         locationLabel: location.label,
         locationSupported: location.supported,
+      })
+    }
+
+    if (!location.supported) {
+      void recordLocationExpansionRequest({
+        userId: useProductionBackend ? auth.user?.id : null,
+        dogId: state.activeDogId ?? null,
+        rawLocationInput: query,
+        resolved: located.resolved,
+        source: 'profile',
       })
     }
   }
@@ -1270,8 +1284,27 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       return
     }
 
+    // Geocode-first resolution; falls back to pattern matching when
+    // Mapbox is unavailable so onboarding is never blocked.
+    const located = await resolveLocationProfileGeocoded(result.locationQuery)
+
+    if (!located.profile.supported) {
+      void recordLocationExpansionRequest({
+        userId: useProductionBackend ? auth.user?.id : null,
+        dogId: null,
+        rawLocationInput: result.locationQuery,
+        resolved: located.resolved,
+        source: 'onboarding',
+      })
+    }
+
     if (useProductionBackend && auth.user) {
-      await persistOnboardingToSupabase(auth.user.id, auth.user.email, result)
+      await persistOnboardingToSupabase(
+        auth.user.id,
+        auth.user.email,
+        result,
+        located.profile,
+      )
       await insertEarlyAccessSignup({
         email: auth.user.email ?? '',
         name: result.userName,
@@ -1283,7 +1316,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       await trackUserEvent('early_access_joined', { source: 'onboarding' }, auth.user.id)
 
       const hydrated = await hydrateProductionState(auth.user.id, state)
-      const onboardingPatch = applyOnboardingToAppState(state, result)
+      const onboardingPatch = applyOnboardingToAppState(state, result, located)
       setState((current) => ({
         ...current,
         ...hydrated,
@@ -1311,7 +1344,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     setState((current) => {
       const nextState: AppState = {
         ...current,
-        ...applyOnboardingToAppState(current, result),
+        ...applyOnboardingToAppState(current, result, located),
         demoEntry: appMode === 'demo' ? 'onboarding' : current.demoEntry,
         mode: appMode,
       }
@@ -1830,6 +1863,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onApplyLocation={applyLocationFromZip}
             onStartAdventure={startAdventure}
             onStartNeighborhoodWalk={startNeighborhoodWalk}
+            onOpenAddAdventure={openAddAdventureFlow}
             onOpenBuildMyMonth={openBuildMyMonthFlow}
             onGenerateRandomPlan={generateRandomPlanForDogs}
             onOpenPresetPlan={openPresetPlanOverlay}

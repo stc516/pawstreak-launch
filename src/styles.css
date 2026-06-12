@@ -8397,6 +8397,53 @@ select.field-input {
   margin-bottom: 14px;
 }
 
+.home-generic-adventures {
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.home-generic-adventure-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.home-generic-adventure-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border, rgba(0, 0, 0, 0.08));
+  border-radius: 14px;
+  background: var(--color-surface, #fff);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary, #2b2b2b);
+  cursor: pointer;
+  text-align: left;
+}
+
+.home-generic-adventure-chip span[aria-hidden='true'] {
+  font-size: 20px;
+}
+
+.home-generic-adventure-chip-label {
+  flex: 1;
+}
+
+.plan-generic-emoji {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  background: var(--color-surface-muted, rgba(0, 0, 0, 0.05));
+  flex-shrink: 0;
+}
+
 .confirm-note {
   margin-top: 10px;
   font-size: 12px;

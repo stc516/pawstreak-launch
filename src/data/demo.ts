@@ -256,6 +256,7 @@ export interface AppState {
   locationQuery: string
   locationLabel: string
   locationSupported: boolean
+  resolvedLocation: import('../lib/geocode').ResolvedLocation | null
   userName: string
   dogVibeNames: string[]
   onboardingCategoryIds: string[]
@@ -359,6 +360,7 @@ export const defaultAppState: AppState = {
   locationQuery: '',
   locationLabel: 'San Diego, CA',
   locationSupported: true,
+  resolvedLocation: null,
   userName: '',
   dogVibeNames: [],
   onboardingCategoryIds: [],
@@ -651,6 +653,7 @@ export function createDemoOnboardingState(): AppState {
     locationQuery: '',
     locationLabel: 'San Diego, CA',
     locationSupported: true,
+    resolvedLocation: null,
   }
 }
 
