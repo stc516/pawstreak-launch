@@ -7,6 +7,7 @@ import {
   type TrainingProgramDraft,
 } from '../../lib/trainingSchedule'
 import { StatusBar } from '../../components/StatusBar'
+import { StaggeredProgressPath } from '../../components/StaggeredProgressPath'
 
 interface TrainingProgramFlowProps {
   state: AppState
@@ -103,17 +104,20 @@ export function TrainingProgramFlow({
           {step === 3 && schedule ? (
             <section className="training-flow-step">
               <div className="sec">Your schedule</div>
-              <div className="build-month-result detail-card-warm">
-                {schedule.sessions.map((session) => (
-                  <div key={`${session.dayLabel}-${session.lessonId}`} className="build-month-week-row">
-                    <div className="build-month-week-label">{session.dayLabel}</div>
-                    <div className="build-month-week-place">{session.lessonTitle}</div>
-                    <div className="build-month-week-meta">
-                      {session.completed ? 'Completed' : 'Up next'}
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <StaggeredProgressPath
+                title="Training session path"
+                subtitle="A focused plan that turns practice into a repeatable weekly rhythm."
+                countLabel={`0/${schedule.sessions.length}`}
+                className="training-session-path"
+                items={schedule.sessions.map((session, index) => ({
+                  id: `${session.dayLabel}-${session.lessonId}`,
+                  eyebrow: session.dayLabel,
+                  title: session.lessonTitle,
+                  meta: session.completed ? 'Completed' : index === 0 ? 'Up next' : 'Planned session',
+                  detail: 'Ties into reminders, outings, and earned training progress.',
+                  state: session.completed ? 'complete' : index === 0 ? 'current' : 'locked',
+                }))}
+              />
               <button
                 type="button"
                 className="st-btn st-btn--primary tap-target build-month-start-first"

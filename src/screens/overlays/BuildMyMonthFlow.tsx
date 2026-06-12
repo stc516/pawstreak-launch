@@ -8,6 +8,9 @@ import {
   type MonthlyPlanResult,
 } from '../../lib/monthlyPlan'
 import { StatusBar } from '../../components/StatusBar'
+import { StaggeredProgressPath } from '../../components/StaggeredProgressPath'
+import { getPlaceById } from '../../data/places'
+import { getAdventureDisplayImageUrl } from '../../lib/adventureDisplayImage'
 
 interface BuildMyMonthFlowProps {
   state: AppState
@@ -140,17 +143,30 @@ export function BuildMyMonthFlow({
           {step === 4 && result ? (
             <section className="build-month-step">
               <div className="sec">Your month</div>
-              <div className="build-month-result detail-card-warm">
-                {result.weeks.map((week) => (
-                  <div key={week.weekIndex} className="build-month-week-row">
-                    <div className="build-month-week-label">{week.label}</div>
-                    <div className="build-month-week-place">{week.placeName}</div>
-                    <div className="build-month-week-meta">
-                      {week.category} · best time and reminders path included
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <StaggeredProgressPath
+                title="Planned outing path"
+                subtitle="Future outings with timing, place details, and progress tie-ins."
+                countLabel={`0/${result.weeks.length}`}
+                className="build-month-path"
+                items={result.weeks.map((week, index) => {
+                  const place = getPlaceById(week.placeId)
+
+                  return {
+                    id: `${week.weekIndex}-${week.placeId}`,
+                    eyebrow: week.label,
+                    title: week.placeName,
+                    meta: `${week.timingLabel} · ${week.category}`,
+                    detail: [
+                      week.addressLabel ? `Address: ${week.addressLabel}` : null,
+                      `Best time: ${week.bestTime}`,
+                      `Helps with: ${week.tieInLabel}`,
+                    ].filter(Boolean).join(' · '),
+                    imageUrl: place ? getAdventureDisplayImageUrl([], place) : undefined,
+                    imageAlt: place?.imageAlt ?? week.placeName,
+                    state: index === 0 ? 'current' : 'locked',
+                  }
+                })}
+              />
               <div className="build-month-result detail-card-warm">
                 Potential unlocks: First Adventure, Explorer, Week Streak, and matching challenges.
               </div>

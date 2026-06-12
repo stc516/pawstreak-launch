@@ -165,6 +165,23 @@ async function main() {
       !text.includes('Holiday Adventure Challenge'),
     '10 requested challenge titles present, holiday absent',
   )
+  await page.getByRole('button', { name: 'Preview', exact: true }).first().click()
+  await page.waitForTimeout(700)
+  const challengePathNodes = await page.locator('.challenge-path .challenge-node').count()
+  const challengeLeftNodes = await page.locator('.challenge-node-row--left').count()
+  const challengeRightNodes = await page.locator('.challenge-node-row--right').count()
+  text = await bodyText(page)
+  const lowerChallengeDetailText = text.toLowerCase()
+  check(
+    'challenge-detail-staggered-path',
+    lowerChallengeDetailText.includes('challenge path') &&
+      challengePathNodes >= 4 &&
+      challengeLeftNodes > 0 &&
+      challengeRightNodes > 0,
+    `nodes=${challengePathNodes} left=${challengeLeftNodes} right=${challengeRightNodes}`,
+  )
+  await page.getByRole('button', { name: /Back/i }).click()
+  await page.waitForTimeout(500)
 
   await applyLocationViaSettings(page, 'Forest Hills, NY')
   await goTab(page, 'Challenges')
@@ -180,11 +197,15 @@ async function main() {
 
   await goTab(page, 'Journey')
   text = await bodyText(page)
+  const journeyMemoryNodes = await page.locator('.journey-memory-node').count()
+  const journeyCurrentNodes = await page.locator('.journey-story-node--current, .journey-story-node--locked').count()
   check(
     'journey-monthly-memory-framing',
     text.includes('This Month With') &&
+      journeyMemoryNodes > 0 &&
+      journeyCurrentNodes === 0 &&
       !/life story|chapter \\d|chapters saved|your dog.s story/i.test(text),
-    'monthly wording present, chapter/life-story absent',
+    `memoryNodes=${journeyMemoryNodes} futureNodes=${journeyCurrentNodes}`,
   )
 
   await applyLocationViaSettings(page, '92123')
@@ -206,6 +227,43 @@ async function main() {
       lowerBuildMonthText.includes('trail') &&
       lowerBuildMonthText.includes('dog park'),
     'category selection visible',
+  )
+  await page.getByRole('button', { name: /Beach/i }).click()
+  await page.getByRole('button', { name: /Trail/i }).click()
+  await page.getByRole('button', { name: /Dog park/i }).click()
+  await page.getByRole('button', { name: 'Continue', exact: true }).click()
+  await page.getByRole('button', { name: /1 adventure per week/i }).click()
+  await page.getByRole('button', { name: 'Continue', exact: true }).click()
+  await page.getByRole('button', { name: 'Weekends', exact: true }).click()
+  await page.getByRole('button', { name: 'Continue', exact: true }).click()
+  await page.waitForTimeout(500)
+  const plannedPathNodes = await page.locator('.build-month-path .staggered-path-row').count()
+  text = await bodyText(page)
+  check(
+    'build-my-month-planned-outing-path',
+    plannedPathNodes >= 4 &&
+      text.includes('Planned outing path') &&
+      text.includes('Best time:') &&
+      text.includes('Helps with:'),
+    `plannedNodes=${plannedPathNodes}`,
+  )
+  await page.getByRole('button', { name: /Back/i }).click()
+  await page.waitForTimeout(500)
+
+  await goTab(page, 'Plan')
+  await page.getByText('Training Goal Plan').click()
+  await page.waitForTimeout(500)
+  await page.locator('.training-flow-program').first().click()
+  await page.getByRole('button', { name: 'Continue', exact: true }).click()
+  await page.getByRole('button', { name: 'Daily', exact: true }).click()
+  await page.getByRole('button', { name: 'Continue', exact: true }).click()
+  await page.waitForTimeout(500)
+  const trainingPathNodes = await page.locator('.training-session-path .staggered-path-row').count()
+  text = await bodyText(page)
+  check(
+    'training-goal-session-path',
+    trainingPathNodes >= 3 && text.includes('Training session path'),
+    `trainingNodes=${trainingPathNodes}`,
   )
   await page.getByRole('button', { name: /Back/i }).click()
   await page.waitForTimeout(500)

@@ -17,6 +17,10 @@ export interface MonthlyPlanWeek {
   placeId: string
   placeName: string
   category: string
+  timingLabel: string
+  bestTime: string
+  addressLabel?: string
+  tieInLabel: string
 }
 
 export interface MonthlyPlanDraft {
@@ -72,6 +76,12 @@ export const MONTHLY_PLAN_DAY_OPTIONS: {
   { id: 'weekends', label: 'Weekends' },
   { id: 'both', label: 'Both' },
 ]
+
+const DAY_TIMING_LABELS: Record<MonthlyPlanDayPreference, string[]> = {
+  weekdays: ['Tuesday morning', 'Thursday after work', 'Wednesday lunch walk', 'Friday sunset'],
+  weekends: ['Saturday morning', 'Sunday sunset', 'Saturday afternoon', 'Sunday coffee walk'],
+  both: ['Tuesday after work', 'Saturday morning', 'Thursday sunset', 'Sunday afternoon'],
+}
 
 const VIBE_CATEGORY_MAP: Record<MonthlyPlanVibeId, string[]> = {
   surprise: ['Beach', 'Trail', 'Dog Park', 'Park', 'Coffee'],
@@ -147,12 +157,17 @@ export function generateMonthlyPlanResult(draft: MonthlyPlanDraft): MonthlyPlanR
   const vibeId = draft.vibeId ?? 'mixed'
   const weekCount = draft.frequencyPerWeek * 4
   const places = pickPlacesForVibe(vibeId, weekCount, draft.categoryIds)
+  const timingLabels = DAY_TIMING_LABELS[draft.dayPreference]
   const weeks: MonthlyPlanWeek[] = places.map((place, index) => ({
     weekIndex: index + 1,
-    label: `Week ${index + 1}`,
+    label: `Outing ${index + 1}`,
     placeId: place.id,
     placeName: place.name.split(',')[0]?.trim() ?? place.name,
     category: place.category,
+    timingLabel: timingLabels[index % timingLabels.length],
+    bestTime: place.bestTime,
+    addressLabel: place.addressLabel ?? place.directionsDestination ?? place.city,
+    tieInLabel: `${place.category} progress · Explorer and matching challenges`,
   }))
 
   const nextPlaceId = weeks[0]?.placeId ?? places[0]?.id ?? 'dog-beach-ob'

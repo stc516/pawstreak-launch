@@ -10,6 +10,7 @@ import { normalizePhotoSlots } from '../lib/imageUtils'
 import { resolveActiveAdventureView } from './activeAdventureSession'
 import {
   CUSTOM_ADVENTURE_PLACE_ID,
+  getPlaceById,
   isNeighborhoodWalkPlace,
   resolvePlaceFromAdventure,
 } from '../data/places'
@@ -19,7 +20,7 @@ import {
   isCustomAdventurePlace,
 } from './customAdventure'
 import { EMPTY_CURATED_PLAN_DRAFT, type LegacyCuratedPlanDraft } from '../lib/curatedPlan'
-import { EMPTY_MONTHLY_PLAN_DRAFT } from '../lib/monthlyPlan'
+import { EMPTY_MONTHLY_PLAN_DRAFT, type MonthlyPlanResult } from '../lib/monthlyPlan'
 import { EMPTY_TRAINING_PROGRAM_DRAFT } from '../lib/trainingSchedule'
 import { DEFAULT_PACK_ACCESS_MEMBERS } from '../data/packAccess'
 import { isDefaultDemoDogs } from './dogLabels'
@@ -207,6 +208,34 @@ function normalizeCommunityLive(
   }
 }
 
+function normalizeMonthlyPlanResult(
+  result: MonthlyPlanResult | null | undefined,
+): MonthlyPlanResult | null {
+  if (!result) return null
+
+  return {
+    ...result,
+    weeks: result.weeks.map((week, index) => {
+      const place = getPlaceById(week.placeId)
+
+      return {
+        ...week,
+        label: week.label ?? `Outing ${index + 1}`,
+        timingLabel: week.timingLabel ?? `Outing ${index + 1}`,
+        bestTime: week.bestTime ?? place?.bestTime ?? 'Anytime',
+        addressLabel:
+          week.addressLabel ??
+          place?.addressLabel ??
+          place?.directionsDestination ??
+          place?.city,
+        tieInLabel:
+          week.tieInLabel ??
+          `${week.category} progress · Explorer and matching challenges`,
+      }
+    }),
+  }
+}
+
 /** Reset navigation UI on cold start — always land on Home after splash. */
 export function applyLaunchSessionState(state: AppState): AppState {
   return {
@@ -255,7 +284,7 @@ function normalizeAppState(state: AppState, mode: AppMode): AppState {
         ? rest.buildMyMonthDraft.categoryIds
         : [],
     },
-    monthlyPlanResult: rest.monthlyPlanResult ?? null,
+    monthlyPlanResult: normalizeMonthlyPlanResult(rest.monthlyPlanResult),
     trainingProgramFlowStep: rest.trainingProgramFlowStep ?? 0,
     trainingProgramDraft: rest.trainingProgramDraft ?? EMPTY_TRAINING_PROGRAM_DRAFT,
     activeTrainingSchedule: rest.activeTrainingSchedule ?? null,

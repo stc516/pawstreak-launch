@@ -99,36 +99,25 @@ export function ChallengePathDetailView({
         </div>
       </div>
 
-      {progress.joined ? (
-        <>
-          <ChallengePathExperience
-            challenge={challenge}
-            state={state}
-            onStartAdventure={onStartAdventure}
-            onStartNeighborhoodWalk={onStartNeighborhoodWalk}
-            onGoToPlan={onGoToPlan}
-            onOpenMemory={onOpenMemory}
-          />
+      <ChallengePathExperience
+        challenge={challenge}
+        state={state}
+        onStartAdventure={onStartAdventure}
+        onStartNeighborhoodWalk={onStartNeighborhoodWalk}
+        onGoToPlan={onGoToPlan}
+        onOpenMemory={onOpenMemory}
+      />
 
-          <section className="challenge-leaderboard detail-card-warm">
-            <div className="challenge-leaderboard-head">
-              <h2 className="challenge-leaderboard-title">Leaderboard</h2>
-            </div>
-            <p className="challenge-leaderboard-empty">
-              No leaderboard yet. Yours will fill in when more packs join this challenge.
-            </p>
-          </section>
-        </>
-      ) : (
-        <div className="challenge-path-detail-preview detail-card-warm">
-          <p>Join to start tracking progress on this challenge path.</p>
-          <ul className="challenge-path-detail-milestones">
-            {resolved.nodes.map((node) => (
-              <li key={node.id}>{node.title}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+      {progress.joined ? (
+        <section className="challenge-leaderboard detail-card-warm">
+          <div className="challenge-leaderboard-head">
+            <h2 className="challenge-leaderboard-title">Leaderboard</h2>
+          </div>
+          <p className="challenge-leaderboard-empty">
+            No leaderboard yet. Yours will fill in when more packs join this challenge.
+          </p>
+        </section>
+      ) : null}
     </>
   )
 }
