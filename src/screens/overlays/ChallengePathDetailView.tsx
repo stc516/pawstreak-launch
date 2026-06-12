@@ -60,6 +60,21 @@ export function ChallengePathDetailView({
           ) : null}
         </div>
 
+        <div className="challenge-path-detail-meta challenge-path-detail-meta--stack">
+          <div className="challenge-path-detail-meta-item">
+            <span className="challenge-path-detail-meta-label">Goal</span>
+            <span>{resolved.goal}</span>
+          </div>
+          <div className="challenge-path-detail-meta-item">
+            <span className="challenge-path-detail-meta-label">What counts</span>
+            <span>{resolved.whatCounts}</span>
+          </div>
+          <div className="challenge-path-detail-meta-item">
+            <span className="challenge-path-detail-meta-label">Reward connection</span>
+            <span>{resolved.rewardConnection}</span>
+          </div>
+        </div>
+
         <div className="challenge-path-detail-actions">
           {progress.joined ? (
             <>
@@ -78,7 +93,7 @@ export function ChallengePathDetailView({
               className="challenge-path-detail-join tap-target"
               onClick={() => onJoinChallenge(challenge.id)}
             >
-              Join challenge
+              {resolved.actionCta}
             </button>
           )}
         </div>

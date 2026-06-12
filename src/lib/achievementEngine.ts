@@ -8,9 +8,8 @@ import {
   type AchievementProgress,
   type AchievementStatus,
 } from '../data/achievements'
-import { NEIGHBORHOOD_WALK_PLACE_ID, getPlaceById } from '../data/places'
+import { getPlaceById } from '../data/places'
 import { DEMO_SEEDED_JOURNEY_ENTRY_IDS } from './productionState'
-import { DEMO_EARNED_ACHIEVEMENT_IDS } from './productionState'
 
 type MetricMatch = {
   entry: JourneyEntry
@@ -43,12 +42,9 @@ function formatUnlockLabel(unlockedAt: string): string {
 }
 
 function getAchievementEntries(state: AppState): JourneyEntry[] {
-  const entries =
-    state.mode === 'demo'
-      ? state.journeyEntries
-      : state.journeyEntries.filter(
-          (entry) => !DEMO_SEEDED_JOURNEY_ENTRY_IDS.has(entry.id),
-        )
+  const entries = state.journeyEntries.filter(
+    (entry) => !DEMO_SEEDED_JOURNEY_ENTRY_IDS.has(entry.id),
+  )
 
   return [...entries].sort(
     (left, right) => parseEntryTimestamp(left) - parseEntryTimestamp(right),
@@ -65,37 +61,6 @@ function isTrailEntry(entry: JourneyEntry): boolean {
   if (!entry.placeId) return entry.tags.some((tag) => tag.toLowerCase().includes('trail'))
   const place = getPlaceById(entry.placeId)
   return place?.category === 'Trail'
-}
-
-function isSnowEntry(entry: JourneyEntry): boolean {
-  if (!entry.placeId) {
-    return entry.tags.some((tag) => /snow|winter|mountain/i.test(tag))
-  }
-
-  const place = getPlaceById(entry.placeId)
-  if (!place) return false
-
-  return (
-    place.region === 'Julian / Mountain' ||
-    place.tags.some((tag) => /snow|winter/i.test(tag)) ||
-    (place.category === 'Trail' && place.imageTone === 'mountain')
-  )
-}
-
-function isNeighborhoodEntry(entry: JourneyEntry): boolean {
-  if (entry.placeId === NEIGHBORHOOD_WALK_PLACE_ID) return true
-  if (!entry.placeId) {
-    return entry.tags.some((tag) => tag.toLowerCase().includes('neighborhood'))
-  }
-
-  const place = getPlaceById(entry.placeId)
-  return place?.category === 'Neighborhood'
-}
-
-function isCoffeeEntry(entry: JourneyEntry): boolean {
-  if (!entry.placeId) return entry.tags.some((tag) => tag.toLowerCase().includes('coffee'))
-  const place = getPlaceById(entry.placeId)
-  return place?.category === 'Coffee' || place?.category === 'Brewery'
 }
 
 function isSocialEntry(entry: JourneyEntry): boolean {
@@ -120,6 +85,35 @@ function hasPhoto(entry: JourneyEntry): boolean {
   return Boolean(entry.photoUrls?.some(Boolean))
 }
 
+function isRoadTripEntry(entry: JourneyEntry): boolean {
+  if (!entry.placeId) return entry.tags.some((tag) => /road|trip|day trip/i.test(tag))
+  const place = getPlaceById(entry.placeId)
+  return place?.category === 'Road trip' || place?.region === 'Julian / Mountain'
+}
+
+function countWeekStreakMatches(entries: JourneyEntry[]): MetricMatch[] {
+  const matches = entries.map((entry) => ({ entry, at: parseEntryTimestamp(entry) }))
+  for (let index = 0; index < matches.length; index += 1) {
+    const start = matches[index]!.at
+    const window = matches.filter((match) => match.at >= start && match.at <= start + 6 * 86_400_000)
+    if (window.length >= 3) return window.slice(0, 3)
+  }
+  return matches.slice(0, Math.min(matches.length, 2))
+}
+
+function distinctPlaceTypeMatches(entries: JourneyEntry[]): MetricMatch[] {
+  const seen = new Set<string>()
+  const matches: MetricMatch[] = []
+  for (const entry of entries) {
+    const place = entry.placeId ? getPlaceById(entry.placeId) : undefined
+    const category = place?.category ?? entry.tags[0] ?? 'Adventure'
+    if (seen.has(category)) continue
+    seen.add(category)
+    matches.push({ entry, at: parseEntryTimestamp(entry) })
+  }
+  return matches
+}
+
 function matchMetric(
   definition: AchievementDefinition,
   state: AppState,
@@ -128,52 +122,42 @@ function matchMetric(
   const { kind } = definition.metric
 
   switch (kind) {
+    case 'first_adventure':
+      return entries.slice(0, 1).map((entry) => ({
+        entry,
+        at: parseEntryTimestamp(entry),
+      }))
+    case 'first_memory':
+      return entries.filter(hasPhoto).slice(0, 1).map((entry) => ({
+        entry,
+        at: parseEntryTimestamp(entry),
+      }))
+    case 'week_streak':
+      return countWeekStreakMatches(entries)
+    case 'place_types':
+      return distinctPlaceTypeMatches(entries)
     case 'beach_visits':
       return entries.filter(isBeachEntry).map((entry) => ({
         entry,
         at: parseEntryTimestamp(entry),
       }))
-    case 'beach_distinct': {
-      const seen = new Set<string>()
-      return entries
-        .filter(isBeachEntry)
-        .filter((entry) => {
-          const key = entry.placeId ?? entry.place
-          if (seen.has(key)) return false
-          seen.add(key)
-          return true
-        })
-        .map((entry) => ({ entry, at: parseEntryTimestamp(entry) }))
-    }
     case 'trail_visits':
       return entries.filter(isTrailEntry).map((entry) => ({
         entry,
         at: parseEntryTimestamp(entry),
       }))
-    case 'trail_distinct': {
-      const seen = new Set<string>()
-      return entries
-        .filter(isTrailEntry)
-        .filter((entry) => {
-          const key = entry.placeId ?? entry.place
-          if (seen.has(key)) return false
-          seen.add(key)
-          return true
-        })
-        .map((entry) => ({ entry, at: parseEntryTimestamp(entry) }))
-    }
-    case 'snow_visits':
-      return entries.filter(isSnowEntry).map((entry) => ({
-        entry,
-        at: parseEntryTimestamp(entry),
+    case 'training_sessions':
+      return state.trainingLessonCompletions.slice(0, definition.metric.target).map((completion) => ({
+        entry: {
+          id: completion.lessonId,
+          place: 'Training session',
+          date: completion.completedAt,
+          tags: ['Training'],
+        },
+        at: Date.parse(completion.completedAt),
       }))
-    case 'neighborhood_walks':
-      return entries.filter(isNeighborhoodEntry).map((entry) => ({
-        entry,
-        at: parseEntryTimestamp(entry),
-      }))
-    case 'coffee_visits':
-      return entries.filter(isCoffeeEntry).map((entry) => ({
+    case 'road_trip_adventures':
+      return entries.filter(isRoadTripEntry).map((entry) => ({
         entry,
         at: parseEntryTimestamp(entry),
       }))
@@ -187,23 +171,11 @@ function matchMetric(
         entry,
         at: parseEntryTimestamp(entry),
       }))
-    case 'total_memories':
-      return entries.map((entry) => ({
-        entry,
-        at: parseEntryTimestamp(entry),
-      }))
     case 'social_adventures':
       return entries.filter(isSocialEntry).map((entry) => ({
         entry,
         at: parseEntryTimestamp(entry),
       }))
-    case 'pack_member': {
-      const qualifies = state.dogs.length >= 2 && entries.length >= 5
-      if (!qualifies) return []
-
-      const unlockEntry = entries[Math.min(4, entries.length - 1)]
-      return [{ entry: unlockEntry, at: parseEntryTimestamp(unlockEntry) }]
-    }
     default:
       return []
   }
@@ -265,15 +237,7 @@ export function resolveAchievement(
   definition: AchievementDefinition,
   state: AppState,
 ): Achievement {
-  let progress = computeAchievementProgress(definition, state)
-
-  if (state.mode === 'demo' && progress.unlocked && !DEMO_EARNED_ACHIEVEMENT_IDS.has(definition.id)) {
-    progress = {
-      ...progress,
-      unlocked: false,
-      unlockedAt: undefined,
-    }
-  }
+  const progress = computeAchievementProgress(definition, state)
 
   return {
     id: definition.id,
@@ -319,23 +283,16 @@ export function getActiveAchievement(state: AppState): Achievement | undefined {
 }
 
 const IDENTITY_DISPLAY_ORDER = [
-  'surfer-dog',
-  'coastal-explorer',
-  'beach-bum',
-  'trail-dog',
-  'mountain-mutt',
-  'summit-pup',
-  'snow-dog',
-  'winter-explorer',
-  'neighborhood-hero',
-  'adventure-dog',
-  'coffee-pup',
+  'first-adventure',
+  'first-memory',
   'memory-maker',
-  'friendly-pup',
-  'pavement-patrol',
-  'walk-legend',
-  'story-keeper',
-  'pack-member',
+  'week-streak',
+  'explorer',
+  'social-pup',
+  'trail-dog',
+  'beach-dog',
+  'training-buddy',
+  'road-trip-pup',
 ]
 
 function identitySortIndex(achievementId: string): number {
@@ -348,30 +305,28 @@ export function getIdentityProgressUnit(achievement: Achievement): string {
   if (!definition) return 'steps'
 
   switch (definition.metric.kind) {
+    case 'first_adventure':
+      return 'Adventure'
+    case 'first_memory':
+      return 'Photo'
+    case 'week_streak':
+      return 'Outings'
+    case 'place_types':
+      return 'Place types'
     case 'beach_visits':
       return achievement.progress.target === 1 ? 'Beach day' : 'Beach days'
-    case 'beach_distinct':
-      return 'Beaches'
     case 'trail_visits':
       return achievement.progress.target === 1 ? 'Trail' : 'Trails'
-    case 'trail_distinct':
-      return 'Trails'
-    case 'snow_visits':
-      return 'Winter outings'
-    case 'neighborhood_walks':
-      return 'Walks'
-    case 'coffee_visits':
-      return 'Coffee stops'
+    case 'training_sessions':
+      return 'Training sessions'
+    case 'road_trip_adventures':
+      return 'Day trips'
     case 'total_adventures':
       return 'Adventures'
     case 'memories_with_photo':
       return 'Photo memories'
-    case 'total_memories':
-      return 'Memories'
     case 'social_adventures':
       return 'Social outings'
-    case 'pack_member':
-      return 'Pack milestone'
     default:
       return 'steps'
   }
@@ -391,17 +346,16 @@ export function getIdentityProgressLabel(achievement: Achievement): string {
 
 export function getNextIdentityAchievement(state: AppState): Achievement | undefined {
   const identityIds = new Set([
-    'surfer-dog',
-    'coastal-explorer',
-    'beach-bum',
+    'first-adventure',
+    'first-memory',
+    'memory-maker',
+    'week-streak',
+    'explorer',
+    'social-pup',
     'trail-dog',
-    'mountain-mutt',
-    'summit-pup',
-    'snow-dog',
-    'winter-explorer',
-    'neighborhood-hero',
-    'adventure-dog',
-    'coffee-pup',
+    'beach-dog',
+    'training-buddy',
+    'road-trip-pup',
   ])
 
   const active = resolveAchievements(state)

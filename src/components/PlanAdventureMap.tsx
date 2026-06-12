@@ -9,6 +9,8 @@ interface PlanAdventureMapProps {
   mapCenter: MapCenter
   mapTitle: string
   mapSubtitle: string
+  emptyTitle?: string
+  emptyCopy?: string
   zipCode: string
   onSelectPlace: (placeId: string) => void
   onZipChange: (zipCode: string) => void
@@ -21,6 +23,8 @@ export function PlanAdventureMap({
   mapCenter,
   mapTitle,
   mapSubtitle,
+  emptyTitle,
+  emptyCopy,
   zipCode,
   onSelectPlace,
   onZipChange,
@@ -38,6 +42,8 @@ export function PlanAdventureMap({
           selectedPlaceId={selectedPlaceId}
           mapCenter={mapCenter}
           onSelectPlace={onSelectPlace}
+          emptyTitle={emptyTitle}
+          emptyCopy={emptyCopy}
         />
 
         {selectedPlace ? (

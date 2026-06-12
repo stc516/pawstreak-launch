@@ -69,28 +69,9 @@ function getDestinationImageForCategory(
 }
 
 export function resolveAdventureDisplayImage(
-  journeyEntries: JourneyEntry[],
+  _journeyEntries: JourneyEntry[],
   place: Place,
 ): AdventureDisplayImage {
-  const placePhoto = getLatestPhotoFromEntries(
-    journeyEntries.filter(
-      (entry) => entry.placeId === place.id && entry.photoUrls?.some(Boolean),
-    ),
-  )
-  if (placePhoto) {
-    return { imageUrl: placePhoto, source: 'user-place' }
-  }
-
-  const categoryPhoto = getLatestPhotoFromEntries(
-    journeyEntries.filter((entry) => {
-      if (!entry.photoUrls?.some(Boolean)) return false
-      return resolveCategoryFromJourneyEntry(entry) === place.category
-    }),
-  )
-  if (categoryPhoto) {
-    return { imageUrl: categoryPhoto, source: 'user-category' }
-  }
-
   const destinationUrl = getDestinationImageForPlace(place)
   return { imageUrl: destinationUrl, source: 'destination' }
 }

@@ -18,25 +18,29 @@ export function JourneyStoryPath({
   const progression = resolveDogProgression(state)
 
   return (
-    <section className="journey-story detail-card-warm" aria-label="Dog life story path">
+    <section className="journey-story detail-card-warm" aria-label="Monthly memory path">
       <div className="journey-story-header">
         <div className="journey-story-header-top">
-          <div className="journey-story-kicker">Life story</div>
+          <div className="journey-story-kicker">This month</div>
           <div className="journey-story-rank">
-            <span className="journey-story-rank-label">Rank</span>
+            <span className="journey-story-rank-label">Memory mode</span>
             <span className="journey-story-rank-value">{progression.summary.rank}</span>
           </div>
         </div>
-        <h2 className="journey-story-title">{progression.title}</h2>
-        <p className="journey-story-line">{progression.summary.storyLine}</p>
+        <h2 className="journey-story-title">Completed adventures</h2>
+        <p className="journey-story-line">
+          {state.journeyEntries.length > 0
+            ? `${state.journeyEntries.length} completed ${state.journeyEntries.length === 1 ? 'outing' : 'outings'} saved this month.`
+            : 'No completed outings yet this month.'}
+        </p>
       </div>
 
       <div className="journey-story-progress">
         <div className="journey-story-progress-meta">
           <span>
-            {progression.summary.chaptersCompleted}/{progression.summary.chaptersTotal} chapters
+            {state.journeyEntries.length} completed
           </span>
-          <span>{progression.summary.nextUnlock}</span>
+          <span>{state.journeyEntries.length > 0 ? 'Tap a scene' : 'Start from Plan'}</span>
         </div>
         <div className="journey-story-progress-bar">
           <div

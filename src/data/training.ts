@@ -63,7 +63,7 @@ export const TRAINING_REWARDS: TrainingReward[] = [
   },
   {
     id: 'adventure-dog',
-    title: 'Adventure Dog',
+    title: 'Adventure Ready',
     description: 'Ready for trails, crosswalks, and photo-worthy outings.',
     emoji: '🥾',
     badgeImageUrl: SAMPLE_IMAGES.trail,
@@ -249,7 +249,7 @@ export const TRAINING_PROGRAMS: TrainingProgram[] = [
   },
   {
     id: 'adventure-dog',
-    title: 'Adventure Dog',
+    title: 'Adventure Readiness',
     subtitle: '4 real-world skills · on the go',
     description: 'Train for outings — sidewalks, trails, and memory-worthy photo stops.',
     emoji: '🥾',

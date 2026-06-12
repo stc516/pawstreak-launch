@@ -13,7 +13,7 @@ interface MilestonesScreenProps {
   onJoinChallenge: (challengeId: string) => void
 }
 
-const DISCOVER_PREVIEW_COUNT = 3
+const DISCOVER_PREVIEW_COUNT = 10
 
 function ViewAllButton({
   expanded,
@@ -198,7 +198,9 @@ export function MilestonesScreen({
       <div className="st-section-head ms-discover-sec">
         <h2 className="st-headline-lg">Discover challenges</h2>
       </div>
-      <p className="ms-challenge-lead">Seasonal packs and local goals — join when you are ready.</p>
+      <p className="ms-challenge-lead">
+        Local goals when PawStreak has coverage, flexible goals anywhere else.
+      </p>
 
       {discoverChallenges.length === 0 ? (
         <p className="ms-section-empty">New challenges will show up here.</p>

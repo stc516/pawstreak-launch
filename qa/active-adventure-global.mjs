@@ -138,7 +138,7 @@ async function main() {
   await openDemo(page)
   await page.locator('section[aria-label="Build My Month"] button').click()
   await page.waitForTimeout(500)
-  await page.getByRole('button', { name: /Dog Parks/i }).click()
+  await page.getByRole('button', { name: /Dog park/i }).click()
   await page.getByRole('button', { name: 'Continue', exact: true }).click()
   await page.getByRole('button', { name: /1 adventure per week/i }).click()
   await page.getByRole('button', { name: 'Continue', exact: true }).click()

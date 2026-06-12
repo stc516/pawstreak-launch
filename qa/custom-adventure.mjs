@@ -59,8 +59,8 @@ async function main() {
 
   await openDemo(page)
 
-  // CA-1: Journey entry + title validation
-  await goTab(page, 'Journey')
+  // CA-1: Plan entry + title validation
+  await goTab(page, 'Plan')
   await page.locator('[data-testid="journey-add-adventure"]').click()
   await page.waitForTimeout(500)
   const startDisabledEmpty = await page
@@ -156,7 +156,7 @@ async function main() {
   )
 
   // Cancel creates no memory
-  await goTab(page, 'Journey')
+  await goTab(page, 'Plan')
   await page.locator('[data-testid="journey-add-adventure"]').click()
   await page.waitForTimeout(400)
   await page.locator('[data-testid="add-adventure-title"]').fill('Boat Day')
@@ -174,14 +174,14 @@ async function main() {
     !state?.journeyEntries?.some((e) => e.place === 'Boat Day')
   check('cancel-no-memory', cancelOk, `entries=${state?.journeyEntries?.length}`)
 
-  // Save for later → Planned
-  await goTab(page, 'Journey')
+  // Save for later → Plan / Planned
+  await goTab(page, 'Plan')
   await page.locator('[data-testid="journey-add-adventure"]').click()
   await page.waitForTimeout(400)
   await page.locator('[data-testid="add-adventure-title"]').fill('Camping Trip')
   await page.locator('[data-testid="add-adventure-save-later"]').click()
   await page.waitForTimeout(900)
-  await goTab(page, 'Journey')
+  await goTab(page, 'Plan')
   const plannedVisible = await page
     .locator('[data-testid="journey-planned-section"]')
     .isVisible()
@@ -209,7 +209,7 @@ async function main() {
   await page.waitForTimeout(700)
 
   // Refresh preserves planned (new planned item)
-  await goTab(page, 'Journey')
+  await goTab(page, 'Plan')
   await page.locator('[data-testid="journey-add-adventure"]').click()
   await page.locator('[data-testid="add-adventure-title"]').fill('Brewery Day')
   await page.locator('[data-testid="add-adventure-save-later"]').click()
@@ -221,7 +221,7 @@ async function main() {
   check('refresh-planned-persists', refreshOk, `brewery planned=${refreshOk}`)
 
   // Block second active adventure
-  await goTab(page, 'Journey')
+  await goTab(page, 'Plan')
   await page.locator('[data-testid="journey-planned-start"]').first().click()
   await page.waitForTimeout(800)
   await page.locator('[data-testid="journey-add-adventure"]').click()

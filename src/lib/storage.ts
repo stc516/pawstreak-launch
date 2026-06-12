@@ -248,7 +248,13 @@ function normalizeAppState(state: AppState, mode: AppMode): AppState {
     curatedPlanDraft: normalizeCuratedDraft(rest.curatedPlanDraft),
     curatedPlanResult: rest.curatedPlanResult ?? null,
     buildMyMonthFlowStep: rest.buildMyMonthFlowStep ?? 0,
-    buildMyMonthDraft: rest.buildMyMonthDraft ?? EMPTY_MONTHLY_PLAN_DRAFT,
+    buildMyMonthDraft: {
+      ...EMPTY_MONTHLY_PLAN_DRAFT,
+      ...(rest.buildMyMonthDraft ?? {}),
+      categoryIds: Array.isArray(rest.buildMyMonthDraft?.categoryIds)
+        ? rest.buildMyMonthDraft.categoryIds
+        : [],
+    },
     monthlyPlanResult: rest.monthlyPlanResult ?? null,
     trainingProgramFlowStep: rest.trainingProgramFlowStep ?? 0,
     trainingProgramDraft: rest.trainingProgramDraft ?? EMPTY_TRAINING_PROGRAM_DRAFT,

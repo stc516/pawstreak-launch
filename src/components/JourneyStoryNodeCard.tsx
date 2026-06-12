@@ -66,7 +66,7 @@ export function JourneyStoryNodeCard({
 
           <div className="journey-story-node-body">
             <div className="journey-story-node-meta">
-              <span className="journey-story-node-chapter">{node.chapter}</span>
+              <span className="journey-story-node-chapter">{node.completionDate ?? 'Memory'}</span>
               <span className="journey-story-node-status journey-story-node-status--completed">
                 {node.statusLabel}
               </span>
@@ -109,7 +109,7 @@ export function JourneyStoryNodeCard({
         <div className="journey-story-node-card journey-story-node-card--current detail-card-warm">
           <div className="journey-story-node-body">
             <div className="journey-story-node-meta">
-              <span className="journey-story-node-chapter">{node.chapter}</span>
+              <span className="journey-story-node-chapter">Up next</span>
               <span className="journey-story-node-status journey-story-node-status--current">
                 {node.statusLabel}
               </span>
@@ -163,7 +163,7 @@ export function JourneyStoryNodeCard({
       <div className="journey-story-node-card journey-story-node-card--locked">
         <div className="journey-story-node-body">
           <div className="journey-story-node-meta">
-            <span className="journey-story-node-chapter">{node.chapter}</span>
+              <span className="journey-story-node-chapter">Later</span>
             <span className="journey-story-node-status journey-story-node-status--locked">
               {node.statusLabel}
             </span>

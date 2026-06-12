@@ -13937,3 +13937,118 @@ select.field-input {
   gap: 10px;
   padding: 0 0 24px;
 }
+
+.plan-hub {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+}
+
+.plan-hub-kicker,
+.plan-place-detail-kicker {
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(70, 88, 73, 0.72);
+}
+
+.plan-hub-title,
+.plan-place-detail-title {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 1.15rem;
+  line-height: 1.12;
+}
+
+.plan-hub-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.plan-hub-action {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  min-height: 92px;
+  padding: 12px;
+  border: 1px solid rgba(76, 89, 72, 0.14);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.72);
+  color: inherit;
+  text-align: left;
+}
+
+.plan-hub-action span:last-child,
+.plan-type-box,
+.plan-place-detail-body {
+  display: grid;
+  gap: 8px;
+}
+
+.plan-hub-action small {
+  color: rgba(49, 64, 52, 0.68);
+  font-size: 0.75rem;
+  line-height: 1.25;
+}
+
+.plan-type-label {
+  font-size: 0.82rem;
+  font-weight: 850;
+  color: rgba(49, 64, 52, 0.76);
+}
+
+.plan-type-input {
+  min-height: 72px;
+  resize: vertical;
+  border: 1px solid rgba(76, 89, 72, 0.18);
+  border-radius: 14px;
+  padding: 12px;
+  font: inherit;
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--color-text-primary);
+}
+
+.plan-type-preview {
+  border-radius: 12px;
+  background: rgba(67, 98, 72, 0.1);
+  padding: 10px 12px;
+  font-size: 0.84rem;
+  color: rgba(49, 64, 52, 0.86);
+}
+
+.plan-type-custom {
+  min-height: 44px;
+  border: 1px solid rgba(76, 89, 72, 0.18);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--color-text-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 10px 12px;
+  font-weight: 850;
+}
+
+.plan-place-detail {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  gap: 14px;
+  padding: 14px;
+}
+
+.plan-place-detail-art {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 14px;
+}
+
+.plan-place-detail-meta,
+.plan-place-detail-line {
+  margin: 0;
+  color: rgba(49, 64, 52, 0.74);
+  font-size: 0.84rem;
+  line-height: 1.32;
+}

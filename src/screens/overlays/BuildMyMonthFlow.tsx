@@ -16,6 +16,7 @@ interface BuildMyMonthFlowProps {
   result: MonthlyPlanResult | null
   onBack: () => void
   onSelectVibe: (vibeId: MonthlyPlanDraft['vibeId']) => void
+  onToggleCategory: (categoryId: string) => void
   onSelectFrequency: (frequency: NonNullable<MonthlyPlanDraft['frequencyPerWeek']>) => void
   onSelectDays: (dayPreference: NonNullable<MonthlyPlanDraft['dayPreference']>) => void
   onNext: () => void
@@ -30,6 +31,7 @@ export function BuildMyMonthFlow({
   result,
   onBack,
   onSelectVibe,
+  onToggleCategory,
   onSelectFrequency,
   onSelectDays,
   onNext,
@@ -38,10 +40,14 @@ export function BuildMyMonthFlow({
 }: BuildMyMonthFlowProps) {
   const dogLabel = getDisplayDogLabel(state)
   const canContinue =
-    (step === 1 && draft.vibeId) ||
+    (step === 1 && draft.categoryIds.length > 0) ||
     (step === 2 && draft.frequencyPerWeek) ||
     (step === 3 && draft.dayPreference) ||
     step === 4
+
+  const categoryOptions = state.planCategories.filter((category) =>
+    ['beach', 'trail', 'coffee', 'dog-park', 'park', 'road-trip'].includes(category.id),
+  )
 
   return (
     <div className="app-viewport">
@@ -58,22 +64,26 @@ export function BuildMyMonthFlow({
           <div className="build-month-hero detail-tint detail-tint--warm">
             <div className="build-month-kicker">Build My Month</div>
             <h1 className="build-month-title">A simple month of adventures for {dogLabel}</h1>
-            <p className="build-month-copy">No calendar sync — just a saved plan you can follow.</p>
+            <p className="build-month-copy">
+              Plan outings, training goals, and reminder paths from one system.
+            </p>
           </div>
 
           {step === 1 ? (
             <section className="build-month-step">
-              <div className="sec">Choose a vibe</div>
+              <div className="sec">Choose 3–4 preferred categories</div>
               <div className="build-month-options">
-                {MONTHLY_PLAN_VIBE_OPTIONS.map((option) => (
+                {categoryOptions.map((option) => (
                   <button
                     key={option.id}
                     type="button"
-                    className={`build-month-option tap-target${draft.vibeId === option.id ? ' on' : ''}`}
-                    onClick={() => onSelectVibe(option.id)}
+                    className={`build-month-option tap-target${draft.categoryIds.includes(option.id) ? ' on' : ''}`}
+                    onClick={() => onToggleCategory(option.id)}
                   >
                     <div className="build-month-option-title">{option.label}</div>
-                    <div className="build-month-option-sub">{option.subtitle}</div>
+                    <div className="build-month-option-sub">
+                      {draft.categoryIds.includes(option.id) ? 'Included' : 'Tap to include'}
+                    </div>
                   </button>
                 ))}
               </div>
@@ -100,7 +110,7 @@ export function BuildMyMonthFlow({
 
           {step === 3 ? (
             <section className="build-month-step">
-              <div className="sec">Preferred days</div>
+              <div className="sec">Timing and vibe</div>
               <div className="build-month-options">
                 {MONTHLY_PLAN_DAY_OPTIONS.map((option) => (
                   <button
@@ -110,6 +120,17 @@ export function BuildMyMonthFlow({
                     onClick={() => onSelectDays(option.id)}
                   >
                     <div className="build-month-option-title">{option.label}</div>
+                  </button>
+                ))}
+                {MONTHLY_PLAN_VIBE_OPTIONS.map((option) => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    className={`build-month-option tap-target${draft.vibeId === option.id ? ' on' : ''}`}
+                    onClick={() => onSelectVibe(option.id)}
+                  >
+                    <div className="build-month-option-title">{option.label}</div>
+                    <div className="build-month-option-sub">{option.subtitle}</div>
                   </button>
                 ))}
               </div>
@@ -124,9 +145,14 @@ export function BuildMyMonthFlow({
                   <div key={week.weekIndex} className="build-month-week-row">
                     <div className="build-month-week-label">{week.label}</div>
                     <div className="build-month-week-place">{week.placeName}</div>
-                    <div className="build-month-week-meta">{week.category}</div>
+                    <div className="build-month-week-meta">
+                      {week.category} · best time and reminders path included
+                    </div>
                   </div>
                 ))}
+              </div>
+              <div className="build-month-result detail-card-warm">
+                Potential unlocks: First Adventure, Explorer, Week Streak, and matching challenges.
               </div>
               <button
                 type="button"

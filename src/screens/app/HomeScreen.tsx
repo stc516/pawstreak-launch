@@ -9,7 +9,7 @@ import {
 } from '../../lib/homeCopy'
 import { resolveJoinedChallenges } from '../../lib/challengeEngine'
 import { getHomeProgressStats } from '../../lib/homeStats'
-import { getMapPreviewPlaces } from '../../lib/planDiscovery'
+import { getMapPreviewPlaces, getPlanNearbyPlaces } from '../../lib/planDiscovery'
 import { getPlanMagicMeta } from '../../data/places'
 import { CardImage } from '../../components/CardImage'
 import { getHeroPlace, getPlaceById } from '../../data/places'
@@ -37,7 +37,6 @@ interface HomeScreenProps {
   onOpenMemory?: (entryId: string) => void
   onGoToPlan: () => void
   onOpenBuildMyMonth: () => void
-  onOpenTrainingProgram: () => void
   onStartMonthlyPlanAdventure: (placeId: string) => void
   onContinueTraining: (programId: string) => void
   onOpenAddAdventure: () => void
@@ -53,7 +52,6 @@ export function HomeScreen({
   onOpenMemory,
   onGoToPlan,
   onOpenBuildMyMonth,
-  onOpenTrainingProgram,
   onStartMonthlyPlanAdventure,
   onContinueTraining,
   onOpenAddAdventure,
@@ -62,14 +60,22 @@ export function HomeScreen({
   const dogLabel = getDisplayDogLabel(state)
   const dogCount = profileDogs.length
   const heroActivityId = state.selectedActivityId || 'beach'
-  const heroPlace = getHeroPlace(heroActivityId, getRecommendationPrefs(state))
+  const recommendationPrefs = getRecommendationPrefs(state)
+  const heroPlace = useMemo(
+    () =>
+      state.locationSupported
+        ? getPlanNearbyPlaces(heroActivityId, '15min', recommendationPrefs, state)[0] ??
+          getHeroPlace(heroActivityId, recommendationPrefs)
+        : getHeroPlace(heroActivityId, recommendationPrefs),
+    [heroActivityId, recommendationPrefs, state],
+  )
   const heroImageUrl = getAdventureDisplayImageUrl(state.journeyEntries, heroPlace)
   const progress = getHomeProgressStats(state)
   const joinedChallenges = useMemo(() => resolveJoinedChallenges(state), [state])
   const activeChallenge = joinedChallenges[0]
   const suggestedPlaces = useMemo(
-    () => getMapPreviewPlaces(getRecommendationPrefs(state)),
-    [state],
+    () => getMapPreviewPlaces(recommendationPrefs, state),
+    [recommendationPrefs, state],
   )
   const recentMemories = state.journeyEntries.slice(0, 3)
   const welcomeGreeting = getHomeWelcomeGreeting()
@@ -234,20 +240,6 @@ export function HomeScreen({
           </div>
         </section>
       )}
-
-      <section className="home-action-card" aria-label="Training Program">
-        <button
-          type="button"
-          className="home-action-card-inner tap-target"
-          onClick={onOpenTrainingProgram}
-        >
-          <div className="home-action-card-kicker">Training</div>
-          <div className="home-action-card-title">Start Training Program</div>
-          <div className="home-action-card-sub">
-            Puppy Foundations, Recall &amp; Off-Leash, or Fun &amp; Enrichment
-          </div>
-        </button>
-      </section>
 
       {activeMonthWeek && state.monthlyPlanResult ? (
         <section className="home-active-plan detail-card-warm" aria-label="Active Monthly Plan">

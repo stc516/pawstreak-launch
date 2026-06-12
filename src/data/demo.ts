@@ -506,7 +506,7 @@ export const defaultAppState: AppState = {
       date: 'Today',
       magicLine: 'Bailey sprinted through the shallows.',
       tags: ['Beach', 'Off-leash', 'Bailey + Omi', 'Loved it'],
-      photoUrls: ['/sample-images/beach.jpg', '/sample-images/coastal.jpg'],
+      photoUrls: [],
     },
     {
       id: 'torrey-pines-tuesday',
@@ -515,7 +515,7 @@ export const defaultAppState: AppState = {
       date: 'Tuesday',
       magicLine: 'Omi set the pace on the ridge.',
       tags: ['Trail', 'On-leash', 'Bailey + Omi', '6th visit'],
-      photoUrls: ['/sample-images/trail.jpg', '/sample-images/park.jpg'],
+      photoUrls: [],
     },
     {
       id: 'julian-saturday',
@@ -524,7 +524,7 @@ export const defaultAppState: AppState = {
       date: 'Saturday',
       magicLine: 'Big adventure if they need to burn energy.',
       tags: ['Road trip', '62 mi', 'Both dogs', 'New place'],
-      photoUrls: ['/sample-images/road-trip.jpg', '/sample-images/mountain.jpg'],
+      photoUrls: [],
     },
     {
       id: 'balboa-park-sunday',
@@ -533,7 +533,7 @@ export const defaultAppState: AppState = {
       date: 'Sunday',
       magicLine: 'Bailey kept pulling toward the fountain.',
       tags: ['Park', 'On-leash', 'Both dogs', 'Golden hour'],
-      photoUrls: ['/sample-images/park.jpg', '/sample-images/gardens.jpg'],
+      photoUrls: [],
     },
     {
       id: 'lestats-coffee-monday',
@@ -542,7 +542,7 @@ export const defaultAppState: AppState = {
       date: 'Monday',
       magicLine: 'One of those small days that becomes a favorite.',
       tags: ['Coffee', 'Patio', 'Both dogs', 'Slow morning'],
-      photoUrls: ['/sample-images/cafe.jpg', '/sample-images/neighborhood.jpg'],
+      photoUrls: [],
     },
   ],
   communityLive: {

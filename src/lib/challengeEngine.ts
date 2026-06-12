@@ -65,12 +65,9 @@ function parseEntryTimestamp(entry: JourneyEntry): number {
 }
 
 function getChallengeEntries(state: AppState): JourneyEntry[] {
-  const entries =
-    state.mode === 'demo'
-      ? state.journeyEntries
-      : state.journeyEntries.filter(
-          (entry) => !DEMO_SEEDED_JOURNEY_ENTRY_IDS.has(entry.id),
-        )
+  const entries = state.journeyEntries.filter(
+    (entry) => !DEMO_SEEDED_JOURNEY_ENTRY_IDS.has(entry.id),
+  )
 
   return [...entries].sort(
     (left, right) => parseEntryTimestamp(left) - parseEntryTimestamp(right),
@@ -83,6 +80,15 @@ function isBeachEntry(entry: JourneyEntry): boolean {
   return place?.category === 'Beach'
 }
 
+function isCategoryEntry(entry: JourneyEntry, categories: string[]): boolean {
+  if (!entry.placeId) {
+    const haystack = [entry.place, ...entry.tags].join(' ').toLowerCase()
+    return categories.some((category) => haystack.includes(category.toLowerCase()))
+  }
+  const place = getPlaceById(entry.placeId)
+  return Boolean(place && categories.includes(place.category))
+}
+
 function isNeighborhoodEntry(entry: JourneyEntry): boolean {
   if (entry.placeId === NEIGHBORHOOD_WALK_PLACE_ID) return true
   if (!entry.placeId) {
@@ -92,54 +98,11 @@ function isNeighborhoodEntry(entry: JourneyEntry): boolean {
   return place?.category === 'Neighborhood'
 }
 
-function isHolidayEntry(_entry: JourneyEntry, at: number): boolean {
-  const month = new Date(at).getMonth() + 1
-  const day = new Date(at).getDate()
-  return (month === 12 && day >= 1) || (month === 1 && day <= 5)
-}
-
-function getSeasonalWindowMs(
-  duration: Extract<Challenge['duration'], { kind: 'seasonal' }>,
-  referenceYear: number,
-): { start: number; end: number } {
-  let start = new Date(referenceYear, duration.startMonth - 1, duration.startDay).getTime()
-  let endYear = referenceYear
-  if (duration.endMonth < duration.startMonth) {
-    endYear = referenceYear + 1
-  }
-  const end = new Date(
-    endYear,
-    duration.endMonth - 1,
-    duration.endDay,
-    23,
-    59,
-    59,
-    999,
-  ).getTime()
-
-  if (duration.endMonth < duration.startMonth && Date.now() < start) {
-    start = new Date(referenceYear - 1, duration.startMonth - 1, duration.startDay).getTime()
-  }
-
-  return { start, end }
-}
-
 export function isChallengeWindowActive(
-  challenge: Challenge,
-  now = Date.now(),
+  _challenge: Challenge,
+  _now = Date.now(),
 ): boolean {
-  if (challenge.duration.kind === 'rolling') return true
-
-  const year = new Date(now).getFullYear()
-  const { start, end } = getSeasonalWindowMs(challenge.duration, year)
-  if (now >= start && now <= end) return true
-
-  if (challenge.duration.endMonth < challenge.duration.startMonth) {
-    const prev = getSeasonalWindowMs(challenge.duration, year - 1)
-    return now >= prev.start && now <= prev.end
-  }
-
-  return false
+  return true
 }
 
 function getJoinedRecord(
@@ -161,23 +124,30 @@ function entryMatchesMetric(
     if (!joinedAt) return false
     const windowEnd = Date.parse(joinedAt) + challenge.duration.days * 86_400_000
     if (at > windowEnd) return false
-  } else if (joinedAt) {
-    const year = new Date(at).getFullYear()
-    const { start, end } = getSeasonalWindowMs(challenge.duration, year)
-    if (at < start || at > end) return false
   }
 
   switch (challenge.metric.kind) {
     case 'beach_adventures':
       return isBeachEntry(entry)
+    case 'trail_adventures':
+      return isCategoryEntry(entry, ['Trail'])
+    case 'dog_park_adventures':
+      return isCategoryEntry(entry, ['Dog Park'])
+    case 'patio_adventures':
+      return isCategoryEntry(entry, ['Patio', 'Restaurant'])
+    case 'brewery_adventures':
+      return isCategoryEntry(entry, ['Brewery'])
     case 'total_adventures':
       return true
     case 'neighborhood_walks':
       return isNeighborhoodEntry(entry)
-    case 'distinct_places':
+    case 'memories_with_photo':
+      return Boolean(entry.photoUrls?.some(Boolean))
+    case 'social_adventures':
+      return isCategoryEntry(entry, ['Dog Park', 'Patio', 'Brewery', 'Restaurant']) ||
+        entry.recapLabels?.some((label) => /friend|social/i.test(label)) === true
+    case 'distinct_routes':
       return Boolean(entry.placeId || entry.place)
-    case 'holiday_adventures':
-      return isHolidayEntry(entry, at)
     default:
       return false
   }
@@ -192,7 +162,7 @@ function countMetricMatches(
     entryMatchesMetric(challenge, entry, joinedAt),
   )
 
-  if (challenge.metric.kind === 'distinct_places') {
+  if (challenge.metric.kind === 'distinct_routes') {
     const seen = new Set<string>()
     const distinct: JourneyEntry[] = []
     for (const entry of qualifying) {
@@ -284,15 +254,12 @@ export function computeChallengeProgress(
       ? 0
       : Math.min(100, Math.round((metricValue / challenge.metric.target) * 100))
 
-  const durationLabel =
-    challenge.duration.kind === 'seasonal'
-      ? challenge.duration.label
-      : joined
-        ? `${challenge.duration.label} · joined ${new Intl.DateTimeFormat(undefined, {
-            month: 'short',
-            day: 'numeric',
-          }).format(Date.parse(joined.joinedAt))}`
-        : challenge.duration.label
+  const durationLabel = joined
+    ? `${challenge.duration.label} · joined ${new Intl.DateTimeFormat(undefined, {
+        month: 'short',
+        day: 'numeric',
+      }).format(Date.parse(joined.joinedAt))}`
+    : challenge.duration.label
 
   return {
     challengeId: challenge.id,
@@ -329,17 +296,21 @@ export function resolveJoinedChallenges(state: AppState): ResolvedChallenge[] {
   return state.joinedChallenges
     .map((record) => getChallengeById(record.challengeId))
     .filter((challenge): challenge is Challenge => Boolean(challenge))
+    .filter((challenge) => challenge.availability === 'generic' || state.locationSupported)
     .map((challenge) => resolveChallenge(challenge, state))
 }
 
 export function resolveAllCuratedChallenges(state: AppState): ResolvedChallenge[] {
-  return CURATED_CHALLENGES.map((challenge) => resolveChallenge(challenge, state))
+  return CURATED_CHALLENGES
+    .filter((challenge) => challenge.availability === 'generic' || state.locationSupported)
+    .map((challenge) => resolveChallenge(challenge, state))
 }
 
 export function getFeaturedChallenge(state: AppState): ResolvedChallenge | undefined {
   const joined = resolveJoinedChallenges(state)
   if (joined.length > 0) return joined[0]
-  return resolveChallenge(CURATED_CHALLENGES[0], state)
+  const first = resolveAllCuratedChallenges(state)[0]
+  return first
 }
 
 export function joinChallengeState(

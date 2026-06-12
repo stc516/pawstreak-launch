@@ -1,28 +1,27 @@
 import { SAMPLE_IMAGES } from './sampleImages'
 
 export type AchievementCategoryId =
-  | 'beach'
-  | 'trail'
-  | 'snow'
-  | 'walks'
-  | 'memories'
+  | 'adventure'
+  | 'memory'
+  | 'streak'
+  | 'explore'
   | 'social'
+  | 'training'
 
 export type AchievementStatus = 'done' | 'active' | 'locked'
 
 export type AchievementMetricKind =
+  | 'first_adventure'
+  | 'first_memory'
+  | 'week_streak'
+  | 'place_types'
   | 'beach_visits'
-  | 'beach_distinct'
   | 'trail_visits'
-  | 'trail_distinct'
-  | 'snow_visits'
-  | 'neighborhood_walks'
-  | 'coffee_visits'
+  | 'training_sessions'
+  | 'road_trip_adventures'
   | 'total_adventures'
   | 'memories_with_photo'
-  | 'total_memories'
   | 'social_adventures'
-  | 'pack_member'
 
 export interface AchievementMetric {
   kind: AchievementMetricKind
@@ -72,201 +71,124 @@ export interface Achievement {
 }
 
 export const ACHIEVEMENT_CATEGORIES: AchievementCategory[] = [
-  { id: 'beach', label: 'Beach', emoji: '🏖️' },
-  { id: 'trail', label: 'Trail', emoji: '🌲' },
-  { id: 'snow', label: 'Snow', emoji: '❄️' },
-  { id: 'walks', label: 'Walks', emoji: '🐾' },
-  { id: 'memories', label: 'Memories', emoji: '📸' },
+  { id: 'adventure', label: 'Adventure', emoji: '🐾' },
+  { id: 'memory', label: 'Memories', emoji: '📸' },
+  { id: 'streak', label: 'Consistency', emoji: '🔥' },
+  { id: 'explore', label: 'Explore', emoji: '🧭' },
   { id: 'social', label: 'Social', emoji: '🐕' },
+  { id: 'training', label: 'Training', emoji: '🎯' },
 ]
 
 export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
   {
-    id: 'surfer-dog',
-    categoryId: 'beach',
-    title: 'Surfer Dog',
-    description: 'First splash at the shore — the adventure story begins.',
-    personalityLine: 'Lives for salt air, sandy paws, and wave-chasing mornings.',
-    requirementHint: 'Finish your first beach adventure',
-    badgeImageUrl: SAMPLE_IMAGES.beach,
-    emoji: '🏄',
-    metric: { kind: 'beach_visits', target: 1 },
-  },
-  {
-    id: 'coastal-explorer',
-    categoryId: 'beach',
-    title: 'Coastal Explorer',
-    description: 'Three different beaches — your pup is learning the coast.',
-    personalityLine: 'Knows the coastline like a local — always scouting the next strand.',
-    requirementHint: 'Visit 3 different beaches',
-    badgeImageUrl: SAMPLE_IMAGES.coastal,
-    emoji: '🌊',
-    metric: { kind: 'beach_distinct', target: 3 },
-  },
-  {
-    id: 'beach-bum',
-    categoryId: 'beach',
-    title: 'Beach Bum',
-    description: 'Sand in the car, salt in the fur — living for beach days.',
-    personalityLine: 'Sand in the car, salt in the fur — a true beach-day devotee.',
-    requirementHint: 'Log 8 beach adventures',
-    badgeImageUrl: SAMPLE_IMAGES.park,
-    emoji: '🏖️',
-    metric: { kind: 'beach_visits', target: 8 },
-  },
-  {
-    id: 'trail-dog',
-    categoryId: 'trail',
-    title: 'Trail Dog',
-    description: 'First path through the trees — nose up, tail high.',
-    personalityLine: 'Nose up, tail high — built for paths, switchbacks, and fresh air.',
-    requirementHint: 'Finish your first trail adventure',
-    badgeImageUrl: SAMPLE_IMAGES.trail,
-    emoji: '🥾',
-    metric: { kind: 'trail_visits', target: 1 },
-  },
-  {
-    id: 'mountain-mutt',
-    categoryId: 'trail',
-    title: 'Mountain Mutt',
-    description: 'Five trail days — legs, lungs, and loyalty.',
-    personalityLine: 'Earns every summit with steady paws and a curious nose.',
-    requirementHint: 'Log 5 trail adventures',
-    badgeImageUrl: SAMPLE_IMAGES.mountain,
-    emoji: '⛰️',
-    metric: { kind: 'trail_visits', target: 5 },
-  },
-  {
-    id: 'summit-pup',
-    categoryId: 'trail',
-    title: 'Summit Pup',
-    description: 'Ten trails conquered — peak pup energy.',
-    personalityLine: 'Peak pup energy — trails are home turf now.',
-    requirementHint: 'Log 10 trail adventures',
-    badgeImageUrl: SAMPLE_IMAGES.trail,
-    emoji: '🏔️',
-    metric: { kind: 'trail_visits', target: 10 },
-  },
-  {
-    id: 'snow-dog',
-    categoryId: 'snow',
-    title: 'Snow Dog',
-    description: 'First mountain or winter outing — cold nose, warm heart.',
-    personalityLine: 'Cold nose, warm heart — built for mountain air and winter days.',
-    requirementHint: 'Finish a mountain or winter adventure',
-    badgeImageUrl: SAMPLE_IMAGES.mountain,
-    emoji: '❄️',
-    metric: { kind: 'snow_visits', target: 1 },
-  },
-  {
-    id: 'winter-explorer',
-    categoryId: 'snow',
-    title: 'Winter Explorer',
-    description: 'Three winter days — built for the chill.',
-    personalityLine: 'Thrives when the air gets crisp and the trails get quiet.',
-    requirementHint: 'Log 3 mountain or winter adventures',
-    badgeImageUrl: SAMPLE_IMAGES.mountain,
-    emoji: '🐺',
-    metric: { kind: 'snow_visits', target: 3 },
-  },
-  {
-    id: 'neighborhood-hero',
-    categoryId: 'walks',
-    title: 'Neighborhood Hero',
-    description: 'The block knows your dog now.',
-    personalityLine: 'The block knows their name — everyday loops, big bond.',
-    requirementHint: 'Finish a neighborhood walk',
+    id: 'first-adventure',
+    categoryId: 'adventure',
+    title: 'First Adventure',
+    description: 'The first completed outing that starts the real record.',
+    personalityLine: 'One real adventure finished — the streak has a beginning.',
+    requirementHint: 'Finish 1 adventure',
     badgeImageUrl: SAMPLE_IMAGES.neighborhood,
-    emoji: '🏘️',
-    metric: { kind: 'neighborhood_walks', target: 1 },
+    emoji: '🐾',
+    metric: { kind: 'first_adventure', target: 1 },
   },
   {
-    id: 'adventure-dog',
-    categoryId: 'walks',
-    title: 'Adventure Dog',
-    description: 'Three adventures logged — a real streak of showing up.',
-    personalityLine: 'Always ready for the next outing — curiosity over couch time.',
-    requirementHint: 'Log 3 adventures',
-    badgeImageUrl: SAMPLE_IMAGES.park,
-    emoji: '🧭',
-    metric: { kind: 'total_adventures', target: 3 },
-  },
-  {
-    id: 'pavement-patrol',
-    categoryId: 'walks',
-    title: 'Pavement Patrol',
-    description: 'Ten local loops — small days, big bond.',
-    personalityLine: 'Small loops, big bond — knows every sidewalk crack.',
-    requirementHint: 'Log 10 neighborhood walks',
-    badgeImageUrl: SAMPLE_IMAGES.neighborhood,
-    emoji: '🚶',
-    metric: { kind: 'neighborhood_walks', target: 10 },
-  },
-  {
-    id: 'walk-legend',
-    categoryId: 'walks',
-    title: 'Walk Legend',
-    description: 'Twenty-five adventures — a real streak of showing up.',
-    personalityLine: 'Twenty-five adventures deep — showing up is the superpower.',
-    requirementHint: 'Log 25 adventures',
-    badgeImageUrl: SAMPLE_IMAGES.park,
-    emoji: '🏅',
-    metric: { kind: 'total_adventures', target: 25 },
-  },
-  {
-    id: 'coffee-pup',
-    categoryId: 'social',
-    title: 'Coffee Pup',
-    description: 'First patio coffee stop — calm hangs and people watching.',
-    personalityLine: 'Patio pro — calm hangs, warm drinks, and people watching.',
-    requirementHint: 'Visit a dog-friendly café patio',
-    badgeImageUrl: SAMPLE_IMAGES.cafe,
-    emoji: '☕',
-    metric: { kind: 'coffee_visits', target: 1 },
+    id: 'first-memory',
+    categoryId: 'memory',
+    title: 'First Memory',
+    description: 'A real photo saved from an actual outing.',
+    personalityLine: 'The camera roll has its first PawStreak keeper.',
+    requirementHint: 'Save 1 photo from an adventure',
+    badgeImageUrl: SAMPLE_IMAGES.scenic,
+    emoji: '📸',
+    metric: { kind: 'first_memory', target: 1 },
   },
   {
     id: 'memory-maker',
-    categoryId: 'memories',
+    categoryId: 'memory',
     title: 'Memory Maker',
-    description: 'First photo saved — the story is real now.',
-    personalityLine: 'Every outing becomes a keepsake — photos tell the story.',
-    requirementHint: 'Save a memory with a photo',
-    badgeImageUrl: SAMPLE_IMAGES.beach,
-    emoji: '📷',
-    metric: { kind: 'memories_with_photo', target: 1 },
+    description: 'Five saved photos from real completed adventures.',
+    personalityLine: 'A growing little gallery of the good stuff.',
+    requirementHint: 'Save 5 adventure photos',
+    badgeImageUrl: SAMPLE_IMAGES.scenic,
+    emoji: '🖼️',
+    metric: { kind: 'memories_with_photo', target: 5 },
   },
   {
-    id: 'story-keeper',
-    categoryId: 'memories',
-    title: 'Story Keeper',
-    description: 'Ten memories — a journal your dog would approve of.',
-    personalityLine: 'Ten chapters saved — a journal your dog would approve of.',
-    requirementHint: 'Save 10 memories',
-    badgeImageUrl: SAMPLE_IMAGES.coastal,
-    emoji: '📖',
-    metric: { kind: 'total_memories', target: 10 },
+    id: 'week-streak',
+    categoryId: 'streak',
+    title: 'Week Streak',
+    description: 'Three completed outings in a seven-day window.',
+    personalityLine: 'A real rhythm is forming.',
+    requirementHint: 'Complete 3 outings in 7 days',
+    badgeImageUrl: SAMPLE_IMAGES.park,
+    emoji: '🔥',
+    metric: { kind: 'week_streak', target: 3 },
   },
   {
-    id: 'friendly-pup',
+    id: 'explorer',
+    categoryId: 'explore',
+    title: 'Explorer',
+    description: 'Three different place types completed.',
+    personalityLine: 'Not just one routine — a real mix of adventures.',
+    requirementHint: 'Visit 3 different place types',
+    badgeImageUrl: SAMPLE_IMAGES.roadTrip,
+    emoji: '🧭',
+    metric: { kind: 'place_types', target: 3 },
+  },
+  {
+    id: 'social-pup',
     categoryId: 'social',
-    title: 'Friendly Pup',
-    description: 'Made a friend or found the social scene.',
-    personalityLine: 'Greets every pup like an old friend — social scene regular.',
-    requirementHint: 'Visit a dog park or meet new friends on a walk',
+    title: 'Social Pup',
+    description: 'One social dog-friendly outing completed.',
+    personalityLine: 'A little confidence around the social scene.',
+    requirementHint: 'Visit 1 social dog-friendly place',
     badgeImageUrl: SAMPLE_IMAGES.dogPark,
-    emoji: '🤝',
+    emoji: '🐕',
     metric: { kind: 'social_adventures', target: 1 },
   },
   {
-    id: 'pack-member',
-    categoryId: 'social',
-    title: 'Pack Member',
-    description: 'Multi-dog life with a growing adventure log.',
-    personalityLine: 'Multi-dog life, one growing adventure story.',
-    requirementHint: 'Add 2+ dogs and save 5 memories together',
-    badgeImageUrl: SAMPLE_IMAGES.park,
-    emoji: '🐾',
-    metric: { kind: 'pack_member', target: 1 },
+    id: 'trail-dog',
+    categoryId: 'explore',
+    title: 'Trail Dog',
+    description: 'Three trail outings completed.',
+    personalityLine: 'Fresh air and path-sniffing are becoming a thing.',
+    requirementHint: 'Complete 3 trail outings',
+    badgeImageUrl: SAMPLE_IMAGES.trail,
+    emoji: '🌲',
+    metric: { kind: 'trail_visits', target: 3 },
+  },
+  {
+    id: 'beach-dog',
+    categoryId: 'explore',
+    title: 'Beach Dog',
+    description: 'Three beach outings completed.',
+    personalityLine: 'Sand, waves, and a pattern worth earning.',
+    requirementHint: 'Complete 3 beach outings',
+    badgeImageUrl: SAMPLE_IMAGES.beach,
+    emoji: '🏖️',
+    metric: { kind: 'beach_visits', target: 3 },
+  },
+  {
+    id: 'training-buddy',
+    categoryId: 'training',
+    title: 'Training Buddy',
+    description: 'Three short training sessions completed.',
+    personalityLine: 'Practice is becoming part of the plan.',
+    requirementHint: 'Complete 3 training sessions',
+    badgeImageUrl: SAMPLE_IMAGES.training,
+    emoji: '🎯',
+    metric: { kind: 'training_sessions', target: 3 },
+  },
+  {
+    id: 'road-trip-pup',
+    categoryId: 'explore',
+    title: 'Road Trip Pup',
+    description: 'One day-trip adventure completed.',
+    personalityLine: 'Out of the usual zip code, into a bigger day.',
+    requirementHint: 'Complete 1 day-trip adventure',
+    badgeImageUrl: SAMPLE_IMAGES.roadTrip,
+    emoji: '🚗',
+    metric: { kind: 'road_trip_adventures', target: 1 },
   },
 ]
 
