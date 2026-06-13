@@ -22,7 +22,7 @@ interface PlanScreenProps {
   isDemoMode?: boolean
   onSelectCategory: (categoryId: string) => void
   onZipChange: (zipCode: string) => void
-  onApplyLocation: () => void
+  onApplyLocation: () => Promise<{ supported: boolean; resolved: boolean; label: string } | void>
   onStartAdventure: (placeId: string, durationLabel?: string) => void
   onStartNeighborhoodWalk?: () => void
   onOpenAddAdventure?: () => void
@@ -56,6 +56,10 @@ export function PlanScreen({
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null)
   const [typedPlan, setTypedPlan] = useState('')
   const [typedPlanPreview, setTypedPlanPreview] = useState<string | null>(null)
+  const [findStatus, setFindStatus] = useState<{
+    tone: 'loading' | 'success' | 'fallback' | 'error'
+    message: string
+  } | null>(null)
   const placeCardRefs = useRef<Record<string, HTMLDivElement | null>>({})
   const locationSupported = state.locationSupported
   const places = useMemo(
@@ -134,48 +138,98 @@ export function PlanScreen({
     onStartAdventure(placeId)
   }
 
+  const handleApplyLocation = async () => {
+    const query = state.zipCode.trim()
+    if (!query) {
+      setFindStatus({
+        tone: 'error',
+        message: 'Enter a city, ZIP, or neighborhood and PawStreak will keep the plan usable.',
+      })
+      return
+    }
+
+    setFindStatus({
+      tone: 'loading',
+      message: `Finding dog-friendly spots near ${query}…`,
+    })
+
+    try {
+      const result = await onApplyLocation()
+      if (!result) return
+
+      if (!result.resolved && !result.supported) {
+        setFindStatus({
+          tone: 'error',
+          message: `We could not confidently resolve ${query}. Try a city + state or ZIP. Generic adventure ideas still work.`,
+        })
+        return
+      }
+
+      if (result.supported) {
+        setFindStatus({
+          tone: 'success',
+          message: `Loaded curated dog-friendly spots near ${result.label}.`,
+        })
+        return
+      }
+
+      setFindStatus({
+        tone: 'fallback',
+        message: `${result.label} is not in a curated market yet, so we are showing generic adventure ideas instead of fake nearby places.`,
+      })
+    } catch {
+      setFindStatus({
+        tone: 'error',
+        message: 'Location lookup had a hiccup. Try again, or use the generic adventure ideas below.',
+      })
+    }
+  }
+
   return (
     <>
       <div className="aheader plan-screen-header">
-        <div className="alogo">Plan an adventure</div>
-        <p className="plan-screen-sub">Where can we go with {dogLabel} right now?</p>
+        <div className="alogo">Plan something good for {dogLabel}</div>
+        <p className="plan-screen-sub">Build a month, pick today&apos;s outing, or set a training goal.</p>
       </div>
 
       <section className="plan-hub detail-card-warm" aria-label="Planning hub">
         <div className="plan-hub-kicker">Planning system</div>
-        <h2 className="plan-hub-title">Plan everything from one place</h2>
+        <h2 className="plan-hub-title">One planning system for every kind of outing</h2>
         <div className="plan-hub-actions">
           <button type="button" className="plan-hub-action tap-target" onClick={onOpenBuildMyMonth}>
             <span aria-hidden="true">🗓️</span>
             <span>
               <strong>Build My Month</strong>
-              <small>Monthly outings, categories, dogs, reminders path</small>
+              <small>Pick outing count, categories, vibe, dogs, and get a month path</small>
             </span>
           </button>
           <button type="button" className="plan-hub-action tap-target" onClick={onGenerateRandomPlan}>
             <span aria-hidden="true">🎲</span>
             <span>
               <strong>Surprise Me</strong>
-              <small>One sensible outing from your location context</small>
+              <small>Get one fast idea from your current location and dog context</small>
             </span>
           </button>
           <button type="button" className="plan-hub-action tap-target" onClick={onOpenTrainingProgram}>
             <span aria-hidden="true">🎯</span>
             <span>
               <strong>Training Goal Plan</strong>
-              <small>Practice goals tied to outings and reminders</small>
+              <small>Turn leash focus, calm patio work, or confidence into sessions</small>
             </span>
           </button>
           <button type="button" className="plan-hub-action tap-target" onClick={onOpenPresetPlan}>
             <span aria-hidden="true">🔔</span>
             <span>
               <strong>Reminder path</strong>
-              <small>Calendar and push hooks will live here</small>
+              <small>Preview how planned outings become calendar nudges</small>
             </span>
           </button>
         </div>
         <div className="plan-type-box">
           <label className="plan-type-label" htmlFor="typed-plan-input">Type a Plan</label>
+          <p className="plan-type-help">
+            Describe what you want, then turn it into a custom adventure or monthly plan.
+          </p>
           <textarea
             id="typed-plan-input"
             className="plan-type-input"
@@ -233,9 +287,12 @@ export function PlanScreen({
             : 'Curated map pins are not available here yet, so PawStreak will keep this plan local and flexible.'
         }
         zipCode={state.zipCode}
+        isFindingLocation={findStatus?.tone === 'loading'}
+        locationStatusMessage={findStatus?.message ?? null}
+        locationStatusTone={findStatus?.tone}
         onSelectPlace={handleSelectMapPlace}
         onZipChange={onZipChange}
-        onApplyLocation={onApplyLocation}
+        onApplyLocation={() => void handleApplyLocation()}
       />
 
       {selectedPlace ? (

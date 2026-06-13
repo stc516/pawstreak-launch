@@ -317,6 +317,12 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         source: 'profile',
       })
     }
+
+    return {
+      supported: location.supported,
+      resolved: Boolean(located.resolved),
+      label: location.label,
+    }
   }
 
   const openJourneyMap = () => {

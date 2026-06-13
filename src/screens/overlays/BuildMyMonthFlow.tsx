@@ -75,6 +75,10 @@ export function BuildMyMonthFlow({
           {step === 1 ? (
             <section className="build-month-step">
               <div className="sec">Choose 3–4 preferred categories</div>
+              <div className="build-month-preview-note detail-card-warm">
+                Preview: PawStreak will turn these choices into planned outings with dates,
+                places or generic ideas, best times, and achievement/challenge tie-ins.
+              </div>
               <div className="build-month-options">
                 {categoryOptions.map((option) => (
                   <button

@@ -244,10 +244,14 @@ async function main() {
   const qwBanner = await page.locator('[data-testid="active-adventure-banner"]').isVisible()
   check('phase1-quick-walk', qwBanner, `quick walk banner=${qwBanner}`)
 
-  // Community Coming Soon
+  // Community Beta
   await goTab(page, 'Community')
-  const comingSoon = await page.getByText('Coming Soon').first().isVisible()
-  check('community-coming-soon', comingSoon, `coming soon=${comingSoon}`)
+  const communityText = await page.locator('body').innerText()
+  const communityBeta =
+    communityText.includes('Community Beta') &&
+    communityText.includes("Post today's adventure") &&
+    !/Coming soon/i.test(communityText)
+  check('community-beta', communityBeta, `community beta=${communityBeta}`)
   await page.screenshot({ path: path.join(OUT_DIR, '06-community.png') })
 
   const passCount = results.filter((r) => r.pass).length

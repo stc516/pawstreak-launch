@@ -1,4 +1,5 @@
 import type { AppState, JourneyEntry } from '../data/demo'
+import { SAMPLE_IMAGES } from '../data/sampleImages'
 import { getJourneyEntryDisplayImageUrl } from '../lib/adventureDisplayImage'
 
 interface JourneyStoryPathProps {
@@ -43,6 +44,23 @@ export function JourneyStoryPath({
     (left, right) => parseEntryTimestamp(right) - parseEntryTimestamp(left),
   )
   const completedCount = entries.length
+  const previewNodes = [
+    {
+      title: 'Example: beach walk',
+      line: 'Photos, places, dates, and little moments will land here after a real outing.',
+      imageUrl: SAMPLE_IMAGES.beach,
+    },
+    {
+      title: 'Example: 3 photos + note',
+      line: 'Once you finish an outing, this becomes a tappable memory scene.',
+      imageUrl: SAMPLE_IMAGES.scenic,
+    },
+    {
+      title: 'Example: favorite walk',
+      line: 'Plan a few outings now, then PawStreak turns them into memories after you go.',
+      imageUrl: SAMPLE_IMAGES.neighborhood,
+    },
+  ]
 
   return (
     <section className="journey-story journey-memory-path detail-card-warm" aria-label="Completed memory path">
@@ -97,8 +115,36 @@ export function JourneyStoryPath({
           })}
         </div>
       ) : (
-        <div className="journey-memory-empty">
-          <p>Finish an adventure and the first saved memory lands here.</p>
+        <div className="journey-memory-preview" data-testid="journey-memory-preview">
+          <div className="journey-memory-preview-label">Preview only</div>
+          <p>
+            Your first adventure will create a memory path here. Outings become scenes,
+            photos become cards, and the monthly path builds over time.
+          </p>
+          <div className="journey-memory-track journey-memory-track--preview">
+            <div className="journey-memory-spine" aria-hidden="true" />
+            {previewNodes.map((node, index) => {
+              const side = index % 2 === 0 ? 'left' : 'right'
+              return (
+                <article
+                  key={node.title}
+                  className={`journey-memory-node journey-memory-node--${side} journey-memory-node--preview`}
+                >
+                  <div className="journey-memory-card journey-memory-card--preview">
+                    <span className="journey-memory-dot" aria-hidden="true">
+                      {index + 1}
+                    </span>
+                    <img src={node.imageUrl} alt="" className="journey-memory-photo" />
+                    <span className="journey-memory-copy">
+                      <span className="journey-memory-date">Example</span>
+                      <span className="journey-memory-title">{node.title}</span>
+                      <span className="journey-memory-line">{node.line}</span>
+                    </span>
+                  </div>
+                </article>
+              )
+            })}
+          </div>
           <button
             type="button"
             className="st-btn st-btn--forest tap-target"

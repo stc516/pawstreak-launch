@@ -162,9 +162,11 @@ async function main() {
   await goTab(page, 'Community')
   const comm = await page.locator('body').innerText()
   check(
-    'community-coming-soon',
-    comm.includes('Coming soon') && !comm.includes('packs joined'),
-    'Community honest',
+    'community-beta',
+    comm.includes('Community Beta') &&
+      comm.includes("Post today's adventure") &&
+      !/Coming soon|packs joined/i.test(comm),
+    'Community beta honest',
   )
 
   await goTab(page, 'Home')

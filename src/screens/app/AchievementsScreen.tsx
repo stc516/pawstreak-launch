@@ -55,7 +55,12 @@ export function AchievementsScreen({ state, onOpenAchievement }: AchievementsScr
           </div>
         ) : (
           <div className="achievements-empty detail-card-warm">
-            Your first achievements unlock after real outings — start with a Quick Walk or adventure.
+            <div className="achievements-empty-kicker">Preview</div>
+            <strong>Your first achievements unlock after real outings.</strong>
+            <p>
+              Example: finish one adventure, save a photo, or keep a weekly walk rhythm.
+              Nothing is marked earned until the real action is completed.
+            </p>
           </div>
         )}
       </section>

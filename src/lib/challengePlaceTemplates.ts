@@ -37,6 +37,7 @@ const PLAN_CATEGORY_BY_PLACE: Partial<Record<PlaceCategory, string>> = {
   Coffee: 'coffee',
   'Dog Park': 'dog-park',
   Park: 'park',
+  Patio: 'patio',
   Brewery: 'brewery',
   Gardens: 'gardens',
   Neighborhood: 'neighborhood',
@@ -135,6 +136,48 @@ function holidaySlot(index: number): ChallengeNodeSlotTemplate {
 }
 
 export const CHALLENGE_PLACE_TEMPLATES: ChallengePlaceTemplate[] = [
+  {
+    challengeId: 'beach-explorer',
+    displayName: 'Beach Explorer',
+    slots: Array.from({ length: 6 }, (_, index) => beachSlot(index)),
+  },
+  {
+    challengeId: 'trail-scout',
+    displayName: 'Trail Scout',
+    slots: Array.from({ length: 6 }, (_, index) => trailSlot(index)),
+  },
+  {
+    challengeId: 'dog-park-tour',
+    displayName: 'Dog Park Tour',
+    slots: Array.from({ length: 6 }, (_, index) => ({
+      ...DOG_PARK_SLOT,
+      genericTitle: index === 0 ? 'First dog park visit' : `Dog park visit ${index + 1}`,
+    })),
+  },
+  {
+    challengeId: 'patio-pup',
+    displayName: 'Patio Pup',
+    slots: Array.from({ length: 6 }, (_, index) => ({
+      kind: 'local-mix',
+      placeCategory: 'Patio',
+      genericTitle: index === 0 ? 'First patio settle' : `Patio outing ${index + 1}`,
+      genericDescription: 'Log a calm dog-friendly patio outing.',
+      genericPlanHint: 'Activity goal · find a dog-friendly patio near you',
+      unlockHint: 'Complete the previous patio step to unlock this outing.',
+    })),
+  },
+  {
+    challengeId: 'brewery-buddy',
+    displayName: 'Brewery Buddy',
+    slots: Array.from({ length: 6 }, (_, index) => ({
+      kind: 'local-mix',
+      placeCategory: 'Brewery',
+      genericTitle: index === 0 ? 'First brewery patio' : `Brewery outing ${index + 1}`,
+      genericDescription: 'Log a dog-friendly brewery patio adventure.',
+      genericPlanHint: 'Activity goal · find a dog-friendly brewery patio nearby',
+      unlockHint: 'Complete the previous brewery step to unlock this outing.',
+    })),
+  },
   {
     challengeId: 'summer-beach-challenge',
     displayName: 'Beach Explorer',
@@ -361,6 +404,7 @@ export function enrichChallengeNodeContent(
   slotIndex: number,
   nodeState: ChallengeNodeState,
   baseNode: {
+    title: string
     imageUrl: string
     description: string
     planHint: string
@@ -373,7 +417,10 @@ export function enrichChallengeNodeContent(
     return enrichCompletedNode(baseNode, journeyEntry, state)
   }
 
-  const slot = getChallengeNodeSlotTemplate(challenge.id, slotIndex)
+  const rawSlot = getChallengeNodeSlotTemplate(challenge.id, slotIndex)
+  const slot = rawSlot.genericTitle.match(/^Milestone\s+\d+$/i)
+    ? { ...rawSlot, genericTitle: baseNode.title }
+    : rawSlot
   const visitedPlaceIds = collectVisitedPlaceIds(qualifyingEntries)
   return enrichPlaceNode(
     baseNode,

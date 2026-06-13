@@ -33,6 +33,17 @@ const GEOCODE_MOCK = {
     mapboxPlaceId: 'postcode.92123',
     relevance: 1,
   },
+  'irvine, ca': {
+    rawInput: 'Irvine, CA',
+    placeName: 'Irvine, California, United States',
+    city: 'Irvine',
+    state: 'California',
+    country: 'United States',
+    lat: 33.6846,
+    lng: -117.8265,
+    mapboxPlaceId: 'place.irvine',
+    relevance: 0.99,
+  },
 }
 
 const results = []
@@ -89,6 +100,15 @@ async function applyLocationViaSettings(page, query) {
   await goTab(page, 'Home')
 }
 
+async function applyLocationViaPlan(page, query) {
+  await goTab(page, 'Plan')
+  await page.locator('.zip-input').fill(query)
+  await page.waitForTimeout(150)
+  await page.locator('.zip-btn').click()
+  await page.waitForTimeout(1100)
+  return bodyText(page)
+}
+
 async function renderedBackgrounds(page, selector) {
   return page.locator(selector).evaluateAll((nodes) =>
     nodes.map((node) => getComputedStyle(node).backgroundImage),
@@ -119,6 +139,53 @@ async function main() {
       homeImages.every((value) => !BAD_IMAGE_PATTERNS.test(value)),
     `images=${homeImages.length}`,
   )
+
+  let planText = await applyLocationViaPlan(page, '92123')
+  let state = await readState(page)
+  check(
+    'plan-find-san-diego',
+    state?.locationSupported === true &&
+      /San Diego/i.test(state?.locationLabel ?? '') &&
+      planText.includes('Loaded curated dog-friendly spots near San Diego') &&
+      (await page.locator('.plan-suggested-card').count()) > 0,
+    `label=${state?.locationLabel} supported=${state?.locationSupported}`,
+  )
+
+  planText = await applyLocationViaPlan(page, 'Irvine, CA')
+  state = await readState(page)
+  check(
+    'plan-find-orange-county',
+    state?.locationSupported === true &&
+      /Orange County/i.test(state?.locationLabel ?? '') &&
+      planText.includes('Loaded curated dog-friendly spots near Orange County') &&
+      !planText.includes('Generic ideas for your area'),
+    `label=${state?.locationLabel} supported=${state?.locationSupported}`,
+  )
+
+  planText = await applyLocationViaPlan(page, 'Forest Hills, NY')
+  state = await readState(page)
+  check(
+    'plan-find-unsupported-generic',
+    state?.locationSupported === false &&
+      planText.toLowerCase().includes('generic adventure ideas') &&
+      planText.toLowerCase().includes('adventure ideas') &&
+      !planText.includes('Huntington Dog Beach') &&
+      !planText.includes('Balboa Park'),
+    `label=${state?.locationLabel} supported=${state?.locationSupported}`,
+  )
+
+  planText = await applyLocationViaPlan(page, 'not-a-real-place-zzzz')
+  state = await readState(page)
+  check(
+    'plan-find-invalid-friendly',
+    state?.locationSupported === false &&
+      planText.includes('could not confidently resolve') &&
+      !planText.includes('Huntington Dog Beach') &&
+      !planText.includes('Balboa Park'),
+    `label=${state?.locationLabel} supported=${state?.locationSupported}`,
+  )
+
+  await applyLocationViaPlan(page, '92123')
 
   await goTab(page, 'Achievements')
   text = await bodyText(page)
@@ -165,6 +232,11 @@ async function main() {
       !text.includes('Holiday Adventure Challenge'),
     '10 requested challenge titles present, holiday absent',
   )
+  check(
+    'challenge-sections-local-anywhere',
+    text.includes('Local Challenges') && text.includes('Anywhere Challenges'),
+    'local and anywhere sections visible',
+  )
   await page.getByRole('button', { name: 'Preview', exact: true }).first().click()
   await page.waitForTimeout(700)
   const challengePathNodes = await page.locator('.challenge-path .challenge-node').count()
@@ -179,6 +251,16 @@ async function main() {
       challengeLeftNodes > 0 &&
       challengeRightNodes > 0,
     `nodes=${challengePathNodes} left=${challengeLeftNodes} right=${challengeRightNodes}`,
+  )
+  const challengeLabels = await page.locator('.challenge-node-label').evaluateAll((nodes) =>
+    nodes.map((node) => node.textContent ?? ''),
+  )
+  check(
+    'challenge-path-specific-labels',
+    challengeLabels.length >= 6 &&
+      challengeLabels.every((label) => !/milestone\s*\d|step\s*\d/i.test(label)) &&
+      challengeLabels.every((label) => label.trim().split(/\s+/).length >= 2),
+    challengeLabels.join(' | '),
   )
   await page.getByRole('button', { name: /Back/i }).click()
   await page.waitForTimeout(500)
@@ -207,13 +289,32 @@ async function main() {
       !/life story|chapter \\d|chapters saved|your dog.s story/i.test(text),
     `memoryNodes=${journeyMemoryNodes} futureNodes=${journeyCurrentNodes}`,
   )
+  await writeState(page, (state) => ({
+    ...state,
+    journeyEntries: [],
+  }))
+  await page.reload({ waitUntil: 'load', timeout: 90000 })
+  await page.locator('.home-dog-pill').first().waitFor({ state: 'visible', timeout: 30000 })
+  await goTab(page, 'Journey')
+  text = await bodyText(page)
+  const lowerEmptyJourneyText = text.toLowerCase()
+  check(
+    'journey-empty-preview-not-fake',
+    lowerEmptyJourneyText.includes('preview only') &&
+      lowerEmptyJourneyText.includes('your first adventure will create a memory path here') &&
+      (await page.locator('.journey-memory-node--preview').count()) >= 3 &&
+      (await page.locator('.journey-memory-node:not(.journey-memory-node--preview)').count()) === 0,
+    'ghost memory path appears without real completed memories',
+  )
 
   await applyLocationViaSettings(page, '92123')
   await goTab(page, 'Plan')
   text = await bodyText(page)
   check(
     'plan-unified-hub',
-    ['Build My Month', 'Surprise Me', 'Type a Plan', 'Training Goal Plan'].every((label) => text.includes(label)),
+    ['Build My Month', 'Surprise Me', 'Type a Plan', 'Training Goal Plan'].every((label) => text.includes(label)) &&
+      text.includes('Plan something good') &&
+      text.includes('Build a month, pick today'),
     'Plan contains all planning modes',
   )
   await page.getByText('Build My Month').first().click()
@@ -227,6 +328,11 @@ async function main() {
       lowerBuildMonthText.includes('trail') &&
       lowerBuildMonthText.includes('dog park'),
     'category selection visible',
+  )
+  check(
+    'build-my-month-preview-copy',
+    text.includes('Preview: PawStreak will turn these choices into planned outings'),
+    'honest monthly planning preview copy visible',
   )
   await page.getByRole('button', { name: /Beach/i }).click()
   await page.getByRole('button', { name: /Trail/i }).click()
@@ -279,6 +385,19 @@ async function main() {
       text.includes('Start this adventure') &&
       text.includes('Helps with:'),
     'place detail has timing/start/progress hints',
+  )
+
+  await goTab(page, 'Community')
+  text = await bodyText(page)
+  check(
+    'community-beta-useful',
+    text.includes('Community Beta') &&
+      text.includes("Post today's adventure") &&
+      text.includes('Share a dog-friendly win') &&
+      text.includes('Ask for a local recommendation') &&
+      text.includes('Show your favorite walk') &&
+      !/coming soon|packs joined|people nearby/i.test(text),
+    'community beta prompts visible without fake users',
   )
 
   await openDemoApp(page)

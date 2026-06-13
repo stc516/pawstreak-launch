@@ -147,7 +147,14 @@ export const CURATED_CHALLENGES: Challenge[] = [
     heroImageUrl: SAMPLE_IMAGES.trail,
     duration: { kind: 'rolling', label: '30 days from join', days: 30 },
     metric: { kind: 'trail_adventures', target: 3 },
-    nodes: makeNodes('trail-scout', 6, 3, (step) => `Trail step ${step}`, 'Log a completed trail adventure.', SAMPLE_IMAGES.trail, 'Pick a local trail on Plan.'),
+    nodes: makeNodes('trail-scout', 6, 3, (step) => [
+      'Pick a trail or park walk',
+      'Complete a 20-minute sniff walk',
+      'Save one trail photo',
+      'Try a new route',
+      'Add a trail memory',
+      'Finish Trail Scout',
+    ][step - 1] ?? `Trail outing ${step}`, 'Log a completed trail adventure.', SAMPLE_IMAGES.trail, 'Pick a local trail on Plan.'),
   },
   {
     id: 'dog-park-tour',
@@ -165,7 +172,14 @@ export const CURATED_CHALLENGES: Challenge[] = [
     heroImageUrl: SAMPLE_IMAGES.dogPark,
     duration: { kind: 'rolling', label: '30 days from join', days: 30 },
     metric: { kind: 'dog_park_adventures', target: 3 },
-    nodes: makeNodes('dog-park-tour', 6, 3, (step) => `Dog park step ${step}`, 'Log a completed dog park adventure.', SAMPLE_IMAGES.dogPark, 'Choose a local dog park on Plan.'),
+    nodes: makeNodes('dog-park-tour', 6, 3, (step) => [
+      'Choose a dog park',
+      'Visit during a calm window',
+      'Practice one check-in',
+      'Try a second dog park',
+      'Save a social memory',
+      'Finish Dog Park Tour',
+    ][step - 1] ?? `Dog park visit ${step}`, 'Log a completed dog park adventure.', SAMPLE_IMAGES.dogPark, 'Choose a local dog park on Plan.'),
   },
   {
     id: 'patio-pup',
@@ -183,7 +197,14 @@ export const CURATED_CHALLENGES: Challenge[] = [
     heroImageUrl: SAMPLE_IMAGES.patio,
     duration: { kind: 'rolling', label: '30 days from join', days: 30 },
     metric: { kind: 'patio_adventures', target: 2 },
-    nodes: makeNodes('patio-pup', 6, 2, (step) => `Patio step ${step}`, 'Log a completed patio or restaurant adventure.', SAMPLE_IMAGES.patio, 'Pick a calm patio on Plan.'),
+    nodes: makeNodes('patio-pup', 6, 2, (step) => [
+      'Pick a calm patio',
+      'Practice a 5-minute settle',
+      'Save one patio note',
+      'Try a quieter time',
+      'Complete a second patio outing',
+      'Finish Patio Pup',
+    ][step - 1] ?? `Patio outing ${step}`, 'Log a completed patio or restaurant adventure.', SAMPLE_IMAGES.patio, 'Pick a calm patio on Plan.'),
   },
   {
     id: 'brewery-buddy',
@@ -201,7 +222,14 @@ export const CURATED_CHALLENGES: Challenge[] = [
     heroImageUrl: SAMPLE_IMAGES.brewery,
     duration: { kind: 'rolling', label: '30 days from join', days: 30 },
     metric: { kind: 'brewery_adventures', target: 2 },
-    nodes: makeNodes('brewery-buddy', 6, 2, (step) => `Brewery step ${step}`, 'Log a completed brewery adventure.', SAMPLE_IMAGES.brewery, 'Pick a brewery card on Plan.'),
+    nodes: makeNodes('brewery-buddy', 6, 2, (step) => [
+      'Pick a dog-friendly brewery',
+      'Choose patio seating',
+      'Practice a calm settle',
+      'Save a brewery memory',
+      'Visit a second taproom',
+      'Finish Brewery Buddy',
+    ][step - 1] ?? `Brewery outing ${step}`, 'Log a completed brewery adventure.', SAMPLE_IMAGES.brewery, 'Pick a brewery card on Plan.'),
   },
   {
     id: 'first-walk-week',
@@ -219,7 +247,14 @@ export const CURATED_CHALLENGES: Challenge[] = [
     heroImageUrl: SAMPLE_IMAGES.neighborhood,
     duration: { kind: 'rolling', label: '7 days from join', days: 7 },
     metric: { kind: 'neighborhood_walks', target: 3 },
-    nodes: makeNodes('first-walk-week', 6, 3, (step) => `Walk step ${step}`, 'Complete a neighborhood walk.', SAMPLE_IMAGES.neighborhood, 'Start Quick Walk from Home.'),
+    nodes: makeNodes('first-walk-week', 6, 3, (step) => [
+      'Start a 10-minute walk',
+      'Let your dog pick one turn',
+      'Save one walk note',
+      'Repeat once this week',
+      'Finish a third walk',
+      'Complete First Walk Week',
+    ][step - 1] ?? `Walk ${step}`, 'Complete a neighborhood walk.', SAMPLE_IMAGES.neighborhood, 'Start Quick Walk from Home.'),
   },
   {
     id: 'sniffari-streak',
@@ -237,7 +272,14 @@ export const CURATED_CHALLENGES: Challenge[] = [
     heroImageUrl: SAMPLE_IMAGES.scenic,
     duration: { kind: 'rolling', label: '14 days from join', days: 14 },
     metric: { kind: 'total_adventures', target: 5 },
-    nodes: makeNodes('sniffari-streak', 6, 5, (step) => `Sniffari step ${step}`, 'Complete any outing and keep the streak alive.', SAMPLE_IMAGES.scenic, 'Pick a generic adventure idea.'),
+    nodes: makeNodes('sniffari-streak', 6, 5, (step) => [
+      'Let your dog choose the route',
+      'Stop for 5 good smells',
+      'Save one photo',
+      'Add a note',
+      'Repeat once this week',
+      'Finish Sniffari Streak',
+    ][step - 1] ?? `Sniffari ${step}`, 'Complete any outing and keep the streak alive.', SAMPLE_IMAGES.scenic, 'Pick a generic adventure idea.'),
   },
   {
     id: 'memory-maker-challenge',
@@ -255,7 +297,14 @@ export const CURATED_CHALLENGES: Challenge[] = [
     heroImageUrl: SAMPLE_IMAGES.scenic,
     duration: { kind: 'rolling', label: '30 days from join', days: 30 },
     metric: { kind: 'memories_with_photo', target: 3 },
-    nodes: makeNodes('memory-maker-challenge', 6, 3, (step) => `Photo memory step ${step}`, 'Finish an outing and save a real photo.', SAMPLE_IMAGES.scenic, 'Add a photo at finish.'),
+    nodes: makeNodes('memory-maker-challenge', 6, 3, (step) => [
+      'Finish any outing',
+      'Save one real photo',
+      'Add a memory note',
+      'Capture a second outing',
+      'Save a third photo memory',
+      'Finish Memory Maker',
+    ][step - 1] ?? `Photo memory ${step}`, 'Finish an outing and save a real photo.', SAMPLE_IMAGES.scenic, 'Add a photo at finish.'),
   },
   {
     id: 'social-confidence',
@@ -273,7 +322,14 @@ export const CURATED_CHALLENGES: Challenge[] = [
     heroImageUrl: SAMPLE_IMAGES.dogPark,
     duration: { kind: 'rolling', label: '30 days from join', days: 30 },
     metric: { kind: 'social_adventures', target: 2 },
-    nodes: makeNodes('social-confidence', 6, 2, (step) => `Social step ${step}`, 'Complete a calm social adventure.', SAMPLE_IMAGES.dogPark, 'Try a dog park entrance or calm patio.'),
+    nodes: makeNodes('social-confidence', 6, 2, (step) => [
+      'Pick a low-pressure social spot',
+      'Practice calm at the edge',
+      'Reward one check-in',
+      'Save a confidence note',
+      'Try a second social outing',
+      'Finish Social Confidence',
+    ][step - 1] ?? `Social outing ${step}`, 'Complete a calm social adventure.', SAMPLE_IMAGES.dogPark, 'Try a dog park entrance or calm patio.'),
   },
   {
     id: 'new-route-challenge',
@@ -291,7 +347,14 @@ export const CURATED_CHALLENGES: Challenge[] = [
     heroImageUrl: SAMPLE_IMAGES.roadTrip,
     duration: { kind: 'rolling', label: '30 days from join', days: 30 },
     metric: { kind: 'distinct_routes', target: 3 },
-    nodes: makeNodes('new-route-challenge', 6, 3, (step) => `New route step ${step}`, 'Complete a new route or place type.', SAMPLE_IMAGES.roadTrip, 'Use Type a Plan or Add Adventure.'),
+    nodes: makeNodes('new-route-challenge', 6, 3, (step) => [
+      'Pick a route you do not usually take',
+      'Complete the first new loop',
+      'Save what felt different',
+      'Try a second new route',
+      'Add a third distinct place',
+      'Finish New Route Challenge',
+    ][step - 1] ?? `New route ${step}`, 'Complete a new route or place type.', SAMPLE_IMAGES.roadTrip, 'Use Type a Plan or Add Adventure.'),
   },
 ]
 
