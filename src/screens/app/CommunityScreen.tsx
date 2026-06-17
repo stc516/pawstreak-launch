@@ -33,15 +33,19 @@ export function CommunityScreen() {
 
       <section className="community-beta detail-card-warm">
         <div className="community-beta-kicker">Beta surface</div>
-        <h2 className="st-headline-md">Start simple</h2>
+        <h2 className="st-headline-md">Community is opening carefully</h2>
         <p className="community-beta-copy">
-          No fake users, no inflated activity counts. These prompts help beta testers share
-          real adventures, local wins, and recommendation requests.
+          No fake users, no inflated activity counts. We&apos;ll start with real beta
+          posts once enough local dog people are using PawStreak.
+        </p>
+        <p className="community-beta-note">
+          Coming soon: share completed adventures, local wins, and recommendation
+          requests from real PawStreak activity.
         </p>
 
         <div className="community-beta-actions">
           {COMMUNITY_BETA_ACTIONS.map((action) => (
-            <button key={action.title} type="button" className="community-beta-action tap-target">
+            <article key={action.title} className="community-beta-action">
               <span className="community-beta-action-icon" aria-hidden="true">
                 <i className={action.icon} />
               </span>
@@ -49,7 +53,8 @@ export function CommunityScreen() {
                 <strong>{action.title}</strong>
                 <small>{action.copy}</small>
               </span>
-            </button>
+              <span className="community-beta-action-status">Coming soon</span>
+            </article>
           ))}
         </div>
       </section>

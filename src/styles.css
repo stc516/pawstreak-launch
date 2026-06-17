@@ -13509,12 +13509,24 @@ select.field-input {
   line-height: 1.45;
 }
 
+.community-beta-note {
+  margin: 0 0 12px;
+  border-radius: 12px;
+  background: rgba(67, 98, 72, 0.1);
+  color: rgba(49, 64, 52, 0.82);
+  padding: 10px 12px;
+  font-size: 12px;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
 .community-beta-actions {
   display: grid;
   gap: 10px;
 }
 
 .community-beta-action {
+  position: relative;
   display: grid;
   grid-template-columns: 42px minmax(0, 1fr);
   gap: 10px;
@@ -13551,6 +13563,19 @@ select.field-input {
   color: #6f594a;
   font-size: 11px;
   line-height: 1.35;
+}
+
+.community-beta-action-status {
+  grid-column: 2;
+  justify-self: start;
+  border-radius: 999px;
+  background: rgba(154, 52, 18, 0.08);
+  color: #9a3412;
+  padding: 4px 8px;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
 
 .build-month-hero,

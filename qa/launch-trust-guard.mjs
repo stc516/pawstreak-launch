@@ -92,6 +92,15 @@ record(
   'Surprise Me renders a visible result panel on Plan',
 )
 
+const community = read('src/screens/app/CommunityScreen.tsx')
+record(
+  'community-beta-no-dead-buttons',
+  community.includes('Coming soon') &&
+    community.includes('<article key={action.title} className="community-beta-action">') &&
+    !community.includes('<button key={action.title}'),
+  'Community Beta prompts are honest preview cards, not dead posting buttons',
+)
+
 const failed = checks.filter((check) => !check.pass)
 for (const check of checks) {
   console.log(`${check.pass ? 'PASS' : 'FAIL'} ${check.id} — ${check.detail}`)
