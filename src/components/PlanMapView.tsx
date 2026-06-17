@@ -17,6 +17,8 @@ interface PlanMapViewProps {
   selectedPlaceId: string | null
   mapCenter: MapCenter
   onSelectPlace: (placeId: string) => void
+  emptyTitle?: string
+  emptyCopy?: string
 }
 
 const MAP_PADDING = { top: 28, bottom: 28, left: 24, right: 24 }
@@ -26,6 +28,8 @@ export function PlanMapView({
   selectedPlaceId,
   mapCenter,
   onSelectPlace,
+  emptyTitle = 'No mappable spots yet',
+  emptyCopy = 'Try another category or proximity filter to see places on the map.',
 }: PlanMapViewProps) {
   const mapRef = useRef<MapRef>(null)
   const accessToken = getMapboxAccessToken()
@@ -73,9 +77,9 @@ export function PlanMapView({
   if (places.length === 0) {
     return (
       <div className="plan-map-empty detail-card-warm">
-        <div className="plan-map-empty-title">No mappable spots yet</div>
+        <div className="plan-map-empty-title">{emptyTitle}</div>
         <p className="plan-map-empty-copy">
-          Try another category or proximity filter to see places on the map.
+          {emptyCopy}
         </p>
       </div>
     )

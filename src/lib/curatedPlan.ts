@@ -98,7 +98,7 @@ const REAL_ADVENTURE_IDEAS: {
 }[] = [
   {
     id: 'beach-morning',
-    title: 'Dog Beach morning',
+    title: 'Beach morning',
     categories: ['Beach'],
     timeSuggestion: 'Sat · 8–10 AM',
     whyTemplate: 'Wide sand and room to run — an easy high-energy start.',
@@ -376,7 +376,7 @@ function pickFirstAdventure(cards: CuratedPlanAdventureCard[]) {
 
 function loveToAdventureTypes(loveIds: string[]): string[] {
   const map: Record<string, string> = {
-    beaches: 'Dog Beach mornings',
+    beaches: 'Dog-friendly beach mornings',
     trails: 'Trail sniff walks',
     cafes: 'Coffee patio walks',
     'new-dogs': 'Dog park play sessions',
@@ -387,7 +387,7 @@ function loveToAdventureTypes(loveIds: string[]): string[] {
   }
 
   const types = loveIds.map((id) => map[id]).filter(Boolean)
-  return types.length > 0 ? types : ['Dog Beach morning', 'Local park loop', 'Sunset neighborhood walk']
+  return types.length > 0 ? types : ['Neighborhood walk', 'Local park loop', 'Sunset neighborhood walk']
 }
 
 function buildMonthlyGoals(optimizeIds: string[], loveIds: string[]): string[] {

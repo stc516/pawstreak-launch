@@ -1,5 +1,6 @@
 import type { Dog } from './demo'
 import { getDogDisplayName, personalizeGhostText } from '../lib/dogLabels'
+import { SAMPLE_IMAGES } from './sampleImages'
 
 export interface ChallengePlace {
   id: string
@@ -41,10 +42,10 @@ const CHALLENGE_DETAILS: Record<string, ChallengeDetail> = {
       'Bailey seems happiest near the water.',
     ],
     completedPlaces: [
-      { id: 'ob', name: 'Dog Beach, OB', completed: true, imageUrl: '/sample-images/beach.jpg' },
-      { id: 'coronado', name: 'Coronado Dog Beach', completed: true, imageUrl: '/sample-images/coastal.jpg' },
-      { id: 'del-mar', name: 'Del Mar Dog Beach', completed: true, imageUrl: '/sample-images/beach.jpg' },
-      { id: 'huntington', name: 'Huntington Dog Beach', completed: true, imageUrl: '/sample-images/coastal.jpg' },
+      { id: 'ob', name: 'Dog Beach, OB', completed: true, imageUrl: SAMPLE_IMAGES.beach },
+      { id: 'coronado', name: 'Coronado Dog Beach', completed: true, imageUrl: SAMPLE_IMAGES.coastal },
+      { id: 'del-mar', name: 'Del Mar Dog Beach', completed: true, imageUrl: SAMPLE_IMAGES.beach },
+      { id: 'huntington', name: 'Huntington Dog Beach', completed: true, imageUrl: SAMPLE_IMAGES.coastal },
     ],
     remainingPlaces: [
       { id: 'carlsbad', name: 'Carlsbad Dog Beach', completed: false },
@@ -53,7 +54,7 @@ const CHALLENGE_DETAILS: Record<string, ChallengeDetail> = {
     suggestedNext: {
       name: 'Carlsbad Dog Beach',
       reason: 'Shorter drive, wide sand — perfect for a Bailey sprint day.',
-      imageUrl: '/sample-images/beach.jpg',
+      imageUrl: SAMPLE_IMAGES.beach,
     },
     stats: [
       { label: 'Beaches visited', value: '4 of 6' },
@@ -61,9 +62,9 @@ const CHALLENGE_DETAILS: Record<string, ChallengeDetail> = {
       { label: 'Pack rank', value: 'Top 28%' },
     ],
     memoryThumbnails: [
-      '/sample-images/beach.jpg',
-      '/sample-images/coastal.jpg',
-      '/sample-images/park.jpg',
+      SAMPLE_IMAGES.beach,
+      SAMPLE_IMAGES.coastal,
+      SAMPLE_IMAGES.park,
     ],
     packDogs: [
       { name: 'Mochi', initial: 'M', progress: '5 of 6' },
@@ -93,7 +94,7 @@ const CHALLENGE_DETAILS: Record<string, ChallengeDetail> = {
     suggestedNext: {
       name: 'Mission Bay trail',
       reason: 'You already know the route — easy win tomorrow morning.',
-      imageUrl: '/sample-images/trail.jpg',
+      imageUrl: SAMPLE_IMAGES.trail,
     },
     stats: [
       { label: 'Early walks', value: '12 of 20' },
@@ -101,9 +102,9 @@ const CHALLENGE_DETAILS: Record<string, ChallengeDetail> = {
       { label: 'Avg start time', value: '7:12 AM' },
     ],
     memoryThumbnails: [
-      '/sample-images/trail.jpg',
-      '/sample-images/park.jpg',
-      '/sample-images/park.jpg',
+      SAMPLE_IMAGES.trail,
+      SAMPLE_IMAGES.park,
+      SAMPLE_IMAGES.park,
     ],
     packDogs: [
       { name: 'Cooper', initial: 'C', progress: '18 of 20' },
@@ -122,7 +123,7 @@ const CHALLENGE_DETAILS: Record<string, ChallengeDetail> = {
       'Both dogs light up on the drive — keep going.',
     ],
     completedPlaces: [
-      { id: 'julian', name: 'Julian day trip', completed: true, imageUrl: '/sample-images/mountain.jpg' },
+      { id: 'julian', name: 'Julian day trip', completed: true, imageUrl: SAMPLE_IMAGES.mountain },
     ],
     remainingPlaces: [
       { id: 'temecula', name: 'Temecula wine country', completed: false },
@@ -131,7 +132,7 @@ const CHALLENGE_DETAILS: Record<string, ChallengeDetail> = {
     suggestedNext: {
       name: 'Idyllwild mountain run',
       reason: 'Cooler air, pine trails — Bailey will love the elevation.',
-      imageUrl: '/sample-images/mountain.jpg',
+      imageUrl: SAMPLE_IMAGES.mountain,
     },
     stats: [
       { label: 'Day trips', value: '1 of 3' },
@@ -139,9 +140,9 @@ const CHALLENGE_DETAILS: Record<string, ChallengeDetail> = {
       { label: 'New places', value: '1' },
     ],
     memoryThumbnails: [
-      '/sample-images/road-trip.jpg',
-      '/sample-images/mountain.jpg',
-      '/sample-images/trail.jpg',
+      SAMPLE_IMAGES.roadTrip,
+      SAMPLE_IMAGES.mountain,
+      SAMPLE_IMAGES.trail,
     ],
     packDogs: [
       { name: 'Duke', initial: 'D', progress: '2 of 3' },

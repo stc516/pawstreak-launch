@@ -77,7 +77,7 @@ async function readDemoState(page) {
 }
 
 async function startCustomAdventure(page, title, location = 'San Diego Bay') {
-  await goTab(page, 'Journey')
+  await goTab(page, 'Plan')
   await page.locator('[data-testid="journey-add-adventure"]').click()
   await page.locator('[data-testid="add-adventure-title"]').fill(title)
   await page.locator('[data-testid="add-adventure-location"]').fill(location)
@@ -87,7 +87,7 @@ async function startCustomAdventure(page, title, location = 'San Diego Bay') {
 }
 
 async function saveCustomAdventure(page, title) {
-  await goTab(page, 'Journey')
+  await goTab(page, 'Plan')
   await page.locator('[data-testid="journey-add-adventure"]').click()
   await page.locator('[data-testid="add-adventure-title"]').fill(title)
   await page.locator('[data-testid="add-adventure-save-later"]').click()
@@ -181,7 +181,7 @@ async function runGrantedChecks(browser, results, check) {
     `scheduled=${state?.scheduledAdventures?.length}`,
   )
 
-  await goTab(page, 'Journey')
+  await goTab(page, 'Plan')
   await page.locator('[data-testid="journey-planned-start"]').first().click()
   await page.waitForTimeout(900)
   state = await readDemoState(page)

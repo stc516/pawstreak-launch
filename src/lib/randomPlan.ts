@@ -1,6 +1,7 @@
-import type { Dog } from '../data/demo'
+import type { AppState, Dog } from '../data/demo'
 import { dogNamesLabel } from '../data/demo'
 import { PLACES } from '../data/places'
+import { GENERIC_ADVENTURE_TYPES } from './genericAdventures'
 
 export interface RandomPlanResult {
   title: string
@@ -38,8 +39,13 @@ function pickRandom<T>(items: T[], count: number): T[] {
   return picked
 }
 
-export function generateRandomPlan(dogs: Dog[]): RandomPlanResult {
-  const spots = pickRandom(PLACES, 3)
+export function generateRandomPlan(dogsOrState: Dog[] | AppState): RandomPlanResult {
+  const dogs = Array.isArray(dogsOrState) ? dogsOrState : dogsOrState.dogs
+  const supported = Array.isArray(dogsOrState) ? true : dogsOrState.locationSupported
+  const localPool = supported
+    ? PLACES.filter((place) => place.category !== 'Road trip')
+    : []
+  const spots = pickRandom(localPool, 3)
   const types = pickRandom(ADVENTURE_TYPES, 3)
 
   return {
@@ -47,10 +53,15 @@ export function generateRandomPlan(dogs: Dog[]): RandomPlanResult {
     emotionalCopy: pickRandom(RANDOM_COPY, 1)[0]!,
     weeklyCadence: '3 surprise outings per week · mix of familiar and new',
     adventureTypes: types,
-    recommendedSpots: spots.map((place) => ({
-      name: place.name,
-      reason: place.whyDogsLoveIt,
-    })),
+    recommendedSpots: supported
+      ? spots.map((place) => ({
+          name: place.name,
+          reason: place.whyDogsLoveIt,
+        }))
+      : pickRandom(GENERIC_ADVENTURE_TYPES, 3).map((type) => ({
+          name: type.label,
+          reason: type.prompt,
+        })),
     savedAt: new Date().toISOString(),
   }
 }

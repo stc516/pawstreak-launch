@@ -9,7 +9,12 @@ interface PlanAdventureMapProps {
   mapCenter: MapCenter
   mapTitle: string
   mapSubtitle: string
+  emptyTitle?: string
+  emptyCopy?: string
   zipCode: string
+  isFindingLocation?: boolean
+  locationStatusMessage?: string | null
+  locationStatusTone?: 'loading' | 'success' | 'fallback' | 'error'
   onSelectPlace: (placeId: string) => void
   onZipChange: (zipCode: string) => void
   onApplyLocation: () => void
@@ -21,7 +26,12 @@ export function PlanAdventureMap({
   mapCenter,
   mapTitle,
   mapSubtitle,
+  emptyTitle,
+  emptyCopy,
   zipCode,
+  isFindingLocation = false,
+  locationStatusMessage,
+  locationStatusTone = 'success',
   onSelectPlace,
   onZipChange,
   onApplyLocation,
@@ -38,6 +48,8 @@ export function PlanAdventureMap({
           selectedPlaceId={selectedPlaceId}
           mapCenter={mapCenter}
           onSelectPlace={onSelectPlace}
+          emptyTitle={emptyTitle}
+          emptyCopy={emptyCopy}
         />
 
         {selectedPlace ? (
@@ -62,16 +74,29 @@ export function PlanAdventureMap({
           <input
             className="zip-input"
             type="text"
-            inputMode="numeric"
-            placeholder="Zip code"
+            inputMode="text"
+            placeholder="City or ZIP"
             value={zipCode}
             onChange={(event) => onZipChange(event.target.value)}
           />
-          <button type="button" className="zip-btn tap-target" onClick={onApplyLocation}>
-            Find
+          <button
+            type="button"
+            className="zip-btn tap-target"
+            onClick={onApplyLocation}
+            disabled={isFindingLocation}
+          >
+            {isFindingLocation ? 'Finding…' : 'Find'}
           </button>
         </div>
       </div>
+      {locationStatusMessage ? (
+        <div
+          className={`plan-location-status plan-location-status--${locationStatusTone}`}
+          role="status"
+        >
+          {locationStatusMessage}
+        </div>
+      ) : null}
     </section>
   )
 }

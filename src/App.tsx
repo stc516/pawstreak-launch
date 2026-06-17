@@ -317,6 +317,12 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         source: 'profile',
       })
     }
+
+    return {
+      supported: location.supported,
+      resolved: Boolean(located.resolved),
+      label: location.label,
+    }
   }
 
   const openJourneyMap = () => {
@@ -534,7 +540,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       ...current,
       activeTab: 'plan',
       selectedMonthlyPlanId: 'random',
-      randomPlanResult: generateRandomPlan(current.dogs),
+      randomPlanResult: generateRandomPlan(current),
       curatedPlanResult: null,
       monthlyPlanResult: null,
       curatedPlanFlowStep: 0,
@@ -579,6 +585,23 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       ...current,
       buildMyMonthDraft: { ...current.buildMyMonthDraft, vibeId },
     }))
+  }
+
+  const toggleBuildMyMonthCategory = (categoryId: string) => {
+    setState((current) => {
+      const categoryIds = current.buildMyMonthDraft.categoryIds.includes(categoryId)
+        ? current.buildMyMonthDraft.categoryIds.filter((id) => id !== categoryId)
+        : [...current.buildMyMonthDraft.categoryIds, categoryId].slice(0, 4)
+
+      return {
+        ...current,
+        buildMyMonthDraft: {
+          ...current.buildMyMonthDraft,
+          categoryIds,
+          vibeId: current.buildMyMonthDraft.vibeId ?? 'mixed',
+        },
+      }
+    })
   }
 
   const setBuildMyMonthFrequency = (
@@ -975,8 +998,8 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
           showAddAdventureFlow: false,
           addAdventureDraft: createDefaultAddAdventureDraft(current),
           scheduledAdventures: [saved, ...current.scheduledAdventures],
-          activeTab: 'journey',
-          memorySaveToast: 'Saved for later — find it in Journey under Planned.',
+          activeTab: 'plan',
+          memorySaveToast: 'Saved for later — find it in Plan under Planned.',
         }))
         return
       }
@@ -992,8 +1015,8 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       showAddAdventureFlow: false,
       addAdventureDraft: createDefaultAddAdventureDraft(current),
       scheduledAdventures: [planned, ...current.scheduledAdventures],
-      activeTab: 'journey',
-      memorySaveToast: 'Saved for later — find it in Journey under Planned.',
+      activeTab: 'plan',
+      memorySaveToast: 'Saved for later — find it in Plan under Planned.',
     }))
   }
 
@@ -1057,6 +1080,15 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     const place = getPlaceById(placeId)
     if (!place) return
     if (blockIfActiveAdventure()) return
+
+    if (
+      !state.locationSupported &&
+      !isNeighborhoodWalkPlace(place.id) &&
+      place.id !== CUSTOM_ADVENTURE_PLACE_ID
+    ) {
+      startNeighborhoodWalk()
+      return
+    }
 
     const activeDogId = state.activeDogId ?? state.dogs[0]?.id
 
@@ -1649,6 +1681,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         result={state.monthlyPlanResult}
         onBack={handleBuildMyMonthBack}
         onSelectVibe={setBuildMyMonthVibe}
+        onToggleCategory={toggleBuildMyMonthCategory}
         onSelectFrequency={setBuildMyMonthFrequency}
         onSelectDays={setBuildMyMonthDays}
         onNext={advanceBuildMyMonthFlow}
@@ -1847,7 +1880,6 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onOpenMemory={openJourneyMemory}
             onGoToPlan={() => setActiveTab('plan')}
             onOpenBuildMyMonth={openBuildMyMonthFlow}
-            onOpenTrainingProgram={openTrainingProgramFlow}
             onStartMonthlyPlanAdventure={startAdventureFromMonthlyPlan}
             onContinueTraining={continueTrainingFromHome}
             onOpenAddAdventure={openAddAdventureFlow}
@@ -1864,12 +1896,14 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onStartAdventure={startAdventure}
             onStartNeighborhoodWalk={startNeighborhoodWalk}
             onOpenAddAdventure={openAddAdventureFlow}
+            onStartPlannedAdventure={startPlannedAdventure}
+            onDeletePlannedAdventure={(id) => void deletePlannedAdventure(id)}
             onOpenBuildMyMonth={openBuildMyMonthFlow}
             onGenerateRandomPlan={generateRandomPlanForDogs}
             onOpenPresetPlan={openPresetPlanOverlay}
             onOpenChallenge={openChallengeDetail}
             onJoinChallenge={joinChallenge}
-            onOpenTrainingProgram={openTrainingProgram}
+            onOpenTrainingProgram={openTrainingProgramFlow}
           />
         )
       case 'journey':
@@ -1880,12 +1914,6 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onOpenMemory={openJourneyMemory}
             onOpenMap={openJourneyMap}
             onGoToPlan={() => setActiveTab('plan')}
-            onOpenAddAdventure={openAddAdventureFlow}
-            onStartPlannedAdventure={startPlannedAdventure}
-            onDeletePlannedAdventure={(id) => void deletePlannedAdventure(id)}
-            onStartAdventure={startAdventure}
-            onStartNeighborhoodWalk={startNeighborhoodWalk}
-            onOpenChallenge={openChallengeDetail}
             onDismissToast={clearMemorySaveToast}
           />
         )

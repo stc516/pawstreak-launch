@@ -56,6 +56,16 @@ export function createProductionInitialState(): AppState {
     activeAdventure: null,
     adventurePhotos: ['', '', ''],
     locationCandidates: [],
+    zipCode: '',
+    locationQuery: '',
+    locationLabel: 'Your area',
+    locationSupported: false,
+    resolvedLocation: null,
+    mapRegion: {
+      title: 'Your adventures, anywhere',
+      subtitle:
+        "We don't have curated local spots here yet, but PawStreak still works. We'll build adventures around your area and use this to improve local recommendations.",
+    },
   })
 }
 

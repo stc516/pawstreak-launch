@@ -60,6 +60,21 @@ export function ChallengePathDetailView({
           ) : null}
         </div>
 
+        <div className="challenge-path-detail-meta challenge-path-detail-meta--stack">
+          <div className="challenge-path-detail-meta-item">
+            <span className="challenge-path-detail-meta-label">Goal</span>
+            <span>{resolved.goal}</span>
+          </div>
+          <div className="challenge-path-detail-meta-item">
+            <span className="challenge-path-detail-meta-label">What counts</span>
+            <span>{resolved.whatCounts}</span>
+          </div>
+          <div className="challenge-path-detail-meta-item">
+            <span className="challenge-path-detail-meta-label">Reward connection</span>
+            <span>{resolved.rewardConnection}</span>
+          </div>
+        </div>
+
         <div className="challenge-path-detail-actions">
           {progress.joined ? (
             <>
@@ -78,42 +93,31 @@ export function ChallengePathDetailView({
               className="challenge-path-detail-join tap-target"
               onClick={() => onJoinChallenge(challenge.id)}
             >
-              Join challenge
+              {resolved.actionCta}
             </button>
           )}
         </div>
       </div>
 
-      {progress.joined ? (
-        <>
-          <ChallengePathExperience
-            challenge={challenge}
-            state={state}
-            onStartAdventure={onStartAdventure}
-            onStartNeighborhoodWalk={onStartNeighborhoodWalk}
-            onGoToPlan={onGoToPlan}
-            onOpenMemory={onOpenMemory}
-          />
+      <ChallengePathExperience
+        challenge={challenge}
+        state={state}
+        onStartAdventure={onStartAdventure}
+        onStartNeighborhoodWalk={onStartNeighborhoodWalk}
+        onGoToPlan={onGoToPlan}
+        onOpenMemory={onOpenMemory}
+      />
 
-          <section className="challenge-leaderboard detail-card-warm">
-            <div className="challenge-leaderboard-head">
-              <h2 className="challenge-leaderboard-title">Leaderboard</h2>
-            </div>
-            <p className="challenge-leaderboard-empty">
-              No leaderboard yet. Yours will fill in when more packs join this challenge.
-            </p>
-          </section>
-        </>
-      ) : (
-        <div className="challenge-path-detail-preview detail-card-warm">
-          <p>Join to start tracking progress on this challenge path.</p>
-          <ul className="challenge-path-detail-milestones">
-            {resolved.nodes.map((node) => (
-              <li key={node.id}>{node.title}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+      {progress.joined ? (
+        <section className="challenge-leaderboard detail-card-warm">
+          <div className="challenge-leaderboard-head">
+            <h2 className="challenge-leaderboard-title">Leaderboard</h2>
+          </div>
+          <p className="challenge-leaderboard-empty">
+            No leaderboard yet. Yours will fill in when more packs join this challenge.
+          </p>
+        </section>
+      ) : null}
     </>
   )
 }

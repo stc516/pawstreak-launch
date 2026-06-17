@@ -138,7 +138,7 @@ async function main() {
   await openDemo(page)
   await page.locator('section[aria-label="Build My Month"] button').click()
   await page.waitForTimeout(500)
-  await page.getByRole('button', { name: /Dog Parks/i }).click()
+  await page.getByRole('button', { name: /Dog park/i }).click()
   await page.getByRole('button', { name: 'Continue', exact: true }).click()
   await page.getByRole('button', { name: /1 adventure per week/i }).click()
   await page.getByRole('button', { name: 'Continue', exact: true }).click()
@@ -162,9 +162,11 @@ async function main() {
   await goTab(page, 'Community')
   const comm = await page.locator('body').innerText()
   check(
-    'community-coming-soon',
-    comm.includes('Coming soon') && !comm.includes('packs joined'),
-    'Community honest',
+    'community-beta',
+    comm.includes('Community Beta') &&
+      comm.includes("Post today's adventure") &&
+      !/Coming soon|packs joined/i.test(comm),
+    'Community beta honest',
   )
 
   await goTab(page, 'Home')

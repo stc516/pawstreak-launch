@@ -11,7 +11,7 @@ export function OnboardingEntryPreview() {
           className="onboarding-entry-adventure-image"
           style={{ backgroundImage: `url(${SAMPLE_IMAGES.beach})` }}
         />
-        <h3 className="onboarding-entry-adventure-title">Dog Beach morning</h3>
+        <h3 className="onboarding-entry-adventure-title">Today&apos;s outing</h3>
       </article>
 
       <article className="onboarding-entry-memory">
@@ -21,7 +21,7 @@ export function OnboardingEntryPreview() {
         />
         <div>
           <p className="onboarding-entry-memory-label">Latest memory</p>
-          <p className="onboarding-entry-memory-title">Sunny morning run</p>
+          <p className="onboarding-entry-memory-title">Your saved moment</p>
         </div>
       </article>
 

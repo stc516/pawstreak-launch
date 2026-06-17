@@ -24,7 +24,7 @@ export function AchievementsScreen({ state, onOpenAchievement }: AchievementsScr
     () => sortAchievements(grouped.flatMap((group) => group.achievements.filter((item) => item.status === 'active'))),
     [grouped],
   )
-  const locked = useMemo(
+  const available = useMemo(
     () => sortAchievements(grouped.flatMap((group) => group.achievements.filter((item) => item.status === 'locked'))),
     [grouped],
   )
@@ -55,7 +55,12 @@ export function AchievementsScreen({ state, onOpenAchievement }: AchievementsScr
           </div>
         ) : (
           <div className="achievements-empty detail-card-warm">
-            Your first achievements unlock after real outings — start with a Quick Walk or adventure.
+            <div className="achievements-empty-kicker">Preview</div>
+            <strong>Your first achievements unlock after real outings.</strong>
+            <p>
+              Example: finish one adventure, save a photo, or keep a weekly walk rhythm.
+              Nothing is marked earned until the real action is completed.
+            </p>
           </div>
         )}
       </section>
@@ -95,10 +100,10 @@ export function AchievementsScreen({ state, onOpenAchievement }: AchievementsScr
 
       <section className="achievements-section">
         <div className="st-section-head">
-          <h2 className="st-headline-md">Locked</h2>
+          <h2 className="st-headline-md">Available to Earn</h2>
         </div>
         <div className="achievements-locked-list">
-          {locked.slice(0, 8).map((achievement) => (
+          {available.map((achievement) => (
             <button
               key={achievement.id}
               type="button"

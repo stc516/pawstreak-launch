@@ -17,10 +17,15 @@ export interface MonthlyPlanWeek {
   placeId: string
   placeName: string
   category: string
+  timingLabel: string
+  bestTime: string
+  addressLabel?: string
+  tieInLabel: string
 }
 
 export interface MonthlyPlanDraft {
   vibeId: MonthlyPlanVibeId | null
+  categoryIds: string[]
   frequencyPerWeek: MonthlyPlanFrequency | null
   dayPreference: MonthlyPlanDayPreference | null
 }
@@ -39,6 +44,7 @@ export interface MonthlyPlanResult {
 
 export const EMPTY_MONTHLY_PLAN_DRAFT: MonthlyPlanDraft = {
   vibeId: null,
+  categoryIds: [],
   frequencyPerWeek: null,
   dayPreference: null,
 }
@@ -48,20 +54,18 @@ export const MONTHLY_PLAN_VIBE_OPTIONS: {
   label: string
   subtitle: string
 }[] = [
-  { id: 'surprise', label: 'Surprise Me', subtitle: 'Mix it up each week' },
-  { id: 'beaches', label: 'Mostly Beaches', subtitle: 'Coastal outings first' },
-  { id: 'trails', label: 'Mostly Trails', subtitle: 'Sniff-heavy adventures' },
-  { id: 'dog-parks', label: 'Dog Parks', subtitle: 'Off-leash social time' },
-  { id: 'mixed', label: 'Mixed Adventures', subtitle: 'Beaches, trails, parks, coffee' },
+  { id: 'surprise', label: 'Local + easy', subtitle: 'Low-friction outings first' },
+  { id: 'mixed', label: 'Balanced mix', subtitle: 'A practical spread across the month' },
+  { id: 'trails', label: 'Adventure-heavy', subtitle: 'Bigger outings and trail energy' },
 ]
 
 export const MONTHLY_PLAN_FREQUENCY_OPTIONS: {
   id: MonthlyPlanFrequency
   label: string
 }[] = [
-  { id: 1, label: '1 adventure per week' },
-  { id: 2, label: '2 adventures per week' },
-  { id: 3, label: '3 adventures per week' },
+  { id: 1, label: '4 outings this month · 1 adventure per week' },
+  { id: 2, label: '8 outings this month · 2 adventures per week' },
+  { id: 3, label: '12 outings this month · 3 adventures per week' },
 ]
 
 export const MONTHLY_PLAN_DAY_OPTIONS: {
@@ -73,12 +77,30 @@ export const MONTHLY_PLAN_DAY_OPTIONS: {
   { id: 'both', label: 'Both' },
 ]
 
+const DAY_TIMING_LABELS: Record<MonthlyPlanDayPreference, string[]> = {
+  weekdays: ['Tuesday morning', 'Thursday after work', 'Wednesday lunch walk', 'Friday sunset'],
+  weekends: ['Saturday morning', 'Sunday sunset', 'Saturday afternoon', 'Sunday coffee walk'],
+  both: ['Tuesday after work', 'Saturday morning', 'Thursday sunset', 'Sunday afternoon'],
+}
+
 const VIBE_CATEGORY_MAP: Record<MonthlyPlanVibeId, string[]> = {
-  surprise: ['Beach', 'Trail', 'Dog park', 'Park', 'Coffee'],
+  surprise: ['Beach', 'Trail', 'Dog Park', 'Park', 'Coffee'],
   beaches: ['Beach'],
   trails: ['Trail'],
-  'dog-parks': ['Dog park', 'Park'],
-  mixed: ['Beach', 'Trail', 'Dog park', 'Coffee', 'Park'],
+  'dog-parks': ['Dog Park', 'Park'],
+  mixed: ['Beach', 'Trail', 'Dog Park', 'Coffee', 'Park'],
+}
+
+const CATEGORY_ID_MAP: Record<string, string> = {
+  beach: 'Beach',
+  trail: 'Trail',
+  coffee: 'Coffee',
+  park: 'Park',
+  'dog-park': 'Dog Park',
+  patio: 'Patio',
+  brewery: 'Brewery',
+  scenic: 'Scenic Spot',
+  'road-trip': 'Road trip',
 }
 
 function isMappablePlace(place: Place): boolean {
@@ -89,8 +111,15 @@ function isMappablePlace(place: Place): boolean {
   )
 }
 
-function pickPlacesForVibe(vibeId: MonthlyPlanVibeId, count: number): Place[] {
-  const categories = VIBE_CATEGORY_MAP[vibeId]
+function pickPlacesForVibe(
+  vibeId: MonthlyPlanVibeId,
+  count: number,
+  categoryIds: string[] = [],
+): Place[] {
+  const categories =
+    categoryIds.length > 0
+      ? categoryIds.map((id) => CATEGORY_ID_MAP[id]).filter((item): item is string => Boolean(item))
+      : VIBE_CATEGORY_MAP[vibeId]
   const pool = PLACES.filter(
     (place) => isMappablePlace(place) && categories.includes(place.category),
   )
@@ -121,25 +150,31 @@ function pickPlacesForVibe(vibeId: MonthlyPlanVibeId, count: number): Place[] {
 }
 
 export function generateMonthlyPlanResult(draft: MonthlyPlanDraft): MonthlyPlanResult | null {
-  if (!draft.vibeId || !draft.frequencyPerWeek || !draft.dayPreference) {
+  if (draft.categoryIds.length === 0 || !draft.frequencyPerWeek || !draft.dayPreference) {
     return null
   }
 
-  const weekCount = Math.min(4, Math.max(3, draft.frequencyPerWeek + 1))
-  const places = pickPlacesForVibe(draft.vibeId, weekCount)
+  const vibeId = draft.vibeId ?? 'mixed'
+  const weekCount = draft.frequencyPerWeek * 4
+  const places = pickPlacesForVibe(vibeId, weekCount, draft.categoryIds)
+  const timingLabels = DAY_TIMING_LABELS[draft.dayPreference]
   const weeks: MonthlyPlanWeek[] = places.map((place, index) => ({
     weekIndex: index + 1,
-    label: `Week ${index + 1}`,
+    label: `Outing ${index + 1}`,
     placeId: place.id,
     placeName: place.name.split(',')[0]?.trim() ?? place.name,
     category: place.category,
+    timingLabel: timingLabels[index % timingLabels.length],
+    bestTime: place.bestTime,
+    addressLabel: place.addressLabel ?? place.directionsDestination ?? place.city,
+    tieInLabel: `${place.category} progress · Explorer and matching challenges`,
   }))
 
   const nextPlaceId = weeks[0]?.placeId ?? places[0]?.id ?? 'dog-beach-ob'
 
   return {
     id: crypto.randomUUID(),
-    vibeId: draft.vibeId,
+    vibeId,
     frequencyPerWeek: draft.frequencyPerWeek,
     dayPreference: draft.dayPreference,
     weeks,

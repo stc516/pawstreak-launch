@@ -13,7 +13,7 @@ interface MilestonesScreenProps {
   onJoinChallenge: (challengeId: string) => void
 }
 
-const DISCOVER_PREVIEW_COUNT = 3
+const DISCOVER_PREVIEW_COUNT = 10
 
 function ViewAllButton({
   expanded,
@@ -152,10 +152,21 @@ export function MilestonesScreen({
 
   const joinedChallenges = useMemo(() => resolveJoinedChallenges(state), [state])
   const discoverChallenges = useMemo(() => resolveAllCuratedChallenges(state), [state])
+  const localChallenges = useMemo(
+    () => discoverChallenges.filter((challenge) => challenge.availability === 'local'),
+    [discoverChallenges],
+  )
+  const anywhereChallenges = useMemo(
+    () => discoverChallenges.filter((challenge) => challenge.availability === 'generic'),
+    [discoverChallenges],
+  )
 
-  const visibleDiscoverChallenges = showAllDiscover
-    ? discoverChallenges
-    : discoverChallenges.slice(0, DISCOVER_PREVIEW_COUNT)
+  const visibleLocalChallenges = showAllDiscover
+    ? localChallenges
+    : localChallenges.slice(0, DISCOVER_PREVIEW_COUNT)
+  const visibleAnywhereChallenges = showAllDiscover
+    ? anywhereChallenges
+    : anywhereChallenges.slice(0, DISCOVER_PREVIEW_COUNT)
 
   return (
     <div className="ms-screen ms-screen--stitch">
@@ -196,15 +207,43 @@ export function MilestonesScreen({
       )}
 
       <div className="st-section-head ms-discover-sec">
-        <h2 className="st-headline-lg">Discover challenges</h2>
+        <h2 className="st-headline-lg">Local Challenges</h2>
       </div>
-      <p className="ms-challenge-lead">Seasonal packs and local goals — join when you are ready.</p>
+      <p className="ms-challenge-lead">
+        Curated SD/OC challenge packs with real local place paths.
+      </p>
 
-      {discoverChallenges.length === 0 ? (
-        <p className="ms-section-empty">New challenges will show up here.</p>
+      {!state.locationSupported ? (
+        <p className="ms-section-empty detail-card-warm">
+          Local challenge packs unlock as PawStreak expands to your area. Anywhere Challenges below still work today.
+        </p>
+      ) : localChallenges.length === 0 ? (
+        <p className="ms-section-empty detail-card-warm">Local challenges will show up here.</p>
       ) : (
         <div className="ms-challenge-list">
-          {visibleDiscoverChallenges.map((challenge) => (
+          {visibleLocalChallenges.map((challenge) => (
+            <DiscoverChallengeCard
+              key={challenge.id}
+              challenge={challenge}
+              onOpenChallenge={onOpenChallenge}
+              onJoinChallenge={onJoinChallenge}
+            />
+          ))}
+        </div>
+      )}
+
+      <div className="st-section-head ms-discover-sec">
+        <h2 className="st-headline-lg">Anywhere Challenges</h2>
+      </div>
+      <p className="ms-challenge-lead">
+        Flexible goals that work with neighborhood walks, custom adventures, and generic ideas.
+      </p>
+
+      {anywhereChallenges.length === 0 ? (
+        <p className="ms-section-empty detail-card-warm">Anywhere challenges will show up here.</p>
+      ) : (
+        <div className="ms-challenge-list">
+          {visibleAnywhereChallenges.map((challenge) => (
             <DiscoverChallengeCard
               key={challenge.id}
               challenge={challenge}
@@ -217,7 +256,7 @@ export function MilestonesScreen({
 
       <ViewAllButton
         expanded={showAllDiscover}
-        total={discoverChallenges.length}
+        total={Math.max(localChallenges.length, anywhereChallenges.length)}
         previewCount={DISCOVER_PREVIEW_COUNT}
         onClick={() => setShowAllDiscover((value) => !value)}
       />

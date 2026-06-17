@@ -50,12 +50,13 @@ function buildSuggestedAction(
   achievement: Achievement,
 ): AchievementDetail['suggestedAction'] {
   const category = getAchievementCategory(achievement.categoryId)
+  const definition = getAchievementDefinition(achievement.id)
 
   return {
     label: achievement.progress.unlocked ? 'Keep going' : 'Easy next step',
     description: achievement.progress.unlocked
       ? `${achievement.title} is part of your story now — plan another adventure to keep the streak alive.`
-      : achievement.description,
+      : definition?.requirementHint ?? achievement.description,
     imageUrl: achievement.badgeImageUrl,
     placeName: category ? `${category.label} adventures` : undefined,
   }
@@ -118,7 +119,7 @@ function buildAchievementDetail(achievement: Achievement): AchievementDetail {
     relatedMemories: [],
     rewardEmoji: achievement.emoji,
     rewardTitle: `${achievement.title} badge`,
-    rewardDescription: 'Earned automatically — no signup or join required.',
+      rewardDescription: 'Earned only after the real action is completed.',
     suggestedAction: buildSuggestedAction(achievement),
   }
 }
