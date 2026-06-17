@@ -21,8 +21,8 @@ export function LandingPhonePreview() {
                 style={{ backgroundImage: `url(${SAMPLE_IMAGES.beach})` }}
               />
               <div className="landing-phone-adventure-body">
-                <h3 className="landing-phone-adventure-title">Dog Beach morning</h3>
-                <p className="landing-phone-adventure-meta">2.4 mi · Off-leash · San Diego</p>
+                <h3 className="landing-phone-adventure-title">Today&apos;s outing</h3>
+                <p className="landing-phone-adventure-meta">Walk · memory · progress</p>
               </div>
             </article>
 
@@ -33,7 +33,7 @@ export function LandingPhonePreview() {
               />
               <div className="landing-phone-memory-copy">
                 <p className="landing-phone-memory-label">Latest memory</p>
-                <p className="landing-phone-memory-title">Sunny morning run</p>
+                <p className="landing-phone-memory-title">Your saved moment</p>
               </div>
             </article>
 

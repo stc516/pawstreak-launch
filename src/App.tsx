@@ -540,7 +540,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       ...current,
       activeTab: 'plan',
       selectedMonthlyPlanId: 'random',
-      randomPlanResult: generateRandomPlan(current.dogs),
+      randomPlanResult: generateRandomPlan(current),
       curatedPlanResult: null,
       monthlyPlanResult: null,
       curatedPlanFlowStep: 0,
@@ -1080,6 +1080,15 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     const place = getPlaceById(placeId)
     if (!place) return
     if (blockIfActiveAdventure()) return
+
+    if (
+      !state.locationSupported &&
+      !isNeighborhoodWalkPlace(place.id) &&
+      place.id !== CUSTOM_ADVENTURE_PLACE_ID
+    ) {
+      startNeighborhoodWalk()
+      return
+    }
 
     const activeDogId = state.activeDogId ?? state.dogs[0]?.id
 

@@ -264,6 +264,34 @@ export function PlanScreen({
         </div>
       </section>
 
+      {state.randomPlanResult ? (
+        <section
+          className="plan-random-result detail-card-warm"
+          aria-label="Surprise plan result"
+          data-testid="plan-random-result"
+        >
+          <div className="plan-random-kicker">Surprise plan</div>
+          <h2 className="plan-random-title">{state.randomPlanResult.title}</h2>
+          <p className="plan-random-copy">{state.randomPlanResult.emotionalCopy}</p>
+          <p className="plan-random-cadence">{state.randomPlanResult.weeklyCadence}</p>
+          <div className="plan-random-tags">
+            {state.randomPlanResult.adventureTypes.map((type) => (
+              <span key={type} className="plan-random-tag">
+                {type}
+              </span>
+            ))}
+          </div>
+          <div className="plan-random-spots">
+            {state.randomPlanResult.recommendedSpots.map((spot) => (
+              <div key={spot.name} className="plan-random-spot">
+                <strong>{spot.name}</strong>
+                <span>{spot.reason}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       <JourneyPlannedSection
         state={state}
         onStartPlanned={onStartPlannedAdventure}

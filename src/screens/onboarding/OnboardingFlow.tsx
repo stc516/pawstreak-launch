@@ -103,7 +103,7 @@ export function OnboardingFlow({
   const [secondDogAge, setSecondDogAge] = useState(dogAges[3])
   const [selectedVibes, setSelectedVibes] = useState<string[]>([])
   const [selectedCats, setSelectedCats] = useState<string[]>(['park'])
-  const [locationQuery, setLocationQuery] = useState('92123')
+  const [locationQuery, setLocationQuery] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
   const [dogPhotoPreview, setDogPhotoPreview] = useState<string | null>(null)
   const [dogPhotoError, setDogPhotoError] = useState<string | null>(null)
@@ -896,7 +896,7 @@ export function OnboardingFlow({
                     Monthly adventure plan
                   </div>
                   <div className="caption">
-                    Generate a Curated Plan when you&apos;re ready
+                    Build a month of outings when you&apos;re ready
                   </div>
                 </div>
               </div>
@@ -913,9 +913,9 @@ export function OnboardingFlow({
                 <div className="onboarding-feature-emoji">🏅</div>
                 <div>
                   <div className="label onboarding-feature-label">
-                    SoCal Beach Challenge
+                    Earned challenges
                   </div>
-                  <div className="caption">6 beaches. 1 month. Starts now.</div>
+                  <div className="caption">Progress unlocks after real adventures.</div>
                 </div>
               </div>
             </div>

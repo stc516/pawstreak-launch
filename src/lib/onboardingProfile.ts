@@ -136,7 +136,7 @@ export function getSpotsReadyLabel(location: LocationProfile): string {
   if (!location.supported) return 'Generic adventures for now'
   return location.label.includes('Orange County')
     ? 'Suggested Spots in Orange County'
-    : 'Suggested Spots in San Diego & OC'
+    : 'Suggested Spots in San Diego'
 }
 
 export function resolveLocationProfile(query: string): LocationProfile {
@@ -157,7 +157,7 @@ export function resolveLocationProfile(query: string): LocationProfile {
       zipCode: zipCode || '92123',
       label,
       supported: true,
-      mapTitle: isOc ? 'Orange County spots' : 'San Diego + OC spots',
+      mapTitle: isOc ? 'Orange County spots' : 'San Diego spots',
       mapSubtitle: 'Dog-friendly spots nearby · Tap a pin to explore',
       communityLabel: isOc ? 'Orange County' : 'San Diego',
     }

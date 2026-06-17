@@ -211,7 +211,7 @@ export async function resolveLocationProfileGeocoded(
         zipCode: zipMatch?.[1] ?? fallbackProfile.zipCode ?? '92123',
         label,
         supported: true,
-        mapTitle: isOc ? 'Orange County spots' : 'San Diego + OC spots',
+        mapTitle: isOc ? 'Orange County spots' : 'San Diego spots',
         mapSubtitle: 'Dog-friendly spots nearby · Tap a pin to explore',
         communityLabel: isOc ? 'Orange County' : 'San Diego',
       },
