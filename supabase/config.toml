@@ -1,0 +1,7 @@
+project_id = "pawstreak-launch"
+
+[functions.pack-invites]
+verify_jwt = true
+
+[functions.pack-invite-accept]
+verify_jwt = true
