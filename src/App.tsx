@@ -1883,6 +1883,9 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onStartMonthlyPlanAdventure={startAdventureFromMonthlyPlan}
             onContinueTraining={continueTrainingFromHome}
             onOpenAddAdventure={openAddAdventureFlow}
+            onOpenTrainingProgramFlow={openTrainingProgramFlow}
+            onGoToCommunity={() => setActiveTab('community')}
+            onGoToChallenges={() => setActiveTab('milestones')}
           />
         )
       case 'plan':

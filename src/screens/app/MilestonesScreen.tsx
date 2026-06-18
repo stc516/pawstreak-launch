@@ -86,6 +86,9 @@ function DiscoverChallengeCard({
     <article
       className={`ms-challenge-card ms-challenge-card--${challenge.accent} detail-card-warm`}
     >
+      <div className="ms-challenge-visual" aria-hidden="true">
+        <span>{challenge.emoji}</span>
+      </div>
       <div className="ms-challenge-card-top">
         <div>
           <h2 className="ms-challenge-card-title">
@@ -140,6 +143,24 @@ function DiscoverChallengeCard({
         </div>
       )}
     </article>
+  )
+}
+
+function RequestChallengeCard() {
+  return (
+    <section className="ms-request-challenge detail-card-warm" aria-label="Request a local challenge">
+      <div className="ms-request-icon" aria-hidden="true">
+        <i className="ti ti-map-pin-plus" />
+      </div>
+      <div className="ms-request-copy">
+        <h2>Request a Local Challenge</h2>
+        <p>Tell us which city should get dog-friendly challenge packs next.</p>
+      </div>
+      <form className="ms-request-form">
+        <input type="text" placeholder="City or ZIP" aria-label="City or ZIP" />
+        <button type="button" className="tap-target">Request</button>
+      </form>
+    </section>
   )
 }
 
@@ -214,9 +235,7 @@ export function MilestonesScreen({
       </p>
 
       {!state.locationSupported ? (
-        <p className="ms-section-empty detail-card-warm">
-          Local challenge packs unlock as PawStreak expands to your area. Anywhere Challenges below still work today.
-        </p>
+        <RequestChallengeCard />
       ) : localChallenges.length === 0 ? (
         <p className="ms-section-empty detail-card-warm">Local challenges will show up here.</p>
       ) : (

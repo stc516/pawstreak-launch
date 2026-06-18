@@ -3,6 +3,7 @@ import type { AppState } from '../../data/demo'
 import type { Achievement } from '../../data/achievements'
 import { resolveAchievementsByCategory } from '../../lib/achievementEngine'
 import { AchievementIdentityCard } from '../../components/AchievementIdentityCard'
+import { AdventureGuideDog } from '../../components/AdventureGuideDog'
 
 interface AchievementsScreenProps {
   state: AppState
@@ -31,20 +32,27 @@ export function AchievementsScreen({ state, onOpenAchievement }: AchievementsScr
 
   return (
     <>
-      <div className="aheader achievements-header">
-        <div className="alogo">Achievements</div>
-        <p className="achievements-lead">
-          Earned tags from real adventures — progress and locked badges stay honest.
-        </p>
-      </div>
+      <header className="achievements-hero">
+        <div>
+          <button type="button" className="settings-back settings-back--stitch tap-target" aria-label="Achievements">
+            <i className="ti ti-medal" aria-hidden="true" />
+          </button>
+          <h1>Achievements</h1>
+          <p>Earned tags from real adventures — progress and locked badges stay honest.</p>
+        </div>
+        <AdventureGuideDog className="achievements-guide-dog" withBurst />
+      </header>
 
       <section className="achievements-section">
         <div className="st-section-head">
           <h2 className="st-headline-md">Earned</h2>
+          <button type="button" className="st-link-btn tap-target">
+            View all
+          </button>
         </div>
         {earned.length > 0 ? (
-          <div className="st-enamel-grid">
-            {earned.map((achievement) => (
+          <div className="achievements-earned-strip">
+            {earned.slice(0, 5).map((achievement) => (
               <AchievementIdentityCard
                 key={achievement.id}
                 achievement={achievement}
@@ -101,21 +109,29 @@ export function AchievementsScreen({ state, onOpenAchievement }: AchievementsScr
       <section className="achievements-section">
         <div className="st-section-head">
           <h2 className="st-headline-md">Available to Earn</h2>
+          <button type="button" className="st-link-btn tap-target">
+            See all
+          </button>
         </div>
-        <div className="achievements-locked-list">
+        <div className="achievements-available-grid">
           {available.map((achievement) => (
             <button
               key={achievement.id}
               type="button"
-              className="achievements-locked-row tap-target"
+              className="achievements-badge-card tap-target"
               onClick={() => onOpenAchievement(achievement.id)}
             >
-              <span className="achievements-locked-emoji" aria-hidden="true">
-                {achievement.emoji}
-              </span>
-              <span className="achievements-locked-copy">
-                <span className="achievements-locked-title">{achievement.title}</span>
-                <span className="achievements-locked-sub">{achievement.subtitle}</span>
+              <span className="achievements-badge-medal" aria-hidden="true">{achievement.emoji}</span>
+              <span className="achievements-badge-copy">
+                <strong>{achievement.title}</strong>
+                <small>{achievement.subtitle}</small>
+                <span className="achievements-badge-progress">
+                  <span
+                    style={{
+                      width: `${Math.round((achievement.progress.current / achievement.progress.target) * 100)}%`,
+                    }}
+                  />
+                </span>
               </span>
             </button>
           ))}

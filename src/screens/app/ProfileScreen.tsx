@@ -2,7 +2,6 @@ import { useMemo, useRef, useState } from 'react'
 import type { AppState, Dog } from '../../data/demo'
 import {
   resolveAllTrainingPrograms,
-  type ResolvedTrainingProgram,
 } from '../../lib/trainingEngine'
 import {
   getDisplayDogLabel,
@@ -13,7 +12,7 @@ import {
 import { getHomeProgressStats } from '../../lib/homeStats'
 import { getJourneyEntryDisplayImageUrl } from '../../lib/adventureDisplayImage'
 import { CardImage } from '../../components/CardImage'
-import { TrainingProgramCard } from '../../components/TrainingProgramCard'
+import { AdventureGuideDog } from '../../components/AdventureGuideDog'
 import { getMagicLine, getPlaceById } from '../../data/places'
 import { SettingsScreen } from './SettingsScreen'
 
@@ -51,6 +50,42 @@ interface DogCardProps {
   onSetActive?: () => void
   compact?: boolean
 }
+
+const TRAINING_TILE_GROUPS = [
+  {
+    title: 'Puppy Basics',
+    note: 'Start here',
+    programId: 'puppy-foundations',
+    lessons: [
+      { title: 'Sit', emoji: '🐕' },
+      { title: 'Stay', emoji: '🐕' },
+      { title: 'Down', emoji: '🦮' },
+      { title: 'Crate', emoji: '🏠' },
+    ],
+  },
+  {
+    title: 'Adventure Skills',
+    note: 'On our adventures',
+    programId: 'adventure-dog',
+    lessons: [
+      { title: 'Recall', emoji: '🐕' },
+      { title: 'Loose Leash', emoji: '🦮' },
+      { title: 'Trail Manners', emoji: '🥾' },
+      { title: 'Beach Manners', emoji: '🏖️' },
+    ],
+  },
+  {
+    title: 'Advanced Skills',
+    note: 'Level up',
+    programId: 'off-leash-expert',
+    lessons: [
+      { title: 'Off-Leash Recall', emoji: '🎯' },
+      { title: 'Place Command', emoji: '🛏️' },
+      { title: 'Public Etiquette', emoji: '🏙️' },
+      { title: 'Focus Around Dogs', emoji: '🐾' },
+    ],
+  },
+] as const
 
 function DogCard({
   dog,
@@ -244,7 +279,6 @@ export function ProfileScreen({
   const [draftAge, setDraftAge] = useState('')
   const [removeTarget, setRemoveTarget] = useState<Dog | null>(null)
   const [showSettings, setShowSettings] = useState(false)
-  const [showAllTraining, setShowAllTraining] = useState(false)
 
   const beginEdit = (dog: Dog) => {
     setEditingDogId(dog.id)
@@ -280,9 +314,6 @@ export function ProfileScreen({
   const progress = getHomeProgressStats(state)
   const recentMemories = state.journeyEntries.slice(0, 3)
   const trainingPrograms = useMemo(() => resolveAllTrainingPrograms(state), [state])
-  const visibleTrainingPrograms = showAllTraining
-    ? trainingPrograms
-    : trainingPrograms.slice(0, 2)
   const editingDog = editingDogId ? profileDogs.find((dog) => dog.id === editingDogId) : null
 
   if (showSettings && onZipChange && onApplyLocation) {
@@ -400,33 +431,62 @@ export function ProfileScreen({
       </section>
 
       <section className="profile-section">
-        <div className="st-section-head">
-          <h2 className="st-headline-lg">Training</h2>
+        <div className="training-hero">
+          <div>
+            <h2>Training</h2>
+            <p>Stronger skills. Better adventures. Keep sessions short, playful, and useful outside.</p>
+          </div>
+          <AdventureGuideDog className="training-guide-dog" />
         </div>
         {trainingPrograms.length === 0 ? (
           <p className="profile-section-empty">Training programs will show up here.</p>
         ) : (
           <>
-            <div className="ms-training-list profile-training-list">
-              {visibleTrainingPrograms.map((program: ResolvedTrainingProgram) => (
-                <TrainingProgramCard
-                  key={program.id}
-                  program={program}
-                  onOpenTrainingProgram={(programId) => onOpenTrainingProgram?.(programId)}
-                />
+            <div className="training-product-area">
+              {TRAINING_TILE_GROUPS.map((group) => (
+                <section key={group.title} className="training-tile-section">
+                  <div className="training-section-head">
+                    <h3>{group.title}</h3>
+                    <span>{group.note}</span>
+                  </div>
+                  <div className="training-tile-grid">
+                    {group.lessons.map((lesson) => (
+                      <button
+                        key={lesson.title}
+                        type="button"
+                        className="training-lesson-tile tap-target"
+                        onClick={() => onOpenTrainingProgram?.(group.programId)}
+                      >
+                        <span aria-hidden="true">{lesson.emoji}</span>
+                        <strong>{lesson.title}</strong>
+                      </button>
+                    ))}
+                    <button
+                      type="button"
+                      className="training-lesson-tile training-lesson-tile--more tap-target"
+                      onClick={() => onOpenTrainingProgram?.(group.programId)}
+                    >
+                      <span aria-hidden="true">•••</span>
+                      <strong>More</strong>
+                    </button>
+                  </div>
+                </section>
               ))}
             </div>
-            {trainingPrograms.length > 2 ? (
-              <button
-                type="button"
-                className="ms-view-all tap-target"
-                onClick={() => setShowAllTraining((value) => !value)}
-              >
-                {showAllTraining
-                  ? 'Show less'
-                  : `View all · ${trainingPrograms.length - 2} more`}
-              </button>
-            ) : null}
+            <button
+              type="button"
+              className="training-free-resources tap-target"
+              onClick={() => onOpenTrainingProgram?.('fun-enrichment')}
+            >
+              <span className="training-free-icon" aria-hidden="true">
+                <i className="ti ti-brand-youtube-filled" />
+              </span>
+              <span>
+                <strong>Free Training Resources</strong>
+                <small>YouTube recommendations, trusted trainer resources, and more coming soon.</small>
+              </span>
+              <i className="ti ti-chevron-right" aria-hidden="true" />
+            </button>
           </>
         )}
       </section>

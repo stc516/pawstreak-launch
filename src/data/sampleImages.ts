@@ -1,5 +1,23 @@
 import type { PlaceCategory } from '../types/place'
 
+const PUBLIC_SAMPLE_IMAGES: Record<PlaceCategory, string> = {
+  Beach: '/sample-images/beach.jpg',
+  Trail: '/sample-images/trail.jpg',
+  Park: '/sample-images/park.jpg',
+  'Dog Park': '/sample-images/dog-park.jpg',
+  Coffee: '/sample-images/cafe.jpg',
+  Patio: '/sample-images/cafe.jpg',
+  Brewery: '/sample-images/brewery.jpg',
+  Restaurant: '/sample-images/cafe.jpg',
+  Lake: '/sample-images/coastal.jpg',
+  Campground: '/sample-images/mountain.jpg',
+  'Scenic Spot': '/sample-images/coastal.jpg',
+  Gardens: '/sample-images/gardens.jpg',
+  'Road trip': '/sample-images/road-trip.jpg',
+  Neighborhood: '/sample-images/neighborhood.jpg',
+  Custom: '/sample-images/dogs-outdoors.jpg',
+}
+
 interface CategoryArt {
   label: string
   sky: string
@@ -188,26 +206,26 @@ export function getSampleImageForPlace(
   category: PlaceCategory,
   placeId: string,
 ): string {
-  return buildCategoryArtUrl(category, placeId)
+  return PUBLIC_SAMPLE_IMAGES[category] ?? buildCategoryArtUrl(category, placeId)
 }
 
 export const SAMPLE_IMAGES = {
-  beach: buildCategoryArtUrl('Beach'),
-  trail: buildCategoryArtUrl('Trail'),
-  park: buildCategoryArtUrl('Park'),
-  cafe: buildCategoryArtUrl('Coffee'),
-  roadTrip: buildCategoryArtUrl('Road trip'),
-  gardens: buildCategoryArtUrl('Gardens'),
-  brewery: buildCategoryArtUrl('Brewery'),
-  dogPark: buildCategoryArtUrl('Dog Park'),
-  neighborhood: buildCategoryArtUrl('Neighborhood'),
-  coastal: buildCategoryArtUrl('Scenic Spot'),
-  mountain: buildCategoryArtUrl('Campground'),
-  patio: buildCategoryArtUrl('Patio'),
-  restaurant: buildCategoryArtUrl('Restaurant'),
-  lake: buildCategoryArtUrl('Lake'),
-  campground: buildCategoryArtUrl('Campground'),
-  scenic: buildCategoryArtUrl('Scenic Spot'),
-  training: buildCategoryArtUrl('Custom', 'training'),
-  genericAdventure: buildCategoryArtUrl('Custom', 'generic-adventure'),
+  beach: PUBLIC_SAMPLE_IMAGES.Beach,
+  trail: PUBLIC_SAMPLE_IMAGES.Trail,
+  park: PUBLIC_SAMPLE_IMAGES.Park,
+  cafe: PUBLIC_SAMPLE_IMAGES.Coffee,
+  roadTrip: PUBLIC_SAMPLE_IMAGES['Road trip'],
+  gardens: PUBLIC_SAMPLE_IMAGES.Gardens,
+  brewery: PUBLIC_SAMPLE_IMAGES.Brewery,
+  dogPark: PUBLIC_SAMPLE_IMAGES['Dog Park'],
+  neighborhood: PUBLIC_SAMPLE_IMAGES.Neighborhood,
+  coastal: PUBLIC_SAMPLE_IMAGES['Scenic Spot'],
+  mountain: PUBLIC_SAMPLE_IMAGES.Campground,
+  patio: PUBLIC_SAMPLE_IMAGES.Patio,
+  restaurant: PUBLIC_SAMPLE_IMAGES.Restaurant,
+  lake: PUBLIC_SAMPLE_IMAGES.Lake,
+  campground: PUBLIC_SAMPLE_IMAGES.Campground,
+  scenic: PUBLIC_SAMPLE_IMAGES['Scenic Spot'],
+  training: PUBLIC_SAMPLE_IMAGES.Custom,
+  genericAdventure: PUBLIC_SAMPLE_IMAGES.Custom,
 } as const
