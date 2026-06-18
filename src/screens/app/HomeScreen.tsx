@@ -180,7 +180,12 @@ export function HomeScreen({
       </section>
 
       {state.locationSupported ? (
-        <section className="home-quick-adventure detail-card-warm" aria-label="Today's Adventure">
+        <button
+          type="button"
+          className="home-quick-adventure detail-card-warm tap-target"
+          aria-label={`Start today's pick: ${heroPlace.name}`}
+          onClick={handleQuickAdventure}
+        >
           <div className="home-quick-adventure-media">
             <CardImage
               className="home-quick-adventure-photo"
@@ -193,15 +198,19 @@ export function HomeScreen({
             <div className="home-quick-adventure-kicker">Today&apos;s Pick for {dogLabel}</div>
             <h3 className="home-quick-adventure-title">{heroPlace.name}</h3>
             <p className="home-quick-adventure-copy">{getHeroFitLine(heroPlace, profileDogs)}</p>
-            <button
-              type="button"
-              className="st-btn st-btn--primary tap-target"
-              onClick={handleQuickAdventure}
-            >
-              Quick Adventure
-            </button>
+            <div className="home-quick-adventure-meta">
+              <span>
+                <i className="ti ti-map-pin" aria-hidden="true" />
+                {heroPlace.distanceLabel}
+              </span>
+              <span>{heroPlace.leashInfo}</span>
+              <span>{heroPlace.category}</span>
+            </div>
+            <span className="home-quick-adventure-save" aria-hidden="true">
+              <i className="ti ti-bookmark" />
+            </span>
           </div>
-        </section>
+        </button>
       ) : (
         <section
           className="home-generic-adventures detail-card-warm"

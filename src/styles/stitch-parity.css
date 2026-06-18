@@ -1074,3 +1074,10 @@ html.app-route .plan-screen .plan-detail-card {
 html.app-route .plan-screen .plan-pin {
   box-shadow: 0 4px 12px rgba(27, 48, 34, 0.12);
 }
+
+/* Home density pass: keep the first viewport close to the product mockup. */
+html.app-route .home-screen.home-screen--stitch {
+  gap: 7px !important;
+  padding-left: 15px !important;
+  padding-right: 15px !important;
+}

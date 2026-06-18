@@ -15464,39 +15464,180 @@ select.field-input {
 /* Final cascade anchors for the PawStreak UI overhaul. */
 
 .home-screen .home-quick-adventure {
-  grid-template-columns: 46% 54%;
-  min-height: 172px;
+  grid-template-columns: 45% 55%;
+  min-height: 132px;
   max-height: none;
+  width: 100%;
+  text-align: left;
 }
 
 .home-screen .home-quick-adventure-media,
 .home-screen .home-quick-adventure-photo,
 .home-screen .home-quick-adventure-photo.card-img {
-  min-height: 172px;
-  height: 172px;
+  min-height: 132px;
+  height: 132px;
 }
 
 .home-screen .home-quick-adventure-body {
-  padding: 12px 13px;
-}
-
-.home-screen .home-quick-adventure .st-btn {
-  width: auto;
-  min-height: 34px;
-  align-self: flex-start;
-  padding: 8px 14px;
-  border-radius: 999px;
-  font-size: 12px;
-  line-height: 1;
+  position: relative;
+  min-width: 0;
+  padding: 11px 34px 11px 12px;
 }
 
 .home-screen .home-quick-adventure-title {
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .home-screen .home-quick-adventure-copy {
   -webkit-line-clamp: 2;
-  margin-bottom: 7px;
+  margin: 5px 0 6px;
+  font-size: 11px;
+}
+
+.home-screen {
+  gap: 10px;
+  padding-inline: 15px;
+}
+
+.home-screen .st-welcome {
+  min-height: 76px;
+}
+
+.home-screen .home-headline {
+  font-size: 22px;
+  line-height: 1.08;
+}
+
+.home-screen .st-welcome-meta {
+  margin-top: 5px;
+  font-size: 11px;
+}
+
+.home-screen .home-guide-dog {
+  width: 86px;
+  height: 86px;
+  margin-right: 4px;
+}
+
+.home-screen .home-quick-walk-btn {
+  min-height: 56px;
+  padding: 9px 12px;
+  border-radius: 12px;
+}
+
+.home-screen .home-quick-walk-icon {
+  width: 34px;
+  height: 34px;
+}
+
+.home-screen .home-quick-walk-title {
+  font-size: 14px;
+}
+
+.home-screen .home-quick-walk-sub {
+  font-size: 11px;
+}
+
+.home-screen .st-section-head {
+  min-height: 22px;
+}
+
+.home-screen .st-headline-md {
+  font-size: 16px;
+  line-height: 1.1;
+}
+
+.home-screen .home-continue,
+.home-screen .home-upcoming,
+.home-screen .home-plan-new,
+.home-screen .home-suggested-spots,
+.home-screen .home-memories {
+  gap: 7px;
+}
+
+.home-screen .home-continue-card {
+  min-height: 58px;
+  grid-template-columns: 64px minmax(0, 1fr) 14px;
+  padding: 7px;
+}
+
+.home-screen .home-continue-photo,
+.home-screen .home-continue-photo.card-img {
+  width: 64px;
+  height: 44px;
+  min-height: 44px;
+}
+
+.home-screen .home-upcoming-grid {
+  gap: 7px;
+}
+
+.home-screen .home-upcoming-card {
+  min-height: 72px;
+  padding: 8px;
+}
+
+.home-screen .home-upcoming-emoji {
+  font-size: 16px;
+}
+
+.home-screen .home-upcoming-card strong {
+  font-size: 11px;
+}
+
+.home-screen .home-upcoming-card span:last-child {
+  -webkit-line-clamp: 1;
+}
+
+.home-screen .home-plan-grid {
+  gap: 7px;
+}
+
+.home-screen .home-plan-action {
+  min-height: 42px;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 8px;
+  padding: 7px 9px;
+}
+
+.home-screen .home-plan-action i {
+  width: 24px;
+  height: 24px;
+  font-size: 15px;
+}
+
+.home-screen .home-plan-action span {
+  font-size: 11px;
+}
+
+.home-quick-adventure-meta {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  gap: 3px 7px;
+  color: #4f5b50;
+  font-size: 10px;
+  font-weight: 750;
+  line-height: 1.15;
+}
+
+.home-quick-adventure-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+}
+
+.home-quick-adventure-save {
+  position: absolute;
+  right: 10px;
+  top: 11px;
+  display: grid;
+  width: 20px;
+  height: 24px;
+  place-items: center;
+  color: #1b3022;
+  font-size: 17px;
 }
 
 .ms-screen .ms-challenge-card.detail-card-warm {
@@ -15554,4 +15695,193 @@ select.field-input {
   padding: 7px 10px;
   font-size: 11px;
   white-space: nowrap;
+}
+
+/* Home density pass: make the first viewport carry the product. */
+
+.home-screen.home-screen--stitch {
+  gap: 7px;
+  padding-inline: 15px;
+}
+
+.home-screen.home-screen--stitch .home-screen-header {
+  min-height: 34px;
+  padding-top: 0;
+}
+
+.home-screen.home-screen--stitch .st-welcome {
+  min-height: 64px !important;
+  gap: 8px;
+}
+
+.home-screen.home-screen--stitch .home-headline {
+  font-size: 20px !important;
+  line-height: 1.08 !important;
+}
+
+.home-screen.home-screen--stitch .st-welcome-meta {
+  margin-top: 4px !important;
+  font-size: 10px !important;
+  line-height: 1.2 !important;
+}
+
+.home-screen.home-screen--stitch .home-guide-dog {
+  width: 72px !important;
+  height: 72px !important;
+}
+
+.home-screen.home-screen--stitch .home-quick-walk-btn {
+  min-height: 48px !important;
+  padding: 7px 10px !important;
+  border-radius: 11px !important;
+}
+
+.home-screen.home-screen--stitch .home-quick-walk-icon {
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 8px !important;
+  font-size: 17px !important;
+}
+
+.home-screen.home-screen--stitch .home-quick-walk-title {
+  font-size: 13px !important;
+}
+
+.home-screen.home-screen--stitch .home-quick-walk-sub {
+  font-size: 10px !important;
+}
+
+.home-screen.home-screen--stitch .home-quick-adventure {
+  min-height: 108px !important;
+  grid-template-columns: 43% 57% !important;
+  border-radius: 12px !important;
+}
+
+.home-screen.home-screen--stitch .home-quick-adventure-media,
+.home-screen.home-screen--stitch .home-quick-adventure-photo,
+.home-screen.home-screen--stitch .home-quick-adventure-photo.card-img {
+  height: 108px !important;
+  min-height: 108px !important;
+}
+
+.home-screen.home-screen--stitch .home-quick-adventure-body {
+  padding: 9px 30px 9px 10px !important;
+}
+
+.home-screen.home-screen--stitch .home-quick-adventure-kicker {
+  margin-bottom: 3px !important;
+  font-size: 10px !important;
+  line-height: 1.15 !important;
+}
+
+.home-screen.home-screen--stitch .home-quick-adventure-title {
+  font-size: 13px !important;
+  line-height: 1.1 !important;
+}
+
+.home-screen.home-screen--stitch .home-quick-adventure-copy {
+  margin: 4px 0 !important;
+  font-size: 10px !important;
+  line-height: 1.25 !important;
+  -webkit-line-clamp: 2 !important;
+}
+
+.home-screen.home-screen--stitch .home-quick-adventure-meta {
+  gap: 2px 6px !important;
+  font-size: 9px !important;
+}
+
+.home-screen.home-screen--stitch .home-quick-adventure-save {
+  right: 8px !important;
+  top: 8px !important;
+  font-size: 15px !important;
+}
+
+.home-screen.home-screen--stitch .st-section-head {
+  min-height: 18px !important;
+  margin: 0 !important;
+}
+
+.home-screen.home-screen--stitch .st-section-head .st-headline-md {
+  font-size: 14px !important;
+  line-height: 1 !important;
+}
+
+.home-screen.home-screen--stitch .st-link-btn {
+  font-size: 10px !important;
+}
+
+.home-screen.home-screen--stitch .home-continue,
+.home-screen.home-screen--stitch .home-upcoming,
+.home-screen.home-screen--stitch .home-plan-new {
+  gap: 5px !important;
+}
+
+.home-screen.home-screen--stitch .home-continue-card {
+  min-height: 50px !important;
+  grid-template-columns: 56px minmax(0, 1fr) 12px !important;
+  padding: 6px !important;
+  border-radius: 10px !important;
+}
+
+.home-screen.home-screen--stitch .home-continue-photo,
+.home-screen.home-screen--stitch .home-continue-photo.card-img {
+  width: 56px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+}
+
+.home-screen.home-screen--stitch .home-continue-copy strong {
+  font-size: 12px !important;
+}
+
+.home-screen.home-screen--stitch .home-continue-copy span {
+  font-size: 10px !important;
+}
+
+.home-screen.home-screen--stitch .home-upcoming-grid,
+.home-screen.home-screen--stitch .home-plan-grid {
+  gap: 6px !important;
+}
+
+.home-screen.home-screen--stitch .home-upcoming-card {
+  min-height: 58px !important;
+  padding: 6px !important;
+  border-radius: 9px !important;
+}
+
+.home-screen.home-screen--stitch .home-upcoming-emoji {
+  font-size: 14px !important;
+}
+
+.home-screen.home-screen--stitch .home-upcoming-card strong {
+  font-size: 10px !important;
+}
+
+.home-screen.home-screen--stitch .home-upcoming-card span {
+  font-size: 9px !important;
+}
+
+.home-screen.home-screen--stitch .home-plan-action {
+  min-height: 38px !important;
+  grid-template-columns: 22px minmax(0, 1fr) !important;
+  padding: 6px 8px !important;
+  border-radius: 9px !important;
+}
+
+.home-screen.home-screen--stitch .home-plan-action i {
+  width: 22px !important;
+  height: 22px !important;
+  font-size: 14px !important;
+}
+
+.home-screen.home-screen--stitch .home-plan-action span {
+  font-size: 10px !important;
+  line-height: 1.1 !important;
+}
+
+html.app-route .home-screen.home-screen--stitch {
+  gap: 7px !important;
+  padding-left: 15px !important;
+  padding-right: 15px !important;
 }
