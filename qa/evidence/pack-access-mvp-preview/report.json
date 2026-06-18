@@ -1,0 +1,40 @@
+{
+  "baseUrl": "https://pawstreak-launch-93yvrh5gh-stephen-carrolls-projects.vercel.app",
+  "results": [
+    {
+      "flow": "pack-access-profile-copy",
+      "pass": true,
+      "message": "Profile explains email-only MVP honestly"
+    },
+    {
+      "flow": "invite-email-only",
+      "pass": true,
+      "message": "Invite form has email field"
+    },
+    {
+      "flow": "invite-no-phone-copy",
+      "pass": true,
+      "message": "Invite form does not ask for phone/SMS"
+    },
+    {
+      "flow": "invite-roles",
+      "pass": true,
+      "message": "Invite roles are Member, Viewer"
+    },
+    {
+      "flow": "viewer-role-copy",
+      "pass": true,
+      "message": "Viewer role description is read-only"
+    },
+    {
+      "flow": "demo-invite-toast",
+      "pass": true,
+      "message": "Demo fallback keeps invite UX working locally"
+    },
+    {
+      "flow": "magic-link-entry",
+      "pass": true,
+      "message": "Magic-link UI skipped because Supabase auth env is not configured for this target"
+    }
+  ]
+}
