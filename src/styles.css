@@ -14053,6 +14053,16 @@ select.field-input {
   font-weight: 900;
 }
 
+.pack-access-status--pending {
+  background: #eef5ef !important;
+  color: #1b3022 !important;
+}
+
+.pack-access-member:has(.pack-access-status--pending) {
+  border-style: dashed;
+  background: rgba(255, 255, 255, 0.72);
+}
+
 .pack-access-copy p,
 .pack-access-copy small {
   display: block;

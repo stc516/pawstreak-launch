@@ -1561,10 +1561,12 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
                 ? 'Helper access'
                 : `${payload.role} access`,
           accessDescription: accessDescriptionFor(payload.accessLevels),
-          lastActivity: 'Invite saved locally',
+          lastActivity: 'Pending invite',
+          inviteStatus: 'pending',
+          contactLabel: payload.contact,
         },
       ],
-      packAccessToast: 'Pack Access invite saved locally — sending invites comes next.',
+      packAccessToast: `Pending invite saved for ${payload.name}.`,
     }))
   }
 

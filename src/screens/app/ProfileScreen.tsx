@@ -445,10 +445,18 @@ export function ProfileScreen({
               <div className="pack-access-copy">
                 <div className="pack-access-name-row">
                   <strong>{member.name}</strong>
-                  {member.isOwner ? <span>Owner</span> : null}
+                  {member.inviteStatus === 'pending' ? (
+                    <span className="pack-access-status pack-access-status--pending">Pending</span>
+                  ) : member.isOwner ? (
+                    <span className="pack-access-status">Owner</span>
+                  ) : null}
                 </div>
                 <p>{member.role} · {member.accessLevel}</p>
-                <small>{member.accessDescription}</small>
+                <small>
+                  {member.inviteStatus === 'pending' && member.contactLabel
+                    ? `${member.contactLabel} · ${member.accessDescription}`
+                    : member.accessDescription}
+                </small>
               </div>
             </article>
           ))}
