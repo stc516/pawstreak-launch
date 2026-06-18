@@ -1566,8 +1566,20 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
           contactLabel: payload.contact,
         },
       ],
-      packAccessToast: `Pending invite saved for ${payload.name}.`,
+      packAccessToast: `Pending invite saved on this device for ${payload.name}.`,
     }))
+
+    if (useProductionBackend && auth.user) {
+      void trackUserEvent(
+        'pack_invite_saved',
+        {
+          role: payload.role,
+          accessLevels: payload.accessLevels,
+          delivery: 'local_pending',
+        },
+        auth.user.id,
+      )
+    }
   }
 
   useEffect(() => {

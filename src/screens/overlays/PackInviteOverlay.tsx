@@ -131,7 +131,7 @@ export function PackInviteOverlay({ onClose, onSubmit }: PackInviteOverlayProps)
             Save pending invite
           </button>
           <p className="pack-invite-note">
-            Pending invites save now; email/SMS delivery is the next backend step.
+            Pending invites save on this device; email/SMS delivery is the next backend step.
           </p>
         </main>
       </div>

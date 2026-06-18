@@ -13980,6 +13980,16 @@ select.field-input {
   color: #4f5b50;
 }
 
+.pack-access-panel small {
+  display: block;
+  margin-top: 6px;
+  max-width: 28ch;
+  font-size: 10px;
+  font-weight: 750;
+  line-height: 1.3;
+  color: #6f5b3b;
+}
+
 .pack-access-primary {
   display: inline-flex;
   align-items: center;
