@@ -40,7 +40,19 @@ function getSiteOrigin(): string {
 }
 
 export function getAuthRedirectUrl(): string {
+  if (
+    typeof window !== 'undefined' &&
+    isProductionAppRoute(window.location.pathname) &&
+    window.location.pathname.startsWith(`${ROUTES.app}/invite`)
+  ) {
+    return `${getSiteOrigin()}${window.location.pathname}${window.location.search}`
+  }
   return `${getSiteOrigin()}${ROUTES.app}`
+}
+
+export function getInviteToken(search = window.location.search): string | null {
+  const token = new URLSearchParams(search).get('token')?.trim()
+  return token || null
 }
 
 export function getAppSignInUrl(): string {

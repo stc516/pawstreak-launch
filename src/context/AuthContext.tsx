@@ -8,7 +8,13 @@ import {
   type ReactNode,
 } from 'react'
 import { getSupabaseClient, isSupabaseConfigured } from '../lib/supabase'
-import { signInWithEmail, signInWithGoogle, signOut, signUpWithEmail } from '../lib/auth'
+import {
+  sendMagicLink,
+  signInWithEmail,
+  signInWithGoogle,
+  signOut,
+  signUpWithEmail,
+} from '../lib/auth'
 
 interface AuthContextValue {
   user: User | null
@@ -17,6 +23,7 @@ interface AuthContextValue {
   configured: boolean
   signUpWithEmail: typeof signUpWithEmail
   signInWithEmail: typeof signInWithEmail
+  sendMagicLink: typeof sendMagicLink
   signInWithGoogle: typeof signInWithGoogle
   signOut: () => Promise<void>
 }
@@ -57,6 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       configured: isSupabaseConfigured(),
       signUpWithEmail,
       signInWithEmail,
+      sendMagicLink,
       signInWithGoogle,
       signOut: async () => {
         await signOut()

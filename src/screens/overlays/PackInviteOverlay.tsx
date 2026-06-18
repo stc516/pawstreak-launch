@@ -1,45 +1,40 @@
 import { useState } from 'react'
-import type { PackInviteAccessLevel, PackInviteRole } from '../../data/demo'
-import {
-  PACK_INVITE_ACCESS_LEVELS,
-  PACK_INVITE_ROLES,
-} from '../../data/demo'
+import type { PackInviteRole } from '../../data/demo'
+import { PACK_INVITE_ROLES } from '../../data/demo'
+import { inviteDescriptionForRole } from '../../data/packAccess'
 import { StatusBar } from '../../components/StatusBar'
 
 export interface PackInvitePayload {
-  name: string
-  contact: string
+  email: string
   role: PackInviteRole
-  accessLevels: PackInviteAccessLevel[]
 }
 
 interface PackInviteOverlayProps {
   onClose: () => void
-  onSubmit: (payload: PackInvitePayload) => void
+  onSubmit: (payload: PackInvitePayload) => void | Promise<void>
 }
 
 export function PackInviteOverlay({ onClose, onSubmit }: PackInviteOverlayProps) {
-  const [name, setName] = useState('')
-  const [contact, setContact] = useState('')
-  const [role, setRole] = useState<PackInviteRole>('Family')
-  const [accessLevels, setAccessLevels] = useState<PackInviteAccessLevel[]>([
-    'View memories',
-    'Suggest adventures',
-  ])
+  const [email, setEmail] = useState('')
+  const [role, setRole] = useState<PackInviteRole>('Member')
+  const [error, setError] = useState<string | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const toggleAccess = (level: PackInviteAccessLevel) => {
-    setAccessLevels((current) =>
-      current.includes(level)
-        ? current.filter((item) => item !== level)
-        : [...current, level],
-    )
-  }
-
-  const handleSubmit = () => {
-    const trimmed = name.trim()
-    const contactLabel = contact.trim()
-    if (!trimmed || !contactLabel || accessLevels.length === 0) return
-    onSubmit({ name: trimmed, contact: contactLabel, role, accessLevels })
+  const handleSubmit = async () => {
+    const trimmedEmail = email.trim().toLowerCase()
+    if (!trimmedEmail.includes('@') || isSubmitting) return
+    setError(null)
+    setIsSubmitting(true)
+    try {
+      await onSubmit({ email: trimmedEmail, role })
+    } catch (submitError) {
+      const message =
+        submitError instanceof Error
+          ? submitError.message
+          : 'Could not send invite. Please try again.'
+      setError(message)
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -58,31 +53,20 @@ export function PackInviteOverlay({ onClose, onSubmit }: PackInviteOverlayProps)
             <div className="pack-invite-intro">Pack Access</div>
             <h1 className="pack-invite-title">Invite someone to your pack</h1>
             <p className="pack-invite-sub">
-              So they never miss the little moments — even from far away.
+              Email-only for the first version. SMS comes later.
             </p>
           </div>
 
           <div className="pack-invite-form detail-card-warm">
           <label className="pack-invite-field">
-            <span className="pack-invite-label">Name</span>
+            <span className="pack-invite-label">Email</span>
             <input
               className="field-input"
-              type="text"
-              placeholder="e.g. Dog Mom"
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-            />
-          </label>
-
-          <label className="pack-invite-field">
-            <span className="pack-invite-label">Email or phone</span>
-            <input
-              className="field-input"
-              type="text"
+              type="email"
               inputMode="email"
               placeholder="name@example.com"
-              value={contact}
-              onChange={(event) => setContact(event.target.value)}
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
             />
           </label>
 
@@ -102,36 +86,29 @@ export function PackInviteOverlay({ onClose, onSubmit }: PackInviteOverlayProps)
           </label>
 
           <div className="pack-invite-field">
-            <span className="pack-invite-label">Access level</span>
-            <div className="pack-invite-access">
-              {PACK_INVITE_ACCESS_LEVELS.map((level) => {
-                const selected = accessLevels.includes(level)
-                return (
-                  <button
-                    key={level}
-                    type="button"
-                    className={`pack-access-chip tap-target${selected ? ' on' : ''}`}
-                    aria-pressed={selected}
-                    onClick={() => toggleAccess(level)}
-                  >
-                    {level}
-                  </button>
-                )
-              })}
+            <span className="pack-invite-label">What they can do</span>
+            <div className="pack-invite-role-note">
+              {inviteDescriptionForRole(role)}
             </div>
           </div>
           </div>
+
+          {error ? (
+            <p className="demo-feedback-status" role="alert">
+              {error}
+            </p>
+          ) : null}
 
           <button
             type="button"
             className="pack-invite-submit tap-target"
             onClick={handleSubmit}
-            disabled={!name.trim() || !contact.trim() || accessLevels.length === 0}
+            disabled={!email.trim().includes('@') || isSubmitting}
           >
-            Save pending invite
+            {isSubmitting ? 'Sending invite…' : 'Send invite'}
           </button>
           <p className="pack-invite-note">
-            Pending invites save on this device; email/SMS delivery is the next backend step.
+            Invites expire after 14 days. Owners can send up to 10 invites per day.
           </p>
         </main>
       </div>

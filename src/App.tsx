@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { AppState, CommunityPost, TabId } from './data/demo'
 import {
   createActiveAdventure,
@@ -37,7 +37,15 @@ import {
   isEarlyAccessRoute,
   isFeedbackDashboardRoute,
 } from './lib/internalRoute'
-import { isLandingRoute, isMarketingRoute, isProductionAppRoute, isStartRoute, ROUTES, getAppEntryAuthMode } from './lib/routes'
+import {
+  getAppEntryAuthMode,
+  getInviteToken,
+  isLandingRoute,
+  isMarketingRoute,
+  isProductionAppRoute,
+  isStartRoute,
+  ROUTES,
+} from './lib/routes'
 import { LandingPage } from './screens/landing/LandingPage'
 import { StartPage } from './screens/landing/StartPage'
 import { ContentStudio } from './screens/internal/ContentStudio'
@@ -109,8 +117,10 @@ import { resolveLocationProfileGeocoded } from './lib/geocode'
 import { recordLocationExpansionRequest } from './lib/db/expansionRequests'
 import { resolveMapCenterForLocation } from './lib/mapbox'
 import {
-  accessDescriptionFor,
-  roleLabelForInvite,
+  accessDescriptionForPackRole,
+  accessLevelForPackRole,
+  packRoleValueForInvite,
+  roleLabelForPackRole,
 } from './data/packAccess'
 import { useAuth } from './context/AuthContext'
 import {
@@ -136,11 +146,18 @@ import { trackUserEvent } from './lib/db/userEvents'
 import { ensureProfileShell, updateProfileLocation } from './lib/db/profiles'
 import {
   resetPasswordForEmail,
+  sendMagicLink,
   signInWithEmail,
   signUpWithEmail,
   signupRequiresEmailConfirmation,
   type EmailAuthResult,
 } from './lib/auth'
+import {
+  acceptPackInvite,
+  createChallengeRequest,
+  fetchPackAccessMembers,
+  sendPackInvite,
+} from './lib/db/packAccess'
 
 function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   const auth = useAuth()
@@ -152,6 +169,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   const [authLoading, setAuthLoading] = useState(false)
   const [dataHydrated, setDataHydrated] = useState(!useProductionBackend)
   const [splashComplete, setSplashComplete] = useState(false)
+  const acceptedInviteTokenRef = useRef<string | null>(null)
 
   useEffect(() => {
     const timer = window.setTimeout(() => setSplashComplete(true), 1000)
@@ -191,6 +209,33 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       cancelled = true
     }
   }, [auth.user?.id, auth.loading, useProductionBackend])
+
+  useEffect(() => {
+    if (!useProductionBackend || !auth.user || !dataHydrated) return
+    const inviteToken = getInviteToken()
+    if (!inviteToken || acceptedInviteTokenRef.current === inviteToken) return
+
+    acceptedInviteTokenRef.current = inviteToken
+    void acceptPackInvite(inviteToken)
+      .then(async () => {
+        const refreshed = await hydrateProductionState(auth.user!.id, state)
+        setState((current) => ({
+          ...current,
+          ...refreshed,
+          packAccessToast: 'Pack invite accepted. Welcome in.',
+        }))
+        window.history.replaceState({}, '', ROUTES.app)
+      })
+      .catch((error) => {
+        const message =
+          error instanceof Error ? error.message : 'Could not accept that invite.'
+        acceptedInviteTokenRef.current = null
+        setState((current) => ({
+          ...current,
+          packAccessToast: message,
+        }))
+      })
+  }, [auth.user?.id, dataHydrated, useProductionBackend])
 
   useEffect(() => {
     saveAppState(state, appMode)
@@ -1439,6 +1484,21 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     }
   }
 
+  const handleMagicLink = async (email: string) => {
+    setAuthLoading(true)
+    setAuthError(null)
+    try {
+      await sendMagicLink(email)
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Could not send magic link'
+      setAuthError(message)
+      throw error
+    } finally {
+      setAuthLoading(false)
+    }
+  }
+
   const handleSignOut = async () => {
     setAuthLoading(true)
     setAuthError(null)
@@ -1544,7 +1604,33 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     setState((current) => ({ ...current, showPackInviteOverlay: true }))
   }
 
-  const submitPackInvite = (payload: PackInvitePayload) => {
+  const submitPackInvite = async (payload: PackInvitePayload) => {
+    const roleValue = packRoleValueForInvite(payload.role)
+
+    if (useProductionBackend && auth.user) {
+      await sendPackInvite(payload)
+      const refreshedMembers = await fetchPackAccessMembers(auth.user.id)
+      setState((current) => ({
+        ...current,
+        showPackInviteOverlay: false,
+        packAccessMembers: [
+          ...refreshedMembers,
+          {
+            id: `invite-${payload.email}`,
+            name: payload.email,
+            role: roleLabelForPackRole(roleValue),
+            accessLevel: accessLevelForPackRole(roleValue),
+            accessDescription: accessDescriptionForPackRole(roleValue),
+            lastActivity: 'Invite sent',
+            inviteStatus: 'pending',
+            contactLabel: payload.email,
+          },
+        ],
+        packAccessToast: `Invite emailed to ${payload.email}.`,
+      }))
+      return
+    }
+
     setState((current) => ({
       ...current,
       showPackInviteOverlay: false,
@@ -1552,34 +1638,35 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         ...current.packAccessMembers,
         {
           id: `pack-${Date.now()}`,
-          name: payload.name,
-          role: roleLabelForInvite(payload.role),
-          accessLevel:
-            payload.role === 'Dog Mom / Dog Dad'
-              ? 'Family access'
-              : payload.role === 'Walker / Sitter'
-                ? 'Helper access'
-                : `${payload.role} access`,
-          accessDescription: accessDescriptionFor(payload.accessLevels),
-          lastActivity: 'Pending invite',
+          name: payload.email,
+          role: roleLabelForPackRole(roleValue),
+          accessLevel: accessLevelForPackRole(roleValue),
+          accessDescription: accessDescriptionForPackRole(roleValue),
+          lastActivity: 'Invite saved',
           inviteStatus: 'pending',
-          contactLabel: payload.contact,
+          contactLabel: payload.email,
         },
       ],
-      packAccessToast: `Pending invite saved on this device for ${payload.name}.`,
+      packAccessToast: `Demo invite saved for ${payload.email}.`,
     }))
 
-    if (useProductionBackend && auth.user) {
+    if (auth.user) {
       void trackUserEvent(
         'pack_invite_saved',
         {
-          role: payload.role,
-          accessLevels: payload.accessLevels,
-          delivery: 'local_pending',
+          role: roleValue,
+          delivery: 'demo_pending',
         },
         auth.user.id,
       )
     }
+  }
+
+  const submitChallengeRequest = async (cityOrZip: string): Promise<boolean> => {
+    if (useProductionBackend && auth.user) {
+      return createChallengeRequest({ cityOrZip })
+    }
+    return true
   }
 
   useEffect(() => {
@@ -1627,6 +1714,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         authError={authError}
         onEmailAuth={handleEmailAuth}
         onGoogleAuth={handleGoogleAuth}
+        onMagicLink={handleMagicLink}
         onPasswordReset={handlePasswordReset}
       />
     )
@@ -1949,6 +2037,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onOpenChallenge={openChallengeDetail}
             onJoinChallenge={joinChallenge}
             onOpenAchievements={() => setActiveTab('achievements')}
+            onRequestChallenge={submitChallengeRequest}
           />
         )
       case 'profile':

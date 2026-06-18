@@ -20,6 +20,7 @@ import {
 import type { EmailAuthResult } from '../../lib/auth'
 import {
   AUTH_EMAIL_CONFIRMATION_MESSAGE,
+  AUTH_MAGIC_LINK_SENT_MESSAGE,
   AUTH_PASSWORD_RESET_SENT_MESSAGE,
 } from '../../lib/auth'
 
@@ -69,6 +70,7 @@ interface OnboardingFlowProps {
     input: { email: string; password: string; userName: string },
   ) => Promise<EmailAuthResult>
   onGoogleAuth?: () => Promise<void>
+  onMagicLink?: (email: string) => Promise<void>
   onPasswordReset?: (email: string) => Promise<void>
 }
 
@@ -82,6 +84,7 @@ export function OnboardingFlow({
   authError = null,
   onEmailAuth,
   onGoogleAuth,
+  onMagicLink,
   onPasswordReset,
 }: OnboardingFlowProps) {
   const [step, setStep] = useState(initialStep)
@@ -214,6 +217,22 @@ export function OnboardingFlow({
       return
     }
     setStep(3)
+  }
+
+  const handleMagicLink = async () => {
+    if (!email.includes('@')) {
+      setAuthNotice('Enter your email first.')
+      return
+    }
+    setAuthNotice(null)
+    try {
+      if (authConfigured && onMagicLink) {
+        await onMagicLink(email)
+        setAuthNotice(AUTH_MAGIC_LINK_SENT_MESSAGE)
+      }
+    } catch {
+      // Error surfaced via authError from App.
+    }
   }
 
   const handlePasswordReset = async () => {
@@ -436,6 +455,16 @@ export function OnboardingFlow({
                     ? 'Create account'
                     : 'Sign in'}
                 {arrowIcon}
+              </button>
+            ) : null}
+            {authConfigured && !showForgotPassword ? (
+              <button
+                type="button"
+                className="demo-feedback-link"
+                disabled={!email.includes('@') || authLoading}
+                onClick={() => void handleMagicLink()}
+              >
+                Email me a magic link instead
               </button>
             ) : null}
             <button

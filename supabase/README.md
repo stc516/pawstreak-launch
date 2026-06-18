@@ -27,6 +27,11 @@
    supabase/migrations/009_user_events.sql
    supabase/migrations/010_storage_memory_photos.sql
    supabase/migrations/011_waitlist_signups.sql
+   supabase/migrations/012_places_sd_oc_expansion.sql
+   supabase/migrations/013_location_candidates.sql
+   supabase/migrations/014_add_adventure_scheduling.sql
+   supabase/migrations/015_remove_demo_counts.sql
+   supabase/migrations/016_pack_access_mvp.sql
    supabase/seed/places.sql
    ```
 
@@ -37,6 +42,16 @@
    VITE_SUPABASE_ANON_KEY=YOUR_ANON_KEY
    # Vercel Production only:
    # VITE_SITE_URL=https://pawstreakapp.com
+   ```
+
+8. Pack Access email invites require Supabase Edge Functions:
+
+   ```bash
+   supabase secrets set RESEND_API_KEY=YOUR_RESEND_KEY
+   supabase secrets set RESEND_FROM_EMAIL="PawStreak <hello@pawstreakapp.com>"
+   supabase secrets set SITE_URL="https://pawstreakapp.com"
+   supabase functions deploy pack-invites
+   supabase functions deploy pack-invite-accept
    ```
 
 7. Restart dev server.
@@ -60,6 +75,11 @@ npx tsx scripts/generate-places-seed.mjs
 | `waitlist_signups` | Marketing landing page waitlist at `/` |
 | `product_feedback` | In-app product feedback |
 | `user_events` | Lightweight analytics events |
+| `packs` | Pack Access ownership shell |
+| `pack_members` | Owner, member, and viewer access to packs |
+| `pack_invites` | Email-only invite tokens |
+| `rate_limit_events` | Daily write limit ledger |
+| `challenge_requests` | Unsupported-market local challenge requests |
 | `demo_feedback` | Legacy demo tester feedback (unchanged) |
 
 ## Storage

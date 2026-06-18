@@ -6,6 +6,8 @@ export type UserEventName =
   | 'memory_created'
   | 'early_access_joined'
   | 'pack_invite_saved'
+  | 'pack_invite_sent'
+  | 'pack_invite_accepted'
 
 export interface ProfileRow {
   id: string

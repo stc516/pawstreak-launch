@@ -38,39 +38,33 @@ export const DEFAULT_PACK_ACCESS_MEMBERS: PackAccessMember[] = [
   },
 ]
 
-export const PACK_INVITE_ROLES = [
-  'Dog Mom / Dog Dad',
-  'Family',
-  'Walker / Sitter',
-  'Trainer',
-  'Friend',
-] as const
-
-export const PACK_INVITE_ACCESS_LEVELS = [
-  'View memories',
-  'Suggest adventures',
-  'Add photos',
-  'Start adventures',
-] as const
+export const PACK_INVITE_ROLES = ['Member', 'Viewer'] as const
 
 export type PackInviteRole = (typeof PACK_INVITE_ROLES)[number]
-export type PackInviteAccessLevel = (typeof PACK_INVITE_ACCESS_LEVELS)[number]
+export type PackMemberRole = 'owner' | 'member' | 'viewer'
 
-export function accessDescriptionFor(levels: PackInviteAccessLevel[]): string {
-  const parts: string[] = []
-  if (levels.includes('View memories')) parts.push('view memories')
-  if (levels.includes('Suggest adventures')) parts.push('suggest adventures')
-  if (levels.includes('Add photos')) parts.push('add photos')
-  if (levels.includes('Start adventures')) parts.push('start adventures')
-
-  if (parts.length === 0) return 'Can stay connected to the pack'
-  if (parts.length === 1) return `Can ${parts[0]}`
-  if (parts.length === 2) return `Can ${parts[0]} and ${parts[1]}`
-  return `Can ${parts.slice(0, -1).join(', ')}, and ${parts[parts.length - 1]}`
+export function packRoleValueForInvite(role: PackInviteRole): 'member' | 'viewer' {
+  return role === 'Viewer' ? 'viewer' : 'member'
 }
 
-export function roleLabelForInvite(role: PackInviteRole): string {
-  if (role === 'Dog Mom / Dog Dad') return 'Family'
-  if (role === 'Walker / Sitter') return 'Adventure helper'
-  return role
+export function roleLabelForPackRole(role: PackMemberRole): string {
+  if (role === 'owner') return 'Owner'
+  if (role === 'viewer') return 'Viewer'
+  return 'Member'
+}
+
+export function accessLevelForPackRole(role: PackMemberRole): string {
+  if (role === 'owner') return 'Full access'
+  if (role === 'viewer') return 'Read-only'
+  return 'Contributor access'
+}
+
+export function accessDescriptionForPackRole(role: PackMemberRole): string {
+  if (role === 'owner') return 'Invite people, edit dog profiles, and manage permissions'
+  if (role === 'viewer') return 'Can view dogs, adventures, memories, and challenges'
+  return 'Can add memories, contribute photos, join adventures, and participate in challenges'
+}
+
+export function inviteDescriptionForRole(role: PackInviteRole): string {
+  return accessDescriptionForPackRole(packRoleValueForInvite(role))
 }
