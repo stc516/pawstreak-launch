@@ -16,13 +16,13 @@ const SCREENS = [
       await page.goto(`${BASE_URL}/demo/app`, { waitUntil: 'networkidle', timeout: 60000 })
       await page.evaluate(() => localStorage.clear())
       await page.reload({ waitUntil: 'networkidle', timeout: 60000 })
-      await page.locator('.home-quick-primary-btn').first().waitFor({ state: 'visible', timeout: 15000 })
+      await page.locator('.home-quick-walk-btn').first().waitFor({ state: 'visible', timeout: 15000 })
       await page.waitForTimeout(800)
     },
     checks: [
       { id: 'quick-walk', selector: 'button:has-text("Quick Walk")' },
-      { id: 'quick-adventure', selector: 'button:has-text("Quick Adventure")' },
-      { id: 'training', selector: '.home-training-row, .home-action-chip:has-text("Training")' },
+      { id: 'todays-pick', selector: '.home-quick-adventure' },
+      { id: 'plan-something-new', selector: '.home-plan-action:has-text("Training")' },
       { id: 'headline', selector: '.home-headline' },
     ],
   },
@@ -37,7 +37,7 @@ const SCREENS = [
       { id: 'map', selector: '.plan-map-canvas' },
       { id: 'suggested', selector: '.plan-suggested-sec, .plan-build-curated-plan' },
       { id: 'no-challenges', selector: '.plan-challenge-list', expectMissing: true },
-      { id: 'training', selector: '.plan-training-row' },
+      { id: 'create-custom-adventure', selector: 'button:has-text("Create Custom Adventure")' },
     ],
   },
   {
@@ -50,8 +50,8 @@ const SCREENS = [
       await page.waitForTimeout(800)
     },
     checks: [
-      { id: 'earned-tags', selector: '.profile-section:has-text("Earned Tags")' },
-      { id: 'training', selector: '.profile-section:has-text("Training")' },
+      { id: 'pack-access', selector: '.profile-section:has-text("Pack Access")' },
+      { id: 'no-training', selector: '.profile-section:has-text("Training")', expectMissing: true },
       { id: 'settings-btn', selector: '.profile-settings-btn' },
     ],
   },
@@ -69,11 +69,11 @@ const SCREENS = [
     label: 'Quick Walk',
     setup: async (page) => {
       await page.goto(`${BASE_URL}/demo/app`, { waitUntil: 'networkidle', timeout: 60000 })
-      await page.locator('.home-quick-primary-btn').first().waitFor({ state: 'visible', timeout: 15000 })
+      await page.locator('.home-quick-walk-btn').first().waitFor({ state: 'visible', timeout: 15000 })
       await page.getByRole('button', { name: 'Quick Walk' }).click()
       await page.waitForTimeout(800)
     },
-    checks: [{ id: 'mini-quest', selector: '.adv-mini-quest' }],
+    checks: [{ id: 'active-adventure-banner', selector: '[data-testid="active-adventure-banner"]' }],
   },
   {
     id: 'challenges',

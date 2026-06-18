@@ -1,6 +1,6 @@
 {
-  "baseUrl": "http://127.0.0.1:4180",
-  "checkedAt": "2026-06-01T14:30:09.679Z",
+  "baseUrl": "http://127.0.0.1:5173",
+  "checkedAt": "2026-06-18T09:31:52.496Z",
   "results": [
     {
       "screen": "home",
@@ -31,6 +31,24 @@
     },
     {
       "screen": "challenges",
+      "pass": true,
+      "code": null,
+      "detail": null,
+      "shellFillRatio": 1,
+      "navCenterY": 635,
+      "scrollClientHeight": 551
+    },
+    {
+      "screen": "community",
+      "pass": true,
+      "code": null,
+      "detail": null,
+      "shellFillRatio": 1,
+      "navCenterY": 635,
+      "scrollClientHeight": 551
+    },
+    {
+      "screen": "achievements",
       "pass": true,
       "code": null,
       "detail": null,
