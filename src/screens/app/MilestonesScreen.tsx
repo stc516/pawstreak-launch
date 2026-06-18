@@ -165,6 +165,59 @@ function RequestChallengeCard() {
   )
 }
 
+function FirstChallengeStarter({
+  challenge,
+  onJoinChallenge,
+  onOpenChallenge,
+}: {
+  challenge: ResolvedChallenge | undefined
+  onJoinChallenge: (challengeId: string) => void
+  onOpenChallenge: (challengeId: string) => void
+}) {
+  if (!challenge) {
+    return (
+      <section className="ms-first-challenge detail-card-warm">
+        <div className="ms-first-challenge-icon" aria-hidden="true">
+          <i className="ti ti-trophy" />
+        </div>
+        <div>
+          <h2>Pick a small goal for this week</h2>
+          <p>Challenges unlock after real walks, photos, and places you actually visit.</p>
+        </div>
+      </section>
+    )
+  }
+
+  return (
+    <section className="ms-first-challenge detail-card-warm">
+      <div className="ms-first-challenge-icon" aria-hidden="true">
+        {challenge.emoji}
+      </div>
+      <div className="ms-first-challenge-copy">
+        <span>Good first challenge</span>
+        <h2>{challenge.title}</h2>
+        <p>{challenge.description}</p>
+        <div className="ms-first-challenge-actions">
+          <button
+            type="button"
+            className="ms-challenge-card-cta tap-target"
+            onClick={() => onJoinChallenge(challenge.id)}
+          >
+            Join
+          </button>
+          <button
+            type="button"
+            className="ms-challenge-card-link tap-target"
+            onClick={() => onOpenChallenge(challenge.id)}
+          >
+            Preview
+          </button>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 export function MilestonesScreen({
   state,
   onOpenChallenge,
@@ -190,6 +243,7 @@ export function MilestonesScreen({
   const visibleAnywhereChallenges = showAllDiscover
     ? anywhereChallenges
     : anywhereChallenges.slice(0, DISCOVER_PREVIEW_COUNT)
+  const starterChallenge = anywhereChallenges[0] ?? localChallenges[0]
 
   return (
     <div className="ms-screen ms-screen--stitch">
@@ -214,9 +268,11 @@ export function MilestonesScreen({
       </div>
 
       {joinedChallenges.length === 0 ? (
-        <p className="ms-challenge-lead">
-          No challenges joined yet. Browse discover challenges below when you&apos;re ready.
-        </p>
+        <FirstChallengeStarter
+          challenge={starterChallenge}
+          onJoinChallenge={onJoinChallenge}
+          onOpenChallenge={onOpenChallenge}
+        />
       ) : (
         <div className="ms-challenge-list">
           {joinedChallenges.map((challenge) => (

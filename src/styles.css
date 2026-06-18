@@ -11523,7 +11523,15 @@ select.field-input {
 /* Journey story path */
 
 .journey-story-hero {
+  display: block;
   margin-bottom: 2px;
+  padding-bottom: 8px;
+}
+
+.journey-story-hero .alogo,
+.community-header .alogo {
+  font-size: 24px;
+  line-height: 1.12;
 }
 
 .journey-story-hero-copy {
@@ -11532,6 +11540,47 @@ select.field-input {
   line-height: 1.45;
   font-weight: 500;
   color: #5c3d2e;
+}
+
+.community-header {
+  display: block;
+  padding-bottom: 8px;
+}
+
+.journey-first-run {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 12px;
+  margin-bottom: 10px;
+  padding: 13px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #fff8ec 0%, #eef7ef 100%);
+}
+
+.journey-first-run-icon {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border-radius: 14px;
+  background: #1b3022;
+  color: #fff;
+  font-size: 24px;
+}
+
+.journey-first-run-copy h2 {
+  margin: 0;
+  color: #1c1410;
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.journey-first-run-copy p {
+  margin: 5px 0 10px;
+  color: #5c3d2e;
+  font-size: 12px;
+  line-height: 1.35;
 }
 
 .journey-story {
@@ -14320,6 +14369,55 @@ select.field-input {
   font-size: 11px;
 }
 
+.ms-first-challenge {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 13px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #eef7ef 0%, #fff8ec 100%);
+}
+
+.ms-first-challenge-icon {
+  display: grid;
+  width: 54px;
+  height: 54px;
+  place-items: center;
+  border-radius: 15px;
+  background: #1b3022;
+  color: #fff;
+  font-size: 25px;
+}
+
+.ms-first-challenge-copy span {
+  color: #e85b12;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.ms-first-challenge h2 {
+  margin: 2px 0 0;
+  color: #1c1410;
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.ms-first-challenge p {
+  margin: 5px 0 10px;
+  color: #5c3d2e;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.ms-first-challenge-actions {
+  display: flex;
+  gap: 8px;
+}
+
 .ms-request-challenge {
   display: grid;
   grid-template-columns: 44px minmax(0, 1fr);
@@ -14492,6 +14590,42 @@ select.field-input {
   font-size: 12px;
   font-weight: 750;
   line-height: 1.35;
+}
+
+.community-beta-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0 0 12px;
+}
+
+.community-beta-step {
+  display: grid;
+  gap: 4px;
+  align-content: start;
+  min-height: 108px;
+  padding: 10px;
+  border: 1px solid rgba(31, 122, 69, 0.12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.76);
+}
+
+.community-beta-step i {
+  color: #1f7a45;
+  font-size: 20px;
+}
+
+.community-beta-step strong {
+  color: #1c1410;
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.community-beta-step small {
+  color: #6f594a;
+  font-size: 10px;
+  line-height: 1.25;
 }
 
 .community-beta-actions {
