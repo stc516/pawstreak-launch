@@ -1934,6 +1934,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             isDemoMode={isDemoMode}
             onOpenChallenge={openChallengeDetail}
             onJoinChallenge={joinChallenge}
+            onOpenAchievements={() => setActiveTab('achievements')}
           />
         )
       case 'profile':

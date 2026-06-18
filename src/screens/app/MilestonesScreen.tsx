@@ -11,6 +11,7 @@ interface MilestonesScreenProps {
   isDemoMode?: boolean
   onOpenChallenge: (challengeId: string) => void
   onJoinChallenge: (challengeId: string) => void
+  onOpenAchievements: () => void
 }
 
 const DISCOVER_PREVIEW_COUNT = 10
@@ -168,6 +169,7 @@ export function MilestonesScreen({
   state,
   onOpenChallenge,
   onJoinChallenge,
+  onOpenAchievements,
 }: MilestonesScreenProps) {
   const [showAllDiscover, setShowAllDiscover] = useState(false)
 
@@ -226,6 +228,17 @@ export function MilestonesScreen({
           ))}
         </div>
       )}
+
+      <button type="button" className="ms-badges-entry tap-target" onClick={onOpenAchievements}>
+        <span className="ms-badges-icon" aria-hidden="true">
+          <i className="ti ti-medal" />
+        </span>
+        <span className="ms-badges-copy">
+          <strong>Badges &amp; Achievements</strong>
+          <small>Collect First Adventure, Week Streak, Trail Scout, and more.</small>
+        </span>
+        <i className="ti ti-chevron-right" aria-hidden="true" />
+      </button>
 
       <div className="st-section-head ms-discover-sec">
         <h2 className="st-headline-lg">Local Challenges</h2>
