@@ -1540,16 +1540,11 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     setState((current) => ({ ...current, showPackInviteOverlay: false }))
   }
 
-  const submitPackInvite = (payload: PackInvitePayload) => {
-    if (!isDemoMode) {
-      setState((current) => ({
-        ...current,
-        showPackInviteOverlay: false,
-        packAccessToast: 'Pack invites are coming soon.',
-      }))
-      return
-    }
+  const openPackInvite = () => {
+    setState((current) => ({ ...current, showPackInviteOverlay: true }))
+  }
 
+  const submitPackInvite = (payload: PackInvitePayload) => {
     setState((current) => ({
       ...current,
       showPackInviteOverlay: false,
@@ -1569,7 +1564,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
           lastActivity: 'Invite saved locally',
         },
       ],
-      packAccessToast: 'Invite saved locally — real invites coming later.',
+      packAccessToast: 'Pack Access invite saved locally — sending invites comes next.',
     }))
   }
 
@@ -1733,7 +1728,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     )
   }
 
-  if (state.showPackInviteOverlay && isDemoMode && LIVE_PRODUCT.packAccess) {
+  if (state.showPackInviteOverlay && LIVE_PRODUCT.packAccess) {
     return (
       <PackInviteOverlay onClose={closePackInvite} onSubmit={submitPackInvite} />
     )
@@ -1950,7 +1945,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onSetActiveDog={handleSetActiveDog}
             onUpdateDog={handleUpdateDog}
             onRemoveDog={handleRemoveDog}
-            onOpenTrainingProgram={openTrainingProgram}
+            onOpenPackInvite={openPackInvite}
             onZipChange={setZipCode}
             onApplyLocation={applyLocationFromZip}
             onSignOut={useProductionBackend ? handleSignOut : undefined}

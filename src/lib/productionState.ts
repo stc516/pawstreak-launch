@@ -245,7 +245,7 @@ export function sanitizeProductionAppState(state: AppState): AppState {
     favoritePlaces: stripDemoHistory
       ? []
       : next.favoritePlaces.filter((item) => !DEMO_SEEDED_FAVORITE_IDS.has(item.id)),
-    packAccessMembers: next.mode === 'app' ? [] : next.packAccessMembers,
+    packAccessMembers: next.packAccessMembers,
     communityLive: looksLikeDemoCommunityLive(next.communityLive)
       ? EMPTY_COMMUNITY_LIVE
       : next.mode === 'app'

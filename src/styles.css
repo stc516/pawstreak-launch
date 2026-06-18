@@ -13953,6 +13953,127 @@ select.field-input {
   color: #445243;
 }
 
+.pack-access-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid rgba(31, 122, 69, 0.18);
+  border-radius: 12px;
+  background: linear-gradient(135deg, #eef7ef 0%, #fff8ec 100%);
+  box-shadow: 0 4px 14px rgba(27, 48, 34, 0.06);
+}
+
+.pack-access-panel h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1.15;
+  color: #1b3022;
+}
+
+.pack-access-panel p {
+  margin: 5px 0 0;
+  font-size: 12px;
+  line-height: 1.34;
+  color: #4f5b50;
+}
+
+.pack-access-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 9px 12px;
+  border-radius: 999px;
+  background: #1b3022;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.pack-access-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pack-access-member {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid rgba(195, 200, 193, 0.62);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 2px 9px rgba(27, 48, 34, 0.05);
+}
+
+.pack-access-avatar {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 12px;
+  background: #f1f5e9;
+  color: #1b3022;
+  font-size: 20px;
+}
+
+.pack-access-copy {
+  min-width: 0;
+}
+
+.pack-access-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.pack-access-name-row strong {
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pack-access-name-row span {
+  flex: 0 0 auto;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: #ffedd5;
+  color: #9a3412;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.pack-access-copy p,
+.pack-access-copy small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pack-access-copy p {
+  margin: 2px 0 0;
+  font-size: 11px;
+  font-weight: 750;
+  color: #4f5b50;
+}
+
+.pack-access-copy small {
+  margin-top: 2px;
+  font-size: 10px;
+  color: #747b73;
+}
+
 .achievements-hero {
   display: flex;
   align-items: center;

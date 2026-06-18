@@ -40,6 +40,7 @@ export const PACK_INVITE_ROLES = [
   'Dog Mom / Dog Dad',
   'Family',
   'Walker / Sitter',
+  'Trainer',
   'Friend',
 ] as const
 
