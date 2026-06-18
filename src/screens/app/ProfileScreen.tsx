@@ -1,9 +1,5 @@
-import { useMemo, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import type { AppState, Dog } from '../../data/demo'
-import {
-  resolveAllTrainingPrograms,
-  type ResolvedTrainingProgram,
-} from '../../lib/trainingEngine'
 import {
   getDisplayDogLabel,
   getDogAgeLabel,
@@ -13,7 +9,6 @@ import {
 import { getHomeProgressStats } from '../../lib/homeStats'
 import { getJourneyEntryDisplayImageUrl } from '../../lib/adventureDisplayImage'
 import { CardImage } from '../../components/CardImage'
-import { TrainingProgramCard } from '../../components/TrainingProgramCard'
 import { getMagicLine, getPlaceById } from '../../data/places'
 import { SettingsScreen } from './SettingsScreen'
 
@@ -28,7 +23,7 @@ interface ProfileScreenProps {
   ) => void
   onRemoveDog?: (dogId: string) => void
   onOpenAchievement?: (achievementId: string) => void
-  onOpenTrainingProgram?: (programId: string) => void
+  onOpenPackInvite?: () => void
   onZipChange?: (zipCode: string) => void
   onApplyLocation?: () => void
   onSignOut?: () => Promise<void>
@@ -223,6 +218,18 @@ function DogCard({
   )
 }
 
+function PackAccessIcon({ role }: { role: string }) {
+  const icon =
+    role === 'Owner'
+      ? 'ti-crown'
+      : /walker|helper|sitter/i.test(role)
+        ? 'ti-shoe'
+        : /trainer/i.test(role)
+          ? 'ti-school'
+          : 'ti-users'
+  return <i className={`ti ${icon}`} aria-hidden="true" />
+}
+
 export function ProfileScreen({
   state,
   isDemoMode = false,
@@ -230,7 +237,7 @@ export function ProfileScreen({
   onSetActiveDog,
   onUpdateDog,
   onRemoveDog,
-  onOpenTrainingProgram,
+  onOpenPackInvite,
   onZipChange,
   onApplyLocation,
   onSignOut,
@@ -244,7 +251,6 @@ export function ProfileScreen({
   const [draftAge, setDraftAge] = useState('')
   const [removeTarget, setRemoveTarget] = useState<Dog | null>(null)
   const [showSettings, setShowSettings] = useState(false)
-  const [showAllTraining, setShowAllTraining] = useState(false)
 
   const beginEdit = (dog: Dog) => {
     setEditingDogId(dog.id)
@@ -279,10 +285,20 @@ export function ProfileScreen({
   const memoryCount = state.journeyEntries.length
   const progress = getHomeProgressStats(state)
   const recentMemories = state.journeyEntries.slice(0, 3)
-  const trainingPrograms = useMemo(() => resolveAllTrainingPrograms(state), [state])
-  const visibleTrainingPrograms = showAllTraining
-    ? trainingPrograms
-    : trainingPrograms.slice(0, 2)
+  const packAccessMembers =
+    state.packAccessMembers.length > 0
+      ? state.packAccessMembers
+      : [
+          {
+            id: 'owner',
+            name: 'You',
+            role: 'Owner',
+            accessLevel: 'Full access',
+            accessDescription: 'Manage dogs, adventures, memories, and pack settings',
+            lastActivity: 'Active now',
+            isOwner: true,
+          },
+        ]
   const editingDog = editingDogId ? profileDogs.find((dog) => dog.id === editingDogId) : null
 
   if (showSettings && onZipChange && onApplyLocation) {
@@ -401,34 +417,51 @@ export function ProfileScreen({
 
       <section className="profile-section">
         <div className="st-section-head">
-          <h2 className="st-headline-lg">Training</h2>
+          <h2 className="st-headline-lg">Pack Access</h2>
+          <button
+            type="button"
+            className="st-link-btn tap-target"
+            onClick={onOpenPackInvite}
+          >
+            Invite
+          </button>
         </div>
-        {trainingPrograms.length === 0 ? (
-          <p className="profile-section-empty">Training programs will show up here.</p>
-        ) : (
-          <>
-            <div className="ms-training-list profile-training-list">
-              {visibleTrainingPrograms.map((program: ResolvedTrainingProgram) => (
-                <TrainingProgramCard
-                  key={program.id}
-                  program={program}
-                  onOpenTrainingProgram={(programId) => onOpenTrainingProgram?.(programId)}
-                />
-              ))}
-            </div>
-            {trainingPrograms.length > 2 ? (
-              <button
-                type="button"
-                className="ms-view-all tap-target"
-                onClick={() => setShowAllTraining((value) => !value)}
-              >
-                {showAllTraining
-                  ? 'Show less'
-                  : `View all · ${trainingPrograms.length - 2} more`}
-              </button>
-            ) : null}
-          </>
-        )}
+        <div className="pack-access-panel">
+          <div>
+            <h3>Share {packLabel}&apos;s care without sharing your password</h3>
+            <p>Family, walkers, sitters, and trainers can stay in sync with the pack.</p>
+            <small>Pending invites are saved on this device while email/SMS delivery is being built.</small>
+          </div>
+          <button type="button" className="pack-access-primary tap-target" onClick={onOpenPackInvite}>
+            <i className="ti ti-user-plus" aria-hidden="true" />
+            Add person
+          </button>
+        </div>
+        <div className="pack-access-list">
+          {packAccessMembers.map((member) => (
+            <article key={member.id} className="pack-access-member">
+              <div className="pack-access-avatar">
+                <PackAccessIcon role={member.role} />
+              </div>
+              <div className="pack-access-copy">
+                <div className="pack-access-name-row">
+                  <strong>{member.name}</strong>
+                  {member.inviteStatus === 'pending' ? (
+                    <span className="pack-access-status pack-access-status--pending">Pending</span>
+                  ) : member.isOwner ? (
+                    <span className="pack-access-status">Owner</span>
+                  ) : null}
+                </div>
+                <p>{member.role} · {member.accessLevel}</p>
+                <small>
+                  {member.inviteStatus === 'pending' && member.contactLabel
+                    ? `${member.contactLabel} · ${member.accessDescription}`
+                    : member.accessDescription}
+                </small>
+              </div>
+            </article>
+          ))}
+        </div>
       </section>
 
       {recentMemories.length > 0 ? (

@@ -8,6 +8,7 @@ import { StatusBar } from '../../components/StatusBar'
 
 export interface PackInvitePayload {
   name: string
+  contact: string
   role: PackInviteRole
   accessLevels: PackInviteAccessLevel[]
 }
@@ -19,6 +20,7 @@ interface PackInviteOverlayProps {
 
 export function PackInviteOverlay({ onClose, onSubmit }: PackInviteOverlayProps) {
   const [name, setName] = useState('')
+  const [contact, setContact] = useState('')
   const [role, setRole] = useState<PackInviteRole>('Family')
   const [accessLevels, setAccessLevels] = useState<PackInviteAccessLevel[]>([
     'View memories',
@@ -35,8 +37,9 @@ export function PackInviteOverlay({ onClose, onSubmit }: PackInviteOverlayProps)
 
   const handleSubmit = () => {
     const trimmed = name.trim()
-    if (!trimmed || accessLevels.length === 0) return
-    onSubmit({ name: trimmed, role, accessLevels })
+    const contactLabel = contact.trim()
+    if (!trimmed || !contactLabel || accessLevels.length === 0) return
+    onSubmit({ name: trimmed, contact: contactLabel, role, accessLevels })
   }
 
   return (
@@ -68,6 +71,18 @@ export function PackInviteOverlay({ onClose, onSubmit }: PackInviteOverlayProps)
               placeholder="e.g. Dog Mom"
               value={name}
               onChange={(event) => setName(event.target.value)}
+            />
+          </label>
+
+          <label className="pack-invite-field">
+            <span className="pack-invite-label">Email or phone</span>
+            <input
+              className="field-input"
+              type="text"
+              inputMode="email"
+              placeholder="name@example.com"
+              value={contact}
+              onChange={(event) => setContact(event.target.value)}
             />
           </label>
 
@@ -111,12 +126,12 @@ export function PackInviteOverlay({ onClose, onSubmit }: PackInviteOverlayProps)
             type="button"
             className="pack-invite-submit tap-target"
             onClick={handleSubmit}
-            disabled={!name.trim() || accessLevels.length === 0}
+            disabled={!name.trim() || !contact.trim() || accessLevels.length === 0}
           >
-            Save invite locally
+            Save pending invite
           </button>
           <p className="pack-invite-note">
-            Real invites coming later — this saves to your device for now.
+            Pending invites save on this device; email/SMS delivery is the next backend step.
           </p>
         </main>
       </div>

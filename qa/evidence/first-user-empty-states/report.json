@@ -1,0 +1,45 @@
+{
+  "commit": "173c2875f9a94fb921df0dfe617ecb079be20ec6",
+  "baseUrl": "http://127.0.0.1:5173/demo/onboarding",
+  "generatedAt": "2026-06-18T09:31:03.755Z",
+  "results": [
+    {
+      "id": "home-first-pick",
+      "pass": true,
+      "message": "new user lands on a personalized home with a first pick"
+    },
+    {
+      "id": "journey-first-run-card",
+      "pass": true,
+      "message": "journey has a guided first-run card"
+    },
+    {
+      "id": "challenge-first-starter",
+      "pass": true,
+      "message": "challenges offers a starter challenge instead of a dead empty state"
+    },
+    {
+      "id": "community-beta-steps",
+      "pass": true,
+      "message": "community explains the beta path with real-user steps"
+    }
+  ],
+  "screenshots": [
+    {
+      "id": "home-first-pick",
+      "file": "01-see-screenshots-above"
+    },
+    {
+      "id": "journey-first-run-card",
+      "file": "02-see-screenshots-above"
+    },
+    {
+      "id": "challenge-first-starter",
+      "file": "03-see-screenshots-above"
+    },
+    {
+      "id": "community-beta-steps",
+      "file": "04-see-screenshots-above"
+    }
+  ]
+}

@@ -833,11 +833,9 @@ html.landing-route .landing {
 }
 
 .landing-founder-inner {
-  max-width: 960px;
+  max-width: 720px;
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
+  text-align: left;
 }
 
 .landing-founder-copy p {
@@ -1037,13 +1035,7 @@ html.landing-route .landing {
   }
 
   .landing-founder-inner {
-    flex-direction: row;
-    align-items: center;
-  }
-
-  .landing-founder-copy,
-  .landing-founder-visual {
-    flex: 1;
+    text-align: center;
   }
 }
 
@@ -1086,7 +1078,7 @@ html.landing-route .landing {
   }
 
   .landing-features-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

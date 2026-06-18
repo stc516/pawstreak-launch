@@ -2,7 +2,7 @@ import type { AppMode, TabId } from '../data/demo'
 
 /** Live product gates — hide UI for features that are not fully shipped. */
 export const LIVE_PRODUCT = {
-  packAccess: false,
+  packAccess: true,
   calendarPresetPlan: false,
   bondProgressBar: false,
   statusBarChrome: false,
@@ -13,7 +13,6 @@ const NAV_TAB_ORDER: TabId[] = [
   'plan',
   'journey',
   'milestones',
-  'achievements',
   'community',
 ]
 

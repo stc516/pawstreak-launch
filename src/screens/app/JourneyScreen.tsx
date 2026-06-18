@@ -43,9 +43,27 @@ export function JourneyScreen({
         <p className="journey-story-hero-copy">
           {hasMemories
             ? 'Completed outings, tiny moments, and saved memories from the month.'
-            : 'Finish an adventure and your first memory path will appear here.'}
+            : 'Your first saved outing turns this into a real memory path.'}
         </p>
       </div>
+
+      {!hasMemories ? (
+        <section className="journey-first-run detail-card-warm" aria-label="Start your journey">
+          <div className="journey-first-run-icon" aria-hidden="true">
+            <i className="ti ti-route" />
+          </div>
+          <div className="journey-first-run-copy">
+            <h2>Start with one real outing</h2>
+            <p>
+              Take a quick walk or pick a nearby spot. When you finish, PawStreak saves the place,
+              date, photos, and little details that make it feel like {dogLabel}&apos;s story.
+            </p>
+            <button type="button" className="st-btn st-btn--forest tap-target" onClick={onGoToPlan}>
+              Find a first spot
+            </button>
+          </div>
+        </section>
+      ) : null}
 
       <JourneyStoryPath
         state={state}

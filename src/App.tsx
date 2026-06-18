@@ -1540,16 +1540,11 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     setState((current) => ({ ...current, showPackInviteOverlay: false }))
   }
 
-  const submitPackInvite = (payload: PackInvitePayload) => {
-    if (!isDemoMode) {
-      setState((current) => ({
-        ...current,
-        showPackInviteOverlay: false,
-        packAccessToast: 'Pack invites are coming soon.',
-      }))
-      return
-    }
+  const openPackInvite = () => {
+    setState((current) => ({ ...current, showPackInviteOverlay: true }))
+  }
 
+  const submitPackInvite = (payload: PackInvitePayload) => {
     setState((current) => ({
       ...current,
       showPackInviteOverlay: false,
@@ -1566,11 +1561,25 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
                 ? 'Helper access'
                 : `${payload.role} access`,
           accessDescription: accessDescriptionFor(payload.accessLevels),
-          lastActivity: 'Invite saved locally',
+          lastActivity: 'Pending invite',
+          inviteStatus: 'pending',
+          contactLabel: payload.contact,
         },
       ],
-      packAccessToast: 'Invite saved locally — real invites coming later.',
+      packAccessToast: `Pending invite saved on this device for ${payload.name}.`,
     }))
+
+    if (useProductionBackend && auth.user) {
+      void trackUserEvent(
+        'pack_invite_saved',
+        {
+          role: payload.role,
+          accessLevels: payload.accessLevels,
+          delivery: 'local_pending',
+        },
+        auth.user.id,
+      )
+    }
   }
 
   useEffect(() => {
@@ -1733,7 +1742,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     )
   }
 
-  if (state.showPackInviteOverlay && isDemoMode && LIVE_PRODUCT.packAccess) {
+  if (state.showPackInviteOverlay && LIVE_PRODUCT.packAccess) {
     return (
       <PackInviteOverlay onClose={closePackInvite} onSubmit={submitPackInvite} />
     )
@@ -1883,6 +1892,9 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onStartMonthlyPlanAdventure={startAdventureFromMonthlyPlan}
             onContinueTraining={continueTrainingFromHome}
             onOpenAddAdventure={openAddAdventureFlow}
+            onOpenTrainingProgramFlow={openTrainingProgramFlow}
+            onGoToCommunity={() => setActiveTab('community')}
+            onGoToChallenges={() => setActiveTab('milestones')}
           />
         )
       case 'plan':
@@ -1936,6 +1948,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             isDemoMode={isDemoMode}
             onOpenChallenge={openChallengeDetail}
             onJoinChallenge={joinChallenge}
+            onOpenAchievements={() => setActiveTab('achievements')}
           />
         )
       case 'profile':
@@ -1947,7 +1960,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onSetActiveDog={handleSetActiveDog}
             onUpdateDog={handleUpdateDog}
             onRemoveDog={handleRemoveDog}
-            onOpenTrainingProgram={openTrainingProgram}
+            onOpenPackInvite={openPackInvite}
             onZipChange={setZipCode}
             onApplyLocation={applyLocationFromZip}
             onSignOut={useProductionBackend ? handleSignOut : undefined}

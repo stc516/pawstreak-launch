@@ -27,7 +27,6 @@ const APP_TABS = [
   { id: 'plan', label: 'Plan' },
   { id: 'journey', label: 'Journey' },
   { id: 'challenges', label: 'Challenges' },
-  { id: 'achievements', label: 'Achievements' },
   { id: 'community', label: 'Community' },
 ]
 
@@ -82,6 +81,31 @@ async function main() {
           fullPage: false,
         })
       }
+    }
+
+    await page.getByRole('button', { name: 'Challenges', exact: true }).click()
+    await page.waitForTimeout(400)
+    await page.getByRole('button', { name: /Badges & Achievements/i }).click()
+    await page.waitForTimeout(500)
+    const achievementsMetrics = await page.evaluate(collectShellLayoutMetrics)
+    const achievementsResult = assertShellLayout(achievementsMetrics, { requireNav: true })
+    results.push({
+      screen: 'achievements',
+      metrics: achievementsMetrics,
+      result: achievementsResult,
+    })
+    console.log(
+      `[${achievementsResult.ok ? 'PASS' : 'FAIL'}] achievements: ${
+        achievementsResult.ok
+          ? 'shell ok'
+          : `${achievementsResult.code} — ${achievementsResult.detail}`
+      }`,
+    )
+    if (!achievementsResult.ok) {
+      await page.screenshot({
+        path: path.join(OUT_DIR, 'fail-achievements.png'),
+        fullPage: false,
+      })
     }
 
     // Profile uses header pill, not bottom nav — still must fill the shell.

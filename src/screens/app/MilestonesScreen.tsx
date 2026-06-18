@@ -11,6 +11,7 @@ interface MilestonesScreenProps {
   isDemoMode?: boolean
   onOpenChallenge: (challengeId: string) => void
   onJoinChallenge: (challengeId: string) => void
+  onOpenAchievements: () => void
 }
 
 const DISCOVER_PREVIEW_COUNT = 10
@@ -86,6 +87,9 @@ function DiscoverChallengeCard({
     <article
       className={`ms-challenge-card ms-challenge-card--${challenge.accent} detail-card-warm`}
     >
+      <div className="ms-challenge-visual" aria-hidden="true">
+        <span>{challenge.emoji}</span>
+      </div>
       <div className="ms-challenge-card-top">
         <div>
           <h2 className="ms-challenge-card-title">
@@ -143,10 +147,82 @@ function DiscoverChallengeCard({
   )
 }
 
+function RequestChallengeCard() {
+  return (
+    <section className="ms-request-challenge detail-card-warm" aria-label="Request a local challenge">
+      <div className="ms-request-icon" aria-hidden="true">
+        <i className="ti ti-map-pin-plus" />
+      </div>
+      <div className="ms-request-copy">
+        <h2>Request a Local Challenge</h2>
+        <p>Tell us which city should get dog-friendly challenge packs next.</p>
+      </div>
+      <form className="ms-request-form">
+        <input type="text" placeholder="City or ZIP" aria-label="City or ZIP" />
+        <button type="button" className="tap-target">Request</button>
+      </form>
+    </section>
+  )
+}
+
+function FirstChallengeStarter({
+  challenge,
+  onJoinChallenge,
+  onOpenChallenge,
+}: {
+  challenge: ResolvedChallenge | undefined
+  onJoinChallenge: (challengeId: string) => void
+  onOpenChallenge: (challengeId: string) => void
+}) {
+  if (!challenge) {
+    return (
+      <section className="ms-first-challenge detail-card-warm">
+        <div className="ms-first-challenge-icon" aria-hidden="true">
+          <i className="ti ti-trophy" />
+        </div>
+        <div>
+          <h2>Pick a small goal for this week</h2>
+          <p>Challenges unlock after real walks, photos, and places you actually visit.</p>
+        </div>
+      </section>
+    )
+  }
+
+  return (
+    <section className="ms-first-challenge detail-card-warm">
+      <div className="ms-first-challenge-icon" aria-hidden="true">
+        {challenge.emoji}
+      </div>
+      <div className="ms-first-challenge-copy">
+        <span>Good first challenge</span>
+        <h2>{challenge.title}</h2>
+        <p>{challenge.description}</p>
+        <div className="ms-first-challenge-actions">
+          <button
+            type="button"
+            className="ms-challenge-card-cta tap-target"
+            onClick={() => onJoinChallenge(challenge.id)}
+          >
+            Join
+          </button>
+          <button
+            type="button"
+            className="ms-challenge-card-link tap-target"
+            onClick={() => onOpenChallenge(challenge.id)}
+          >
+            Preview
+          </button>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 export function MilestonesScreen({
   state,
   onOpenChallenge,
   onJoinChallenge,
+  onOpenAchievements,
 }: MilestonesScreenProps) {
   const [showAllDiscover, setShowAllDiscover] = useState(false)
 
@@ -167,6 +243,7 @@ export function MilestonesScreen({
   const visibleAnywhereChallenges = showAllDiscover
     ? anywhereChallenges
     : anywhereChallenges.slice(0, DISCOVER_PREVIEW_COUNT)
+  const starterChallenge = anywhereChallenges[0] ?? localChallenges[0]
 
   return (
     <div className="ms-screen ms-screen--stitch">
@@ -191,9 +268,11 @@ export function MilestonesScreen({
       </div>
 
       {joinedChallenges.length === 0 ? (
-        <p className="ms-challenge-lead">
-          No challenges joined yet. Browse discover challenges below when you&apos;re ready.
-        </p>
+        <FirstChallengeStarter
+          challenge={starterChallenge}
+          onJoinChallenge={onJoinChallenge}
+          onOpenChallenge={onOpenChallenge}
+        />
       ) : (
         <div className="ms-challenge-list">
           {joinedChallenges.map((challenge) => (
@@ -206,6 +285,17 @@ export function MilestonesScreen({
         </div>
       )}
 
+      <button type="button" className="ms-badges-entry tap-target" onClick={onOpenAchievements}>
+        <span className="ms-badges-icon" aria-hidden="true">
+          <i className="ti ti-medal" />
+        </span>
+        <span className="ms-badges-copy">
+          <strong>Badges &amp; Achievements</strong>
+          <small>Collect First Adventure, Week Streak, Trail Scout, and more.</small>
+        </span>
+        <i className="ti ti-chevron-right" aria-hidden="true" />
+      </button>
+
       <div className="st-section-head ms-discover-sec">
         <h2 className="st-headline-lg">Local Challenges</h2>
       </div>
@@ -214,9 +304,7 @@ export function MilestonesScreen({
       </p>
 
       {!state.locationSupported ? (
-        <p className="ms-section-empty detail-card-warm">
-          Local challenge packs unlock as PawStreak expands to your area. Anywhere Challenges below still work today.
-        </p>
+        <RequestChallengeCard />
       ) : localChallenges.length === 0 ? (
         <p className="ms-section-empty detail-card-warm">Local challenges will show up here.</p>
       ) : (

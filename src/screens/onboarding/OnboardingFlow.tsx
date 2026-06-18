@@ -932,7 +932,7 @@ export function OnboardingFlow({
               disabled={isCompleting}
               onClick={() => void handleComplete()}
             >
-              {isCompleting ? 'Saving your pack…' : 'Start your first adventure'}
+              {isCompleting ? 'Saving your pack…' : "See today's pick"}
               {!isCompleting ? arrowIcon : null}
             </button>
           </div>

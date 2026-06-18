@@ -127,9 +127,27 @@ export function SettingsScreen({
       </section>
 
       <section className="settings-section">
-        <h2 className="st-section-label settings-section-label">Account &amp; Security</h2>
+        <h2 className="st-section-label settings-section-label">Account</h2>
         <div className="settings-group settings-group--stitch">
           <SettingsIconRow icon="ti-user" title="Account" detail={accountDetail} />
+        </div>
+      </section>
+
+      <section className="settings-section">
+        <h2 className="st-section-label settings-section-label">Dogs</h2>
+        <div className="settings-group settings-group--stitch">
+          <SettingsIconRow
+            icon="ti-paw"
+            title="Dogs"
+            detail="Edit names, breeds, and remove dogs from your pack."
+            onClick={onManageDogs}
+          />
+        </div>
+      </section>
+
+      <section className="settings-section">
+        <h2 className="st-section-label settings-section-label">Notifications</h2>
+        <div className="settings-group settings-group--stitch">
           <SettingsIconRow
             icon="ti-bell"
             title="Notifications"
@@ -141,7 +159,7 @@ export function SettingsScreen({
       </section>
 
       <section className="settings-section">
-        <h2 className="st-section-label settings-section-label">Location / ZIP</h2>
+        <h2 className="st-section-label settings-section-label">Preferences</h2>
         <div className="settings-group settings-group--stitch settings-location-group settings-location-group--stitch">
           <p className="settings-location-copy">
             Update your ZIP to refresh nearby adventures and map pins.
@@ -164,18 +182,6 @@ export function SettingsScreen({
       </section>
 
       <section className="settings-section">
-        <h2 className="st-section-label settings-section-label">Dog profiles</h2>
-        <div className="settings-group settings-group--stitch">
-          <SettingsIconRow
-            icon="ti-paw"
-            title="Manage dogs"
-            detail="Edit names, breeds, and remove dogs from your pack."
-            onClick={onManageDogs}
-          />
-        </div>
-      </section>
-
-      <section className="settings-section">
         <h2 className="st-section-label settings-section-label">Privacy</h2>
         <div className="settings-group settings-group--stitch">
           <SettingsIconRow
@@ -189,6 +195,32 @@ export function SettingsScreen({
             icon="ti-file-text"
             title="Terms of service"
             detail="Full terms publishing soon."
+            action="Soon"
+            disabled
+          />
+        </div>
+      </section>
+
+      <section className="settings-section">
+        <h2 className="st-section-label settings-section-label">Support</h2>
+        <div className="settings-group settings-group--stitch">
+          <SettingsIconRow
+            icon="ti-help-circle"
+            title="Support"
+            detail="Help center and contact options are coming soon."
+            action="Soon"
+            disabled
+          />
+        </div>
+      </section>
+
+      <section className="settings-section">
+        <h2 className="st-section-label settings-section-label">Feedback</h2>
+        <div className="settings-group settings-group--stitch">
+          <SettingsIconRow
+            icon="ti-message-circle"
+            title="Feedback"
+            detail="Share what would make PawStreak better."
             action="Soon"
             disabled
           />

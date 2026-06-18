@@ -6,6 +6,8 @@ export interface PackAccessMember {
   accessDescription: string
   lastActivity: string
   isOwner?: boolean
+  inviteStatus?: 'active' | 'pending'
+  contactLabel?: string
 }
 
 export const DEFAULT_PACK_ACCESS_MEMBERS: PackAccessMember[] = [
@@ -40,6 +42,7 @@ export const PACK_INVITE_ROLES = [
   'Dog Mom / Dog Dad',
   'Family',
   'Walker / Sitter',
+  'Trainer',
   'Friend',
 ] as const
 

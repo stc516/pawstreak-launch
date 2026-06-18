@@ -21,13 +21,31 @@ const COMMUNITY_BETA_ACTIONS = [
   },
 ]
 
+const COMMUNITY_BETA_STEPS = [
+  {
+    label: 'Save real memories',
+    detail: 'Completed walks and trips become the source for future posts.',
+    icon: 'ti ti-camera-heart',
+  },
+  {
+    label: 'Invite your pack',
+    detail: 'Family, walkers, and sitters can stay close to the same dog story.',
+    icon: 'ti ti-users-plus',
+  },
+  {
+    label: 'Share when ready',
+    detail: 'Community opens with real local activity, not placeholder feeds.',
+    icon: 'ti ti-message-heart',
+  },
+]
+
 export function CommunityScreen() {
   return (
     <>
       <div className="aheader community-header">
         <div className="alogo">Community Beta</div>
         <p className="community-beta-lead">
-          See what other dog people are trying, saving, and planning.
+          Built around real outings, local recommendations, and people your dog actually knows.
         </p>
       </div>
 
@@ -38,6 +56,15 @@ export function CommunityScreen() {
           No fake users, no inflated activity counts. We&apos;ll start with real beta
           posts once enough local dog people are using PawStreak.
         </p>
+        <div className="community-beta-steps">
+          {COMMUNITY_BETA_STEPS.map((step) => (
+            <article key={step.label} className="community-beta-step">
+              <i className={step.icon} aria-hidden="true" />
+              <strong>{step.label}</strong>
+              <small>{step.detail}</small>
+            </article>
+          ))}
+        </div>
         <p className="community-beta-note">
           Coming soon: share completed adventures, local wins, and recommendation
           requests from real PawStreak activity.
