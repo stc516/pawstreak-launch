@@ -116,8 +116,12 @@ export async function createChallengeRequest(input: {
 }): Promise<boolean> {
   const supabase = getSupabaseClient()
   if (!supabase) return false
+  const { data: userData } = await supabase.auth.getUser()
+  const userId = userData.user?.id
+  if (!userId) return false
 
   const { error } = await supabase.from('challenge_requests').insert({
+    user_id: userId,
     city_or_zip: input.cityOrZip.trim(),
     notes: input.notes?.trim() || null,
   })

@@ -154,6 +154,7 @@ import {
 } from './lib/auth'
 import {
   acceptPackInvite,
+  createChallengeRequest,
   fetchPackAccessMembers,
   sendPackInvite,
 } from './lib/db/packAccess'
@@ -1661,6 +1662,13 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     }
   }
 
+  const submitChallengeRequest = async (cityOrZip: string): Promise<boolean> => {
+    if (useProductionBackend && auth.user) {
+      return createChallengeRequest({ cityOrZip })
+    }
+    return true
+  }
+
   useEffect(() => {
     if (!state.packAccessToast) return
     const timer = window.setTimeout(() => {
@@ -2029,6 +2037,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onOpenChallenge={openChallengeDetail}
             onJoinChallenge={joinChallenge}
             onOpenAchievements={() => setActiveTab('achievements')}
+            onRequestChallenge={submitChallengeRequest}
           />
         )
       case 'profile':

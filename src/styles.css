@@ -14488,6 +14488,22 @@ select.field-input {
   font-weight: 900;
 }
 
+.ms-request-form button:disabled {
+  opacity: 0.58;
+}
+
+.ms-request-status {
+  grid-column: 1 / -1;
+  margin: -2px 0 0;
+  font-size: 11px;
+  line-height: 1.35;
+  color: #1e6f49;
+}
+
+.ms-request-status--error {
+  color: #b84a19;
+}
+
 .ms-badges-entry {
   display: grid;
   grid-template-columns: 42px minmax(0, 1fr) 16px;

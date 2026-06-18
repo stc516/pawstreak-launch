@@ -12,6 +12,7 @@ interface MilestonesScreenProps {
   onOpenChallenge: (challengeId: string) => void
   onJoinChallenge: (challengeId: string) => void
   onOpenAchievements: () => void
+  onRequestChallenge?: (cityOrZip: string) => Promise<boolean>
 }
 
 const DISCOVER_PREVIEW_COUNT = 10
@@ -147,7 +148,22 @@ function DiscoverChallengeCard({
   )
 }
 
-function RequestChallengeCard() {
+function RequestChallengeCard({
+  onRequestChallenge,
+}: {
+  onRequestChallenge?: (cityOrZip: string) => Promise<boolean>
+}) {
+  const [cityOrZip, setCityOrZip] = useState('')
+  const [status, setStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
+
+  const submit = async () => {
+    const value = cityOrZip.trim()
+    if (!value || status === 'saving') return
+    setStatus('saving')
+    const ok = onRequestChallenge ? await onRequestChallenge(value) : true
+    setStatus(ok ? 'saved' : 'error')
+  }
+
   return (
     <section className="ms-request-challenge detail-card-warm" aria-label="Request a local challenge">
       <div className="ms-request-icon" aria-hidden="true">
@@ -158,9 +174,32 @@ function RequestChallengeCard() {
         <p>Tell us which city should get dog-friendly challenge packs next.</p>
       </div>
       <form className="ms-request-form">
-        <input type="text" placeholder="City or ZIP" aria-label="City or ZIP" />
-        <button type="button" className="tap-target">Request</button>
+        <input
+          type="text"
+          placeholder="City or ZIP"
+          aria-label="City or ZIP"
+          value={cityOrZip}
+          onChange={(event) => {
+            setCityOrZip(event.target.value)
+            if (status !== 'idle') setStatus('idle')
+          }}
+        />
+        <button
+          type="button"
+          className="tap-target"
+          disabled={!cityOrZip.trim() || status === 'saving'}
+          onClick={() => void submit()}
+        >
+          {status === 'saving' ? 'Sending…' : status === 'saved' ? 'Sent' : 'Request'}
+        </button>
       </form>
+      {status === 'saved' ? (
+        <p className="ms-request-status">Got it. We&apos;ll use this to prioritize new challenge packs.</p>
+      ) : status === 'error' ? (
+        <p className="ms-request-status ms-request-status--error">
+          Could not save that request. Try again in a minute.
+        </p>
+      ) : null}
     </section>
   )
 }
@@ -223,6 +262,7 @@ export function MilestonesScreen({
   onOpenChallenge,
   onJoinChallenge,
   onOpenAchievements,
+  onRequestChallenge,
 }: MilestonesScreenProps) {
   const [showAllDiscover, setShowAllDiscover] = useState(false)
 
@@ -304,7 +344,7 @@ export function MilestonesScreen({
       </p>
 
       {!state.locationSupported ? (
-        <RequestChallengeCard />
+        <RequestChallengeCard onRequestChallenge={onRequestChallenge} />
       ) : localChallenges.length === 0 ? (
         <p className="ms-section-empty detail-card-warm">Local challenges will show up here.</p>
       ) : (
