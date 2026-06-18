@@ -69,9 +69,9 @@ export async function fetchDogsForUser(userId: string): Promise<Dog[]> {
   const { data, error } = await supabase
     .from('dogs')
     .select('*')
-    .eq('user_id', userId)
     .order('sort_order', { ascending: true })
 
+  void userId
   if (error || !data) return []
   return Promise.all((data as DogRow[]).map(dogRowToDog))
 }

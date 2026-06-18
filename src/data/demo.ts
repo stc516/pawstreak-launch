@@ -35,12 +35,11 @@ import type { TrainingLessonCompletion, TrainingRewardUnlock } from './training'
 
 export type {
   PackAccessMember,
-  PackInviteAccessLevel,
+  PackMemberRole,
   PackInviteRole,
 } from './packAccess'
 export {
   DEFAULT_PACK_ACCESS_MEMBERS,
-  PACK_INVITE_ACCESS_LEVELS,
   PACK_INVITE_ROLES,
 } from './packAccess'
 

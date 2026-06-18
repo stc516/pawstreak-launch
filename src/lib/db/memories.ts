@@ -228,9 +228,9 @@ export async function fetchMemoriesForUser(
   let query = supabase
     .from('memories')
     .select('*')
-    .eq('user_id', userId)
     .order('occurred_at', { ascending: false })
 
+  void userId
   if (dogId) {
     query = query.eq('dog_id', dogId)
   }
@@ -248,7 +248,7 @@ export async function countDistinctPlaces(userId: string, dogId?: string | null)
   let query = supabase
     .from('memories')
     .select('place_id, place_name')
-    .eq('user_id', userId)
+  void userId
   if (dogId) query = query.eq('dog_id', dogId)
 
   const { data, error } = await query

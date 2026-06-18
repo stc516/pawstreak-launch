@@ -11,6 +11,9 @@ export const AUTH_EMAIL_CONFIRMATION_MESSAGE =
 export const AUTH_PASSWORD_RESET_SENT_MESSAGE =
   'Password reset link sent. Check your email to continue.'
 
+export const AUTH_MAGIC_LINK_SENT_MESSAGE =
+  'Magic link sent. Check your email to continue.'
+
 export function signupRequiresEmailConfirmation(data: {
   user: { id: string } | null
   session: unknown
@@ -40,6 +43,20 @@ export async function signInWithEmail(email: string, password: string) {
   const { data, error } = await supabase.auth.signInWithPassword({
     email: email.trim(),
     password,
+  })
+  if (error) throw error
+  return data
+}
+
+export async function sendMagicLink(email: string) {
+  const supabase = getSupabaseClient()
+  if (!supabase) throw new Error('Supabase is not configured')
+
+  const { data, error } = await supabase.auth.signInWithOtp({
+    email: email.trim(),
+    options: {
+      emailRedirectTo: getAuthRedirectUrl(),
+    },
   })
   if (error) throw error
   return data

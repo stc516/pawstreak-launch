@@ -8571,6 +8571,16 @@ select.field-input {
   gap: 8px;
 }
 
+.pack-invite-role-note {
+  border: 1px solid rgba(24, 82, 54, 0.12);
+  border-radius: 12px;
+  background: rgba(248, 244, 236, 0.78);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 1.35;
+  padding: 12px;
+}
+
 .pack-access-chip {
   padding: 8px 12px;
   border-radius: 999px;

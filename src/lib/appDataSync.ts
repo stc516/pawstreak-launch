@@ -10,6 +10,7 @@ import { resolveMapCenterForLocation } from './mapbox'
 import { createDogsForUser, fetchDogsForUser, getActiveDog, updateDogPhotoPath, uploadDogPhoto } from './db/dogs'
 import { fetchMemoriesForUser, countDistinctPlaces } from './db/memories'
 import { fetchProfile, upsertProfileFromOnboarding } from './db/profiles'
+import { fetchPackAccessMembers } from './db/packAccess'
 import { trackUserEvent } from './db/userEvents'
 import { createAdventure, completeAdventure, cancelAdventure } from './db/adventures'
 import { createMemory } from './db/memories'
@@ -79,6 +80,7 @@ export async function hydrateProductionState(
   const journeyEntries = await fetchMemoriesForUser(userId, activeDog?.id ?? null)
   const placeCount = await countDistinctPlaces(userId, activeDog?.id ?? null)
   const scheduledAdventures = await fetchScheduledAdventuresForUser(userId)
+  const packAccessMembers = await fetchPackAccessMembers(userId)
 
   const hydrated = {
     ...base,
@@ -102,6 +104,7 @@ export async function hydrateProductionState(
     placeCount,
     activeDogId: activeDog?.id ?? null,
     scheduledAdventures,
+    packAccessMembers,
   }
 
   return applyRealUserContent(hydrated)
