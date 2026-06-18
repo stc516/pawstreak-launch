@@ -2,16 +2,13 @@ import { useEffect, useRef } from 'react'
 import { navigateTo } from '../../lib/demoRoute'
 import { ROUTES, getAppSignInUrl } from '../../lib/routes'
 import { SAMPLE_IMAGES } from '../../data/sampleImages'
-import { BrandLogoCircle, BrandLogoFull } from '../../components/BrandLogoCircle'
+import { BrandLogoCircle } from '../../components/BrandLogoCircle'
 import { LandingPhonePreview } from '../../components/LandingPhonePreview'
 import { LandingProductScreens } from '../../components/LandingProductScreens'
 import {
   BRAND_DESCRIPTION,
   BRAND_NAME,
-  BRAND_TAGLINE,
-  CTA_CREATE_ACCOUNT,
   CTA_SIGN_IN,
-  CTA_START_FIRST_ADVENTURE,
   CTA_START_FREE,
   SIGNUP_SECTION_LEAD,
   SIGNUP_SECTION_TITLE,
@@ -33,29 +30,15 @@ const KEY_FEATURES = [
     tone: 'journal',
   },
   {
-    icon: 'ti-map-2',
-    title: 'Dog life map',
-    copy: 'See where you’ve been, what you loved, and what’s next on the trail.',
-    image: SAMPLE_IMAGES.beach,
+    icon: 'ti-route',
+    title: 'Journey map',
+    copy: 'Watch walks, favorite spots, and milestones build into a real story.',
+    image: SAMPLE_IMAGES.roadTrip,
     tone: 'map',
   },
   {
-    icon: 'ti-flame',
-    title: 'Streaks and milestones',
-    copy: 'Celebrate consistency — walks, adventures, and little wins together.',
-    image: SAMPLE_IMAGES.dogPark,
-    tone: 'streaks',
-  },
-  {
-    icon: 'ti-car',
-    title: 'Road trips and local spots',
-    copy: 'From neighborhood parks to weekend getaways — all in one place.',
-    image: SAMPLE_IMAGES.roadTrip,
-    tone: 'roadtrip',
-  },
-  {
     icon: 'ti-users',
-    title: 'Family and co-parent sharing',
+    title: 'Pack sharing',
     copy: 'Keep your pack in sync — partners, walkers, and dog grandparents.',
     image: SAMPLE_IMAGES.park,
     tone: 'family',
@@ -114,10 +97,6 @@ export function LandingPage() {
     }
   }, [])
 
-  const scrollToSignup = () => {
-    signupRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
-
   const openSignup = () => navigateTo(ROUTES.app)
 
   const openLogin = () => navigateTo(getAppSignInUrl())
@@ -132,11 +111,8 @@ export function LandingPage() {
           <button type="button" className="landing-nav-link tap-target" onClick={openLogin}>
             {CTA_SIGN_IN}
           </button>
-          <button type="button" className="landing-nav-link tap-target" onClick={scrollToSignup}>
-            Sign up
-          </button>
           <button type="button" className="landing-nav-cta tap-target" onClick={openSignup}>
-            {CTA_CREATE_ACCOUNT}
+            {CTA_START_FREE}
           </button>
         </nav>
       </header>
@@ -144,9 +120,6 @@ export function LandingPage() {
       <section className="landing-hero">
         <div className="landing-hero-glow" aria-hidden="true" />
         <div className="landing-hero-inner">
-          <div className="landing-hero-mark-wrap" aria-hidden="true">
-            <BrandLogoCircle className="brand-logo-circle--hero" size={76} />
-          </div>
           <p className="landing-kicker">For dogs who make life better</p>
           <h1 className="landing-headline">
             More adventures.
@@ -160,13 +133,6 @@ export function LandingPage() {
             <button type="button" className="landing-btn landing-btn--primary tap-target" onClick={openSignup}>
               {CTA_START_FREE}
             </button>
-            <button
-              type="button"
-              className="landing-btn landing-btn--secondary tap-target"
-              onClick={openSignup}
-            >
-              {CTA_START_FIRST_ADVENTURE}
-            </button>
           </div>
         </div>
         <div className="landing-hero-visual" aria-hidden="true">
@@ -174,26 +140,15 @@ export function LandingPage() {
         </div>
       </section>
 
-      <section className="landing-section landing-intro" aria-labelledby="landing-intro-title">
-        <div className="landing-intro-inner">
-          <p className="landing-intro-kicker">What is PawStreak?</p>
-          <h2 id="landing-intro-title" className="landing-intro-title">
-            The app for the life you&apos;re already building with your dog.
-          </h2>
-          <p className="landing-intro-lead">
-            Map adventures, save memories, track streaks, and grow a living story — from morning
-            walks to road trips you never want to forget.
-          </p>
-        </div>
-      </section>
-
       <section className="landing-section landing-features" aria-labelledby="landing-features-title">
         <div className="landing-section-head">
+          <p className="landing-intro-kicker">What is PawStreak?</p>
           <h2 id="landing-features-title" className="landing-section-title">
-            Everything your pack needs — in one warm, adventurous app.
+            The app for the life you&apos;re already building with your dog.
           </h2>
           <p className="landing-section-lead">
-            Plan outings, capture the good stuff, and watch your dog&apos;s story come alive.
+            Plan outings, save memories, share care with your pack, and watch your dog&apos;s story
+            grow over time.
           </p>
         </div>
         <div className="landing-features-grid">
@@ -317,16 +272,10 @@ export function LandingPage() {
             </p>
             <p>
               We wanted a place for the adventures, the routines, and the little in-between moments
-              that make life with a dog feel so full. Something warm and personal — not another app
-              that treats your pup like a patient file.
+              that make life with a dog feel so full. Something warm and personal, made for the
+              real joy of getting out together.
             </p>
             <p className="landing-founder-sign">— Stephen, Bailey &amp; Meiomi</p>
-          </div>
-          <div className="landing-founder-visual" aria-hidden="true">
-            <div className="landing-founder-brand">
-              <BrandLogoFull className="brand-logo-full--founder" />
-              <p className="landing-founder-tagline">{BRAND_TAGLINE}</p>
-            </div>
           </div>
         </div>
       </section>
@@ -341,9 +290,6 @@ export function LandingPage() {
           <div className="landing-signup-actions">
             <button type="button" className="landing-btn landing-btn--primary landing-btn--full tap-target" onClick={openSignup}>
               {CTA_START_FREE}
-            </button>
-            <button type="button" className="landing-btn landing-btn--secondary landing-btn--full tap-target" onClick={openSignup}>
-              {CTA_CREATE_ACCOUNT}
             </button>
             <button type="button" className="landing-btn landing-btn--secondary landing-btn--full tap-target" onClick={openLogin}>
               {CTA_SIGN_IN}
@@ -363,9 +309,6 @@ export function LandingPage() {
           <nav className="landing-footer-links" aria-label="Footer">
             <button type="button" className="landing-footer-link-btn tap-target" onClick={openLogin}>
               {CTA_SIGN_IN}
-            </button>
-            <button type="button" className="landing-footer-link-btn tap-target" onClick={scrollToSignup}>
-              Sign up
             </button>
             <button type="button" className="landing-footer-link-btn tap-target" onClick={openSignup}>
               {CTA_START_FREE}
