@@ -15484,8 +15484,8 @@ select.field-input {
 
 .plan-hub {
   display: grid;
-  gap: 14px;
-  padding: 16px;
+  gap: 10px;
+  padding: 12px;
 }
 
 .plan-hub-kicker,
@@ -15501,27 +15501,37 @@ select.field-input {
 .plan-place-detail-title {
   margin: 0;
   color: var(--color-text-primary);
-  font-size: 1.15rem;
-  line-height: 1.12;
+  font-size: 0.98rem;
+  line-height: 1.16;
 }
 
 .plan-hub-actions {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  gap: 8px;
 }
 
 .plan-hub-action {
   display: flex;
-  align-items: flex-start;
-  gap: 9px;
-  min-height: 92px;
-  padding: 12px;
+  align-items: center;
+  gap: 7px;
+  min-height: 48px;
+  padding: 8px 9px;
   border: 1px solid rgba(76, 89, 72, 0.14);
-  border-radius: 14px;
+  border-radius: 12px;
   background: rgba(255, 255, 255, 0.72);
   color: inherit;
   text-align: left;
+}
+
+.plan-hub-action > span:first-child {
+  line-height: 1;
+}
+
+.plan-hub-action strong {
+  display: block;
+  font-size: 0.82rem;
+  line-height: 1.15;
 }
 
 .plan-hub-action span:last-child,
@@ -15532,33 +15542,59 @@ select.field-input {
 }
 
 .plan-hub-action small {
+  display: none;
   color: rgba(49, 64, 52, 0.68);
-  font-size: 0.75rem;
-  line-height: 1.25;
+  font-size: 0.66rem;
+  line-height: 1.2;
+}
+
+.plan-type-box {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
 }
 
 .plan-type-label {
-  font-size: 0.82rem;
+  grid-column: 1 / -1;
+  font-size: 0.76rem;
   font-weight: 850;
   color: rgba(49, 64, 52, 0.76);
 }
 
 .plan-type-input {
-  min-height: 72px;
+  grid-column: 1;
+  min-height: 46px;
   resize: vertical;
   border: 1px solid rgba(76, 89, 72, 0.18);
-  border-radius: 14px;
-  padding: 12px;
+  border-radius: 12px;
+  padding: 9px 10px;
   font: inherit;
+  font-size: 0.82rem;
   background: rgba(255, 255, 255, 0.8);
   color: var(--color-text-primary);
 }
 
 .plan-type-help {
-  margin: -2px 0 0;
+  display: none;
+  margin: 0;
   color: rgba(49, 64, 52, 0.68);
   font-size: 12px;
   line-height: 1.35;
+}
+
+.plan-type-box .st-btn,
+.plan-type-custom {
+  min-height: 36px;
+  padding: 8px 12px;
+  font-size: 0.78rem;
+}
+
+.plan-type-box .st-btn {
+  grid-column: 2;
+  min-width: 108px;
+}
+
+.plan-type-custom {
+  grid-column: 1 / -1;
 }
 
 .plan-type-preview {
@@ -15671,7 +15707,7 @@ select.field-input {
 }
 
 .plan-type-custom {
-  min-height: 44px;
+  min-height: 36px;
   border: 1px solid rgba(76, 89, 72, 0.18);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.78);
@@ -15680,7 +15716,7 @@ select.field-input {
   align-items: center;
   justify-content: center;
   gap: 0.45rem;
-  padding: 10px 12px;
+  padding: 8px 12px;
   font-weight: 850;
 }
 
