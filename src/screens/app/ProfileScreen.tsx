@@ -430,7 +430,7 @@ export function ProfileScreen({
           <div>
             <h3>Share {packLabel}&apos;s care without sharing your password</h3>
             <p>Family, partners, roommates, and dog walkers can stay in sync with the pack.</p>
-            <small>Email invites are live for Pack Access MVP. SMS comes later.</small>
+            <small>Email invites are live. SMS later.</small>
           </div>
           <button type="button" className="pack-access-primary tap-target" onClick={onOpenPackInvite}>
             <i className="ti ti-user-plus" aria-hidden="true" />

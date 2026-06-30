@@ -760,9 +760,18 @@ html.app-route .ms-training-card--stitch .ms-training-card-play {
 html.app-route .profile-screen--stitch {
   display: flex;
   flex-direction: column;
-  gap: var(--stitch-stack-lg);
+  gap: 0.875rem;
   padding-left: var(--stitch-page-margin);
   padding-right: var(--stitch-page-margin);
+}
+
+html.app-route .profile-screen--stitch .st-headline-lg {
+  font-size: 1.25rem;
+  line-height: 1.18;
+}
+
+html.app-route .profile-screen-header {
+  padding: 0.5rem 0 0.25rem;
 }
 
 html.app-route .profile-dog-scroll {
@@ -777,8 +786,8 @@ html.app-route .profile-dog-card--compact {
   min-width: 17.5rem;
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: var(--stitch-gutter-card);
+  gap: 0.75rem;
+  padding: 0.75rem;
   border-radius: 0.75rem;
   border: 1px solid rgba(195, 200, 193, 0.25);
   background: var(--color-background-secondary);
@@ -786,22 +795,23 @@ html.app-route .profile-dog-card--compact {
 }
 
 html.app-route .profile-dog-card--compact .profile-dog-avatar {
-  width: 4rem;
-  height: 4rem;
+  width: 3.25rem;
+  height: 3.25rem;
   flex-shrink: 0;
   border: 2px solid rgba(212, 106, 67, 0.25);
 }
 
 html.app-route .profile-dog-card--compact .profile-dog-card-name {
   font-family: var(--stitch-font);
-  font-size: 1.25rem;
+  font-size: 1.0625rem;
   font-weight: 600;
   color: var(--stitch-primary);
 }
 
 html.app-route .profile-dog-card--compact .profile-dog-card-breed {
   font-family: var(--stitch-font);
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
+  line-height: 1.25;
   color: var(--color-text-secondary);
 }
 
@@ -818,12 +828,15 @@ html.app-route .profile-dog-card--compact .profile-dog-card-tag {
 
 html.app-route .profile-dog-card--compact .profile-dog-edit-icon {
   margin-left: auto;
+  width: 2rem;
+  height: 2rem;
+  font-size: 1rem;
 }
 
 html.app-route .profile-dog-stack {
   display: flex;
   flex-direction: column;
-  gap: var(--stitch-stack-md);
+  gap: 0.625rem;
 }
 
 html.app-route .profile-dog-stack .profile-dog-card--compact {
