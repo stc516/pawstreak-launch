@@ -5108,6 +5108,21 @@ select.field-input {
 .onboarding-google-gap { margin-bottom: 10px; }
 .onboarding-google-bottom { margin-bottom: 18px; }
 
+.onboarding-auth-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 18px;
+  margin-top: 10px;
+}
+
+.onboarding-auth-link {
+  margin-top: 0;
+  max-width: 100%;
+  line-height: 1.25;
+  white-space: normal;
+}
+
 .onboarding-legal {
   text-align: center;
   margin-top: 11px;

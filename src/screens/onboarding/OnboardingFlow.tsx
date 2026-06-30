@@ -457,30 +457,32 @@ export function OnboardingFlow({
                 {arrowIcon}
               </button>
             ) : null}
-            {authConfigured && !showForgotPassword ? (
+            <div className="onboarding-auth-links">
+              {authConfigured && !showForgotPassword ? (
+                <button
+                  type="button"
+                  className="demo-feedback-link onboarding-auth-link"
+                  disabled={!email.includes('@') || authLoading}
+                  onClick={() => void handleMagicLink()}
+                >
+                  Email me a magic link
+                </button>
+              ) : null}
               <button
                 type="button"
-                className="demo-feedback-link"
-                disabled={!email.includes('@') || authLoading}
-                onClick={() => void handleMagicLink()}
+                className="demo-feedback-link onboarding-auth-link"
+                onClick={() => {
+                  setAuthMode((current) => (current === 'signup' ? 'signin' : 'signup'))
+                  setShowForgotPassword(false)
+                  setPasswordResetSent(false)
+                  setAuthNotice(null)
+                }}
               >
-                Email me a magic link instead
+                {authMode === 'signup'
+                  ? 'Already have an account? Sign in'
+                  : 'Need an account? Create one'}
               </button>
-            ) : null}
-            <button
-              type="button"
-              className="demo-feedback-link"
-              onClick={() => {
-                setAuthMode((current) => (current === 'signup' ? 'signin' : 'signup'))
-                setShowForgotPassword(false)
-                setPasswordResetSent(false)
-                setAuthNotice(null)
-              }}
-            >
-              {authMode === 'signup'
-                ? 'Already have an account? Sign in'
-                : 'Need an account? Create one'}
-            </button>
+            </div>
             {authNotice ? (
               <p className="demo-feedback-status demo-feedback-status--success" role="status">
                 {authNotice}

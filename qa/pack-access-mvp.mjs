@@ -84,7 +84,7 @@ async function main() {
     await page.getByPlaceholder('you@email.com').fill('invitee@example.com')
     await screenshot(page, '04-auth-magic-link')
     const magicLinkVisible = await page
-      .getByRole('button', { name: 'Email me a magic link instead' })
+      .getByRole('button', { name: /Email me a magic link/i })
       .isVisible()
       .catch(() => false)
     const localAuthMode = await page.getByText('Continue with Google').count() === 0
