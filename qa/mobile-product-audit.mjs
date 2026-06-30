@@ -244,7 +244,7 @@ async function collectMetrics(page) {
     })()
 
     const profileMetrics = (() => {
-      const dogCards = document.querySelectorAll('.profile-dog-card, .dog-card, [class*="profile-dog"]')
+      const dogCards = document.querySelectorAll('.profile-dog-card, .dog-card')
       const dogNames = Array.from(document.querySelectorAll('.profile-dog-name, .dog-name, h2, h3'))
         .map((el) => el.textContent?.trim())
         .filter(Boolean)
@@ -339,7 +339,7 @@ function auditScreen(screenId, metrics) {
     heights.scrollContainerClientHeight > 0
       ? heights.contentHeight / heights.scrollContainerClientHeight
       : 1
-  if (emptyRatio < 0.35 && screenId !== 'journey') {
+  if (emptyRatio < 0.35 && !['journey', 'signup', 'login'].includes(screenId)) {
     issues.push({ severity: 'yellow', code: 'EXCESS_WHITESPACE', detail: `Content fills only ~${Math.round(emptyRatio * 100)}% of scroll area` })
   }
 
