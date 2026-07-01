@@ -4,6 +4,8 @@ import { PACK_INVITE_ROLES } from '../../data/demo'
 import { inviteDescriptionForRole } from '../../data/packAccess'
 import { StatusBar } from '../../components/StatusBar'
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
 export interface PackInvitePayload {
   email: string
   role: PackInviteRole
@@ -19,10 +21,16 @@ export function PackInviteOverlay({ onClose, onSubmit }: PackInviteOverlayProps)
   const [role, setRole] = useState<PackInviteRole>('Member')
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const trimmedEmail = email.trim().toLowerCase()
+  const emailHasValue = trimmedEmail.length > 0
+  const emailIsValid = EMAIL_RE.test(trimmedEmail)
+  const emailHelpId = 'pack-invite-email-help'
 
   const handleSubmit = async () => {
-    const trimmedEmail = email.trim().toLowerCase()
-    if (!trimmedEmail.includes('@') || isSubmitting) return
+    if (!emailIsValid || isSubmitting) {
+      setError(emailHasValue ? 'Enter a valid email address.' : 'Add an email address first.')
+      return
+    }
     setError(null)
     setIsSubmitting(true)
     try {
@@ -66,8 +74,19 @@ export function PackInviteOverlay({ onClose, onSubmit }: PackInviteOverlayProps)
               inputMode="email"
               placeholder="name@example.com"
               value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              aria-describedby={emailHelpId}
+              onChange={(event) => {
+                setEmail(event.target.value)
+                if (error === 'Enter a valid email address.' || error === 'Add an email address first.') {
+                  setError(null)
+                }
+              }}
             />
+            <small id={emailHelpId} className="pack-invite-input-hint">
+              {emailHasValue && !emailIsValid
+                ? 'Use a full email, like name@example.com.'
+                : 'We send one email invite. SMS comes later.'}
+            </small>
           </label>
 
           <label className="pack-invite-field">
@@ -103,9 +122,9 @@ export function PackInviteOverlay({ onClose, onSubmit }: PackInviteOverlayProps)
             type="button"
             className="pack-invite-submit tap-target"
             onClick={handleSubmit}
-            disabled={!email.trim().includes('@') || isSubmitting}
+            disabled={!emailIsValid || isSubmitting}
           >
-            {isSubmitting ? 'Sending invite…' : 'Send invite'}
+            {isSubmitting ? 'Sending invite...' : 'Send invite'}
           </button>
           <p className="pack-invite-note">
             Invites expire after 14 days. Owners can send up to 10 invites per day.

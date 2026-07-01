@@ -15,7 +15,7 @@ export async function sendPackInviteEmail(input: {
     return { skipped: true }
   }
 
-  return resend.emails.send({
+  const result = await resend.emails.send({
     from: fromEmail,
     to: input.to,
     subject: 'You were invited to a PawStreak pack',
@@ -29,6 +29,12 @@ export async function sendPackInviteEmail(input: {
     `,
     text: `Join a PawStreak pack as a ${input.role}: ${input.inviteUrl}`,
   })
+
+  if (result.error) {
+    throw new Error(result.error.message || 'Pack invite email could not be sent.')
+  }
+
+  return result
 }
 
 export async function sendPackWelcomeEmail(input: { to: string; role: string }) {
@@ -37,7 +43,7 @@ export async function sendPackWelcomeEmail(input: { to: string; role: string }) 
     return { skipped: true }
   }
 
-  return resend.emails.send({
+  const result = await resend.emails.send({
     from: fromEmail,
     to: input.to,
     subject: 'Welcome to the pack',
@@ -51,4 +57,10 @@ export async function sendPackWelcomeEmail(input: { to: string; role: string }) 
     `,
     text: `Welcome to PawStreak. Your Pack Access invite was accepted with ${input.role} access.`,
   })
+
+  if (result.error) {
+    throw new Error(result.error.message || 'Pack welcome email could not be sent.')
+  }
+
+  return result
 }

@@ -1607,6 +1607,10 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   const submitPackInvite = async (payload: PackInvitePayload) => {
     const roleValue = packRoleValueForInvite(payload.role)
 
+    if (useProductionBackend && !auth.user) {
+      throw new Error('Log in again before sending a Pack Access invite.')
+    }
+
     if (useProductionBackend && auth.user) {
       await sendPackInvite(payload)
       const refreshedMembers = await fetchPackAccessMembers(auth.user.id)

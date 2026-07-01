@@ -33,6 +33,40 @@ interface PackInviteAcceptResponse {
   role: PackMemberRole
 }
 
+function friendlyFunctionError(message: string | null, fallback: string): string {
+  if (!message) return fallback
+  if (/jwt|auth session missing|authentication required|not authenticated/i.test(message)) {
+    return 'Log in again before sending a Pack Access invite.'
+  }
+  if (/rate limit/i.test(message)) {
+    return 'Invite limit reached for today. Owners can send 10 invites per day.'
+  }
+  if (/email/i.test(message) && /valid/i.test(message)) {
+    return 'Enter a valid email address.'
+  }
+  return message
+}
+
+async function readFunctionErrorMessage(error: unknown): Promise<string | null> {
+  const context = (error as { context?: unknown })?.context
+  if (context instanceof Response) {
+    try {
+      const body = (await context.clone().json()) as { error?: unknown; message?: unknown }
+      if (typeof body.error === 'string') return body.error
+      if (typeof body.message === 'string') return body.message
+    } catch {
+      try {
+        const text = await context.clone().text()
+        if (text) return text
+      } catch {
+        return null
+      }
+    }
+  }
+
+  return error instanceof Error ? error.message : null
+}
+
 function formatMemberName(row: PackMemberRow, currentUserId: string): string {
   if (row.user_id === currentUserId) return 'You'
   return row.profiles?.display_name || row.profiles?.email || 'Pack member'
@@ -89,7 +123,10 @@ export async function sendPackInvite(input: {
     },
   )
 
-  if (error) throw new Error(error.message || 'Could not send invite.')
+  if (error) {
+    const message = await readFunctionErrorMessage(error)
+    throw new Error(friendlyFunctionError(message, 'Could not send invite.'))
+  }
   if (!data?.invite) throw new Error('Invite did not return from the server.')
   return data.invite
 }
@@ -105,7 +142,10 @@ export async function acceptPackInvite(token: string): Promise<PackInviteAcceptR
     },
   )
 
-  if (error) throw new Error(error.message || 'Could not accept invite.')
+  if (error) {
+    const message = await readFunctionErrorMessage(error)
+    throw new Error(friendlyFunctionError(message, 'Could not accept invite.'))
+  }
   if (!data?.packId) throw new Error('Invite was not accepted.')
   return data
 }

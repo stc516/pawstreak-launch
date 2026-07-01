@@ -8580,6 +8580,12 @@ select.field-input {
   color: var(--color-text-secondary);
 }
 
+.pack-invite-input-hint {
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--color-text-secondary);
+}
+
 .pack-invite-access {
   display: flex;
   flex-wrap: wrap;

@@ -37,7 +37,7 @@ async function main() {
 
     await record(
       'pack-access-profile-copy',
-      await page.getByText('Email invites are live for Pack Access MVP. SMS comes later.').isVisible(),
+      await page.getByText('Email invites are live. SMS later.').isVisible(),
       'Profile explains email-only MVP honestly',
     )
 
@@ -54,6 +54,18 @@ async function main() {
       'invite-no-phone-copy',
       !(await page.getByText(/phone/i).count()),
       'Invite form does not ask for phone/SMS',
+    )
+
+    await page.getByLabel('Email').fill('walker')
+    await record(
+      'invite-invalid-email-help',
+      await page.getByText('Use a full email, like name@example.com.').isVisible(),
+      'Invite form explains invalid email before submit',
+    )
+    await record(
+      'invite-invalid-email-disabled',
+      await page.getByRole('button', { name: 'Send invite' }).isDisabled(),
+      'Invite send stays disabled until email is valid',
     )
 
     const roleOptions = await page.locator('.pack-invite-field select.field-input option').allTextContents()
