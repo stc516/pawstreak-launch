@@ -1879,6 +1879,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             isDemoMode={isDemoMode}
             showNavigation={false}
             activeAdventureBanner={activeAdventureBannerNode}
+            scrollKey={`training-${state.selectedTrainingProgramId}`}
           >
             <TrainingProgramDetailView
               program={program}
@@ -1905,6 +1906,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             isDemoMode={isDemoMode}
             showNavigation={false}
             activeAdventureBanner={activeAdventureBannerNode}
+            scrollKey={`challenge-${state.selectedChallengeId}`}
           >
             <ChallengePathDetailView
               challenge={challenge}
@@ -1959,14 +1961,14 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     }
   }
 
-  const renderScreen = () => {
-    const screenTab =
-      state.activeTab === 'profile'
-        ? 'profile'
-        : isNavTabVisible(state.activeTab, isDemoMode ? 'demo' : 'app')
-          ? state.activeTab
-          : getDefaultNavTab()
+  const screenTab =
+    state.activeTab === 'profile'
+      ? 'profile'
+      : isNavTabVisible(state.activeTab, isDemoMode ? 'demo' : 'app')
+        ? state.activeTab
+        : getDefaultNavTab()
 
+  const renderScreen = () => {
     switch (screenTab) {
       case 'home':
         return (
@@ -2071,6 +2073,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         onTabChange={setActiveTab}
         isDemoMode={isDemoMode}
         activeAdventureBanner={activeAdventureBannerNode}
+        scrollKey={screenTab}
       >
         {renderScreen()}
         {LIVE_PRODUCT.packAccess && state.packAccessToast ? (

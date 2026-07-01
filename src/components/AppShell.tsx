@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import type { TabId } from '../data/demo'
 import { LIVE_PRODUCT } from '../lib/liveProductFeatures'
 import { BottomNav } from './BottomNav'
@@ -11,6 +11,7 @@ interface AppShellProps {
   isDemoMode?: boolean
   showNavigation?: boolean
   activeAdventureBanner?: ReactNode
+  scrollKey?: string
   children: ReactNode
 }
 
@@ -20,9 +21,25 @@ export function AppShell({
   isDemoMode = false,
   showNavigation = true,
   activeAdventureBanner = null,
+  scrollKey,
   children,
 }: AppShellProps) {
+  const scrollRef = useRef<HTMLElement | null>(null)
+  const [navTapCount, setNavTapCount] = useState(0)
   const hasActiveBanner = Boolean(activeAdventureBanner)
+
+  useEffect(() => {
+    const scrollEl = scrollRef.current
+    if (!scrollEl) return
+
+    scrollEl.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+  }, [activeTab, scrollKey, navTapCount])
+
+  const handleTabChange = (tab: TabId) => {
+    setNavTapCount((current) => current + 1)
+    onTabChange(tab)
+  }
+
   return (
     <div className="app-viewport">
       <div
@@ -34,7 +51,12 @@ export function AppShell({
             <span className="demo-pill">Demo</span>
           </div>
         ) : null}
-        <main className={`scroll${activeTab === 'home' ? ' scroll--home' : ''}`}>{children}</main>
+        <main
+          ref={scrollRef}
+          className={`scroll${activeTab === 'home' ? ' scroll--home' : ''}`}
+        >
+          {children}
+        </main>
         {showNavigation ? (
           <footer className="app-shell-footer">
             {activeAdventureBanner}
@@ -45,7 +67,7 @@ export function AppShell({
             ) : null}
             <BottomNav
               activeTab={activeTab}
-              onTabChange={onTabChange}
+              onTabChange={handleTabChange}
               mode={isDemoMode ? 'demo' : 'app'}
             />
           </footer>
