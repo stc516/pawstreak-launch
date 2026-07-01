@@ -141,10 +141,14 @@ async function collectMetrics(page) {
       if (!scrollEl || !bnavEl) return null
       const lastChild = scrollEl.lastElementChild
       if (!lastChild) return null
+      const originalScrollTop = scrollEl.scrollTop
+      scrollEl.scrollTop = scrollEl.scrollHeight
       const lastRect = lastChild.getBoundingClientRect()
       const navRect = bnavEl.getBoundingClientRect()
       const footerTop = footerEl ? footerEl.getBoundingClientRect().top : navRect.top
-      return lastRect.bottom > footerTop + 2
+      const hidden = lastRect.bottom > footerTop + 2
+      scrollEl.scrollTop = originalScrollTop
+      return hidden
     })()
 
     const sampleBottomPixels = (() => {
