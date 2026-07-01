@@ -4,7 +4,6 @@ import { ROUTES, getAppSignInUrl } from '../../lib/routes'
 import { SAMPLE_IMAGES } from '../../data/sampleImages'
 import { BrandLogoCircle } from '../../components/BrandLogoCircle'
 import { LandingPhonePreview } from '../../components/LandingPhonePreview'
-import { LandingProductScreens } from '../../components/LandingProductScreens'
 import {
   BRAND_DESCRIPTION,
   BRAND_NAME,
@@ -193,19 +192,6 @@ export function LandingPage() {
             </article>
           ))}
         </div>
-      </section>
-
-      <section className="landing-section landing-screens" aria-labelledby="landing-screens-title">
-        <div className="landing-section-head">
-          <h2 id="landing-screens-title" className="landing-section-title">
-            See it come together
-          </h2>
-          <p className="landing-section-lead">
-            Today&apos;s adventure, their journey, your map, and the memories that tie it all
-            together.
-          </p>
-        </div>
-        <LandingProductScreens />
       </section>
 
       <section className="landing-section landing-founder">

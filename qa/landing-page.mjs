@@ -141,13 +141,13 @@ async function main() {
     )
 
     await page.evaluate(() => {
-      document.querySelector('.landing-screens')?.scrollIntoView({ behavior: 'instant', block: 'start' })
+      document.querySelector('.landing-features')?.scrollIntoView({ behavior: 'instant', block: 'start' })
     })
     await page.waitForTimeout(QA_STEP_PAUSE_MS)
     await record(
       'landing-preview',
-      await page.locator('.landing-screens-grid').isVisible(),
-      'App preview section visible',
+      await page.locator('.landing-features-grid').isVisible(),
+      'Core feature section visible',
     )
     await screenshot(page, '02-profile')
 
