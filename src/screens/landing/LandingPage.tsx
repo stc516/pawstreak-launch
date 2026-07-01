@@ -9,9 +9,9 @@ import {
   BRAND_DESCRIPTION,
   BRAND_NAME,
   CTA_SIGN_IN,
-  CTA_START_FREE,
   SIGNUP_SECTION_LEAD,
   SIGNUP_SECTION_TITLE,
+  CTA_START_FIRST_ADVENTURE,
 } from '../../lib/brand'
 
 const KEY_FEATURES = [
@@ -24,22 +24,15 @@ const KEY_FEATURES = [
   },
   {
     icon: 'ti-book-2',
-    title: 'Memory journal',
-    copy: 'Save photos, notes, and favorite moments from every outing.',
+    title: 'Memory journal + map',
+    copy: 'Save photos, notes, favorite spots, and the little moments that become their story.',
     image: SAMPLE_IMAGES.coastal,
     tone: 'journal',
   },
   {
-    icon: 'ti-route',
-    title: 'Journey map',
-    copy: 'Watch walks, favorite spots, and milestones build into a real story.',
-    image: SAMPLE_IMAGES.roadTrip,
-    tone: 'map',
-  },
-  {
     icon: 'ti-users',
     title: 'Pack sharing',
-    copy: 'Keep your pack in sync — partners, walkers, and dog grandparents.',
+    copy: 'Let partners, family, roommates, and walkers help without sharing a password.',
     image: SAMPLE_IMAGES.park,
     tone: 'family',
   },
@@ -60,29 +53,6 @@ const HOW_IT_WORKS = [
     step: '03',
     title: 'Watch their story grow',
     copy: 'Your map, timeline, and milestones fill in — one adventure at a time.',
-  },
-] as const
-
-const DIFFERENT_POINTS = [
-  {
-    icon: 'ti-heart',
-    title: 'Built for joy',
-    copy: 'Warm, loving, and exciting — never guilt-based or clinical.',
-  },
-  {
-    icon: 'ti-photo-heart',
-    title: 'Memories with a home',
-    copy: 'Not another camera roll graveyard — every adventure has a place.',
-  },
-  {
-    icon: 'ti-paw',
-    title: 'Made for real dogs',
-    copy: 'Off-leash beaches, senior-friendly trails, patio hangs — the life you actually live.',
-  },
-  {
-    icon: 'ti-sparkles',
-    title: 'A story, not a spreadsheet',
-    copy: 'PawStreak feels personal — like a journal your dog would approve of.',
   },
 ] as const
 
@@ -111,9 +81,6 @@ export function LandingPage() {
           <button type="button" className="landing-nav-link tap-target" onClick={openLogin}>
             {CTA_SIGN_IN}
           </button>
-          <button type="button" className="landing-nav-cta tap-target" onClick={openSignup}>
-            {CTA_START_FREE}
-          </button>
         </nav>
       </header>
 
@@ -131,7 +98,7 @@ export function LandingPage() {
           <p className="landing-subhead">{BRAND_DESCRIPTION}</p>
           <div className="landing-hero-actions">
             <button type="button" className="landing-btn landing-btn--primary tap-target" onClick={openSignup}>
-              {CTA_START_FREE}
+              {CTA_START_FIRST_ADVENTURE}
             </button>
           </div>
         </div>
@@ -241,26 +208,6 @@ export function LandingPage() {
         <LandingProductScreens />
       </section>
 
-      <section className="landing-section landing-different" aria-labelledby="landing-different-title">
-        <div className="landing-section-head">
-          <h2 id="landing-different-title" className="landing-section-title">
-            What makes PawStreak different
-          </h2>
-          <p className="landing-section-lead">
-            Premium, personal, and built for the joy of life with a dog — not another beige app.
-          </p>
-        </div>
-        <div className="landing-different-grid">
-          {DIFFERENT_POINTS.map((point) => (
-            <article key={point.title} className="landing-different-card">
-              <i className={`ti ${point.icon} landing-different-icon`} aria-hidden="true" />
-              <h3>{point.title}</h3>
-              <p>{point.copy}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
       <section className="landing-section landing-founder">
         <div className="landing-founder-inner">
           <div className="landing-founder-copy">
@@ -289,7 +236,7 @@ export function LandingPage() {
 
           <div className="landing-signup-actions">
             <button type="button" className="landing-btn landing-btn--primary landing-btn--full tap-target" onClick={openSignup}>
-              {CTA_START_FREE}
+              {CTA_START_FIRST_ADVENTURE}
             </button>
             <button type="button" className="landing-btn landing-btn--secondary landing-btn--full tap-target" onClick={openLogin}>
               {CTA_SIGN_IN}
@@ -311,7 +258,7 @@ export function LandingPage() {
               {CTA_SIGN_IN}
             </button>
             <button type="button" className="landing-footer-link-btn tap-target" onClick={openSignup}>
-              {CTA_START_FREE}
+              Start
             </button>
             <a href="mailto:hello@pawstreakapp.com">Contact</a>
           </nav>

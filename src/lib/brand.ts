@@ -8,7 +8,7 @@ export const BRAND_TAGLINE = 'Adventures. Memories. Together.'
 export const SPLASH_TAGLINE = "Build your dog's adventure story"
 
 export const BRAND_DESCRIPTION =
-  'Start building your dog\'s adventure story today. Plan walks, save memories, and build your dog\'s journey.'
+  'Plan walks, save memories, and build your dog\'s adventure story in one warm, everyday place.'
 
 export const CTA_START_FREE = 'Start Free'
 
@@ -34,4 +34,4 @@ export const APP_ENTRY_SUBHEAD =
 export const SIGNUP_SECTION_TITLE = 'Start building your dog\'s adventure story today.'
 
 export const SIGNUP_SECTION_LEAD =
-  'PawStreak is live. Create your free account, plan adventures, save memories, and build your dog\'s journey — starting today.'
+  'PawStreak is live in early access. Create your free account and start with one simple adventure.'

@@ -141,12 +141,12 @@ async function main() {
     )
 
     await page.evaluate(() => {
-      document.querySelector('.landing-preview')?.scrollIntoView({ behavior: 'instant', block: 'start' })
+      document.querySelector('.landing-screens')?.scrollIntoView({ behavior: 'instant', block: 'start' })
     })
     await page.waitForTimeout(QA_STEP_PAUSE_MS)
     await record(
       'landing-preview',
-      await page.locator('.landing-preview-grid').isVisible(),
+      await page.locator('.landing-screens-grid').isVisible(),
       'App preview section visible',
     )
     await screenshot(page, '02-profile')
@@ -164,7 +164,7 @@ async function main() {
     await screenshot(page, '03-invite-flow')
 
     await page.getByRole('button', { name: 'Start Your First Adventure', exact: true }).first().click()
-    await page.waitForTimeout(QA_STEP_PAUSE_MS)
+    await page.getByRole('button', { name: /Create Your Free Account/i }).waitFor({ timeout: 8000 })
     await record(
       'start-cta-nav',
       page.url().includes('/app') &&
@@ -175,7 +175,7 @@ async function main() {
     await page.goto(`${BASE_URL}/start`, { waitUntil: 'networkidle' })
     await page.waitForTimeout(QA_STEP_PAUSE_MS)
     await page.getByRole('button', { name: 'Create Your Free Account', exact: true }).first().click()
-    await page.waitForTimeout(QA_STEP_PAUSE_MS)
+    await page.getByRole('button', { name: /Create Your Free Account/i }).waitFor({ timeout: 8000 })
     await record(
       'start-continue-app',
       page.url().includes('/app') &&
