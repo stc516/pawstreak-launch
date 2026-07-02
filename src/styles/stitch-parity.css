@@ -386,49 +386,58 @@ html.app-route .st-training-row-copy {
 }
 
 html.app-route .st-suggested-spots-strip {
-  display: flex;
-  gap: 1rem;
-  overflow-x: auto;
-  margin-left: calc(-1 * var(--stitch-page-margin));
-  margin-right: calc(-1 * var(--stitch-page-margin));
-  padding-left: var(--stitch-page-margin);
-  padding-right: var(--stitch-page-margin);
-  padding-bottom: 0.5rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.5rem;
+  overflow: visible;
+  margin-left: 0;
+  margin-right: 0;
+  padding: 0 0 0.25rem;
 }
 
 html.app-route .st-suggested-spots-tile {
-  flex: 0 0 auto;
-  width: 10rem;
-  border: none;
-  background: none;
+  display: grid;
+  grid-template-columns: 4.625rem minmax(0, 1fr);
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(195, 200, 193, 0.6);
+  border-radius: 0.75rem;
+  background: #fff;
   padding: 0;
   text-align: left;
 }
 
 html.app-route .st-suggested-spots-tile-photo {
-  height: 11rem;
-  border-radius: var(--stitch-radius-card);
+  width: 4.625rem;
+  height: 100%;
+  min-height: 4.625rem;
+  border-radius: 0;
   overflow: hidden;
-  box-shadow: var(--stitch-shadow-soft);
-  margin-bottom: 0.75rem;
+  box-shadow: none;
+  margin-bottom: 0;
+  grid-row: span 2;
 }
 
 html.app-route .st-suggested-spots-tile-photo.card-img {
-  width: 100%;
+  width: 4.625rem;
 }
 
 html.app-route .st-suggested-spots-tile-name {
   font-family: var(--stitch-font);
-  font-size: 0.9375rem;
+  min-width: 0;
+  padding: 0.625rem 0.625rem 0;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: var(--color-text-primary);
 }
 
 html.app-route .st-suggested-spots-tile-meta {
   font-family: var(--stitch-font);
+  min-width: 0;
+  padding: 0.25rem 0.625rem 0.625rem;
   font-size: 0.6875rem;
   color: var(--color-text-tertiary);
-  margin-top: 0.125rem;
+  margin-top: 0;
 }
 
 html.app-route .st-challenge-row {

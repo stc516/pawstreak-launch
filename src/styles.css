@@ -13062,64 +13062,6 @@ select.field-input {
   gap: 8px;
 }
 
-.home-suggested-spots-strip {
-  display: flex;
-  gap: 10px;
-  overflow-x: auto;
-  padding-bottom: 4px;
-  scrollbar-width: none;
-}
-
-.home-suggested-spots-strip::-webkit-scrollbar {
-  display: none;
-}
-
-.home-suggested-spots-card {
-  flex: 0 0 148px;
-  overflow: hidden;
-  border-radius: 14px;
-}
-
-.home-suggested-spots-card-photo {
-  height: 68px;
-}
-
-.home-suggested-spots-card-photo.card-img {
-  min-height: 68px;
-}
-
-.home-suggested-spots-card-body {
-  padding: 8px 10px 10px;
-}
-
-.home-suggested-spots-card-name {
-  font-size: 12px;
-  font-weight: 800;
-  color: #1c1410;
-  line-height: 1.25;
-}
-
-.home-suggested-spots-card-meta {
-  margin-top: 2px;
-  font-size: 10px;
-  font-weight: 600;
-  color: #7c5c48;
-  line-height: 1.35;
-}
-
-.home-suggested-spots-card-go {
-  margin-top: 8px;
-  width: 100%;
-  padding: 7px 10px;
-  border: none;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
-  color: #fff;
-  font-size: 11px;
-  font-weight: 800;
-  cursor: pointer;
-}
-
 .home-suggested-spots-more {
   width: 100%;
   padding: 9px 12px;
@@ -13858,9 +13800,10 @@ select.field-input {
 }
 
 .st-suggested-spots-strip {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  overflow: visible;
   padding: 0 2px 4px;
   scrollbar-width: none;
 }
@@ -13870,7 +13813,8 @@ select.field-input {
 }
 
 .st-suggested-spots-tile {
-  flex: 0 0 132px;
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr);
   overflow: hidden;
   border: 1px solid rgba(195, 200, 193, 0.6);
   border-radius: 12px;
@@ -13881,9 +13825,11 @@ select.field-input {
 
 .st-suggested-spots-tile-photo,
 .st-suggested-spots-tile-photo.card-img {
-  height: 104px;
-  min-height: 104px;
+  width: 74px;
+  height: 100%;
+  min-height: 74px;
   border-radius: 0;
+  grid-row: span 2;
 }
 
 .st-suggested-spots-tile-name {
@@ -14358,11 +14304,14 @@ select.field-input {
   min-height: 78px;
   place-items: center;
   border-radius: 10px;
-  background:
-    linear-gradient(to top, rgba(6, 27, 14, 0.28), transparent),
-    url('/sample-images/dogs-outdoors.jpg') center/cover;
-  color: #fff;
-  font-size: 28px;
+  background: rgba(255, 247, 237, 0.84);
+  border: 1px solid rgba(76, 89, 72, 0.12);
+}
+
+.ms-challenge-visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .ms-challenge-visual span {
@@ -14400,6 +14349,21 @@ select.field-input {
 
 .ms-challenge-card-actions {
   margin-top: 10px;
+}
+
+.ms-rewards-link {
+  display: block;
+  width: fit-content;
+  min-height: 36px;
+  margin: 12px auto 0;
+  padding: 8px 12px;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .ms-challenge-card-cta,
@@ -15564,8 +15528,8 @@ select.field-input {
 }
 
 .plan-type-box {
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: end;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: stretch;
 }
 
 .plan-type-label {
