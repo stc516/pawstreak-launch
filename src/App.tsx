@@ -75,7 +75,6 @@ import { OnboardingFlow } from './screens/onboarding/OnboardingFlow'
 import { SplashScreen } from './screens/SplashScreen'
 import { JourneyMemoryView } from './screens/overlays/JourneyMemoryView'
 import { JourneyLevelDetailView } from './screens/overlays/JourneyLevelDetailView'
-import { JourneyMapView } from './screens/overlays/JourneyMapView'
 import { ChallengePathDetailView } from './screens/overlays/ChallengePathDetailView'
 import { getChallengeById, isCuratedChallengeId } from './data/challenges'
 import { getTrainingProgramById, isTrainingProgramId } from './data/training'
@@ -368,26 +367,6 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       resolved: Boolean(located.resolved),
       label: location.label,
     }
-  }
-
-  const openJourneyMap = () => {
-    setState((current) => ({
-      ...current,
-      showJourneyMapOverlay: true,
-      selectedJourneyFilterId: 'map-view',
-      selectedJourneyEntryId: null,
-      selectedChallengeId: null,
-      showPresetPlanOverlay: false,
-    }))
-  }
-
-  const closeJourneyMap = () => {
-    setState((current) => ({
-      ...current,
-      showJourneyMapOverlay: false,
-      selectedJourneyFilterId:
-        current.selectedJourneyFilterId === 'map-view' ? 'all' : current.selectedJourneyFilterId,
-    }))
   }
 
   const openJourneyMemory = (selectedJourneyEntryId: string) => {
@@ -1844,16 +1823,6 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     return <JourneyLevelDetailView state={state} onBack={closeJourneyLevelDetail} />
   }
 
-  if (state.showJourneyMapOverlay) {
-    return (
-      <JourneyMapView
-        state={state}
-        onBack={closeJourneyMap}
-        onOpenMemory={openJourneyMemory}
-      />
-    )
-  }
-
   if (state.showPresetPlanOverlay && LIVE_PRODUCT.calendarPresetPlan) {
     return <PresetPlanOverlay onClose={closePresetPlanOverlay} isDemoMode={isDemoMode} />
   }
@@ -2018,7 +1987,6 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             state={state}
             isDemoMode={isDemoMode}
             onOpenMemory={openJourneyMemory}
-            onOpenMap={openJourneyMap}
             onGoToPlan={() => setActiveTab('plan')}
             onDismissToast={clearMemorySaveToast}
           />
@@ -2028,6 +1996,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
           return null
         }
         return <CommunityScreen />
+      case 'rewards':
       case 'achievements':
         return (
           <AchievementsScreen
@@ -2042,7 +2011,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             isDemoMode={isDemoMode}
             onOpenChallenge={openChallengeDetail}
             onJoinChallenge={joinChallenge}
-            onOpenAchievements={() => setActiveTab('achievements')}
+            onOpenAchievements={() => setActiveTab('rewards')}
             onRequestChallenge={submitChallengeRequest}
           />
         )

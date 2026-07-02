@@ -106,7 +106,8 @@ function DiscoverChallengeCard({
       <div className="ms-challenge-card-meta">
         <span>{challenge.progress.durationLabel}</span>
         <span>
-          {challenge.progress.totalNodes} stops · {challenge.progress.metricTarget} goal
+          {challenge.progress.totalNodes} stops · {challenge.progress.metricTarget}{' '}
+          {challenge.progress.metricTarget === 1 ? 'goal' : 'goals'}
         </span>
       </div>
 
@@ -334,8 +335,8 @@ export function MilestonesScreen({
           <i className="ti ti-medal" />
         </span>
         <span className="ms-badges-copy">
-          <strong>Badges &amp; Achievements</strong>
-          <small>Collect First Adventure, Week Streak, Trail Scout, and more.</small>
+          <strong>Rewards</strong>
+          <small>View earned badges, active progress, and what to unlock next.</small>
         </span>
         <i className="ti ti-chevron-right" aria-hidden="true" />
       </button>

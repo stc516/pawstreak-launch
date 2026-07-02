@@ -56,6 +56,7 @@ export function PlanScreen({
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null)
   const [typedPlan, setTypedPlan] = useState('')
   const [typedPlanPreview, setTypedPlanPreview] = useState<string | null>(null)
+  const [showAllPlaces, setShowAllPlaces] = useState(false)
   const [findStatus, setFindStatus] = useState<{
     tone: 'loading' | 'success' | 'fallback' | 'error'
     message: string
@@ -74,6 +75,7 @@ export function PlanScreen({
     [places, locationSupported],
   )
   const suggestedPicks = useMemo(() => getMapPreviewPlaces(prefs, state), [prefs, state])
+  const visiblePlaces = showAllPlaces ? places : places.slice(0, 6)
   const dogLabel = getDisplayDogLabel(state)
   const locationRegion = /orange\s*county/i.test(state.locationLabel)
     ? 'Orange County'
@@ -123,11 +125,13 @@ export function PlanScreen({
   const handleProximityChange = (bucket: PlanProximityBucket) => {
     setProximityBucket(bucket)
     setSelectedPlaceId(null)
+    setShowAllPlaces(false)
   }
 
   const handleCategorySelect = (categoryId: string) => {
     onSelectCategory(categoryId)
     setSelectedPlaceId(null)
+    setShowAllPlaces(false)
   }
 
   const handlePlaceGo = (placeId: string) => {
@@ -346,7 +350,7 @@ export function PlanScreen({
             <p className="plan-place-detail-line">{selectedPlace.dogFriendlyNotes}</p>
             <p className="plan-place-detail-line">{selectedPlace.whyDogsLoveIt}</p>
             <p className="plan-place-detail-line">
-              Helps with: Explorer progress, category challenges, and earned memory badges.
+              Helps with: Routine Breaker progress, category challenges, and earned memory badges.
             </p>
             <button
               type="button"
@@ -426,9 +430,6 @@ export function PlanScreen({
           )
         })}
       </div>
-      <button type="button" className="plan-build-curated-plan tap-target" onClick={onOpenBuildMyMonth}>
-        Build a Month
-      </button>
 
       <div className="sec">What&apos;s close right now</div>
       <div className="plan-proximity-strip">
@@ -461,7 +462,7 @@ export function PlanScreen({
       </div>
 
       <div className="plan-card-list">
-        {places.map((place) => {
+        {visiblePlaces.map((place) => {
           const isRoadTrip = place.category === 'Road trip'
           const driveTime = isRoadTrip
             ? getRoadTripDriveTime(place, state.locationSupported)
@@ -517,6 +518,15 @@ export function PlanScreen({
           )
         })}
       </div>
+      {places.length > visiblePlaces.length ? (
+        <button
+          type="button"
+          className="plan-see-more tap-target detail-card-warm"
+          onClick={() => setShowAllPlaces(true)}
+        >
+          See more spots
+        </button>
+      ) : null}
         </>
       )}
 

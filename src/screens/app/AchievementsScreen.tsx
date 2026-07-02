@@ -34,11 +34,11 @@ export function AchievementsScreen({ state, onOpenAchievement }: AchievementsScr
     <>
       <header className="achievements-hero">
         <div>
-          <button type="button" className="settings-back settings-back--stitch tap-target" aria-label="Achievements">
+          <button type="button" className="settings-back settings-back--stitch tap-target" aria-label="Rewards">
             <i className="ti ti-medal" aria-hidden="true" />
           </button>
-          <h1>Achievements</h1>
-          <p>Earned tags from real adventures — progress and locked badges stay honest.</p>
+          <h1>Rewards</h1>
+          <p>Badges earned, progress underway, and clear next steps from real adventures.</p>
         </div>
         <AdventureGuideDog className="achievements-guide-dog" withBurst />
       </header>
@@ -64,7 +64,7 @@ export function AchievementsScreen({ state, onOpenAchievement }: AchievementsScr
         ) : (
           <div className="achievements-empty detail-card-warm">
             <div className="achievements-empty-kicker">Preview</div>
-            <strong>Your first achievements unlock after real outings.</strong>
+            <strong>Your first rewards unlock after real outings.</strong>
             <p>
               Example: finish one adventure, save a photo, or keep a weekly walk rhythm.
               Nothing is marked earned until the real action is completed.

@@ -3,20 +3,24 @@ import type { Dog } from '../data/demo'
 import { getPackDisplayName } from './dogLabels'
 
 const CATEGORY_LINES: Partial<Record<PlaceCategory, string>> = {
-  Beach: 'Beach day energy — worth getting out.',
-  Trail: 'Trail day — worth getting out.',
-  Coffee: 'Easy win for a short outing.',
-  'Dog Park': 'Off-leash fun close by.',
-  Park: 'Low crowd pick for a calmer day.',
-  Brewery: 'Perfect right now for a patio stop.',
-  Gardens: 'Best window today for a slow loop.',
-  'Road trip': 'Big adventure if they need to burn energy.',
-  Neighborhood: 'Easy win for a short outing.',
+  Beach: 'Room to run · best for a bigger outing.',
+  Trail: 'On-leash · good for a longer outing.',
+  Coffee: 'Quick dog-friendly stop.',
+  'Dog Park': 'Off-leash · best for high-energy dogs.',
+  Park: 'Easy weekday adventure.',
+  Patio: 'Dog-friendly stop · good for a calm outing.',
+  Brewery: 'Patio stop · best for a settled dog.',
+  Restaurant: 'Patio meal · good for a calm outing.',
+  Gardens: 'Slow loop · good for a quieter day.',
+  'Road trip': 'Bigger outing · plan extra time.',
+  Neighborhood: 'Familiar route · easy everyday walk.',
 }
 
 export function getMagicLine(place: Place): string {
   if (place.popularNow) {
-    return 'Busy spot right now — worth an early visit.'
+    return place.category === 'Dog Park'
+      ? 'Likely busy · go early for calmer play.'
+      : 'Likely busy · best with an early visit.'
   }
 
   if (place.energyLevel === 'High') {
@@ -24,13 +28,13 @@ export function getMagicLine(place: Place): string {
       return 'Big adventure if they need to burn energy.'
     }
     if (place.category === 'Trail') {
-      return 'Trail day — worth getting out.'
+      return CATEGORY_LINES.Trail ?? 'On-leash · good for a longer outing.'
     }
-    return 'Worth getting out for a big run.'
+    return CATEGORY_LINES[place.category] ?? 'Best for a higher-energy outing.'
   }
 
   if (place.energyLevel === 'Low') {
-    return 'Easy win for a short outing.'
+    return CATEGORY_LINES[place.category] ?? 'Easy weekday adventure.'
   }
 
   if (
@@ -45,7 +49,7 @@ export function getMagicLine(place: Place): string {
     return 'Perfect right now.'
   }
 
-  return CATEGORY_LINES[place.category] ?? 'Worth getting out.'
+  return CATEGORY_LINES[place.category] ?? 'Dog-friendly outing.'
 }
 
 export function getHeroMagicSubtitle(place: Place, dogs: Dog[] = []): string {
