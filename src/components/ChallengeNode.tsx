@@ -2,16 +2,20 @@ import type { ResolvedChallengeNode } from '../lib/challengePathProgress'
 
 interface ChallengeNodeProps {
   node: ResolvedChallengeNode
-  index: number
   onSelect: (node: ResolvedChallengeNode) => void
 }
 
-export function ChallengeNode({ node, index, onSelect }: ChallengeNodeProps) {
-  const side = index % 2 === 0 ? 'left' : 'right'
+export function ChallengeNode({ node, onSelect }: ChallengeNodeProps) {
   const showPhoto = node.state === 'completed' && Boolean(node.thumbnailUrl)
+  const stateIcon =
+    node.state === 'completed'
+      ? 'ti-check'
+      : node.state === 'current'
+        ? 'ti-arrow-right'
+        : 'ti-lock'
 
   return (
-    <div className={`challenge-node-row challenge-node-row--${side}`}>
+    <div className="challenge-node-row">
       <button
         type="button"
         className={`challenge-node challenge-node--${node.state}${showPhoto ? ' challenge-node--has-photo' : ''} tap-target`}
@@ -26,7 +30,7 @@ export function ChallengeNode({ node, index, onSelect }: ChallengeNodeProps) {
               <i className="ti ti-check challenge-node-check" aria-hidden="true" />
             )
           ) : (
-            <span className="challenge-node-number">{node.order}</span>
+            <i className={`ti ${stateIcon}`} aria-hidden="true" />
           )}
           {node.state === 'completed' && showPhoto ? (
             <span className="challenge-node-photo-badge" aria-hidden="true">
@@ -34,7 +38,10 @@ export function ChallengeNode({ node, index, onSelect }: ChallengeNodeProps) {
             </span>
           ) : null}
         </span>
-        <span className="challenge-node-label">{node.name}</span>
+        <span className="challenge-node-copy">
+          <span className="challenge-node-step">Goal {node.order} · {node.statusLabel}</span>
+          <span className="challenge-node-label">{node.name}</span>
+        </span>
       </button>
     </div>
   )

@@ -51,12 +51,19 @@ function buildSuggestedAction(
 ): AchievementDetail['suggestedAction'] {
   const category = getAchievementCategory(achievement.categoryId)
   const definition = getAchievementDefinition(achievement.id)
+  const remaining = Math.max(achievement.progress.target - achievement.progress.current, 0)
+  const remainingLabel =
+    remaining > 0
+      ? remaining === 1
+        ? 'Complete 1 more qualifying adventure.'
+        : `Complete ${remaining} more qualifying adventures.`
+      : undefined
 
   return {
     label: achievement.progress.unlocked ? 'Keep going' : 'Easy next step',
     description: achievement.progress.unlocked
-      ? `${achievement.title} is part of your story now — plan another adventure to keep the streak alive.`
-      : definition?.requirementHint ?? achievement.description,
+      ? `${achievement.title} is part of your story now. Plan another adventure to keep the map growing.`
+      : remainingLabel ?? definition?.requirementHint ?? achievement.description,
     imageUrl: achievement.badgeImageUrl,
     placeName: category ? `${category.label} adventures` : undefined,
   }
@@ -89,7 +96,7 @@ function buildAchievementDetail(achievement: Achievement): AchievementDetail {
       relatedMemories: [],
       rewardEmoji: achievement.emoji,
       rewardTitle: `${achievement.title} badge`,
-      rewardDescription: 'Unlocked automatically when you hit the milestone.',
+      rewardDescription: 'Unlocked from real adventures saved in PawStreak.',
       suggestedAction: buildSuggestedAction(achievement),
     }
   }
@@ -119,7 +126,7 @@ function buildAchievementDetail(achievement: Achievement): AchievementDetail {
     relatedMemories: [],
     rewardEmoji: achievement.emoji,
     rewardTitle: `${achievement.title} badge`,
-      rewardDescription: 'Earned only after the real action is completed.',
+    rewardDescription: 'Earned only after the real adventure or memory is completed.',
     suggestedAction: buildSuggestedAction(achievement),
   }
 }

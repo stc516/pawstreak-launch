@@ -27,6 +27,10 @@ import { GENERIC_ADVENTURE_TYPES } from '../../lib/genericAdventures'
 import { getHomeUpcomingItems } from '../../lib/homeUpcoming'
 import { AdventureGuideDog } from '../../components/AdventureGuideDog'
 
+function formatCountLabel(count: number, singular: string, plural = `${singular}s`): string {
+  return `${count} ${count === 1 ? singular : plural}`
+}
+
 interface HomeScreenProps {
   state: AppState
   isDemoMode?: boolean
@@ -79,6 +83,16 @@ export function HomeScreen({
   const progress = getHomeProgressStats(state)
   const joinedChallenges = useMemo(() => resolveJoinedChallenges(state), [state])
   const activeChallenge = joinedChallenges[0]
+  const hasRewardActivity =
+    progress.adventuresCompleted > 0 || progress.places > 0 || progress.memoriesSaved > 0
+  const recapMetricLine = [
+    formatCountLabel(progress.adventuresCompleted, 'adventure'),
+    formatCountLabel(progress.places, 'place'),
+    formatCountLabel(progress.memoriesSaved, 'memory', 'memories'),
+  ].join(' · ')
+  const challengeProgressLabel = activeChallenge
+    ? `${activeChallenge.title}: ${activeChallenge.progress.metricValue}/${activeChallenge.progress.metricTarget}`
+    : null
   const suggestedPlaces = useMemo(
     () => getMapPreviewPlaces(recommendationPrefs, state),
     [recommendationPrefs, state],
@@ -239,6 +253,41 @@ export function HomeScreen({
           </div>
         </section>
       )}
+
+      <section className="home-weekly-recap detail-card-warm" aria-label={`This week with ${dogLabel}`}>
+        <div className="home-weekly-recap-head">
+          <div>
+            <div className="home-weekly-recap-kicker">Weekly recap</div>
+            <h2 className="home-weekly-recap-title">This week with {dogLabel}</h2>
+          </div>
+          <span className="home-weekly-recap-icon" aria-hidden="true">
+            <i className="ti ti-map-heart" />
+          </span>
+        </div>
+        {hasRewardActivity ? (
+          <>
+            <p className="home-weekly-recap-metrics">{recapMetricLine}</p>
+            <p className="home-weekly-recap-copy">You gave them a good week.</p>
+            {challengeProgressLabel ? (
+              <button
+                type="button"
+                className="home-weekly-recap-challenge tap-target"
+                onClick={() => onOpenChallenge(activeChallenge!.id)}
+              >
+                <span>{challengeProgressLabel}</span>
+                <i className="ti ti-chevron-right" aria-hidden="true" />
+              </button>
+            ) : null}
+          </>
+        ) : (
+          <>
+            <p className="home-weekly-recap-metrics">Your first better dog day starts here.</p>
+            <p className="home-weekly-recap-copy">
+              Find a dog-friendly spot, go together, and PawStreak will help you save the day.
+            </p>
+          </>
+        )}
+      </section>
 
       {continueMemory ? (
         <section className="home-continue" aria-label="Look Back at Recent Days">

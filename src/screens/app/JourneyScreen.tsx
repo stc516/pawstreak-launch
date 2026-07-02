@@ -40,9 +40,10 @@ export function JourneyScreen({
 
       <div className="aheader journey-story-hero">
         <div className="alogo">This Month With {dogLabel}</div>
+        <div className="journey-story-kicker">Your adventure map</div>
         <p className="journey-story-hero-copy">
           {hasMemories
-            ? 'Places you visited, days you shared, and memories from the month.'
+            ? 'Places you went, days you shared, memories you saved.'
             : 'Your first saved outing turns this into an adventure map.'}
         </p>
       </div>
@@ -55,8 +56,8 @@ export function JourneyScreen({
           <div className="journey-first-run-copy">
             <h2>Start with one real outing</h2>
             <p>
-              After each adventure, PawStreak saves the place, photos, and little details so you
-              can see the days you&apos;ve given {dogLabel}.
+              After each adventure, PawStreak saves the place, photos, and details so you can see
+              the days you&apos;ve given {dogLabel}.
             </p>
             <button type="button" className="st-btn st-btn--forest tap-target" onClick={onGoToPlan}>
               Find a first spot
@@ -74,8 +75,10 @@ export function JourneyScreen({
 
       <button type="button" className="jmap jmap--tap tap-target detail-card-warm" onClick={onOpenMap}>
         <i className="ti ti-map-2" aria-hidden="true" />
-        <div className="jmap-title">{journeyMap.title}</div>
-        <div className="jmap-sub">{journeyMap.subtitle}</div>
+        <div className="jmap-title">Adventure map</div>
+        <div className="jmap-sub">
+          {hasMemories ? `${journeyMap.title} · Every pin is a day you shared.` : journeyMap.subtitle}
+        </div>
       </button>
     </>
   )

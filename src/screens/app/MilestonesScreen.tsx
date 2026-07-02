@@ -335,7 +335,7 @@ export function MilestonesScreen({
         </span>
         <span className="ms-badges-copy">
           <strong>Badges &amp; Achievements</strong>
-          <small>Collect First Adventure, Week Streak, Trail Scout, and more.</small>
+          <small>Collect First Adventure, Good Week Given, Trail Dog, and more.</small>
         </span>
         <i className="ti ti-chevron-right" aria-hidden="true" />
       </button>

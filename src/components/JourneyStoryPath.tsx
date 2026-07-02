@@ -63,7 +63,7 @@ export function JourneyStoryPath({
   ]
 
   return (
-    <section className="journey-story journey-memory-path detail-card-warm" aria-label="Completed adventure path">
+    <section className="journey-story journey-memory-path detail-card-warm" aria-label="Adventure map">
       <div className="journey-story-header">
         <div className="journey-story-header-top">
           <div className="journey-story-kicker">This month</div>
@@ -72,10 +72,10 @@ export function JourneyStoryPath({
             <span className="journey-story-rank-value">{completedCount}</span>
           </div>
         </div>
-        <h2 className="journey-story-title">Adventure path</h2>
+        <h2 className="journey-story-title">Adventure map</h2>
         <p className="journey-story-line">
           {completedCount > 0
-            ? `${completedCount} completed ${completedCount === 1 ? 'outing' : 'outings'} saved.`
+            ? `${completedCount} completed ${completedCount === 1 ? 'outing' : 'outings'} saved to the map.`
             : 'No completed adventures yet this month.'}
         </p>
       </div>

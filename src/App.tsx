@@ -1587,6 +1587,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
 
   useEffect(() => {
     if (state.activeTab === 'profile') return
+    if (state.activeTab === 'achievements') return
     const mode = isDemoMode ? 'demo' : 'app'
     if (isNavTabVisible(state.activeTab, mode)) return
     setState((current) => ({ ...current, activeTab: getDefaultNavTab() }))
@@ -1964,6 +1965,8 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   const screenTab =
     state.activeTab === 'profile'
       ? 'profile'
+      : state.activeTab === 'achievements'
+        ? 'achievements'
       : isNavTabVisible(state.activeTab, isDemoMode ? 'demo' : 'app')
         ? state.activeTab
         : getDefaultNavTab()

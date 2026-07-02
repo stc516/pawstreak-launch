@@ -2,6 +2,7 @@ import type { AppState } from '../../data/demo'
 import type { Challenge } from '../../data/challenges'
 import { ChallengePathExperience } from '../../components/ChallengePathExperience'
 import { resolveChallenge } from '../../lib/challengeEngine'
+import { CardImage } from '../../components/CardImage'
 
 interface ChallengePathDetailViewProps {
   challenge: Challenge
@@ -13,6 +14,18 @@ interface ChallengePathDetailViewProps {
   onStartNeighborhoodWalk?: () => void
   onGoToPlan?: () => void
   onOpenMemory?: (entryId: string) => void
+}
+
+function getDaysLeft(joinedAt: string | undefined, days: number): string {
+  if (!joinedAt) return `${days} days`
+
+  const joinedTime = Date.parse(joinedAt)
+  if (Number.isNaN(joinedTime)) return `${days} days`
+
+  const endTime = joinedTime + days * 86_400_000
+  const remaining = Math.max(0, Math.ceil((endTime - Date.now()) / 86_400_000))
+  if (remaining === 0) return 'Ends today'
+  return `${remaining} day${remaining === 1 ? '' : 's'} left`
 }
 
 export function ChallengePathDetailView({
@@ -28,6 +41,21 @@ export function ChallengePathDetailView({
 }: ChallengePathDetailViewProps) {
   const resolved = resolveChallenge(challenge, state)
   const { progress } = resolved
+  const progressLabel = `${progress.metricValue} / ${progress.metricTarget}`
+  const goalLabel =
+    progress.metricTarget === 1
+      ? 'adventure'
+      : challenge.metric.kind === 'memories_with_photo'
+        ? 'memories'
+        : 'adventures'
+  const daysLeftLabel = getDaysLeft(progress.joinedAt, challenge.duration.days)
+  const nextNode = resolved.nodes.find((node) => node.state === 'current')
+  const heroTone =
+    challenge.accent === 'coastal'
+      ? 'coastal'
+      : challenge.accent === 'forest'
+        ? 'forest'
+        : 'warm'
 
   return (
     <>
@@ -38,47 +66,58 @@ export function ChallengePathDetailView({
         </button>
       </div>
 
-      <div className="challenge-path-detail-intro detail-tint detail-tint--warm">
-        <div className="challenge-path-detail-kicker">Challenge</div>
-        <h1 className="challenge-path-detail-title">
-          <span aria-hidden="true">{resolved.emoji}</span> {resolved.title}
-        </h1>
-        <p className="challenge-path-detail-copy">{resolved.description}</p>
-
-        <div className="challenge-path-detail-meta">
-          <div className="challenge-path-detail-meta-item">
-            <span className="challenge-path-detail-meta-label">Duration</span>
-            <span>{progress.durationLabel}</span>
+      <section className={`challenge-detail-board challenge-detail-board--${challenge.accent}`}>
+        <div className="challenge-detail-hero">
+          <CardImage
+            className="challenge-detail-hero-art"
+            imageUrl={resolved.heroImageUrl}
+            imageAlt=""
+            imageTone={heroTone}
+          />
+          <div className="challenge-detail-hero-copy">
+            <div className="challenge-detail-kicker">Challenge</div>
+            <h1 className="challenge-detail-title">
+              <span aria-hidden="true">{resolved.emoji}</span> {resolved.title}
+            </h1>
+            <p className="challenge-detail-copy">{resolved.description}</p>
           </div>
-          {progress.joined ? (
-            <div className="challenge-path-detail-meta-item">
-              <span className="challenge-path-detail-meta-label">Your progress</span>
-              <span>
-                {progress.metricValue}/{progress.metricTarget}
-              </span>
-            </div>
-          ) : null}
+          <div className="challenge-detail-badge" aria-hidden="true">
+            <span>{resolved.emoji}</span>
+          </div>
         </div>
 
-        <div className="challenge-path-detail-meta challenge-path-detail-meta--stack">
-          <div className="challenge-path-detail-meta-item">
-            <span className="challenge-path-detail-meta-label">Goal</span>
+        <div className="challenge-detail-progress-card">
+          <div className="challenge-detail-progress-main">
+            <span className="challenge-detail-progress-label">Progress</span>
+            <strong>{progressLabel}</strong>
+            <span>{goalLabel}</span>
+          </div>
+          <div className="challenge-detail-progress-side">
+            <span>{progress.joined ? daysLeftLabel : challenge.duration.label}</span>
             <span>{resolved.goal}</span>
           </div>
-          <div className="challenge-path-detail-meta-item">
-            <span className="challenge-path-detail-meta-label">What counts</span>
-            <span>{resolved.whatCounts}</span>
+          <div className="challenge-detail-progress-bar" aria-hidden="true">
+            <span style={{ width: progress.fillWidth }} />
           </div>
-          <div className="challenge-path-detail-meta-item">
-            <span className="challenge-path-detail-meta-label">Reward connection</span>
-            <span>{resolved.rewardConnection}</span>
+        </div>
+
+        <div className="challenge-detail-facts">
+          <div>
+            <span>What counts</span>
+            <strong>{resolved.whatCounts}</strong>
+          </div>
+          <div>
+            <span>Badge path</span>
+            <strong>{resolved.rewardConnection}</strong>
           </div>
         </div>
 
         <div className="challenge-path-detail-actions">
           {progress.joined ? (
             <>
-              <span className="challenge-path-detail-joined">You joined this challenge</span>
+              <span className="challenge-path-detail-joined">
+                {nextNode ? `Up next: ${nextNode.name}` : 'Challenge complete'}
+              </span>
               <button
                 type="button"
                 className="challenge-path-detail-leave tap-target"
@@ -91,13 +130,16 @@ export function ChallengePathDetailView({
             <button
               type="button"
               className="challenge-path-detail-join tap-target"
-              onClick={() => onJoinChallenge(challenge.id)}
+              onClick={() => {
+                onJoinChallenge(challenge.id)
+                onGoToPlan?.()
+              }}
             >
-              {resolved.actionCta}
+              Find a Spot
             </button>
           )}
         </div>
-      </div>
+      </section>
 
       <ChallengePathExperience
         challenge={challenge}

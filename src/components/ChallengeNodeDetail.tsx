@@ -120,7 +120,7 @@ export function ChallengeNodeDetail({
                 onStartAdventure('')
               }}
             >
-              Start this adventure
+              {node.placeId ? 'Log This Adventure' : 'Find Next Adventure'}
             </button>
           ) : null}
 

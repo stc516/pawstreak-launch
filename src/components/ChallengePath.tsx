@@ -16,8 +16,8 @@ export function ChallengePath({ challenge, nodes, onNodeSelect }: ChallengePathP
     <section className={`challenge-path challenge-path--${challenge.accent} detail-card-warm`}>
       <div className="challenge-path-header">
         <div>
-          <div className="challenge-path-kicker">Challenge path</div>
-          <h2 className="challenge-path-title">{challenge.title}</h2>
+          <div className="challenge-path-kicker">Goal list</div>
+          <h2 className="challenge-path-title">Adventure goals</h2>
           <p className="challenge-path-sub">{challenge.subtitle}</p>
         </div>
         <div className="challenge-path-count">
@@ -33,12 +33,10 @@ export function ChallengePath({ challenge, nodes, onNodeSelect }: ChallengePathP
       </div>
 
       <div className="challenge-path-track">
-        <div className="challenge-path-line" aria-hidden="true" />
-        {nodes.map((node, index) => (
+        {nodes.map((node) => (
           <ChallengeNode
             key={node.id}
             node={node}
-            index={index}
             onSelect={onNodeSelect}
           />
         ))}
