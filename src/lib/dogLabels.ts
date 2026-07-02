@@ -49,25 +49,29 @@ export function dogPossessiveLabel(dogs: Dog[]): string {
 export function personalizeGhostText(text: string, dogs: Dog[]): string {
   if (dogs.length === 0) {
     return text
+      .replace(/an (Omi|Meiomi)-paced/g, 'a slower-paced')
+      .replace(/(Omi|Meiomi)-paced/g, 'slower-paced')
+      .replace(/Bailey \+ Meiomi/g, 'your pack')
       .replace(/Bailey \+ Omi/g, 'your pack')
       .replace(/Both dogs/g, 'They')
       .replace(/both dogs/g, 'they')
       .replace(/Bailey/g, 'Your dog')
+      .replace(/Meiomi/g, 'your pup')
       .replace(/Omi/g, 'your pup')
-      .replace(/an Omi-paced/g, 'a slower-paced')
-      .replace(/Omi-paced/g, 'slower-paced')
   }
 
   if (dogs.length === 1) {
     const name = dogs[0].name
     return text
+      .replace(/an (Omi|Meiomi)-paced/g, `a ${name}-paced`)
+      .replace(/(Omi|Meiomi)-paced/g, `${name}-paced`)
+      .replace(/Bailey \+ Meiomi/g, name)
       .replace(/Bailey \+ Omi/g, name)
       .replace(/Both dogs/g, name)
       .replace(/both dogs/g, name)
       .replace(/Bailey/g, name)
+      .replace(/Meiomi/g, name)
       .replace(/Omi/g, name)
-      .replace(/an Omi-paced/g, `a ${name}-paced`)
-      .replace(/Omi-paced/g, `${name}-paced`)
   }
 
   const pack = getPackDisplayName(dogs)
@@ -75,11 +79,13 @@ export function personalizeGhostText(text: string, dogs: Dog[]): string {
   const support = dogs[1]?.name ?? 'your pup'
 
   return text
+    .replace(/an (Omi|Meiomi)-paced/g, `a ${support}-paced`)
+    .replace(/(Omi|Meiomi)-paced/g, `${support}-paced`)
+    .replace(/Bailey \+ Meiomi/g, pack)
     .replace(/Bailey \+ Omi/g, pack)
     .replace(/Both dogs/g, pack)
     .replace(/both dogs/g, 'they')
     .replace(/Bailey/g, lead)
+    .replace(/Meiomi/g, support)
     .replace(/Omi/g, support)
-    .replace(/an Omi-paced/g, `a ${support}-paced`)
-    .replace(/Omi-paced/g, `${support}-paced`)
 }

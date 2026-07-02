@@ -80,7 +80,9 @@ export function personalizeAppContentForDogs(
     journeyEntries: current.journeyEntries.map((entry) => ({
       ...entry,
       tags: entry.tags.map((tag) => {
-        if (tag === 'Bailey + Omi') return packTagFor(dogs)
+        if (tag === 'Bailey + Omi' || tag === 'Bailey + Meiomi') {
+          return packTagFor(dogs)
+        }
         if (tag === 'Both dogs') return bothTagFor(dogs)
         return personalizeGhostText(tag, dogs)
       }),

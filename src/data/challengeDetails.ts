@@ -80,7 +80,7 @@ const CHALLENGE_DETAILS: Record<string, ChallengeDetail> = {
     motivationalLines: [
       '8 morning walks to go — you are building a real habit.',
       'Morning crew members finish 2× more challenges.',
-      'Omi loves the quiet streets before 9am.',
+      'Meiomi loves the quiet streets before 9am.',
     ],
     completedPlaces: [
       { id: 'balboa', name: 'Balboa Park loop', completed: true },

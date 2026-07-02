@@ -72,7 +72,22 @@ export function getHeroMagicSubtitle(place: Place, dogs: Dog[] = []): string {
 }
 
 export function getPlanMagicMeta(place: Place): string {
-  const base = `${place.distanceLabel} · ${place.leashInfo}`
-  const magic = getMagicLine(place).replace(/\.$/, '')
-  return `${base} · ${magic}`
+  const parts = [
+    place.distanceLabel,
+    place.leashInfo,
+    ...getMagicLine(place)
+      .replace(/\.$/, '')
+      .split('·')
+      .map((part) => part.trim()),
+  ]
+  const seen = new Set<string>()
+  return parts
+    .filter((part) => {
+      if (!part) return false
+      const key = part.toLowerCase()
+      if (seen.has(key)) return false
+      seen.add(key)
+      return true
+    })
+    .join(' · ')
 }

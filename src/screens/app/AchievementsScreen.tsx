@@ -66,8 +66,8 @@ export function AchievementsScreen({ state, onOpenAchievement }: AchievementsScr
             <div className="achievements-empty-kicker">Preview</div>
             <strong>Your first rewards unlock after real outings.</strong>
             <p>
-              Example: finish one adventure, save a photo, or keep a weekly walk rhythm.
-              Nothing is marked earned until the real action is completed.
+              Finish your first adventure, save a photo, or keep a weekly walk rhythm.
+              Rewards stay locked until the real action is completed.
             </p>
           </div>
         )}
