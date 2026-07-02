@@ -68,7 +68,8 @@ export function PlanMapView({
       <div className="plan-map-empty plan-map-empty--config detail-card-warm">
         <div className="plan-map-empty-title">Map unavailable</div>
         <p className="plan-map-empty-copy">
-          Add <code>VITE_MAPBOX_TOKEN</code> to your local environment to load the Plan map.
+          Map setup is missing <code>VITE_MAPBOX_TOKEN</code>. Add it in Vercel Production
+          environment variables and redeploy the app.
         </p>
       </div>
     )

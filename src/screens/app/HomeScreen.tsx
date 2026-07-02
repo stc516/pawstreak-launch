@@ -4,18 +4,16 @@ import { getDisplayDogLabel, getProfileDogs } from '../../lib/profileDisplay'
 import {
   getHeroFitLine,
   getHomeWelcomeGreeting,
-  getMemoryWarmLabel,
 } from '../../lib/homeCopy'
 import { resolveJoinedChallenges } from '../../lib/challengeEngine'
 import { getHomeProgressStats } from '../../lib/homeStats'
 import { getMapPreviewPlaces, getPlanNearbyPlaces } from '../../lib/planDiscovery'
 import { getPlanMagicMeta } from '../../data/places'
 import { CardImage } from '../../components/CardImage'
-import { getHeroPlace, getPlaceById } from '../../data/places'
+import { getHeroPlace } from '../../data/places'
 import { getRecommendationPrefs } from '../../lib/onboardingProfile'
 import {
   getAdventureDisplayImageUrl,
-  getJourneyEntryDisplayImageUrl,
 } from '../../lib/adventureDisplayImage'
 import {
   getActiveMonthlyPlanWeek,
@@ -53,14 +51,12 @@ export function HomeScreen({
   onStartNeighborhoodWalk,
   onOpenProfile,
   onOpenChallenge,
-  onOpenMemory,
   onGoToPlan,
   onOpenBuildMyMonth,
   onStartMonthlyPlanAdventure,
   onContinueTraining,
   onOpenAddAdventure,
   onOpenTrainingProgramFlow,
-  onGoToCommunity,
   onGoToChallenges,
 }: HomeScreenProps) {
   const profileDogs = getProfileDogs(state)
@@ -83,8 +79,6 @@ export function HomeScreen({
     () => getMapPreviewPlaces(recommendationPrefs, state),
     [recommendationPrefs, state],
   )
-  const recentMemories = state.journeyEntries.slice(0, 3)
-  const continueMemory = recentMemories[0]
   const upcomingItems = useMemo(() => getHomeUpcomingItems(state), [state])
   const welcomeGreeting = getHomeWelcomeGreeting()
   const activeMonthWeek = getActiveMonthlyPlanWeek(state.monthlyPlanResult)
@@ -240,59 +234,9 @@ export function HomeScreen({
         </section>
       )}
 
-      {continueMemory ? (
-        <section className="home-continue" aria-label="Look Back at Recent Days">
-          <div className="st-section-head">
-            <h2 className="st-headline-md">Look Back at Recent Days</h2>
-          </div>
-          <button
-            type="button"
-            className="home-continue-card tap-target"
-            onClick={() => onOpenMemory?.(continueMemory.id)}
-          >
-            <CardImage
-              className="home-continue-photo"
-              imageUrl={getJourneyEntryDisplayImageUrl(state.journeyEntries, continueMemory)}
-              imageAlt={continueMemory.place}
-              imageTone="warm"
-            />
-            <span className="home-continue-copy">
-              <strong>{continueMemory.place}</strong>
-              <span>{continueMemory.date}</span>
-            </span>
-            <i className="ti ti-chevron-right" aria-hidden="true" />
-          </button>
-        </section>
-      ) : null}
-
-      <section className="home-upcoming" aria-label="Upcoming Adventures">
+      <section className="home-plan-new" aria-label="Better Dog Days">
         <div className="st-section-head">
-          <h2 className="st-headline-md">Upcoming Adventures</h2>
-          <button type="button" className="st-link-btn tap-target" onClick={onGoToPlan}>
-            See all
-          </button>
-        </div>
-        <div className="home-upcoming-grid">
-          {upcomingItems.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              className="home-upcoming-card tap-target"
-              onClick={item.kind === 'training' ? onOpenTrainingProgramFlow : onGoToPlan}
-            >
-              <span className="home-upcoming-emoji" aria-hidden="true">
-                {item.emoji}
-              </span>
-              <strong>{item.label}</strong>
-              <span>{item.detail}</span>
-            </button>
-          ))}
-        </div>
-      </section>
-
-      <section className="home-plan-new" aria-label="Find Something New">
-        <div className="st-section-head">
-          <h2 className="st-headline-md">Find Something New</h2>
+          <h2 className="st-headline-md">Better Dog Days</h2>
         </div>
         <div className="home-plan-grid">
           <button type="button" className="home-plan-action tap-target" onClick={onGoToPlan}>
@@ -307,25 +251,9 @@ export function HomeScreen({
             <i className="ti ti-calendar" aria-hidden="true" />
             <span>Build My Month</span>
           </button>
-          <button type="button" className="home-plan-action tap-target" onClick={onOpenAddAdventure}>
-            <i className="ti ti-map-pin" aria-hidden="true" />
-            <span>Suggest A Spot</span>
-          </button>
-          <button type="button" className="home-plan-action tap-target" onClick={onOpenTrainingProgramFlow}>
-            <i className="ti ti-school" aria-hidden="true" />
-            <span>Training</span>
-          </button>
           <button type="button" className="home-plan-action tap-target" onClick={onGoToChallenges}>
             <i className="ti ti-trophy" aria-hidden="true" />
-            <span>Local Challenges</span>
-          </button>
-          <button type="button" className="home-plan-action tap-target" onClick={onGoToCommunity}>
-            <i className="ti ti-users" aria-hidden="true" />
-            <span>Community</span>
-          </button>
-          <button type="button" className="home-plan-action tap-target" onClick={onGoToChallenges}>
-            <i className="ti ti-send" aria-hidden="true" />
-            <span>Request Challenge</span>
+            <span>Challenges</span>
           </button>
         </div>
       </section>
@@ -437,32 +365,29 @@ export function HomeScreen({
         </section>
       ) : null}
 
-      {recentMemories.length > 1 ? (
-        <section className="home-memories" aria-label="Recent memories">
+      {upcomingItems.length > 0 ? (
+        <section className="home-upcoming" aria-label="Coming Up">
           <div className="st-section-head">
-            <h2 className="st-headline-md">Recent Memories</h2>
+            <h2 className="st-headline-md">Coming Up</h2>
+            <button type="button" className="st-link-btn tap-target" onClick={onGoToPlan}>
+              See all
+            </button>
           </div>
-          <div className="st-memory-grid">
-            {recentMemories.slice(1).map((entry, index) => {
-              const place = entry.placeId ? getPlaceById(entry.placeId) : undefined
-              const imageUrl = getJourneyEntryDisplayImageUrl(state.journeyEntries, entry)
-              return (
-                <button
-                  key={entry.id}
-                  type="button"
-                  className="st-memory-tile tap-target"
-                  aria-label={`${getMemoryWarmLabel(index)}: ${entry.place}`}
-                  onClick={() => onOpenMemory?.(entry.id)}
-                >
-                  <CardImage
-                    className="home-memory-tile-photo"
-                    imageUrl={imageUrl}
-                    imageAlt={entry.place}
-                    imageTone={place?.imageTone ?? 'warm'}
-                  />
-                </button>
-              )
-            })}
+          <div className="home-upcoming-grid">
+            {upcomingItems.slice(0, 3).map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                className="home-upcoming-card tap-target"
+                onClick={item.kind === 'training' ? onOpenTrainingProgramFlow : onGoToPlan}
+              >
+                <span className="home-upcoming-emoji" aria-hidden="true">
+                  {item.emoji}
+                </span>
+                <strong>{item.kind === 'training' ? 'Training Session' : item.label}</strong>
+                <span>{item.detail}</span>
+              </button>
+            ))}
           </div>
         </section>
       ) : null}

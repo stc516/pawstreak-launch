@@ -2,7 +2,6 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import type { TabId } from '../data/demo'
 import { LIVE_PRODUCT } from '../lib/liveProductFeatures'
 import { BottomNav } from './BottomNav'
-import { DemoFeedbackCapture } from './DemoFeedbackCapture'
 import { StatusBar } from './StatusBar'
 
 interface AppShellProps {
@@ -60,11 +59,6 @@ export function AppShell({
         {showNavigation ? (
           <footer className="app-shell-footer">
             {activeAdventureBanner}
-            {isDemoMode ? (
-              <div className="demo-feedback-bar">
-                <DemoFeedbackCapture />
-              </div>
-            ) : null}
             <BottomNav
               activeTab={activeTab}
               onTabChange={handleTabChange}

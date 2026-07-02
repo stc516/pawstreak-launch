@@ -89,16 +89,11 @@ function DiscoverChallengeCard({
       className={`ms-challenge-card ms-challenge-card--${challenge.accent} detail-card-warm`}
     >
       <div className="ms-challenge-visual" aria-hidden="true">
-        <span>{challenge.emoji}</span>
+        <img src={challenge.heroImageUrl} alt="" />
       </div>
       <div className="ms-challenge-card-top">
         <div>
-          <h2 className="ms-challenge-card-title">
-            <span className="ms-challenge-card-emoji" aria-hidden="true">
-              {challenge.emoji}
-            </span>
-            {challenge.title}
-          </h2>
+          <h2 className="ms-challenge-card-title">{challenge.title}</h2>
           <p className="ms-challenge-card-desc">{challenge.description}</p>
         </div>
       </div>
@@ -106,7 +101,8 @@ function DiscoverChallengeCard({
       <div className="ms-challenge-card-meta">
         <span>{challenge.progress.durationLabel}</span>
         <span>
-          {challenge.progress.totalNodes} stops · {challenge.progress.metricTarget} goal
+          {challenge.progress.totalNodes} stops · {challenge.progress.metricTarget}{' '}
+          {challenge.progress.metricTarget === 1 ? 'goal' : 'goals'}
         </span>
       </div>
 
@@ -329,17 +325,6 @@ export function MilestonesScreen({
         </div>
       )}
 
-      <button type="button" className="ms-badges-entry tap-target" onClick={onOpenAchievements}>
-        <span className="ms-badges-icon" aria-hidden="true">
-          <i className="ti ti-medal" />
-        </span>
-        <span className="ms-badges-copy">
-          <strong>Badges &amp; Achievements</strong>
-          <small>Collect First Adventure, Week Streak, Trail Scout, and more.</small>
-        </span>
-        <i className="ti ti-chevron-right" aria-hidden="true" />
-      </button>
-
       <div className="st-section-head ms-discover-sec">
         <h2 className="st-headline-lg">Local Challenges</h2>
       </div>
@@ -392,6 +377,10 @@ export function MilestonesScreen({
         previewCount={DISCOVER_PREVIEW_COUNT}
         onClick={() => setShowAllDiscover((value) => !value)}
       />
+
+      <button type="button" className="ms-rewards-link tap-target" onClick={onOpenAchievements}>
+        View rewards
+      </button>
     </div>
   )
 }

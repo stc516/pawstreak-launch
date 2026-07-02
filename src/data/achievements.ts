@@ -94,9 +94,9 @@ export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
   {
     id: 'first-memory',
     categoryId: 'memory',
-    title: 'First Memory',
-    description: 'A real photo saved from an actual outing.',
-    personalityLine: 'The camera roll has its first PawStreak keeper.',
+    title: 'Memory Keeper',
+    description: 'Your first saved adventure photo.',
+    personalityLine: 'The first saved memory is part of the story now.',
     requirementHint: 'Save 1 photo from an adventure',
     badgeImageUrl: SAMPLE_IMAGES.scenic,
     emoji: '📸',
@@ -105,10 +105,10 @@ export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
   {
     id: 'memory-maker',
     categoryId: 'memory',
-    title: 'Memory Maker',
+    title: 'Adventure Album',
     description: 'Five saved photos from real completed adventures.',
-    personalityLine: 'A growing little gallery of the good stuff.',
-    requirementHint: 'Save 5 adventure photos',
+    personalityLine: 'A growing gallery of days you gave your dog.',
+    requirementHint: 'Save 5 photos from adventures',
     badgeImageUrl: SAMPLE_IMAGES.scenic,
     emoji: '🖼️',
     metric: { kind: 'memories_with_photo', target: 5 },
@@ -116,9 +116,9 @@ export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
   {
     id: 'week-streak',
     categoryId: 'streak',
-    title: 'Week Streak',
+    title: 'Good Week Given',
     description: 'Three completed outings in a seven-day window.',
-    personalityLine: 'A real rhythm is forming.',
+    personalityLine: 'A real rhythm of better dog days is forming.',
     requirementHint: 'Complete 3 outings in 7 days',
     badgeImageUrl: SAMPLE_IMAGES.park,
     emoji: '🔥',
@@ -127,7 +127,7 @@ export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
   {
     id: 'explorer',
     categoryId: 'explore',
-    title: 'Explorer',
+    title: 'Routine Breaker',
     description: 'Three different place types completed.',
     personalityLine: 'Not just one routine — a real mix of adventures.',
     requirementHint: 'Visit 3 different place types',
@@ -138,7 +138,7 @@ export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
   {
     id: 'social-pup',
     categoryId: 'social',
-    title: 'Social Pup',
+    title: 'Patio Pup',
     description: 'One social dog-friendly outing completed.',
     personalityLine: 'A little confidence around the social scene.',
     requirementHint: 'Visit 1 social dog-friendly place',
@@ -160,7 +160,7 @@ export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
   {
     id: 'beach-dog',
     categoryId: 'explore',
-    title: 'Beach Dog',
+    title: 'Beach Regular',
     description: 'Three beach outings completed.',
     personalityLine: 'Sand, waves, and a pattern worth earning.',
     requirementHint: 'Complete 3 beach outings',
@@ -171,7 +171,7 @@ export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
   {
     id: 'training-buddy',
     categoryId: 'training',
-    title: 'Training Buddy',
+    title: 'Outing Ready',
     description: 'Three short training sessions completed.',
     personalityLine: 'Practice is becoming part of the plan.',
     requirementHint: 'Complete 3 training sessions',
@@ -182,7 +182,7 @@ export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
   {
     id: 'road-trip-pup',
     categoryId: 'explore',
-    title: 'Road Trip Pup',
+    title: 'Local Explorer',
     description: 'One day-trip adventure completed.',
     personalityLine: 'Out of the usual zip code, into a bigger day.',
     requirementHint: 'Complete 1 day-trip adventure',

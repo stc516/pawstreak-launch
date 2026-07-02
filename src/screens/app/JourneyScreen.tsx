@@ -8,7 +8,6 @@ interface JourneyScreenProps {
   state: AppState
   isDemoMode?: boolean
   onOpenMemory: (entryId: string) => void
-  onOpenMap: () => void
   onGoToPlan: () => void
   onDismissToast: () => void
 }
@@ -16,7 +15,6 @@ interface JourneyScreenProps {
 export function JourneyScreen({
   state,
   onOpenMemory,
-  onOpenMap,
   onGoToPlan,
   onDismissToast,
 }: JourneyScreenProps) {
@@ -72,11 +70,13 @@ export function JourneyScreen({
         onGoToPlan={onGoToPlan}
       />
 
-      <button type="button" className="jmap jmap--tap tap-target detail-card-warm" onClick={onOpenMap}>
+      <section className="jmap detail-card-warm" aria-label="Adventure map summary">
         <i className="ti ti-map-2" aria-hidden="true" />
-        <div className="jmap-title">{journeyMap.title}</div>
-        <div className="jmap-sub">{journeyMap.subtitle}</div>
-      </button>
+        <div className="jmap-title">Adventure map summary</div>
+        <div className="jmap-sub">
+          {hasMemories ? `${journeyMap.title} · Saved memories are listed above.` : journeyMap.subtitle}
+        </div>
+      </section>
     </>
   )
 }

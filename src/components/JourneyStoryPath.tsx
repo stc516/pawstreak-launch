@@ -46,17 +46,17 @@ export function JourneyStoryPath({
   const completedCount = entries.length
   const previewNodes = [
     {
-      title: 'Example: beach walk',
+      title: 'Beach walk',
       line: 'Photos, places, dates, and little moments will land here after you go.',
       imageUrl: SAMPLE_IMAGES.beach,
     },
     {
-      title: 'Example: 3 photos + note',
+      title: 'Photo + note saved',
       line: 'Once you finish an outing, this becomes a saved day you can reopen.',
       imageUrl: SAMPLE_IMAGES.scenic,
     },
     {
-      title: 'Example: favorite walk',
+      title: 'Favorite walk',
       line: 'Plan a few outings now, then PawStreak saves the best parts after you go.',
       imageUrl: SAMPLE_IMAGES.neighborhood,
     },
@@ -116,7 +116,7 @@ export function JourneyStoryPath({
         </div>
       ) : (
         <div className="journey-memory-preview" data-testid="journey-memory-preview">
-          <div className="journey-memory-preview-label">Preview only</div>
+          <div className="journey-memory-preview-label">Your map starts here</div>
           <p>
             Your first adventure will create a path here. Places, photos, and notes build into
             a record of the days you shared.
@@ -136,7 +136,7 @@ export function JourneyStoryPath({
                     </span>
                     <img src={node.imageUrl} alt="" className="journey-memory-photo" />
                     <span className="journey-memory-copy">
-                      <span className="journey-memory-date">Example</span>
+                      <span className="journey-memory-date">Preview</span>
                       <span className="journey-memory-title">{node.title}</span>
                       <span className="journey-memory-line">{node.line}</span>
                     </span>

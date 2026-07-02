@@ -172,7 +172,7 @@ export function BuildMyMonthFlow({
                 })}
               />
               <div className="build-month-result detail-card-warm">
-                Potential unlocks: First Adventure, Explorer, Week Streak, and matching challenges.
+                Potential unlocks: First Adventure, Routine Breaker, Good Week Given, and matching challenges.
               </div>
               <button
                 type="button"

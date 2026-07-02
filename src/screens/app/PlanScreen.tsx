@@ -48,7 +48,6 @@ export function PlanScreen({
   onDeletePlannedAdventure,
   onOpenBuildMyMonth,
   onGenerateRandomPlan,
-  onOpenPresetPlan,
   onOpenTrainingProgram,
 }: PlanScreenProps) {
   const prefs = getRecommendationPrefs(state)
@@ -56,6 +55,7 @@ export function PlanScreen({
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null)
   const [typedPlan, setTypedPlan] = useState('')
   const [typedPlanPreview, setTypedPlanPreview] = useState<string | null>(null)
+  const [showAllPlaces, setShowAllPlaces] = useState(false)
   const [findStatus, setFindStatus] = useState<{
     tone: 'loading' | 'success' | 'fallback' | 'error'
     message: string
@@ -74,6 +74,7 @@ export function PlanScreen({
     [places, locationSupported],
   )
   const suggestedPicks = useMemo(() => getMapPreviewPlaces(prefs, state), [prefs, state])
+  const visiblePlaces = showAllPlaces ? places : places.slice(0, 6)
   const dogLabel = getDisplayDogLabel(state)
   const locationRegion = /orange\s*county/i.test(state.locationLabel)
     ? 'Orange County'
@@ -123,11 +124,13 @@ export function PlanScreen({
   const handleProximityChange = (bucket: PlanProximityBucket) => {
     setProximityBucket(bucket)
     setSelectedPlaceId(null)
+    setShowAllPlaces(false)
   }
 
   const handleCategorySelect = (categoryId: string) => {
     onSelectCategory(categoryId)
     setSelectedPlaceId(null)
+    setShowAllPlaces(false)
   }
 
   const handlePlaceGo = (placeId: string) => {
@@ -188,83 +191,11 @@ export function PlanScreen({
   return (
     <>
       <div className="aheader plan-screen-header">
-        <div className="alogo">Find your next adventure for {dogLabel}</div>
+        <div className="alogo">Find Spots Nearby</div>
         <p className="plan-screen-sub">
-          Pick a dog-friendly spot, choose a better routine, or build a month of outings.
+          Dog-friendly places for {dogLabel} near {state.locationLabel || state.zipCode}.
         </p>
       </div>
-
-      <section className="plan-hub detail-card-warm" aria-label="Planning hub">
-        <div className="plan-hub-kicker">Better dog days</div>
-        <h2 className="plan-hub-title">Choose where you&apos;ll go next</h2>
-        <div className="plan-hub-actions">
-          <button type="button" className="plan-hub-action tap-target" onClick={onOpenBuildMyMonth}>
-            <span aria-hidden="true">🗓️</span>
-            <span>
-              <strong>Build a Month</strong>
-              <small>Plan a few better dog days across beaches, trails, patios, and parks</small>
-            </span>
-          </button>
-          <button type="button" className="plan-hub-action tap-target" onClick={onGenerateRandomPlan}>
-            <span aria-hidden="true">🎲</span>
-            <span>
-              <strong>Pick for Me</strong>
-              <small>Get one fast dog-friendly idea from your location and dog context</small>
-            </span>
-          </button>
-          <button type="button" className="plan-hub-action tap-target" onClick={onOpenTrainingProgram}>
-            <span aria-hidden="true">🎯</span>
-            <span>
-              <strong>Training Support</strong>
-              <small>Add leash focus, calm patio work, or confidence to real outings</small>
-            </span>
-          </button>
-          <button type="button" className="plan-hub-action tap-target" onClick={onOpenPresetPlan}>
-            <span aria-hidden="true">🔔</span>
-            <span>
-              <strong>Reminders</strong>
-              <small>Preview how planned outings can become helpful nudges</small>
-            </span>
-          </button>
-        </div>
-        <div className="plan-type-box">
-          <label className="plan-type-label" htmlFor="typed-plan-input">Describe your dog day</label>
-          <p className="plan-type-help">
-            Say what kind of outing you want, then turn it into a custom adventure or monthly plan.
-          </p>
-          <textarea
-            id="typed-plan-input"
-            className="plan-type-input"
-            value={typedPlan}
-            onChange={(event) => setTypedPlan(event.target.value)}
-            placeholder="Example: calm patio practice after work with Bailey"
-          />
-          <button
-            type="button"
-            className="st-btn st-btn--forest tap-target"
-            onClick={handleTypedPlanPreview}
-            disabled={!typedPlan.trim()}
-          >
-            Preview idea
-          </button>
-          {typedPlanPreview ? (
-            <div className="plan-type-preview" role="status">
-              {typedPlanPreview}
-            </div>
-          ) : null}
-          <button
-            type="button"
-            className="plan-type-custom tap-target"
-            onClick={onOpenAddAdventure}
-            data-testid="journey-add-adventure"
-          >
-            <span aria-hidden="true">
-              <i className="ti ti-plus" />
-            </span>
-            Add your own
-          </button>
-        </div>
-      </section>
 
       {state.randomPlanResult ? (
         <section
@@ -346,7 +277,7 @@ export function PlanScreen({
             <p className="plan-place-detail-line">{selectedPlace.dogFriendlyNotes}</p>
             <p className="plan-place-detail-line">{selectedPlace.whyDogsLoveIt}</p>
             <p className="plan-place-detail-line">
-              Helps with: Explorer progress, category challenges, and earned memory badges.
+              Helps with: Routine Breaker progress, category challenges, and earned memory badges.
             </p>
             <button
               type="button"
@@ -398,39 +329,7 @@ export function PlanScreen({
         </>
       ) : (
         <>
-      <div className="sec plan-suggested-sec">Dog-friendly spots nearby</div>
-      <p className="plan-suggested-lead">Real outings for {dogLabel} this week.</p>
-      <div className="plan-suggested-strip">
-        {suggestedPicks.map((place) => {
-          const imageUrl = getAdventureDisplayImageUrl(state.journeyEntries, place)
-          return (
-            <article key={place.id} className="plan-suggested-card detail-card-warm">
-              <CardImage
-                className="plan-suggested-card-photo"
-                imageUrl={imageUrl}
-                imageAlt={place.imageAlt ?? place.name}
-                imageTone={place.imageTone}
-              />
-              <div className="plan-suggested-card-body">
-                <div className="plan-suggested-card-name">{place.name.split(',')[0]}</div>
-                <div className="plan-suggested-card-meta">{getPlanMagicMeta(place)}</div>
-                <button
-                  type="button"
-                  className="plan-suggested-card-go tap-target"
-                  onClick={() => handlePlaceGo(place.id)}
-                >
-                  Go
-                </button>
-              </div>
-            </article>
-          )
-        })}
-      </div>
-      <button type="button" className="plan-build-curated-plan tap-target" onClick={onOpenBuildMyMonth}>
-        Build a Month
-      </button>
-
-      <div className="sec">What&apos;s close right now</div>
+      <div className="sec">Distance</div>
       <div className="plan-proximity-strip">
         {PLAN_PROXIMITY_OPTIONS.map((option) => (
           <button
@@ -445,7 +344,7 @@ export function PlanScreen({
         ))}
       </div>
 
-      <div className="sec">Nearby adventures</div>
+      <div className="sec">Filters</div>
 
       <div className="chips chips--plan chips--compact">
         {state.planCategories.map((category) => (
@@ -461,7 +360,7 @@ export function PlanScreen({
       </div>
 
       <div className="plan-card-list">
-        {places.map((place) => {
+        {visiblePlaces.map((place) => {
           const isRoadTrip = place.category === 'Road trip'
           const driveTime = isRoadTrip
             ? getRoadTripDriveTime(place, state.locationSupported)
@@ -517,8 +416,78 @@ export function PlanScreen({
           )
         })}
       </div>
+      {places.length > visiblePlaces.length ? (
+        <button
+          type="button"
+          className="plan-see-more tap-target detail-card-warm"
+          onClick={() => setShowAllPlaces(true)}
+        >
+          See more spots
+        </button>
+      ) : null}
         </>
       )}
+
+      <section className="plan-hub detail-card-warm" aria-label="Better Dog Days">
+        <div className="plan-hub-kicker">Better Dog Days</div>
+        <h2 className="plan-hub-title">Plan the next good day</h2>
+        <div className="plan-hub-actions">
+          <button type="button" className="plan-hub-action tap-target" onClick={onOpenBuildMyMonth}>
+            <span aria-hidden="true"><i className="ti ti-calendar" /></span>
+            <span>
+              <strong>Build My Month</strong>
+              <small>Plan a few outings across beaches, trails, patios, and parks</small>
+            </span>
+          </button>
+          <button type="button" className="plan-hub-action tap-target" onClick={onOpenAddAdventure}>
+            <span aria-hidden="true"><i className="ti ti-plus" /></span>
+            <span>
+              <strong>Add Your Own</strong>
+              <small>Save a place or outing PawStreak does not know yet</small>
+            </span>
+          </button>
+          <button type="button" className="plan-hub-action tap-target" onClick={onOpenTrainingProgram}>
+            <span aria-hidden="true"><i className="ti ti-school" /></span>
+            <span>
+              <strong>Training</strong>
+              <small>Add leash focus, calm patio work, or confidence practice</small>
+            </span>
+          </button>
+          <button type="button" className="plan-hub-action tap-target" onClick={onGenerateRandomPlan}>
+            <span aria-hidden="true"><i className="ti ti-sparkles" /></span>
+            <span>
+              <strong>Pick for Me</strong>
+              <small>Get one fast dog-friendly idea from your location and dog context</small>
+            </span>
+          </button>
+        </div>
+        <div className="plan-type-box">
+          <label className="plan-type-label" htmlFor="typed-plan-input">Describe your dog day</label>
+          <p className="plan-type-help">
+            Say what kind of outing you want, then turn it into a custom adventure or monthly plan.
+          </p>
+          <textarea
+            id="typed-plan-input"
+            className="plan-type-input"
+            value={typedPlan}
+            onChange={(event) => setTypedPlan(event.target.value)}
+            placeholder={`Example: calm patio practice after work with ${dogLabel}`}
+          />
+          <button
+            type="button"
+            className="st-btn st-btn--forest tap-target"
+            onClick={handleTypedPlanPreview}
+            disabled={!typedPlan.trim()}
+          >
+            Preview idea
+          </button>
+          {typedPlanPreview ? (
+            <div className="plan-type-preview" role="status">
+              {typedPlanPreview}
+            </div>
+          ) : null}
+        </div>
+      </section>
 
       {savedPlaces.length > 0 ? (
         <>

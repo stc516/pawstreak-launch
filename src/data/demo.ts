@@ -4,6 +4,7 @@ export type TabId =
   | 'journey'
   | 'community'
   | 'milestones'
+  | 'rewards'
   | 'achievements'
   | 'profile'
 

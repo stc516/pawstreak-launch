@@ -17,6 +17,7 @@ const TAB_META: Record<
   journey: { label: 'Journey', icon: 'ti-compass' },
   community: { label: 'Community', icon: 'ti-users' },
   milestones: { label: 'Challenges', icon: 'ti-trophy' },
+  rewards: { label: 'Rewards', icon: 'ti-medal' },
   achievements: { label: 'Achievements', icon: 'ti-medal' },
 }
 

@@ -13,6 +13,7 @@ const NAV_TAB_ORDER: TabId[] = [
   'plan',
   'journey',
   'milestones',
+  'rewards',
   'community',
 ]
 
