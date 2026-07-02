@@ -795,7 +795,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
           startedAt,
           status: 'active',
         },
-        activeAdventureView: 'minimized',
+        activeAdventureView: 'focused',
       }
     })
   }
@@ -1069,7 +1069,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     }))
   }
 
-  const startNeighborhoodWalk = () => {
+  const startNeighborhoodWalk = (durationLabel = 'Open end') => {
     if (blockIfActiveAdventure()) return
 
     setState((current) => {
@@ -1077,7 +1077,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       const activeAdventure = createActiveAdventure(
         NEIGHBORHOOD_WALK_PLACE_ID,
         'Neighborhood Walk',
-        'Open end',
+        durationLabel,
         {
           started: true,
           startedAt,
@@ -1089,7 +1089,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       return {
         ...current,
         activeAdventure,
-        activeAdventureView: viewForNewAdventure(activeAdventure),
+        activeAdventureView: 'focused',
         adventurePhotos: ['', '', ''],
         selectedJourneyEntryId: null,
         selectedChallengeId: null,
@@ -1100,9 +1100,16 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     })
   }
 
-  const startAdventure = async (placeId: string, durationLabel = 'Open end') => {
+  const startAdventure = async (
+    placeId: string,
+    durationLabel = 'Open end',
+    options: { startNow?: boolean } = {},
+  ) => {
     const place = getPlaceById(placeId)
-    if (!place) return
+    if (!place) {
+      startNeighborhoodWalk(durationLabel)
+      return
+    }
     if (blockIfActiveAdventure()) return
 
     if (
@@ -1110,7 +1117,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       !isNeighborhoodWalkPlace(place.id) &&
       place.id !== CUSTOM_ADVENTURE_PLACE_ID
     ) {
-      startNeighborhoodWalk()
+      startNeighborhoodWalk(durationLabel)
       return
     }
 
@@ -1126,10 +1133,18 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       })
 
       if (serverAdventure) {
+        const activeAdventure = options.startNow
+          ? {
+              ...serverAdventure,
+              started: true,
+              startedAt: serverAdventure.startedAt ?? new Date().toISOString(),
+              status: 'active' as const,
+            }
+          : serverAdventure
         setState((current) => ({
           ...current,
-          activeAdventure: serverAdventure,
-          activeAdventureView: viewForNewAdventure(serverAdventure),
+          activeAdventure,
+          activeAdventureView: options.startNow ? 'focused' : viewForNewAdventure(activeAdventure),
           adventurePhotos: ['', '', ''],
           selectedJourneyEntryId: null,
           selectedChallengeId: null,
@@ -1146,6 +1161,8 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       place.name,
       durationLabel,
       {
+        started: options.startNow,
+        startedAt: options.startNow ? new Date().toISOString() : undefined,
         dogId: activeDogId,
         selectedDogIds: state.dogs.map((dog) => dog.id),
       },
@@ -1153,7 +1170,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     setState((current) => ({
       ...current,
       activeAdventure,
-      activeAdventureView: viewForNewAdventure(activeAdventure),
+      activeAdventureView: options.startNow ? 'focused' : viewForNewAdventure(activeAdventure),
       adventurePhotos: ['', '', ''],
       selectedJourneyEntryId: null,
       selectedChallengeId: null,
@@ -1883,9 +1900,12 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
               onBack={closeChallengeDetail}
               onJoinChallenge={joinChallenge}
               onLeaveChallenge={leaveChallenge}
-              onStartAdventure={startAdventure}
+              onStartAdventure={(placeId, options) => {
+                void startAdventure(placeId, options?.durationLabel, {
+                  startNow: options?.startNow,
+                })
+              }}
               onStartNeighborhoodWalk={startNeighborhoodWalk}
-              onGoToPlan={() => setActiveTab('plan')}
               onOpenMemory={openJourneyMemory}
             />
           </AppShell>

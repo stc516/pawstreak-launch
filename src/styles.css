@@ -14159,14 +14159,20 @@ select.field-input {
 
 .achievements-earned-strip {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 9px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.achievements-section-count {
+  color: #9a3412;
+  font-size: 12px;
+  font-weight: 850;
 }
 
 .st-enamel-tile {
   display: flex;
   min-width: 0;
-  min-height: 86px;
+  min-height: 112px;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
@@ -14180,8 +14186,8 @@ select.field-input {
 .st-enamel-badge {
   position: relative;
   display: grid;
-  width: 54px;
-  height: 54px;
+  width: 62px;
+  height: 62px;
   place-items: center;
   border: 3px solid #f9e2a8;
   border-radius: 50%;
@@ -14201,9 +14207,9 @@ select.field-input {
 .st-enamel-tile-title {
   max-width: 100%;
   overflow-wrap: anywhere;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 900;
-  line-height: 1.05;
+  line-height: 1.12;
 }
 
 .achievements-available-grid {
@@ -14820,6 +14826,34 @@ select.field-input {
 .build-month-start-first {
   margin-top: 12px;
   width: 100%;
+}
+
+.build-month-calendar {
+  width: 100%;
+  margin-top: 12px;
+}
+
+.build-month-calendar-note {
+  margin: 8px 4px 0;
+  color: #7c5c48;
+  font-size: 12px;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.challenge-path-detail-calendar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 13px;
+  border: 1px solid rgba(27, 48, 34, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #1b3022;
+  font-size: 12px;
+  font-weight: 850;
 }
 
 .staggered-path {

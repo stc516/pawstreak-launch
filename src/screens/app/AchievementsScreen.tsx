@@ -29,6 +29,8 @@ export function AchievementsScreen({ state, onOpenAchievement }: AchievementsScr
     () => sortAchievements(grouped.flatMap((group) => group.achievements.filter((item) => item.status === 'locked'))),
     [grouped],
   )
+  const earnedPreview = earned.slice(0, 3)
+  const availablePreview = available.slice(0, 4)
 
   return (
     <>
@@ -46,13 +48,15 @@ export function AchievementsScreen({ state, onOpenAchievement }: AchievementsScr
       <section className="achievements-section">
         <div className="st-section-head">
           <h2 className="st-headline-md">Earned</h2>
-          <button type="button" className="st-link-btn tap-target">
-            View all
-          </button>
+          {earned.length > earnedPreview.length ? (
+            <span className="achievements-section-count">
+              {earned.length} total
+            </span>
+          ) : null}
         </div>
         {earned.length > 0 ? (
           <div className="achievements-earned-strip">
-            {earned.slice(0, 5).map((achievement) => (
+            {earnedPreview.map((achievement) => (
               <AchievementIdentityCard
                 key={achievement.id}
                 achievement={achievement}
@@ -109,12 +113,14 @@ export function AchievementsScreen({ state, onOpenAchievement }: AchievementsScr
       <section className="achievements-section">
         <div className="st-section-head">
           <h2 className="st-headline-md">Available to Earn</h2>
-          <button type="button" className="st-link-btn tap-target">
-            See all
-          </button>
+          {available.length > availablePreview.length ? (
+            <span className="achievements-section-count">
+              {availablePreview.length} of {available.length}
+            </span>
+          ) : null}
         </div>
         <div className="achievements-available-grid">
-          {available.map((achievement) => (
+          {availablePreview.map((achievement) => (
             <button
               key={achievement.id}
               type="button"

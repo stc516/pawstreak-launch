@@ -10,12 +10,16 @@ import { NEIGHBORHOOD_WALK_PLACE_ID } from '../data/places'
 import { ChallengePath } from './ChallengePath'
 import { ChallengeNodeDetail } from './ChallengeNodeDetail'
 
+interface ChallengeStartOptions {
+  durationLabel?: string
+  startNow?: boolean
+}
+
 interface ChallengePathExperienceProps {
   challenge: Challenge
   state: AppState
-  onStartAdventure: (placeId: string) => void
-  onStartNeighborhoodWalk?: () => void
-  onGoToPlan?: () => void
+  onStartAdventure: (placeId: string, options?: ChallengeStartOptions) => void
+  onStartNeighborhoodWalk?: (durationLabel?: string) => void
   onOpenMemory?: (entryId: string) => void
 }
 
@@ -24,7 +28,6 @@ export function ChallengePathExperience({
   state,
   onStartAdventure,
   onStartNeighborhoodWalk,
-  onGoToPlan,
   onOpenMemory,
 }: ChallengePathExperienceProps) {
   const [selectedNode, setSelectedNode] = useState<ResolvedChallengeNode | null>(null)
@@ -50,15 +53,19 @@ export function ChallengePathExperience({
       <ChallengeNodeDetail
         node={selectedNode}
         onClose={() => setSelectedNode(null)}
-        onStartAdventure={(placeId) => {
+        onStartAdventure={(placeId, options) => {
           setSelectedNode(null)
-          if (placeId === NEIGHBORHOOD_WALK_PLACE_ID && onStartNeighborhoodWalk) {
-            onStartNeighborhoodWalk()
+          const durationLabel = options?.durationLabel
+          if (!placeId || placeId === NEIGHBORHOOD_WALK_PLACE_ID) {
+            if (onStartNeighborhoodWalk) {
+              onStartNeighborhoodWalk(durationLabel)
+              return
+            }
+            onStartAdventure(NEIGHBORHOOD_WALK_PLACE_ID, options)
             return
           }
-          onStartAdventure(placeId)
+          onStartAdventure(placeId, options)
         }}
-        onGoToPlan={onGoToPlan}
         onOpenMemory={onOpenMemory ? handleOpenMemoryFromNode : undefined}
       />
     </>
