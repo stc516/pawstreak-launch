@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import type { AppState, CommunityPost, TabId } from './data/demo'
+import type { ActiveAdventure, AppState, CommunityPost, Dog, JourneyEntry, TabId } from './data/demo'
 import {
   createActiveAdventure,
   getFinishedDurationLabel,
@@ -57,6 +57,10 @@ import { shouldPersonalizeContent } from './lib/profileDisplay'
 import { fillPhotoSlots } from './lib/imageUtils'
 import { AppShell } from './components/AppShell'
 import { ActiveAdventureBanner } from './components/ActiveAdventureBanner'
+import {
+  AdventureCompletionReward,
+  type AdventureCompletionSummary,
+} from './components/AdventureCompletionReward'
 import { ActiveAdventureScreen } from './screens/app/ActiveAdventureScreen'
 import {
   clearActiveAdventureFields,
@@ -82,6 +86,7 @@ import { getTrainingProgramById, isTrainingProgramId } from './data/training'
 import {
   joinChallengeState,
   leaveChallengeState,
+  resolveJoinedChallenges,
 } from './lib/challengeEngine'
 import {
   completeTrainingLessonState,
@@ -159,6 +164,123 @@ import {
   sendPackInvite,
 } from './lib/db/packAccess'
 
+function formatCompletionDogLabel(dogs: Dog[]): string {
+  if (dogs.length === 0) return 'your dog'
+  if (dogs.length === 1) return dogs[0]!.name
+  if (dogs.length === 2) return `${dogs[0]!.name} + ${dogs[1]!.name}`
+  return `${dogs.slice(0, -1).map((dog) => dog.name).join(', ')} + ${dogs[dogs.length - 1]!.name}`
+}
+
+function buildChallengeRewardRows(
+  beforeState: AppState,
+  afterState: AppState,
+): AdventureCompletionSummary['rows'] {
+  const beforeChallenges = resolveJoinedChallenges(beforeState)
+  const beforeById = new Map(
+    beforeChallenges.map((challenge) => [challenge.id, challenge.progress.metricValue]),
+  )
+
+  return resolveJoinedChallenges(afterState)
+    .filter((challenge) => {
+      const beforeValue = beforeById.get(challenge.id) ?? 0
+      return challenge.progress.metricValue > beforeValue
+    })
+    .slice(0, 2)
+    .map((challenge) => {
+      const remaining = Math.max(
+        challenge.progress.metricTarget - challenge.progress.metricValue,
+        0,
+      )
+      const detail =
+        remaining === 0
+          ? 'Challenge complete.'
+          : remaining === 1
+            ? `1 more to finish. ${challenge.rewardConnection}`
+            : `${remaining} more to finish. ${challenge.rewardConnection}`
+
+      return {
+        id: `challenge-${challenge.id}`,
+        icon: 'ti-trophy',
+        tone: 'progress' as const,
+        label: `${challenge.title}: ${challenge.progress.metricValue} / ${challenge.progress.metricTarget}`,
+        detail,
+      }
+    })
+}
+
+function buildAchievementRewardRows(
+  beforeState: AppState,
+  afterState: AppState,
+): AdventureCompletionSummary['rows'] {
+  const beforeUnlocked = new Set(
+    beforeState.achievements
+      .filter((achievement) => achievement.progress.unlocked)
+      .map((achievement) => achievement.id),
+  )
+
+  return afterState.achievements
+    .filter((achievement) => achievement.progress.unlocked && !beforeUnlocked.has(achievement.id))
+    .slice(0, 2)
+    .map((achievement) => ({
+      id: `achievement-${achievement.id}`,
+      icon: 'ti-medal',
+      tone: 'unlock' as const,
+      label: 'Badge unlocked',
+      detail: achievement.title,
+    }))
+}
+
+function buildAdventureCompletionSummary(input: {
+  beforeState: AppState
+  afterState: AppState
+  memory: JourneyEntry
+  adventure: ActiveAdventure
+  dogs: Dog[]
+  place?: ReturnType<typeof getPlaceById>
+  durationLabel: string
+  photoCount: number
+}): AdventureCompletionSummary {
+  const { beforeState, afterState, memory, adventure, dogs, place, durationLabel, photoCount } = input
+  const challengeRows = buildChallengeRewardRows(beforeState, afterState)
+  const achievementRows = buildAchievementRewardRows(beforeState, afterState)
+  const placeName = memory.place || adventure.customTitle || adventure.location
+  const streakRow =
+    afterState.streak > 0 && afterState.streak >= beforeState.streak
+      ? [{
+          id: 'streak',
+          icon: 'ti-route',
+          label: 'PawStreak continued',
+          detail: `${afterState.streak} day streak`,
+        }]
+      : []
+
+  return {
+    memoryId: memory.id,
+    dogLabel: formatCompletionDogLabel(dogs),
+    placeName,
+    category: place?.category,
+    durationLabel,
+    photoCount,
+    rows: [
+      {
+        id: 'memory',
+        icon: 'ti-bookmark',
+        label: '1 memory saved',
+        detail: 'Saved to Journey.',
+      },
+      {
+        id: 'map',
+        icon: 'ti-map-pin',
+        label: 'Added to your adventure map',
+        detail: placeName,
+      },
+      ...streakRow,
+      ...challengeRows,
+      ...achievementRows,
+    ],
+  }
+}
+
 function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   const auth = useAuth()
   const appMode = demoRoute !== null ? 'demo' : 'app'
@@ -169,6 +291,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   const [authLoading, setAuthLoading] = useState(false)
   const [dataHydrated, setDataHydrated] = useState(!useProductionBackend)
   const [splashComplete, setSplashComplete] = useState(false)
+  const [completionReward, setCompletionReward] = useState<AdventureCompletionSummary | null>(null)
   const acceptedInviteTokenRef = useRef<string | null>(null)
 
   useEffect(() => {
@@ -393,11 +516,24 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   const openJourneyMemory = (selectedJourneyEntryId: string) => {
     setState((current) => ({
       ...current,
+      activeTab: 'journey',
       selectedJourneyEntryId,
       selectedChallengeId: null,
       showPresetPlanOverlay: false,
       showJourneyMapOverlay: false,
     }))
+  }
+
+  const viewCompletedMemory = () => {
+    if (!completionReward) return
+    const memoryId = completionReward.memoryId
+    setCompletionReward(null)
+    openJourneyMemory(memoryId)
+  }
+
+  const findNextAdventureFromCompletion = () => {
+    setCompletionReward(null)
+    setActiveTab('plan')
   }
 
   const closeJourneyMemory = () => {
@@ -1245,25 +1381,36 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         if (candidate) {
           await saveLocationCandidateOnServer(candidate)
         }
-        await memoryRowToJourneyEntry(memory)
+        const savedMemoryEntry = await memoryRowToJourneyEntry(memory)
         const journeyEntries = await fetchMemoriesForUser(auth.user.id, activeDogId)
         const placeCount = await countDistinctPlaces(auth.user.id, activeDogId)
+        const rewardMemory =
+          journeyEntries.find((entry) => entry.id === savedMemoryEntry.id) ?? savedMemoryEntry
+        const nextState = applyRealUserContent({
+          ...state,
+          ...clearActiveAdventureFields(),
+          activeTab: 'journey',
+          adventureCount: journeyEntries.length,
+          placeCount,
+          journeyEntries,
+          memorySaveToast: 'Memory saved — worth remembering.',
+          monthlyPlanResult:
+            state.monthlyPlanResult && place && !isCustom
+              ? advanceMonthlyPlanAfterAdventure(state.monthlyPlanResult, place.id)
+              : state.monthlyPlanResult,
+        })
 
-        setState((current) =>
-          applyRealUserContent({
-            ...current,
-            ...clearActiveAdventureFields(),
-            activeTab: 'journey',
-            adventureCount: journeyEntries.length,
-            placeCount,
-            journeyEntries,
-            memorySaveToast: 'Memory saved — worth remembering.',
-            monthlyPlanResult:
-              current.monthlyPlanResult && place && !isCustom
-                ? advanceMonthlyPlanAfterAdventure(current.monthlyPlanResult, place.id)
-                : current.monthlyPlanResult,
-          }),
-        )
+        setState(nextState)
+        setCompletionReward(buildAdventureCompletionSummary({
+          beforeState: state,
+          afterState: nextState,
+          memory: rewardMemory,
+          adventure: activeAdventureForFinish,
+          dogs: adventureDogs,
+          place,
+          durationLabel,
+          photoCount: capturedPhotos.length,
+        }))
         return
       } catch {
         setState((current) => ({
@@ -1274,85 +1421,87 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       }
     }
 
-    setState((current) => {
-      if (!current.activeAdventure) {
-        return { ...current, activeTab: 'journey', adventurePhotos: ['', '', ''] }
-      }
-      const currentAdventure =
-        current.activeAdventure.id === activeAdventureForFinish.id
-          ? activeAdventureForFinish
-          : current.activeAdventure
+    const currentAdventure = activeAdventureForFinish
 
-      const adventureDogs = getDogsForAdventure(
-        current.dogs,
-        currentAdventure.selectedDogIds,
-      )
+    const adventureDogs = getDogsForAdventure(
+      state.dogs,
+      currentAdventure.selectedDogIds,
+    )
 
-      const customMemory = isCustom
-        ? createJourneyEntryFromCustom(adventureDogs, {
-            title:
-              currentAdventure.customTitle ??
-              currentAdventure.location,
-            locationLabel: currentAdventure.customLocationLabel,
-            userNotes: currentAdventure.userNotes,
+    const customMemory = isCustom
+      ? createJourneyEntryFromCustom(adventureDogs, {
+          title:
+            currentAdventure.customTitle ??
+            currentAdventure.location,
+          locationLabel: currentAdventure.customLocationLabel,
+          userNotes: currentAdventure.userNotes,
+          photoUrls: capturedPhotos,
+          durationLabel,
+          recapLabels: payload.recapLabels,
+        })
+      : null
+    const neighborhoodMemory = isNeighborhoodWalk
+      ? createJourneyEntryFromNeighborhoodWalk(adventureDogs, {
+          photoUrls: capturedPhotos,
+          durationLabel,
+          recapLabels: payload.recapLabels,
+        })
+      : null
+    const placeMemory =
+      !isCustom && !isNeighborhoodWalk && place
+        ? createJourneyEntryFromPlace(place, adventureDogs, {
             photoUrls: capturedPhotos,
             durationLabel,
             recapLabels: payload.recapLabels,
           })
         : null
+    const savedMemory = customMemory ?? neighborhoodMemory ?? placeMemory
 
-      const journeyEntries = isCustom
-        ? customMemory
-          ? [customMemory, ...current.journeyEntries]
-          : current.journeyEntries
-        : isNeighborhoodWalk
-          ? [
-              createJourneyEntryFromNeighborhoodWalk(adventureDogs, {
-                photoUrls: capturedPhotos,
-                durationLabel,
-                recapLabels: payload.recapLabels,
-              }),
-              ...current.journeyEntries,
-            ]
-          : place
-            ? [
-                createJourneyEntryFromPlace(place, adventureDogs, {
-                  photoUrls: capturedPhotos,
-                  durationLabel,
-                  recapLabels: payload.recapLabels,
-                }),
-                ...current.journeyEntries,
-              ]
-            : current.journeyEntries
+    const journeyEntries = savedMemory
+      ? [savedMemory, ...state.journeyEntries]
+      : state.journeyEntries
 
-      const adventureCount = journeyEntries.length
-      const placeCount = new Set(journeyEntries.map(getDistinctPlaceKey)).size
-      const locationCandidate =
-        isCustom && customMemory
-          ? createLocationCandidate({
-              activeAdventure: currentAdventure,
-              sourceMemoryId: customMemory.id,
-              photoCount: capturedPhotos.length,
-            })
-          : null
+    const adventureCount = journeyEntries.length
+    const placeCount = new Set(journeyEntries.map(getDistinctPlaceKey)).size
+    const locationCandidate =
+      isCustom && customMemory
+        ? createLocationCandidate({
+            activeAdventure: currentAdventure,
+            sourceMemoryId: customMemory.id,
+            photoCount: capturedPhotos.length,
+          })
+        : null
 
-      return applyRealUserContent({
-        ...current,
-        ...clearActiveAdventureFields(),
-        activeTab: 'journey',
-        adventureCount,
-        placeCount,
-        journeyEntries,
-        locationCandidates: locationCandidate
-          ? [locationCandidate, ...current.locationCandidates]
-          : current.locationCandidates,
-        memorySaveToast: 'Memory saved — worth remembering.',
-        monthlyPlanResult:
-          current.monthlyPlanResult && place && !isCustom
-            ? advanceMonthlyPlanAfterAdventure(current.monthlyPlanResult, place.id)
-            : current.monthlyPlanResult,
-      })
+    const nextState = applyRealUserContent({
+      ...state,
+      ...clearActiveAdventureFields(),
+      activeTab: 'journey',
+      adventureCount,
+      placeCount,
+      journeyEntries,
+      locationCandidates: locationCandidate
+        ? [locationCandidate, ...state.locationCandidates]
+        : state.locationCandidates,
+      memorySaveToast: 'Memory saved — worth remembering.',
+      monthlyPlanResult:
+        state.monthlyPlanResult && place && !isCustom
+          ? advanceMonthlyPlanAfterAdventure(state.monthlyPlanResult, place.id)
+          : state.monthlyPlanResult,
     })
+
+    setState(nextState)
+    if (savedMemory) {
+      setCompletionReward(buildAdventureCompletionSummary({
+        beforeState: state,
+        afterState: nextState,
+        memory: savedMemory,
+        adventure: currentAdventure,
+        dogs: adventureDogs,
+        place,
+        durationLabel,
+        photoCount: capturedPhotos.length,
+      }))
+    }
   }
 
   const completeOnboarding = async (result: OnboardingResult) => {
@@ -2086,6 +2235,14 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         ) : null}
       </AppShell>
       {activeAdventureOverlayNode}
+      {completionReward ? (
+        <AdventureCompletionReward
+          summary={completionReward}
+          onClose={() => setCompletionReward(null)}
+          onViewMemory={viewCompletedMemory}
+          onFindNextAdventure={findNextAdventureFromCompletion}
+        />
+      ) : null}
     </>
   )
 }
