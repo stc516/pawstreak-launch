@@ -63,7 +63,7 @@ export function JourneyMapView({ state, onBack, onOpenMemory }: JourneyMapViewPr
             <div className="jmap-overlay-kicker">Your adventure map</div>
             <h1 className="jmap-overlay-title">Every pin is a day you gave them.</h1>
             <p className="jmap-overlay-copy">
-              Your dog&apos;s life map is being built — one outing at a time.
+              Your dog&apos;s adventure map is being built — one outing at a time.
             </p>
           </div>
 
@@ -156,7 +156,7 @@ export function JourneyMapView({ state, onBack, onOpenMemory }: JourneyMapViewPr
             </div>
           ) : null}
 
-          <div className="sec sec--warm">Mapped memories</div>
+          <div className="sec sec--warm">Adventure map</div>
           <div className="jmap-overlay-list">
             {state.journeyEntries.length === 0 ? (
               <div className="jmap-overlay-empty-list detail-card-warm">

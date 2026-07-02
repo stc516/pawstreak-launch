@@ -188,47 +188,49 @@ export function PlanScreen({
   return (
     <>
       <div className="aheader plan-screen-header">
-        <div className="alogo">Plan something good for {dogLabel}</div>
-        <p className="plan-screen-sub">Build a month, pick today&apos;s outing, or set a training goal.</p>
+        <div className="alogo">Find your next adventure for {dogLabel}</div>
+        <p className="plan-screen-sub">
+          Pick a dog-friendly spot, choose a better routine, or build a month of outings.
+        </p>
       </div>
 
       <section className="plan-hub detail-card-warm" aria-label="Planning hub">
-        <div className="plan-hub-kicker">Planning system</div>
-        <h2 className="plan-hub-title">One planning system for every kind of outing</h2>
+        <div className="plan-hub-kicker">Better dog days</div>
+        <h2 className="plan-hub-title">Choose where you&apos;ll go next</h2>
         <div className="plan-hub-actions">
           <button type="button" className="plan-hub-action tap-target" onClick={onOpenBuildMyMonth}>
             <span aria-hidden="true">🗓️</span>
             <span>
-              <strong>Build My Month</strong>
-              <small>Pick outing count, categories, vibe, dogs, and get a month path</small>
+              <strong>Build a Month</strong>
+              <small>Plan a few better dog days across beaches, trails, patios, and parks</small>
             </span>
           </button>
           <button type="button" className="plan-hub-action tap-target" onClick={onGenerateRandomPlan}>
             <span aria-hidden="true">🎲</span>
             <span>
-              <strong>Surprise Me</strong>
-              <small>Get one fast idea from your current location and dog context</small>
+              <strong>Pick for Me</strong>
+              <small>Get one fast dog-friendly idea from your location and dog context</small>
             </span>
           </button>
           <button type="button" className="plan-hub-action tap-target" onClick={onOpenTrainingProgram}>
             <span aria-hidden="true">🎯</span>
             <span>
-              <strong>Training Goal Plan</strong>
-              <small>Turn leash focus, calm patio work, or confidence into sessions</small>
+              <strong>Training Support</strong>
+              <small>Add leash focus, calm patio work, or confidence to real outings</small>
             </span>
           </button>
           <button type="button" className="plan-hub-action tap-target" onClick={onOpenPresetPlan}>
             <span aria-hidden="true">🔔</span>
             <span>
-              <strong>Reminder path</strong>
-              <small>Preview how planned outings become calendar nudges</small>
+              <strong>Reminders</strong>
+              <small>Preview how planned outings can become helpful nudges</small>
             </span>
           </button>
         </div>
         <div className="plan-type-box">
-          <label className="plan-type-label" htmlFor="typed-plan-input">Type a Plan</label>
+          <label className="plan-type-label" htmlFor="typed-plan-input">Describe your dog day</label>
           <p className="plan-type-help">
-            Describe what you want, then turn it into a custom adventure or monthly plan.
+            Say what kind of outing you want, then turn it into a custom adventure or monthly plan.
           </p>
           <textarea
             id="typed-plan-input"
@@ -243,7 +245,7 @@ export function PlanScreen({
             onClick={handleTypedPlanPreview}
             disabled={!typedPlan.trim()}
           >
-            Preview plan
+            Preview idea
           </button>
           {typedPlanPreview ? (
             <div className="plan-type-preview" role="status">
@@ -259,7 +261,7 @@ export function PlanScreen({
             <span aria-hidden="true">
               <i className="ti ti-plus" />
             </span>
-            Create custom adventure
+            Add your own
           </button>
         </div>
       </section>
@@ -396,7 +398,7 @@ export function PlanScreen({
         </>
       ) : (
         <>
-      <div className="sec plan-suggested-sec">Suggested Spots</div>
+      <div className="sec plan-suggested-sec">Dog-friendly spots nearby</div>
       <p className="plan-suggested-lead">Real outings for {dogLabel} this week.</p>
       <div className="plan-suggested-strip">
         {suggestedPicks.map((place) => {
@@ -425,7 +427,7 @@ export function PlanScreen({
         })}
       </div>
       <button type="button" className="plan-build-curated-plan tap-target" onClick={onOpenBuildMyMonth}>
-        Build My Month
+        Build a Month
       </button>
 
       <div className="sec">What&apos;s close right now</div>

@@ -161,12 +161,13 @@ html.landing-route .landing {
   display: flex;
   flex-direction: column;
   gap: 36px;
-  overflow: visible;
+  overflow-x: clip;
+  overflow-y: visible;
 }
 
 .landing-hero-glow {
   position: absolute;
-  inset: -20% -10% auto;
+  inset: -20% 0 auto;
   height: 420px;
   background: radial-gradient(circle at 30% 40%, rgba(249, 115, 22, 0.22), transparent 62%);
   pointer-events: none;
@@ -204,7 +205,16 @@ html.landing-route .landing {
   line-height: 1.55;
   color: var(--on-surface-var);
   max-width: 34ch;
-  margin: 0 auto 28px;
+  margin: 0 auto 12px;
+}
+
+.landing-supporting-line {
+  margin: 0 auto 24px;
+  max-width: 30ch;
+  color: var(--secondary);
+  font-size: 0.96rem;
+  font-weight: 700;
+  line-height: 1.35;
 }
 
 .landing-hero-actions {
@@ -221,6 +231,8 @@ html.landing-route .landing {
   font-size: 1rem;
   font-weight: 700;
   letter-spacing: -0.01em;
+  text-align: center;
+  text-decoration: none;
 }
 
 .landing-btn--primary {

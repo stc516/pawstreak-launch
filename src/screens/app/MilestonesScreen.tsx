@@ -306,6 +306,10 @@ export function MilestonesScreen({
         <h2 className="st-headline-lg">Active Challenges</h2>
         <span className="st-label-lg ms-challenge-sec-count">{joinedChallenges.length} joined</span>
       </div>
+      <p className="ms-challenge-lead">
+        Challenges help you break the same-walk routine with beaches, trails, patios, parks, and
+        small weekly goals.
+      </p>
 
       {joinedChallenges.length === 0 ? (
         <FirstChallengeStarter
@@ -340,7 +344,7 @@ export function MilestonesScreen({
         <h2 className="st-headline-lg">Local Challenges</h2>
       </div>
       <p className="ms-challenge-lead">
-        Curated SD/OC challenge packs with real local place paths.
+        Curated challenge packs with real local dog-friendly places to try.
       </p>
 
       {!state.locationSupported ? (
@@ -364,7 +368,7 @@ export function MilestonesScreen({
         <h2 className="st-headline-lg">Anywhere Challenges</h2>
       </div>
       <p className="ms-challenge-lead">
-        Flexible goals that work with neighborhood walks, custom adventures, and generic ideas.
+        Simple goals that work anywhere when local challenge packs aren&apos;t ready yet.
       </p>
 
       {anywhereChallenges.length === 0 ? (

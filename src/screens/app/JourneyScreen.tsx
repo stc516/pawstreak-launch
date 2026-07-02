@@ -42,8 +42,8 @@ export function JourneyScreen({
         <div className="alogo">This Month With {dogLabel}</div>
         <p className="journey-story-hero-copy">
           {hasMemories
-            ? 'Completed outings, tiny moments, and saved memories from the month.'
-            : 'Your first saved outing turns this into a real memory path.'}
+            ? 'Places you visited, days you shared, and memories from the month.'
+            : 'Your first saved outing turns this into an adventure map.'}
         </p>
       </div>
 
@@ -55,8 +55,8 @@ export function JourneyScreen({
           <div className="journey-first-run-copy">
             <h2>Start with one real outing</h2>
             <p>
-              Take a quick walk or pick a nearby spot. When you finish, PawStreak saves the place,
-              date, photos, and little details that make it feel like {dogLabel}&apos;s story.
+              After each adventure, PawStreak saves the place, photos, and little details so you
+              can see the days you&apos;ve given {dogLabel}.
             </p>
             <button type="button" className="st-btn st-btn--forest tap-target" onClick={onGoToPlan}>
               Find a first spot

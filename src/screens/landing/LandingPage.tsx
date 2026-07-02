@@ -24,7 +24,7 @@ const KEY_FEATURES = [
   {
     icon: 'ti-book-2',
     title: 'Memory journal + map',
-    copy: 'Save photos, notes, favorite spots, and the little moments that become their story.',
+    copy: 'Save the places, photos, notes, and favorite days you will want back later.',
     image: SAMPLE_IMAGES.coastal,
     tone: 'journal',
   },
@@ -50,8 +50,8 @@ const HOW_IT_WORKS = [
   },
   {
     step: '03',
-    title: 'Watch their story grow',
-    copy: 'Your map, timeline, and milestones fill in — one adventure at a time.',
+    title: 'Build their adventure map',
+    copy: 'Your favorite places, saved days, and milestones fill in over time.',
   },
 ] as const
 
@@ -87,18 +87,16 @@ export function LandingPage() {
         <div className="landing-hero-glow" aria-hidden="true" />
         <div className="landing-hero-inner">
           <p className="landing-kicker">For dogs who make life better</p>
-          <h1 className="landing-headline">
-            More adventures.
-            <br />
-            More memories.
-            <br />
-            More life together.
-          </h1>
+          <h1 className="landing-headline">Your dog deserves more than the same old walk.</h1>
           <p className="landing-subhead">{BRAND_DESCRIPTION}</p>
+          <p className="landing-supporting-line">Because they don&apos;t get as many years as we do.</p>
           <div className="landing-hero-actions">
             <button type="button" className="landing-btn landing-btn--primary tap-target" onClick={openSignup}>
               {CTA_START_FIRST_ADVENTURE}
             </button>
+            <a className="landing-btn landing-btn--secondary tap-target" href="#landing-how-title">
+              See How It Works
+            </a>
           </div>
         </div>
         <div className="landing-hero-visual" aria-hidden="true">
@@ -110,11 +108,11 @@ export function LandingPage() {
         <div className="landing-section-head">
           <p className="landing-intro-kicker">What is PawStreak?</p>
           <h2 id="landing-features-title" className="landing-section-title">
-            The app for the life you&apos;re already building with your dog.
+            Find better places to go with your dog, then keep the days worth remembering.
           </h2>
           <p className="landing-section-lead">
-            Plan outings, save memories, share care with your pack, and watch your dog&apos;s story
-            grow over time.
+            Discover dog-friendly spots, plan better days, share access with your pack, and save
+            what made each adventure worth it.
           </p>
         </div>
         <div className="landing-features-grid">
@@ -147,14 +145,13 @@ export function LandingPage() {
               Your camera roll wasn&apos;t built for this.
             </h2>
             <p className="landing-story-lead">
-              Most dog photos disappear into the camera roll. PawStreak turns the life you&apos;re
-              building with your dog into a living story.
+              Most dog photos disappear into the camera roll. PawStreak connects them to the
+              places you went, the days you shared, and the adventures worth doing again.
             </p>
             <p className="landing-story-body">
               The beach mornings. The trail you keep coming back to. The road trip where they
-              finally learned to love the car. These aren&apos;t just photos — they&apos;re the
-              chapters of a life you&apos;re sharing. PawStreak keeps them close, organized, and
-              worth revisiting.
+              finally learned to love the car. These are the days that make life with a dog feel
+              full. PawStreak keeps the places, photos, and notes close enough to revisit.
             </p>
           </div>
           <div className="landing-story-visual" aria-hidden="true">
@@ -181,7 +178,7 @@ export function LandingPage() {
           <h2 id="landing-how-title" className="landing-section-title">
             How it works
           </h2>
-          <p className="landing-section-lead">Three steps. One story that keeps growing.</p>
+          <p className="landing-section-lead">Pick a spot, go together, save the day.</p>
         </div>
         <div className="landing-how-grid">
           {HOW_IT_WORKS.map((item) => (

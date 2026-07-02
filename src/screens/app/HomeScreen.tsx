@@ -171,7 +171,7 @@ export function HomeScreen({
           </span>
           <span className="home-quick-walk-copy">
             <span className="home-quick-walk-title">Quick Walk</span>
-            <span className="home-quick-walk-sub">Start now · no planning needed</span>
+            <span className="home-quick-walk-sub">Use the usual route when today is simple.</span>
           </span>
           <span className="home-quick-walk-arrow" aria-hidden="true">
             <i className="ti ti-arrow-right" />
@@ -241,9 +241,9 @@ export function HomeScreen({
       )}
 
       {continueMemory ? (
-        <section className="home-continue" aria-label="Continue Your Journey">
+        <section className="home-continue" aria-label="Look Back at Recent Days">
           <div className="st-section-head">
-            <h2 className="st-headline-md">Continue Your Journey</h2>
+            <h2 className="st-headline-md">Look Back at Recent Days</h2>
           </div>
           <button
             type="button"
@@ -290,18 +290,18 @@ export function HomeScreen({
         </div>
       </section>
 
-      <section className="home-plan-new" aria-label="Plan Something New">
+      <section className="home-plan-new" aria-label="Find Something New">
         <div className="st-section-head">
-          <h2 className="st-headline-md">Plan Something New</h2>
+          <h2 className="st-headline-md">Find Something New</h2>
         </div>
         <div className="home-plan-grid">
           <button type="button" className="home-plan-action tap-target" onClick={onGoToPlan}>
             <i className="ti ti-map" aria-hidden="true" />
-            <span>Preview Plan</span>
+            <span>Find Spots</span>
           </button>
           <button type="button" className="home-plan-action tap-target" onClick={onOpenAddAdventure}>
             <i className="ti ti-mountain" aria-hidden="true" />
-            <span>Create Adventure</span>
+            <span>Add Your Own</span>
           </button>
           <button type="button" className="home-plan-action tap-target" onClick={onOpenBuildMyMonth}>
             <i className="ti ti-calendar" aria-hidden="true" />
@@ -405,9 +405,9 @@ export function HomeScreen({
       ) : null}
 
       {state.locationSupported && suggestedPlaces.length > 0 ? (
-        <section className="home-suggested-spots" aria-label="Suggested Spots">
+        <section className="home-suggested-spots" aria-label="Dog-Friendly Spots Nearby">
           <div className="st-section-head">
-            <h2 className="st-headline-md">Suggested Spots</h2>
+            <h2 className="st-headline-md">Dog-Friendly Spots Nearby</h2>
             <button type="button" className="st-link-btn tap-target" onClick={onGoToPlan}>
               See all on Plan
             </button>

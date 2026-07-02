@@ -93,7 +93,7 @@ export const EMPTY_BOND_LEVEL: AppState['bondLevel'] = {
   label: 'Bond level',
   rank: 'Getting started',
   fillWidth: '8%',
-  subtitle: 'Every adventure builds your story together.',
+  subtitle: 'Every adventure adds to the days you share.',
   nextRank: 'Adventure buddy',
   nextUnlock: 'Save your first memory',
   favoriteCategory: '—',
@@ -103,7 +103,7 @@ export const EMPTY_BOND_LEVEL: AppState['bondLevel'] = {
 
 export const EMPTY_FLASHBACK: AppState['flashback'] = {
   title: 'Your first memory is waiting',
-  subtitle: 'Finish an adventure to start your journey.',
+  subtitle: 'Finish an adventure to save the day.',
 }
 
 function countDistinctPlaces(entries: AppState['journeyEntries']): number {

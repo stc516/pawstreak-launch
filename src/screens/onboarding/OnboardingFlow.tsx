@@ -351,9 +351,9 @@ export function OnboardingFlow({
             <p className="body onboarding-center-copy">
               {authConfigured
                 ? authMode === 'signup'
-                  ? 'Free to start. Your dog\'s story starts here.'
-                  : 'Sign in to pick up your pack\'s story.'
-                : 'Free to start. Your dog\'s story starts here.'}
+                  ? 'Free to start. Your next better dog day starts here.'
+                  : 'Sign in to pick up your pack\'s dog days.'
+                : 'Free to start. Your next better dog day starts here.'}
             </p>
 
             {authConfigured ? (
@@ -859,7 +859,7 @@ export function OnboardingFlow({
               disabled={locationQuery.trim().length === 0}
               onClick={() => setStep(6)}
             >
-              Create our world
+              Find spots near me
               {arrowIcon}
             </button>
           </div>
@@ -883,7 +883,7 @@ export function OnboardingFlow({
                 </span>
               </h1>
               <p className="body onboarding-done-copy">
-                Your adventure journal is ready.
+                Your first adventure picks are ready.
                 <br />
                 Let's make every day count.
               </p>

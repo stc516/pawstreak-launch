@@ -47,23 +47,23 @@ export function JourneyStoryPath({
   const previewNodes = [
     {
       title: 'Example: beach walk',
-      line: 'Photos, places, dates, and little moments will land here after a real outing.',
+      line: 'Photos, places, dates, and little moments will land here after you go.',
       imageUrl: SAMPLE_IMAGES.beach,
     },
     {
       title: 'Example: 3 photos + note',
-      line: 'Once you finish an outing, this becomes a tappable memory scene.',
+      line: 'Once you finish an outing, this becomes a saved day you can reopen.',
       imageUrl: SAMPLE_IMAGES.scenic,
     },
     {
       title: 'Example: favorite walk',
-      line: 'Plan a few outings now, then PawStreak turns them into memories after you go.',
+      line: 'Plan a few outings now, then PawStreak saves the best parts after you go.',
       imageUrl: SAMPLE_IMAGES.neighborhood,
     },
   ]
 
   return (
-    <section className="journey-story journey-memory-path detail-card-warm" aria-label="Completed memory path">
+    <section className="journey-story journey-memory-path detail-card-warm" aria-label="Completed adventure path">
       <div className="journey-story-header">
         <div className="journey-story-header-top">
           <div className="journey-story-kicker">This month</div>
@@ -72,11 +72,11 @@ export function JourneyStoryPath({
             <span className="journey-story-rank-value">{completedCount}</span>
           </div>
         </div>
-        <h2 className="journey-story-title">Memory path</h2>
+        <h2 className="journey-story-title">Adventure path</h2>
         <p className="journey-story-line">
           {completedCount > 0
             ? `${completedCount} completed ${completedCount === 1 ? 'outing' : 'outings'} saved.`
-            : 'No completed outings yet this month.'}
+            : 'No completed adventures yet this month.'}
         </p>
       </div>
 
@@ -118,8 +118,8 @@ export function JourneyStoryPath({
         <div className="journey-memory-preview" data-testid="journey-memory-preview">
           <div className="journey-memory-preview-label">Preview only</div>
           <p>
-            Your first adventure will create a memory path here. Outings become scenes,
-            photos become cards, and the monthly path builds over time.
+            Your first adventure will create a path here. Places, photos, and notes build into
+            a record of the days you shared.
           </p>
           <div className="journey-memory-track journey-memory-track--preview">
             <div className="journey-memory-spine" aria-hidden="true" />
