@@ -158,6 +158,8 @@ import {
   fetchPackAccessMembers,
   sendPackInvite,
 } from './lib/db/packAccess'
+import { ShareCardPreview } from './components/share/ShareCardPreview'
+import { buildShareCardData, type ShareCardRequest } from './lib/shareCardData'
 
 function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   const auth = useAuth()
@@ -169,6 +171,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   const [authLoading, setAuthLoading] = useState(false)
   const [dataHydrated, setDataHydrated] = useState(!useProductionBackend)
   const [splashComplete, setSplashComplete] = useState(false)
+  const [shareCardRequest, setShareCardRequest] = useState<ShareCardRequest | null>(null)
   const acceptedInviteTokenRef = useRef<string | null>(null)
   const latestStateRef = useRef(state)
   const finishingAdventureRef = useRef(false)
@@ -1781,6 +1784,16 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     </div>
   ) : null
 
+  const shareCardData = shareCardRequest
+    ? buildShareCardData(state, shareCardRequest)
+    : null
+  const shareCardOverlayNode = shareCardData ? (
+    <ShareCardPreview
+      data={shareCardData}
+      onClose={() => setShareCardRequest(null)}
+    />
+  ) : null
+
   if (state.showAddAdventureFlow) {
     return (
       <AddAdventureFlow
@@ -1938,9 +1951,16 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
               }}
               onStartNeighborhoodWalk={startNeighborhoodWalk}
               onOpenMemory={openJourneyMemory}
+              onCreateStory={() =>
+                setShareCardRequest({
+                  kind: 'challenge-progress',
+                  challengeId: challenge.id,
+                })
+              }
             />
           </AppShell>
           {activeAdventureOverlayNode}
+          {shareCardOverlayNode}
         </>
       )
     }
@@ -1953,11 +1973,20 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     const personalize = shouldPersonalizeContent(state)
     if (achievement) {
       return (
-        <AchievementDetailView
-          achievement={achievement}
-          dogs={personalize ? state.dogs : []}
-          onBack={closeAchievementDetail}
-        />
+        <>
+          <AchievementDetailView
+            achievement={achievement}
+            dogs={personalize ? state.dogs : []}
+            onBack={closeAchievementDetail}
+            onCreateStory={() =>
+              setShareCardRequest({
+                kind: 'achievement-unlocked',
+                achievementId: achievement.id,
+              })
+            }
+          />
+          {shareCardOverlayNode}
+        </>
       )
     }
   }
@@ -1969,14 +1998,23 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     const personalize = shouldPersonalizeContent(state)
     if (entry) {
       return (
-        <JourneyMemoryView
-          entry={entry}
-          dogs={state.dogs}
-          hasUserDogProfile={personalize}
-          packAccessMembers={state.packAccessMembers}
-          onBack={closeJourneyMemory}
-          onGoAgain={goAgainFromMemory}
-        />
+        <>
+          <JourneyMemoryView
+            entry={entry}
+            dogs={state.dogs}
+            hasUserDogProfile={personalize}
+            packAccessMembers={state.packAccessMembers}
+            onBack={closeJourneyMemory}
+            onGoAgain={goAgainFromMemory}
+            onCreateStory={() =>
+              setShareCardRequest({
+                kind: 'adventure-complete',
+                entryId: entry.id,
+              })
+            }
+          />
+          {shareCardOverlayNode}
+        </>
       )
     }
   }
@@ -2030,6 +2068,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onOpenChallenge={openChallengeDetail}
             onJoinChallenge={joinChallenge}
             onOpenTrainingProgram={openTrainingProgramFlow}
+            onCreateStory={() => setShareCardRequest({ kind: 'plan-next' })}
           />
         )
       case 'journey':
@@ -2040,6 +2079,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onOpenMemory={openJourneyMemory}
             onGoToPlan={() => setActiveTab('plan')}
             onDismissToast={clearMemorySaveToast}
+            onCreateStory={() => setShareCardRequest({ kind: 'monthly-recap' })}
           />
         )
       case 'community':
@@ -2053,6 +2093,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
           <AchievementsScreen
             state={state}
             onOpenAchievement={openAchievementDetail}
+            onCreateStory={() => setShareCardRequest({ kind: 'founder-demo' })}
           />
         )
       case 'milestones':
@@ -2103,6 +2144,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         ) : null}
       </AppShell>
       {activeAdventureOverlayNode}
+      {shareCardOverlayNode}
     </>
   )
 }

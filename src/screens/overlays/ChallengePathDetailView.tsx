@@ -18,6 +18,7 @@ interface ChallengePathDetailViewProps {
   onStartAdventure: (placeId: string, options?: ChallengeStartOptions) => void
   onStartNeighborhoodWalk?: (durationLabel?: string) => void
   onOpenMemory?: (entryId: string) => void
+  onCreateStory?: () => void
 }
 
 export function ChallengePathDetailView({
@@ -29,6 +30,7 @@ export function ChallengePathDetailView({
   onStartAdventure,
   onStartNeighborhoodWalk,
   onOpenMemory,
+  onCreateStory,
 }: ChallengePathDetailViewProps) {
   const resolved = resolveChallenge(challenge, state)
   const { progress } = resolved
@@ -99,6 +101,16 @@ export function ChallengePathDetailView({
                 <i className="ti ti-calendar-plus" aria-hidden="true" />
                 Add to Calendar
               </button>
+              {onCreateStory ? (
+                <button
+                  type="button"
+                  className="challenge-path-detail-calendar tap-target"
+                  onClick={onCreateStory}
+                >
+                  <i className="ti ti-share" aria-hidden="true" />
+                  Create Story
+                </button>
+              ) : null}
             </>
           ) : (
             <button

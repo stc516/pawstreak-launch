@@ -8,6 +8,7 @@ import { AdventureGuideDog } from '../../components/AdventureGuideDog'
 interface AchievementsScreenProps {
   state: AppState
   onOpenAchievement: (achievementId: string) => void
+  onCreateStory?: () => void
 }
 
 function sortAchievements(items: Achievement[]): Achievement[] {
@@ -15,7 +16,11 @@ function sortAchievements(items: Achievement[]): Achievement[] {
   return [...items].sort((left, right) => rank[left.status] - rank[right.status])
 }
 
-export function AchievementsScreen({ state, onOpenAchievement }: AchievementsScreenProps) {
+export function AchievementsScreen({
+  state,
+  onOpenAchievement,
+  onCreateStory,
+}: AchievementsScreenProps) {
   const grouped = useMemo(() => resolveAchievementsByCategory(state), [state])
   const earned = useMemo(
     () => sortAchievements(grouped.flatMap((group) => group.achievements.filter((item) => item.status === 'done'))),
@@ -41,6 +46,12 @@ export function AchievementsScreen({ state, onOpenAchievement }: AchievementsScr
           </button>
           <h1>Rewards</h1>
           <p>Badges earned, progress underway, and clear next steps from real adventures.</p>
+          {onCreateStory ? (
+            <button type="button" className="share-inline-btn tap-target" onClick={onCreateStory}>
+              <i className="ti ti-share" aria-hidden="true" />
+              Demo Story
+            </button>
+          ) : null}
         </div>
         <AdventureGuideDog className="achievements-guide-dog" withBurst />
       </header>

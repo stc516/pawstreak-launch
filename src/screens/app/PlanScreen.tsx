@@ -34,6 +34,7 @@ interface PlanScreenProps {
   onOpenChallenge?: (challengeId: string) => void
   onJoinChallenge?: (challengeId: string) => void
   onOpenTrainingProgram?: () => void
+  onCreateStory?: () => void
 }
 
 export function PlanScreen({
@@ -49,6 +50,7 @@ export function PlanScreen({
   onOpenBuildMyMonth,
   onGenerateRandomPlan,
   onOpenTrainingProgram,
+  onCreateStory,
 }: PlanScreenProps) {
   const prefs = getRecommendationPrefs(state)
   const [proximityBucket, setProximityBucket] = useState<PlanProximityBucket>('15min')
@@ -195,6 +197,12 @@ export function PlanScreen({
         <p className="plan-screen-sub">
           Dog-friendly places for {dogLabel} near {state.locationLabel || state.zipCode}.
         </p>
+        {onCreateStory ? (
+          <button type="button" className="share-inline-btn tap-target" onClick={onCreateStory}>
+            <i className="ti ti-share" aria-hidden="true" />
+            Create Story
+          </button>
+        ) : null}
       </div>
 
       {state.randomPlanResult ? (

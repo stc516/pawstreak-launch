@@ -10,6 +10,7 @@ interface JourneyScreenProps {
   onOpenMemory: (entryId: string) => void
   onGoToPlan: () => void
   onDismissToast: () => void
+  onCreateStory?: () => void
 }
 
 export function JourneyScreen({
@@ -17,6 +18,7 @@ export function JourneyScreen({
   onOpenMemory,
   onGoToPlan,
   onDismissToast,
+  onCreateStory,
 }: JourneyScreenProps) {
   useEffect(() => {
     if (!state.memorySaveToast) return
@@ -43,6 +45,12 @@ export function JourneyScreen({
             ? 'Places you visited, days you shared, and memories from the month.'
             : 'Your first saved outing turns this into an adventure map.'}
         </p>
+        {onCreateStory ? (
+          <button type="button" className="share-inline-btn tap-target" onClick={onCreateStory}>
+            <i className="ti ti-share" aria-hidden="true" />
+            Create Story
+          </button>
+        ) : null}
       </div>
 
       {!hasMemories ? (
