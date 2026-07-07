@@ -79,6 +79,13 @@ function normalizeActiveAdventure(
 
   const serverId = 'serverId' in adventure ? adventure.serverId : undefined
   const placeId = adventure.placeId
+  const started = adventure.started ?? false
+  const startedAt =
+    'startedAt' in adventure && adventure.startedAt
+      ? adventure.startedAt
+      : started
+        ? new Date().toISOString()
+        : undefined
   const source =
     ('source' in adventure && adventure.source) ||
     inferAdventureSource(placeId)
@@ -99,8 +106,8 @@ function normalizeActiveAdventure(
         'durationLabel' in adventure && adventure.durationLabel
           ? adventure.durationLabel
           : 'Open end',
-      started: adventure.started ?? false,
-      startedAt: 'startedAt' in adventure ? adventure.startedAt : undefined,
+      started,
+      startedAt,
       status: 'active',
       source: 'custom',
       customTitle,
@@ -140,8 +147,8 @@ function normalizeActiveAdventure(
         'durationLabel' in adventure && adventure.durationLabel
           ? adventure.durationLabel
           : 'Open end',
-      started: adventure.started ?? false,
-      startedAt: 'startedAt' in adventure ? adventure.startedAt : undefined,
+      started,
+      startedAt,
       status: 'active',
       source: 'neighborhood',
     }
@@ -160,8 +167,8 @@ function normalizeActiveAdventure(
       'durationLabel' in adventure && adventure.durationLabel
         ? adventure.durationLabel
         : 'Open end',
-    started: adventure.started ?? false,
-    startedAt: 'startedAt' in adventure ? adventure.startedAt : undefined,
+    started,
+    startedAt,
     status: 'active',
     source: 'catalog',
   }

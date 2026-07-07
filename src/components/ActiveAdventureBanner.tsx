@@ -24,8 +24,15 @@ export function ActiveAdventureBanner({
 
   useEffect(() => {
     if (!adventure?.started || !adventure.startedAt) return
-    const interval = window.setInterval(() => setTick((n) => n + 1), 1000)
-    return () => window.clearInterval(interval)
+    const refreshTimer = () => setTick((n) => n + 1)
+    const interval = window.setInterval(refreshTimer, 1000)
+    window.addEventListener('focus', refreshTimer)
+    document.addEventListener('visibilitychange', refreshTimer)
+    return () => {
+      window.clearInterval(interval)
+      window.removeEventListener('focus', refreshTimer)
+      document.removeEventListener('visibilitychange', refreshTimer)
+    }
   }, [adventure?.started, adventure?.startedAt])
 
   if (!adventure?.started) return null

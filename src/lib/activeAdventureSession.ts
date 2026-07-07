@@ -30,6 +30,18 @@ export function viewForNewAdventure(adventure: ActiveAdventure): ActiveAdventure
   return adventure.started ? 'minimized' : 'focused'
 }
 
+export function startActiveAdventureNow(
+  adventure: ActiveAdventure,
+  startedAt = new Date().toISOString(),
+): ActiveAdventure {
+  return {
+    ...adventure,
+    started: true,
+    startedAt: adventure.startedAt ?? startedAt,
+    status: 'active',
+  }
+}
+
 export function hasMeaningfulAdventureProgress(state: AppState): boolean {
   if (!state.activeAdventure) return false
   if (state.adventurePhotos.some(Boolean)) return true

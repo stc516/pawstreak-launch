@@ -63,6 +63,7 @@ import {
   hasMeaningfulAdventureProgress,
   shouldShowFocusedAdventure,
   showActiveAdventureBanner,
+  startActiveAdventureNow,
   viewForNewAdventure,
 } from './lib/activeAdventureSession'
 import { HomeScreen } from './screens/app/HomeScreen'
@@ -169,6 +170,12 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   const [dataHydrated, setDataHydrated] = useState(!useProductionBackend)
   const [splashComplete, setSplashComplete] = useState(false)
   const acceptedInviteTokenRef = useRef<string | null>(null)
+  const latestStateRef = useRef(state)
+  const finishingAdventureRef = useRef(false)
+
+  useEffect(() => {
+    latestStateRef.current = state
+  }, [state])
 
   useEffect(() => {
     const timer = window.setTimeout(() => setSplashComplete(true), 1000)
@@ -239,6 +246,30 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   useEffect(() => {
     saveAppState(state, appMode)
   }, [state, appMode])
+
+  useEffect(() => {
+    const handleResume = () => {
+      setState((current) => {
+        const adventure = current.activeAdventure
+        if (!adventure?.started) return current
+        if (adventure.startedAt && current.activeAdventureView) return current
+        return {
+          ...current,
+          activeAdventure: adventure.startedAt
+            ? adventure
+            : startActiveAdventureNow(adventure),
+          activeAdventureView: current.activeAdventureView ?? 'minimized',
+        }
+      })
+    }
+
+    window.addEventListener('focus', handleResume)
+    document.addEventListener('visibilitychange', handleResume)
+    return () => {
+      window.removeEventListener('focus', handleResume)
+      document.removeEventListener('visibilitychange', handleResume)
+    }
+  }, [])
 
   useEffect(() => {
     setState((current) => {
@@ -786,15 +817,9 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   const startAdventureSession = () => {
     setState((current) => {
       if (!current.activeAdventure) return current
-      const startedAt = current.activeAdventure.startedAt ?? new Date().toISOString()
       return {
         ...current,
-        activeAdventure: {
-          ...current.activeAdventure,
-          started: true,
-          startedAt,
-          status: 'active',
-        },
+        activeAdventure: startActiveAdventureNow(current.activeAdventure),
         activeAdventureView: 'focused',
       }
     })
@@ -1124,22 +1149,20 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     const activeDogId = state.activeDogId ?? state.dogs[0]?.id
 
     if (useProductionBackend && auth.user && activeDogId) {
+      const startedAt = options.startNow ? new Date().toISOString() : undefined
       const serverAdventure = await startAdventureOnServer({
         userId: auth.user.id,
         dogId: activeDogId,
         placeId: place.id,
         durationLabel,
         selectedDogIds: state.dogs.map((dog) => dog.id),
+        started: options.startNow,
+        startedAt,
       })
 
       if (serverAdventure) {
         const activeAdventure = options.startNow
-          ? {
-              ...serverAdventure,
-              started: true,
-              startedAt: serverAdventure.startedAt ?? new Date().toISOString(),
-              status: 'active' as const,
-            }
+          ? startActiveAdventureNow(serverAdventure, startedAt)
           : serverAdventure
         setState((current) => ({
           ...current,
@@ -1183,6 +1206,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   const goAgainFromMemory = (placeId: string) => {
     const place = getPlaceById(placeId)
     if (!place) return
+    if (blockIfActiveAdventure()) return
 
     const activeAdventure = createActiveAdventure(place.id, place.name, 'Open end', {
       dogId: state.activeDogId ?? state.dogs[0]?.id,
@@ -1198,20 +1222,24 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   }
 
   const finishAdventure = async (payload: AdventureFinishPayload) => {
-    if (!state.activeAdventure) {
+    if (finishingAdventureRef.current) return
+    finishingAdventureRef.current = true
+    const liveState = latestStateRef.current
+    if (!liveState.activeAdventure) {
       setState((current) => ({ ...current, activeTab: 'journey', adventurePhotos: ['', '', ''] }))
+      finishingAdventureRef.current = false
       return
     }
 
-    const endLocationCapture = isCustomAdventure(state.activeAdventure)
+    const endLocationCapture = isCustomAdventure(liveState.activeAdventure)
       ? await captureCurrentLocation()
       : null
     const activeAdventureForFinish = endLocationCapture
-      ? applyEndLocation(state.activeAdventure, endLocationCapture)
-      : state.activeAdventure
+      ? applyEndLocation(liveState.activeAdventure, endLocationCapture)
+      : liveState.activeAdventure
     const place = getPlaceById(activeAdventureForFinish.placeId)
-    const capturedPhotos = state.adventurePhotos.filter(Boolean)
-    const activeDogId = state.activeDogId ?? state.dogs[0]?.id
+    const capturedPhotos = liveState.adventurePhotos.filter(Boolean)
+    const activeDogId = liveState.activeDogId ?? liveState.dogs[0]?.id
     const isNeighborhoodWalk = isNeighborhoodWalkPlace(activeAdventureForFinish.placeId)
     const isCustom = isCustomAdventure(activeAdventureForFinish)
     const durationLabel = getFinishedDurationLabel(activeAdventureForFinish)
@@ -1219,7 +1247,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     if (useProductionBackend && auth.user && activeDogId && place && !isNeighborhoodWalk) {
       try {
         const adventureDogs = getDogsForAdventure(
-          state.dogs,
+          liveState.dogs,
           activeAdventureForFinish.selectedDogIds,
         )
         const memory = await finishAdventureOnServer({
@@ -1260,12 +1288,14 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
                 : current.monthlyPlanResult,
           }),
         )
+        finishingAdventureRef.current = false
         return
       } catch {
         setState((current) => ({
           ...current,
           memorySaveToast: 'Could not save memory. Check your connection and try again.',
         }))
+        finishingAdventureRef.current = false
         return
       }
     }
@@ -1349,6 +1379,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             : current.monthlyPlanResult,
       })
     })
+    finishingAdventureRef.current = false
   }
 
   const completeOnboarding = async (result: OnboardingResult) => {
@@ -1966,7 +1997,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             isDemoMode={isDemoMode}
             onSelectActivity={setSelectedActivity}
             onStartAdventure={startAdventure}
-            onStartNeighborhoodWalk={startNeighborhoodWalk}
+            onStartNeighborhoodWalk={() => startNeighborhoodWalk()}
             onOpenProfile={() => setActiveTab('profile')}
             onOpenChallenge={openChallengeDetail}
             onOpenMemory={openJourneyMemory}
@@ -1989,7 +2020,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onZipChange={setZipCode}
             onApplyLocation={applyLocationFromZip}
             onStartAdventure={startAdventure}
-            onStartNeighborhoodWalk={startNeighborhoodWalk}
+            onStartNeighborhoodWalk={() => startNeighborhoodWalk()}
             onOpenAddAdventure={openAddAdventureFlow}
             onStartPlannedAdventure={startPlannedAdventure}
             onDeletePlannedAdventure={(id) => void deletePlannedAdventure(id)}

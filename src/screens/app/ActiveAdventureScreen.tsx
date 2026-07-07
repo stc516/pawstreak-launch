@@ -63,11 +63,16 @@ export function ActiveAdventureScreen({
       return
     }
 
-    const interval = window.setInterval(() => {
-      setTick((current) => current + 1)
-    }, 1000)
+    const refreshTimer = () => setTick((current) => current + 1)
+    const interval = window.setInterval(refreshTimer, 1000)
+    window.addEventListener('focus', refreshTimer)
+    document.addEventListener('visibilitychange', refreshTimer)
 
-    return () => window.clearInterval(interval)
+    return () => {
+      window.clearInterval(interval)
+      window.removeEventListener('focus', refreshTimer)
+      document.removeEventListener('visibilitychange', refreshTimer)
+    }
   }, [adventure?.startedAt, isPaused, isStarted])
 
   const handleCaptureClick = () => {
