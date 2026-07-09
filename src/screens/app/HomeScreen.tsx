@@ -24,6 +24,7 @@ import { getTrainingProgramById } from '../../data/training'
 import { GENERIC_ADVENTURE_TYPES } from '../../lib/genericAdventures'
 import { getHomeUpcomingItems } from '../../lib/homeUpcoming'
 import { AdventureGuideDog } from '../../components/AdventureGuideDog'
+import { BrandLogoCircle } from '../../components/BrandLogoCircle'
 
 interface HomeScreenProps {
   state: AppState
@@ -103,8 +104,11 @@ export function HomeScreen({
   return (
     <div className="home-screen home-screen--stitch">
       <header className="st-appbar home-screen-header">
-        <div className="st-display alogo home-logo">
-          Paw<span>Streak</span>
+        <div className="app-brand-lockup home-logo-lockup">
+          <BrandLogoCircle size={32} />
+          <div className="st-display alogo home-logo">
+            Paw<span>Streak</span>
+          </div>
         </div>
         <div className="st-appbar-actions">
           <button

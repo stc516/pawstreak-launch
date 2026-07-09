@@ -174,12 +174,22 @@ function buildCategoryArtUrl(category: PlaceCategory, seed: string = category): 
   const art = CATEGORY_ART[category]
   const variant = hashSeed(seed) % 4
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 140" role="img" aria-label="${art.label} illustration">
-  <rect width="180" height="140" rx="18" fill="${art.sky}"/>
-  <path d="M0 ${96 + variant * 3}c36-18 62 12 94-4s52-10 86 8v40H0z" fill="${art.ground}"/>
-  <circle cx="${30 + variant * 22}" cy="30" r="28" fill="${art.accent2}" opacity=".28"/>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="${art.sky}"/>
+      <stop offset="1" stop-color="${art.ground}"/>
+    </linearGradient>
+    <linearGradient id="shade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".26"/>
+      <stop offset=".58" stop-color="#ffffff" stop-opacity=".04"/>
+      <stop offset="1" stop-color="#1f2a22" stop-opacity=".28"/>
+    </linearGradient>
+  </defs>
+  <rect width="180" height="140" rx="16" fill="url(#bg)"/>
+  <path d="M0 ${100 + variant * 2}c36-16 62 10 94-4s52-9 86 8v40H0z" fill="${art.ground}" opacity=".78"/>
+  <circle cx="${34 + variant * 22}" cy="32" r="30" fill="${art.accent2}" opacity=".22"/>
   ${iconMarkup(art, variant)}
-  <rect x="14" y="14" width="${Math.max(52, art.label.length * 8)}" height="24" rx="12" fill="rgba(255,255,255,.72)"/>
-  <text x="26" y="31" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="800" fill="${art.accent}">${art.label}</text>
+  <rect width="180" height="140" rx="16" fill="url(#shade)"/>
 </svg>`
   return `data:image/svg+xml,${encodeURIComponent(svg)}`
 }

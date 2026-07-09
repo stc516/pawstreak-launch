@@ -32,9 +32,12 @@ export function AchievementIdentityCard({
       >
         <div className="st-enamel-badge">
           <span className="st-enamel-badge-pin" aria-hidden="true" />
-          <span className="st-enamel-badge-emoji" aria-hidden="true">
-            {achievement.emoji}
-          </span>
+          <CardImage
+            className="st-enamel-badge-img"
+            imageUrl={achievement.badgeImageUrl}
+            imageAlt=""
+            imageTone="warm"
+          />
         </div>
         <span className="st-enamel-tile-title">{locked ? 'Locked' : achievement.title}</span>
       </button>

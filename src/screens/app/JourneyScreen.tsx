@@ -3,6 +3,7 @@ import type { AppState } from '../../data/demo'
 import { getDisplayDogLabel } from '../../lib/profileDisplay'
 import { getJourneyMapSummary } from '../../lib/productionState'
 import { JourneyStoryPath } from '../../components/JourneyStoryPath'
+import { BrandLogoCircle } from '../../components/BrandLogoCircle'
 
 interface JourneyScreenProps {
   state: AppState
@@ -39,6 +40,10 @@ export function JourneyScreen({
       ) : null}
 
       <div className="aheader journey-story-hero">
+        <div className="app-brand-lockup app-brand-lockup--screen">
+          <BrandLogoCircle size={28} />
+          <span>PawStreak</span>
+        </div>
         <div className="alogo">This Month With {dogLabel}</div>
         <p className="journey-story-hero-copy">
           {hasMemories

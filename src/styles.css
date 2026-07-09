@@ -672,6 +672,52 @@ textarea {
   padding: 4px 0 2px;
 }
 
+.brand-logo-circle {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(27, 48, 34, 0.12);
+}
+
+.brand-logo-circle img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.app-brand-lockup {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 9px;
+}
+
+.app-brand-lockup--screen {
+  gap: 8px;
+  color: #5c3d2e;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.home-logo-lockup {
+  min-height: 36px;
+}
+
+.app-screen-title {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+}
+
 .alogo {
   font-family: Literata, Georgia, serif;
   font-size: 16px;
@@ -11366,9 +11412,13 @@ select.field-input {
 
 .challenge-path-detail-meta {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1.45fr) minmax(76px, 0.55fr);
   gap: 10px;
   margin: 14px 0;
+}
+
+.challenge-path-detail-meta--stack {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .challenge-path-detail-meta-item {
@@ -14195,6 +14245,25 @@ select.field-input {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75), 0 5px 12px rgba(90, 61, 33, 0.18);
 }
 
+.st-enamel-badge-img.card-img {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background-size: cover;
+  background-position: center;
+}
+
+.st-enamel-badge-pin {
+  position: absolute;
+  z-index: 2;
+  top: 7px;
+  width: 7px;
+  height: 7px;
+  border: 1px solid rgba(27, 48, 34, 0.12);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.78);
+}
+
 .identity-card--locked .st-enamel-badge {
   filter: grayscale(0.75);
   opacity: 0.72;
@@ -14240,6 +14309,14 @@ select.field-input {
   background: #eef5ef;
   font-size: 20px;
   filter: grayscale(0.25);
+}
+
+.achievements-badge-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
 }
 
 .achievements-badge-copy {

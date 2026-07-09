@@ -4,6 +4,7 @@ import type { Achievement } from '../../data/achievements'
 import { resolveAchievementsByCategory } from '../../lib/achievementEngine'
 import { AchievementIdentityCard } from '../../components/AchievementIdentityCard'
 import { AdventureGuideDog } from '../../components/AdventureGuideDog'
+import { BrandLogoCircle } from '../../components/BrandLogoCircle'
 
 interface AchievementsScreenProps {
   state: AppState
@@ -41,9 +42,10 @@ export function AchievementsScreen({
     <>
       <header className="achievements-hero">
         <div>
-          <button type="button" className="settings-back settings-back--stitch tap-target" aria-label="Rewards">
-            <i className="ti ti-medal" aria-hidden="true" />
-          </button>
+          <div className="app-brand-lockup app-brand-lockup--screen">
+            <BrandLogoCircle size={28} />
+            <span>PawStreak</span>
+          </div>
           <h1>Rewards</h1>
           <p>Badges earned, progress underway, and clear next steps from real adventures.</p>
           {onCreateStory ? (
@@ -138,7 +140,9 @@ export function AchievementsScreen({
               className="achievements-badge-card tap-target"
               onClick={() => onOpenAchievement(achievement.id)}
             >
-              <span className="achievements-badge-medal" aria-hidden="true">{achievement.emoji}</span>
+              <span className="achievements-badge-medal" aria-hidden="true">
+                <img src={achievement.badgeImageUrl} alt="" className="achievements-badge-img" />
+              </span>
               <span className="achievements-badge-copy">
                 <strong>{achievement.title}</strong>
                 <small>{achievement.subtitle}</small>
