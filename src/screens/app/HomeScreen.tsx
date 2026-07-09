@@ -21,9 +21,11 @@ import {
 } from '../../lib/monthlyPlan'
 import { getCurrentTrainingSession } from '../../lib/trainingSchedule'
 import { getTrainingProgramById } from '../../data/training'
+import { getFeaturedTrainingProgram } from '../../lib/trainingEngine'
 import { GENERIC_ADVENTURE_TYPES } from '../../lib/genericAdventures'
 import { getHomeUpcomingItems } from '../../lib/homeUpcoming'
 import { AdventureGuideDog } from '../../components/AdventureGuideDog'
+import { BrandLogoCircle } from '../../components/BrandLogoCircle'
 
 interface HomeScreenProps {
   state: AppState
@@ -86,6 +88,8 @@ export function HomeScreen({
   const trainingProgram = state.activeTrainingSchedule
     ? getTrainingProgramById(state.activeTrainingSchedule.programId)
     : null
+  const featuredTraining = useMemo(() => getFeaturedTrainingProgram(state), [state])
+  const featuredTrainingLesson = featuredTraining?.progress.lessons.find((lesson) => !lesson.completed)
 
   const handleQuickAdventure = () => {
     onSelectActivity(heroActivityId)
@@ -103,8 +107,11 @@ export function HomeScreen({
   return (
     <div className="home-screen home-screen--stitch">
       <header className="st-appbar home-screen-header">
-        <div className="st-display alogo home-logo">
-          Paw<span>Streak</span>
+        <div className="app-brand-lockup home-logo-lockup">
+          <BrandLogoCircle size={32} />
+          <div className="st-display alogo home-logo">
+            Paw<span>Streak</span>
+          </div>
         </div>
         <div className="st-appbar-actions">
           <button
@@ -233,6 +240,46 @@ export function HomeScreen({
           </div>
         </section>
       )}
+
+      <section className="home-training-feature detail-card-warm" aria-label="Training">
+        <div className="home-training-feature-art" aria-hidden="true">
+          <i className="ti ti-school" />
+        </div>
+        <div className="home-training-feature-copy">
+          <div className="home-training-feature-kicker">Training</div>
+          <h2>
+            {trainingSession && trainingProgram
+              ? `Today: ${trainingSession.lessonTitle}`
+              : featuredTraining
+                ? featuredTraining.title
+                : 'Train together'}
+          </h2>
+          <p>
+            {trainingSession && trainingProgram
+              ? `${trainingProgram.title} · short practice that makes adventures easier.`
+              : featuredTrainingLesson
+                ? `${featuredTrainingLesson.lesson.title} · ${featuredTraining?.subtitle ?? 'Build good habits in short sessions.'}`
+                : 'Short practice for calmer walks, better check-ins, and easier outings.'}
+          </p>
+        </div>
+        <button
+          type="button"
+          className="home-training-feature-cta tap-target"
+          onClick={() => {
+            if (trainingProgram) {
+              onContinueTraining(trainingProgram.id)
+              return
+            }
+            if (featuredTraining) {
+              onContinueTraining(featuredTraining.id)
+              return
+            }
+            onOpenTrainingProgramFlow()
+          }}
+        >
+          {trainingSession ? 'Continue' : 'Open'}
+        </button>
+      </section>
 
       <section className="home-plan-new" aria-label="Better Dog Days">
         <div className="st-section-head">
@@ -379,12 +426,12 @@ export function HomeScreen({
                 key={item.id}
                 type="button"
                 className="home-upcoming-card tap-target"
-                onClick={item.kind === 'training' ? onOpenTrainingProgramFlow : onGoToPlan}
+                onClick={onGoToPlan}
               >
                 <span className="home-upcoming-emoji" aria-hidden="true">
                   {item.emoji}
                 </span>
-                <strong>{item.kind === 'training' ? 'Training Session' : item.label}</strong>
+                <strong>{item.label}</strong>
                 <span>{item.detail}</span>
               </button>
             ))}

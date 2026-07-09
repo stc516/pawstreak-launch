@@ -7,12 +7,14 @@ interface AchievementDetailViewProps {
   achievement: Achievement
   dogs?: import('../../data/demo').Dog[]
   onBack: () => void
+  onCreateStory?: () => void
 }
 
 export function AchievementDetailView({
   achievement,
   dogs = [],
   onBack,
+  onCreateStory,
 }: AchievementDetailViewProps) {
   const detail = getAchievementDetail(achievement, dogs)
 
@@ -33,6 +35,11 @@ export function AchievementDetailView({
               <i className="ti ti-arrow-left" aria-hidden="true" />
               Back
             </button>
+            {onCreateStory ? (
+              <button type="button" className="overlay-action tap-target" onClick={onCreateStory}>
+                <i className="ti ti-share" aria-hidden="true" />
+              </button>
+            ) : null}
           </div>
 
           <div className="achdetail-hero detail-tint detail-tint--warm">

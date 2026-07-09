@@ -2,6 +2,7 @@ export type ShareContentInput = {
   title?: string
   text: string
   url?: string
+  files?: File[]
 }
 
 export type ShareContentResult =
@@ -16,11 +17,19 @@ export async function shareContent(input: ShareContentInput): Promise<ShareConte
 
   if (typeof navigator.share === 'function') {
     try {
-      await navigator.share({
+      const sharePayload: ShareData = {
         title,
         text,
         url,
-      })
+      }
+      if (input.files?.length && typeof navigator.canShare === 'function') {
+        const filePayload: ShareData = { ...sharePayload, files: input.files }
+        if (navigator.canShare(filePayload)) {
+          await navigator.share(filePayload)
+          return { ok: true, method: 'share', message: 'Opened your share sheet.' }
+        }
+      }
+      await navigator.share(sharePayload)
       return { ok: true, method: 'share', message: 'Shared.' }
     } catch (error) {
       if (error instanceof Error && error.name === 'AbortError') {

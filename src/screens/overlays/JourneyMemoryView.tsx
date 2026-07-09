@@ -15,6 +15,7 @@ interface JourneyMemoryViewProps {
   packAccessMembers?: PackAccessMember[]
   onBack: () => void
   onGoAgain: (placeId: string) => void
+  onCreateStory?: () => void
 }
 
 export function JourneyMemoryView({
@@ -24,6 +25,7 @@ export function JourneyMemoryView({
   packAccessMembers = [],
   onBack,
   onGoAgain,
+  onCreateStory,
 }: JourneyMemoryViewProps) {
   const [shareNote, setShareNote] = useState<string | null>(null)
   const [shareIsError, setShareIsError] = useState(false)
@@ -74,7 +76,7 @@ export function JourneyMemoryView({
               type="button"
               className="overlay-action tap-target"
               aria-label="Share memory"
-              onClick={() => void handleShare()}
+              onClick={onCreateStory ?? (() => void handleShare())}
             >
               <i className="ti ti-share" aria-hidden="true" />
             </button>
@@ -206,10 +208,10 @@ export function JourneyMemoryView({
             <button
               type="button"
               className="memory-btn memory-btn--ghost tap-target"
-              onClick={() => void handleShare()}
+              onClick={onCreateStory ?? (() => void handleShare())}
             >
               <i className="ti ti-share" aria-hidden="true" />
-              Share this memory
+              Create Story
             </button>
           </div>
         </main>

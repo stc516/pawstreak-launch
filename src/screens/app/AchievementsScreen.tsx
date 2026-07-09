@@ -4,10 +4,12 @@ import type { Achievement } from '../../data/achievements'
 import { resolveAchievementsByCategory } from '../../lib/achievementEngine'
 import { AchievementIdentityCard } from '../../components/AchievementIdentityCard'
 import { AdventureGuideDog } from '../../components/AdventureGuideDog'
+import { BrandLogoCircle } from '../../components/BrandLogoCircle'
 
 interface AchievementsScreenProps {
   state: AppState
   onOpenAchievement: (achievementId: string) => void
+  onCreateStory?: () => void
 }
 
 function sortAchievements(items: Achievement[]): Achievement[] {
@@ -15,7 +17,11 @@ function sortAchievements(items: Achievement[]): Achievement[] {
   return [...items].sort((left, right) => rank[left.status] - rank[right.status])
 }
 
-export function AchievementsScreen({ state, onOpenAchievement }: AchievementsScreenProps) {
+export function AchievementsScreen({
+  state,
+  onOpenAchievement,
+  onCreateStory,
+}: AchievementsScreenProps) {
   const grouped = useMemo(() => resolveAchievementsByCategory(state), [state])
   const earned = useMemo(
     () => sortAchievements(grouped.flatMap((group) => group.achievements.filter((item) => item.status === 'done'))),
@@ -29,16 +35,25 @@ export function AchievementsScreen({ state, onOpenAchievement }: AchievementsScr
     () => sortAchievements(grouped.flatMap((group) => group.achievements.filter((item) => item.status === 'locked'))),
     [grouped],
   )
+  const earnedPreview = earned.slice(0, 3)
+  const availablePreview = available.slice(0, 4)
 
   return (
     <>
       <header className="achievements-hero">
         <div>
-          <button type="button" className="settings-back settings-back--stitch tap-target" aria-label="Rewards">
-            <i className="ti ti-medal" aria-hidden="true" />
-          </button>
+          <div className="app-brand-lockup app-brand-lockup--screen">
+            <BrandLogoCircle size={28} />
+            <span>PawStreak</span>
+          </div>
           <h1>Rewards</h1>
           <p>Badges earned, progress underway, and clear next steps from real adventures.</p>
+          {onCreateStory ? (
+            <button type="button" className="share-inline-btn tap-target" onClick={onCreateStory}>
+              <i className="ti ti-share" aria-hidden="true" />
+              Demo Story
+            </button>
+          ) : null}
         </div>
         <AdventureGuideDog className="achievements-guide-dog" withBurst />
       </header>
@@ -46,13 +61,15 @@ export function AchievementsScreen({ state, onOpenAchievement }: AchievementsScr
       <section className="achievements-section">
         <div className="st-section-head">
           <h2 className="st-headline-md">Earned</h2>
-          <button type="button" className="st-link-btn tap-target">
-            View all
-          </button>
+          {earned.length > earnedPreview.length ? (
+            <span className="achievements-section-count">
+              {earned.length} total
+            </span>
+          ) : null}
         </div>
         {earned.length > 0 ? (
           <div className="achievements-earned-strip">
-            {earned.slice(0, 5).map((achievement) => (
+            {earnedPreview.map((achievement) => (
               <AchievementIdentityCard
                 key={achievement.id}
                 achievement={achievement}
@@ -66,8 +83,8 @@ export function AchievementsScreen({ state, onOpenAchievement }: AchievementsScr
             <div className="achievements-empty-kicker">Preview</div>
             <strong>Your first rewards unlock after real outings.</strong>
             <p>
-              Example: finish one adventure, save a photo, or keep a weekly walk rhythm.
-              Nothing is marked earned until the real action is completed.
+              Finish your first adventure, save a photo, or keep a weekly walk rhythm.
+              Rewards stay locked until the real action is completed.
             </p>
           </div>
         )}
@@ -109,19 +126,23 @@ export function AchievementsScreen({ state, onOpenAchievement }: AchievementsScr
       <section className="achievements-section">
         <div className="st-section-head">
           <h2 className="st-headline-md">Available to Earn</h2>
-          <button type="button" className="st-link-btn tap-target">
-            See all
-          </button>
+          {available.length > availablePreview.length ? (
+            <span className="achievements-section-count">
+              {availablePreview.length} of {available.length}
+            </span>
+          ) : null}
         </div>
         <div className="achievements-available-grid">
-          {available.map((achievement) => (
+          {availablePreview.map((achievement) => (
             <button
               key={achievement.id}
               type="button"
               className="achievements-badge-card tap-target"
               onClick={() => onOpenAchievement(achievement.id)}
             >
-              <span className="achievements-badge-medal" aria-hidden="true">{achievement.emoji}</span>
+              <span className="achievements-badge-medal" aria-hidden="true">
+                <img src={achievement.badgeImageUrl} alt="" className="achievements-badge-img" />
+              </span>
               <span className="achievements-badge-copy">
                 <strong>{achievement.title}</strong>
                 <small>{achievement.subtitle}</small>

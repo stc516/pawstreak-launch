@@ -1,19 +1,30 @@
 import { CardImage } from './CardImage'
 import type { ResolvedChallengeNode } from '../lib/challengeEngine'
 
+interface ChallengeStartOptions {
+  durationLabel?: string
+  startNow?: boolean
+}
+
 interface ChallengeNodeDetailProps {
   node: ResolvedChallengeNode | null
   onClose: () => void
-  onStartAdventure: (placeId: string) => void
-  onGoToPlan?: () => void
+  onStartAdventure: (placeId: string | undefined, options?: ChallengeStartOptions) => void
   onOpenMemory?: (entryId: string) => void
+}
+
+function getNodeDurationLabel(node: ResolvedChallengeNode): string {
+  const text = `${node.title} ${node.description} ${node.planHint}`.toLowerCase()
+  if (text.includes('10-minute') || text.includes('10 minute')) return '10 min'
+  if (text.includes('20-minute') || text.includes('20 minute')) return '20 min'
+  if (text.includes('5-minute') || text.includes('5 minute')) return '5 min'
+  return 'Open end'
 }
 
 export function ChallengeNodeDetail({
   node,
   onClose,
   onStartAdventure,
-  onGoToPlan,
   onOpenMemory,
 }: ChallengeNodeDetailProps) {
   if (!node) return null
@@ -107,17 +118,11 @@ export function ChallengeNodeDetail({
               type="button"
               className="challenge-node-detail-cta tap-target"
               onClick={() => {
-                if (node.placeId) {
-                  onStartAdventure(node.placeId)
-                  onClose()
-                  return
-                }
-                if (onGoToPlan) {
-                  onGoToPlan()
-                  onClose()
-                  return
-                }
-                onStartAdventure('')
+                onStartAdventure(node.placeId, {
+                  durationLabel: getNodeDurationLabel(node),
+                  startNow: true,
+                })
+                onClose()
               }}
             >
               Start this adventure

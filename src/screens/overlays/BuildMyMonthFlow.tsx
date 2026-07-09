@@ -1,4 +1,5 @@
 import type { AppState } from '../../data/demo'
+import { useState } from 'react'
 import { getDisplayDogLabel } from '../../lib/profileDisplay'
 import {
   MONTHLY_PLAN_DAY_OPTIONS,
@@ -11,6 +12,7 @@ import { StatusBar } from '../../components/StatusBar'
 import { StaggeredProgressPath } from '../../components/StaggeredProgressPath'
 import { getPlaceById } from '../../data/places'
 import { getAdventureDisplayImageUrl } from '../../lib/adventureDisplayImage'
+import { downloadMonthlyPlanCalendar } from '../../lib/calendarExport'
 
 interface BuildMyMonthFlowProps {
   state: AppState
@@ -41,6 +43,7 @@ export function BuildMyMonthFlow({
   onSave,
   onStartFirstAdventure,
 }: BuildMyMonthFlowProps) {
+  const [calendarStatus, setCalendarStatus] = useState<'idle' | 'ready'>('idle')
   const dogLabel = getDisplayDogLabel(state)
   const canContinue =
     (step === 1 && draft.categoryIds.length > 0) ||
@@ -174,6 +177,22 @@ export function BuildMyMonthFlow({
               <div className="build-month-result detail-card-warm">
                 Potential unlocks: First Adventure, Routine Breaker, Good Week Given, and matching challenges.
               </div>
+              <button
+                type="button"
+                className="st-btn st-btn--ghost tap-target build-month-calendar"
+                onClick={() => {
+                  downloadMonthlyPlanCalendar(result)
+                  setCalendarStatus('ready')
+                }}
+              >
+                <i className="ti ti-calendar-plus" aria-hidden="true" />
+                Add to Calendar
+              </button>
+              <p className="build-month-calendar-note">
+                {calendarStatus === 'ready'
+                  ? 'Calendar file ready. Open it to add these outings.'
+                  : 'Optional. Adds the plan to your device calendar.'}
+              </p>
               <button
                 type="button"
                 className="st-btn st-btn--primary tap-target build-month-start-first"

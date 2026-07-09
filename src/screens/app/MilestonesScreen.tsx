@@ -5,6 +5,7 @@ import {
   resolveJoinedChallenges,
   type ResolvedChallenge,
 } from '../../lib/challengeEngine'
+import { BrandLogoCircle } from '../../components/BrandLogoCircle'
 
 interface MilestonesScreenProps {
   state: AppState
@@ -127,7 +128,10 @@ function DiscoverChallengeCard({
           <button
             type="button"
             className="ms-challenge-card-cta tap-target"
-            onClick={() => onJoinChallenge(challenge.id)}
+            onClick={() => {
+              onJoinChallenge(challenge.id)
+              onOpenChallenge(challenge.id)
+            }}
           >
             Join challenge
           </button>
@@ -236,7 +240,10 @@ function FirstChallengeStarter({
           <button
             type="button"
             className="ms-challenge-card-cta tap-target"
-            onClick={() => onJoinChallenge(challenge.id)}
+            onClick={() => {
+              onJoinChallenge(challenge.id)
+              onOpenChallenge(challenge.id)
+            }}
           >
             Join
           </button>
@@ -284,16 +291,8 @@ export function MilestonesScreen({
   return (
     <div className="ms-screen ms-screen--stitch">
       <header className="st-appbar ms-screen-header">
-        <div className="st-appbar-actions">
-          <div className="st-avatar-single">
-            <div className={`dog-av ${state.dogs[0]?.avatarClass ?? 'av1'}`}>
-              {state.dogs[0]?.photoUrl ? (
-                <img src={state.dogs[0].photoUrl} alt="" className="dog-av-img" />
-              ) : (
-                state.dogs[0]?.initial ?? '🐾'
-              )}
-            </div>
-          </div>
+        <div className="app-brand-lockup">
+          <BrandLogoCircle size={34} />
           <div className="st-display alogo">PawStreak</div>
         </div>
       </header>

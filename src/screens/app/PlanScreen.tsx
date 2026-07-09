@@ -16,6 +16,7 @@ import {
 import { getRoadTripDriveTime, openRoadTripDirections } from '../../lib/roadTrip'
 import { GENERIC_ADVENTURE_TYPES } from '../../lib/genericAdventures'
 import { getPlaceById } from '../../data/places'
+import { BrandLogoCircle } from '../../components/BrandLogoCircle'
 
 interface PlanScreenProps {
   state: AppState
@@ -34,6 +35,7 @@ interface PlanScreenProps {
   onOpenChallenge?: (challengeId: string) => void
   onJoinChallenge?: (challengeId: string) => void
   onOpenTrainingProgram?: () => void
+  onCreateStory?: () => void
 }
 
 export function PlanScreen({
@@ -49,6 +51,7 @@ export function PlanScreen({
   onOpenBuildMyMonth,
   onGenerateRandomPlan,
   onOpenTrainingProgram,
+  onCreateStory,
 }: PlanScreenProps) {
   const prefs = getRecommendationPrefs(state)
   const [proximityBucket, setProximityBucket] = useState<PlanProximityBucket>('15min')
@@ -191,10 +194,22 @@ export function PlanScreen({
   return (
     <>
       <div className="aheader plan-screen-header">
-        <div className="alogo">Find Spots Nearby</div>
-        <p className="plan-screen-sub">
-          Dog-friendly places for {dogLabel} near {state.locationLabel || state.zipCode}.
-        </p>
+        <div className="app-screen-title">
+          <div className="app-brand-lockup app-brand-lockup--screen">
+            <BrandLogoCircle size={28} />
+            <span>PawStreak</span>
+          </div>
+          <div className="alogo">Find Spots Nearby</div>
+          <p className="plan-screen-sub">
+            Dog-friendly places for {dogLabel} near {state.locationLabel || state.zipCode}.
+          </p>
+        </div>
+        {onCreateStory ? (
+          <button type="button" className="share-inline-btn tap-target" onClick={onCreateStory}>
+            <i className="ti ti-share" aria-hidden="true" />
+            Create Story
+          </button>
+        ) : null}
       </div>
 
       {state.randomPlanResult ? (

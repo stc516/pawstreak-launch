@@ -1,7 +1,13 @@
 import type { AppState } from '../../data/demo'
 import type { Challenge } from '../../data/challenges'
 import { ChallengePathExperience } from '../../components/ChallengePathExperience'
-import { resolveChallenge } from '../../lib/challengeEngine'
+import { resolveChallenge, resolveChallengeNodes } from '../../lib/challengeEngine'
+import { downloadChallengeCalendar } from '../../lib/calendarExport'
+
+interface ChallengeStartOptions {
+  durationLabel?: string
+  startNow?: boolean
+}
 
 interface ChallengePathDetailViewProps {
   challenge: Challenge
@@ -9,10 +15,10 @@ interface ChallengePathDetailViewProps {
   onBack: () => void
   onJoinChallenge: (challengeId: string) => void
   onLeaveChallenge: (challengeId: string) => void
-  onStartAdventure: (placeId: string) => void
-  onStartNeighborhoodWalk?: () => void
-  onGoToPlan?: () => void
+  onStartAdventure: (placeId: string, options?: ChallengeStartOptions) => void
+  onStartNeighborhoodWalk?: (durationLabel?: string) => void
   onOpenMemory?: (entryId: string) => void
+  onCreateStory?: () => void
 }
 
 export function ChallengePathDetailView({
@@ -23,11 +29,12 @@ export function ChallengePathDetailView({
   onLeaveChallenge,
   onStartAdventure,
   onStartNeighborhoodWalk,
-  onGoToPlan,
   onOpenMemory,
+  onCreateStory,
 }: ChallengePathDetailViewProps) {
   const resolved = resolveChallenge(challenge, state)
   const { progress } = resolved
+  const nodes = resolveChallengeNodes(challenge, state)
 
   return (
     <>
@@ -86,6 +93,24 @@ export function ChallengePathDetailView({
               >
                 Leave challenge
               </button>
+              <button
+                type="button"
+                className="challenge-path-detail-calendar tap-target"
+                onClick={() => downloadChallengeCalendar(challenge, nodes)}
+              >
+                <i className="ti ti-calendar-plus" aria-hidden="true" />
+                Add to Calendar
+              </button>
+              {onCreateStory ? (
+                <button
+                  type="button"
+                  className="challenge-path-detail-calendar tap-target"
+                  onClick={onCreateStory}
+                >
+                  <i className="ti ti-share" aria-hidden="true" />
+                  Create Story
+                </button>
+              ) : null}
             </>
           ) : (
             <button
@@ -104,7 +129,6 @@ export function ChallengePathDetailView({
         state={state}
         onStartAdventure={onStartAdventure}
         onStartNeighborhoodWalk={onStartNeighborhoodWalk}
-        onGoToPlan={onGoToPlan}
         onOpenMemory={onOpenMemory}
       />
 
