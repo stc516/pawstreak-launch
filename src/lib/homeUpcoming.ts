@@ -1,12 +1,10 @@
 import type { AppState } from '../data/demo'
-import { getFeaturedTrainingProgram } from './trainingEngine'
-
 export interface HomeUpcomingItem {
   id: string
   label: string
   detail: string
   emoji: string
-  kind: 'adventure' | 'training' | 'reminder' | 'plan'
+  kind: 'adventure' | 'reminder' | 'plan'
 }
 
 export function getHomeUpcomingItems(state: AppState): HomeUpcomingItem[] {
@@ -37,18 +35,6 @@ export function getHomeUpcomingItems(state: AppState): HomeUpcomingItem[] {
     })
   }
 
-  const training = getFeaturedTrainingProgram(state)
-  const nextLesson = training?.progress.lessons.find((lesson) => !lesson.completed)
-  if (nextLesson) {
-    items.push({
-      id: `training-${nextLesson.lessonId}`,
-      label: training!.title,
-      detail: nextLesson.lesson.title,
-      emoji: training!.emoji,
-      kind: 'training',
-    })
-  }
-
   if (items.length === 0) {
     items.push(
       {
@@ -59,11 +45,11 @@ export function getHomeUpcomingItems(state: AppState): HomeUpcomingItem[] {
         kind: 'reminder',
       },
       {
-        id: 'training-reminder',
-        label: 'Training session',
-        detail: 'Short practice keeps adventures smooth',
-        emoji: '🎓',
-        kind: 'training',
+        id: 'new-place-reminder',
+        label: 'New place',
+        detail: 'Pick one dog-friendly spot you have not tried yet',
+        emoji: '📍',
+        kind: 'reminder',
       },
     )
   }

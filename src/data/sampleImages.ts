@@ -12,18 +12,18 @@ interface CategoryArt {
 const CATEGORY_ART: Record<PlaceCategory, CategoryArt> = {
   Beach: {
     label: 'Beach',
-    sky: '#9fd8e6',
-    ground: '#f4c978',
-    accent: '#2f8fa3',
-    accent2: '#ffffff',
+    sky: '#b9e4ed',
+    ground: '#e7c576',
+    accent: '#187f91',
+    accent2: '#fff9ef',
     icon: 'waves',
   },
   Trail: {
     label: 'Trail',
-    sky: '#c7dfb5',
-    ground: '#8d6b48',
-    accent: '#2f6d4f',
-    accent2: '#f4e6c8',
+    sky: '#cfe3c2',
+    ground: '#836846',
+    accent: '#2f7455',
+    accent2: '#fff0d0',
     icon: 'trail',
   },
   Park: {
@@ -44,10 +44,10 @@ const CATEGORY_ART: Record<PlaceCategory, CategoryArt> = {
   },
   Coffee: {
     label: 'Coffee',
-    sky: '#f0d3ba',
-    ground: '#c48662',
-    accent: '#6f4b38',
-    accent2: '#fff1d8',
+    sky: '#efd6c2',
+    ground: '#b87958',
+    accent: '#5c3d2e',
+    accent2: '#fff4df',
     icon: 'coffee',
   },
   Patio: {
@@ -108,10 +108,10 @@ const CATEGORY_ART: Record<PlaceCategory, CategoryArt> = {
   },
   'Road trip': {
     label: 'Road Trip',
-    sky: '#c7dbe5',
-    ground: '#9a805d',
-    accent: '#3c5660',
-    accent2: '#f4c96f',
+    sky: '#cfe1e7',
+    ground: '#8c7655',
+    accent: '#263f44',
+    accent2: '#f6c55f',
     icon: 'road',
   },
   Neighborhood: {
@@ -140,15 +140,15 @@ function iconMarkup(art: CategoryArt, variant: number): string {
   const offset = variant * 8
   switch (art.icon) {
     case 'waves':
-      return `<path d="M16 90c24-18 48 18 72 0s48 18 72 0" fill="none" stroke="${art.accent}" stroke-width="9" stroke-linecap="round"/><path d="M24 112c22-14 44 14 66 0s44 14 66 0" fill="none" stroke="${art.accent2}" stroke-width="7" stroke-linecap="round"/><circle cx="${130 - offset}" cy="42" r="16" fill="${art.accent2}" opacity=".95"/>`
+      return `<path d="M0 104c30-16 54-8 82 0 30 9 56 8 98-12v48H0z" fill="#d7b86c" opacity=".72"/><path d="M18 86c24-18 48 18 72 0s48 18 72 0" fill="none" stroke="${art.accent}" stroke-width="10" stroke-linecap="round"/><path d="M26 108c22-14 44 14 66 0s44 14 66 0" fill="none" stroke="${art.accent2}" stroke-width="7" stroke-linecap="round"/><circle cx="${130 - offset}" cy="42" r="16" fill="${art.accent2}" opacity=".95"/>`
     case 'trail':
-      return `<path d="M30 126c26-38 54-28 72-60 14-24 36-26 58-36" fill="none" stroke="${art.accent2}" stroke-width="11" stroke-linecap="round"/><path d="M22 112l38-58 24 34 22-44 52 78" fill="none" stroke="${art.accent}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>`
+      return `<path d="M0 105c42-22 78-12 106 1 25 12 48 14 74-1v35H0z" fill="#7a6040" opacity=".68"/><path d="M30 126c26-38 54-28 72-60 14-24 36-26 58-36" fill="none" stroke="${art.accent2}" stroke-width="12" stroke-linecap="round"/><path d="M22 112l38-58 24 34 22-44 52 78" fill="none" stroke="${art.accent}" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>`
     case 'park':
       return `<circle cx="62" cy="70" r="30" fill="${art.accent}"/><circle cx="104" cy="60" r="36" fill="${art.accent}" opacity=".88"/><rect x="75" y="82" width="16" height="45" rx="7" fill="#6d513b"/><path d="M32 128h126" stroke="${art.accent2}" stroke-width="8" stroke-linecap="round"/>`
     case 'dog-park':
       return `<path d="M36 94h90l18 22" fill="none" stroke="${art.accent}" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/><circle cx="62" cy="122" r="10" fill="${art.accent2}"/><circle cx="124" cy="122" r="10" fill="${art.accent2}"/><path d="M134 82l20-18" stroke="${art.accent}" stroke-width="10" stroke-linecap="round"/>`
     case 'coffee':
-      return `<rect x="52" y="60" width="64" height="58" rx="14" fill="${art.accent2}"/><path d="M116 76h16a16 16 0 010 32h-16" fill="none" stroke="${art.accent2}" stroke-width="10"/><path d="M68 48c-8-14 12-16 4-30M92 48c-8-14 12-16 4-30" stroke="${art.accent}" stroke-width="7" stroke-linecap="round"/>`
+      return `<rect x="0" y="92" width="180" height="48" fill="#80543c" opacity=".38"/><rect x="42" y="76" width="92" height="40" rx="12" fill="#fff4df" opacity=".9"/><rect x="52" y="58" width="64" height="58" rx="15" fill="${art.accent2}"/><path d="M116 76h16a16 16 0 010 32h-16" fill="none" stroke="${art.accent2}" stroke-width="10"/><path d="M68 48c-8-14 12-16 4-30M92 48c-8-14 12-16 4-30" stroke="${art.accent}" stroke-width="7" stroke-linecap="round"/>`
     case 'patio':
       return `<path d="M34 84h118" stroke="${art.accent}" stroke-width="9" stroke-linecap="round"/><path d="M58 84v42M128 84v42" stroke="${art.accent}" stroke-width="8" stroke-linecap="round"/><circle cx="72" cy="58" r="12" fill="${art.accent2}"/><circle cx="100" cy="50" r="12" fill="${art.accent2}"/><circle cx="128" cy="58" r="12" fill="${art.accent2}"/>`
     case 'brewery':
@@ -164,7 +164,7 @@ function iconMarkup(art: CategoryArt, variant: number): string {
     case 'neighborhood':
       return `<path d="M38 82l28-24 28 24v42H38zM104 86l24-20 24 20v38h-48z" fill="${art.accent2}"/><path d="M28 126h132" stroke="${art.accent}" stroke-width="8" stroke-linecap="round"/><rect x="70" y="98" width="12" height="26" fill="${art.accent}"/>`
     case 'road':
-      return `<path d="M82 132l18-94M110 132L92 38" fill="none" stroke="${art.accent}" stroke-width="16" stroke-linecap="round"/><path d="M96 50v18M96 86v18M96 122v10" stroke="${art.accent2}" stroke-width="5" stroke-linecap="round"/>`
+      return `<path d="M0 112c34-18 67-22 98-14 30 8 55 4 82-18v60H0z" fill="#6f5f42" opacity=".7"/><path d="M38 140c10-42 26-64 54-83 20-14 42-20 70-22" fill="none" stroke="${art.accent}" stroke-width="24" stroke-linecap="round"/><path d="M38 140c10-42 26-64 54-83 20-14 42-20 70-22" fill="none" stroke="${art.accent2}" stroke-width="5" stroke-linecap="round" stroke-dasharray="12 12"/><circle cx="${50 + offset}" cy="42" r="24" fill="${art.accent2}" opacity=".35"/>`
     case 'spark':
       return `<path d="M92 36l12 36 36 12-36 12-12 36-12-36-36-12 36-12z" fill="${art.accent2}"/><circle cx="134" cy="48" r="10" fill="${art.accent}"/><circle cx="50" cy="120" r="8" fill="${art.accent}"/>`
   }

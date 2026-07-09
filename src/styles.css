@@ -13391,6 +13391,74 @@ select.field-input {
   padding: 14px;
 }
 
+.home-training-feature {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 13px;
+  border-color: rgba(92, 122, 107, 0.24);
+  background:
+    radial-gradient(circle at 92% 0%, rgba(92, 122, 107, 0.15), transparent 34%),
+    rgba(255, 255, 255, 0.9);
+}
+
+.home-training-feature-art {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #eef5ef, #fff7ed);
+  color: #1b3022;
+  font-size: 25px;
+}
+
+.home-training-feature-copy {
+  min-width: 0;
+}
+
+.home-training-feature-kicker {
+  color: #5c7a6b;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.home-training-feature h2 {
+  margin: 3px 0 0;
+  overflow: hidden;
+  color: #1c1410;
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1.12;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-training-feature p {
+  display: -webkit-box;
+  margin: 4px 0 0;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  color: #5d655d;
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.home-training-feature-cta {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: #1b3022;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 900;
+}
+
 .home-active-plan-head {
   display: flex;
   align-items: center;
@@ -15440,6 +15508,22 @@ select.field-input {
   text-align: center;
 }
 
+.share-preview-save {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  min-height: 42px;
+  margin-top: 10px;
+  border: 1px solid rgba(92, 122, 107, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.76);
+  color: #1b3022;
+  font-size: 13px;
+  font-weight: 900;
+}
+
 .share-preview-status {
   margin-top: 10px;
   border-radius: 999px;
@@ -15757,6 +15841,98 @@ select.field-input {
 
 .journey-memory-node--preview {
   opacity: 0.88;
+}
+
+.journey-everyday-walks {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(146, 64, 14, 0.12);
+}
+
+.journey-everyday-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.journey-everyday-head h3 {
+  margin: 2px 0 0;
+  color: #1c1410;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.journey-everyday-head > span {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 999px;
+  background: #eef5ef;
+  color: #1b3022;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.journey-everyday-copy {
+  margin: 8px 0 10px;
+  color: #6f594a;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.journey-everyday-list {
+  display: grid;
+  gap: 8px;
+}
+
+.journey-everyday-row {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 14px;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid rgba(195, 200, 193, 0.58);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.84);
+  text-align: left;
+}
+
+.journey-everyday-icon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 10px;
+  background: #fff7ed;
+  color: #9a3412;
+  font-size: 18px;
+}
+
+.journey-everyday-row-copy {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.journey-everyday-row-copy strong,
+.journey-everyday-row-copy span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.journey-everyday-row-copy strong {
+  color: #1c1410;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.journey-everyday-row-copy span {
+  color: #6f594a;
+  font-size: 11px;
 }
 
 .training-flow-programs {

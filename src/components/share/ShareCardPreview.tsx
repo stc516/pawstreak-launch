@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+import { toBlob } from 'html-to-image'
 import type { ShareCardData, ShareCardFormat, ShareCardSpot } from '../../types/shareCards'
 import { shareContent } from '../../lib/shareContent'
 
@@ -161,16 +162,61 @@ function buildShareText(data: ShareCardData): string {
   return `${data.eyebrow}\n${data.title}\n${data.subtitle}\n\n${data.cta}`
 }
 
+function getShareFileName(data: ShareCardData, format: ShareCardFormat): string {
+  const safeTitle = data.title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '')
+    .slice(0, 42)
+  return `pawstreak-${safeTitle || data.kind}-${format}.png`
+}
+
 export function ShareCardPreview({ data, onClose }: ShareCardPreviewProps) {
   const [format, setFormat] = useState<ShareCardFormat>('story')
   const [status, setStatus] = useState<string | null>(null)
+  const cardRef = useRef<HTMLElement | null>(null)
+
+  const renderCardBlob = async (): Promise<Blob | null> => {
+    if (!cardRef.current) return null
+    return toBlob(cardRef.current, {
+      cacheBust: true,
+      pixelRatio: 2,
+      backgroundColor: '#FAF7F2',
+    })
+  }
 
   const handleShare = async () => {
+    setStatus('Preparing card...')
+    const blob = await renderCardBlob()
+    const file = blob
+      ? new File([blob], getShareFileName(data, format), { type: 'image/png' })
+      : undefined
     const result = await shareContent({
       title: `${data.title} · PawStreak`,
       text: buildShareText(data),
+      files: file ? [file] : undefined,
     })
     setStatus(result.message)
+    window.setTimeout(() => setStatus(null), 2600)
+  }
+
+  const handleSave = async () => {
+    setStatus('Saving card...')
+    const blob = await renderCardBlob()
+    if (!blob) {
+      setStatus('Could not create image.')
+      window.setTimeout(() => setStatus(null), 2600)
+      return
+    }
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = getShareFileName(data, format)
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000)
+    setStatus('Saved card image.')
     window.setTimeout(() => setStatus(null), 2600)
   }
 
@@ -212,7 +258,10 @@ export function ShareCardPreview({ data, onClose }: ShareCardPreviewProps) {
         </div>
 
         <div className="share-card-stage">
-          <article className={`share-card share-card--${format} share-card--${data.kind}`}>
+          <article
+            ref={cardRef}
+            className={`share-card share-card--${format} share-card--${data.kind}`}
+          >
             <div className="share-card-brand">PawStreak</div>
             <div className="share-card-head">
               <div className="share-card-eyebrow">{data.eyebrow}</div>
@@ -228,8 +277,12 @@ export function ShareCardPreview({ data, onClose }: ShareCardPreviewProps) {
         </div>
 
         <p className="share-preview-note">
-          Screenshot this card, or use Share to copy/open your device share sheet.
+          Share opens your phone share sheet for Instagram, TikTok, Messages, and more when supported.
         </p>
+        <button type="button" className="share-preview-save tap-target" onClick={() => void handleSave()}>
+          <i className="ti ti-download" aria-hidden="true" />
+          Save card image
+        </button>
         {status ? (
           <div className="share-preview-status" role="status">
             {status}

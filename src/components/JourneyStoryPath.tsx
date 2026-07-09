@@ -1,6 +1,7 @@
 import type { AppState, JourneyEntry } from '../data/demo'
 import { SAMPLE_IMAGES } from '../data/sampleImages'
 import { getJourneyEntryDisplayImageUrl } from '../lib/adventureDisplayImage'
+import { NEIGHBORHOOD_WALK_PLACE_ID } from '../data/places'
 
 interface JourneyStoryPathProps {
   state: AppState
@@ -34,6 +35,12 @@ function formatMemoryDate(entry: JourneyEntry): string {
   }).format(parsed)
 }
 
+function isEverydayWalk(entry: JourneyEntry): boolean {
+  if (entry.placeId === NEIGHBORHOOD_WALK_PLACE_ID) return true
+  const label = `${entry.place} ${entry.tags.join(' ')}`.toLowerCase()
+  return label.includes('neighborhood walk') || label.includes('around the neighborhood')
+}
+
 export function JourneyStoryPath({
   state,
   onOpenMemory,
@@ -43,7 +50,9 @@ export function JourneyStoryPath({
   const entries = [...state.journeyEntries].sort(
     (left, right) => parseEntryTimestamp(right) - parseEntryTimestamp(left),
   )
-  const completedCount = entries.length
+  const adventureEntries = entries.filter((entry) => !isEverydayWalk(entry))
+  const everydayWalks = entries.filter(isEverydayWalk)
+  const completedCount = adventureEntries.length
   const previewNodes = [
     {
       title: 'Beach walk',
@@ -80,10 +89,10 @@ export function JourneyStoryPath({
         </p>
       </div>
 
-      {entries.length > 0 ? (
+      {adventureEntries.length > 0 ? (
         <div className="journey-memory-track">
           <div className="journey-memory-spine" aria-hidden="true" />
-          {entries.map((entry, index) => {
+          {adventureEntries.map((entry, index) => {
             const side = index % 2 === 0 ? 'left' : 'right'
             const imageUrl = getJourneyEntryDisplayImageUrl(state.journeyEntries, entry)
 
@@ -116,10 +125,13 @@ export function JourneyStoryPath({
         </div>
       ) : (
         <div className="journey-memory-preview" data-testid="journey-memory-preview">
-          <div className="journey-memory-preview-label">Your map starts here</div>
+          <div className="journey-memory-preview-label">
+            {everydayWalks.length > 0 ? 'Destination adventures start here' : 'Your map starts here'}
+          </div>
           <p>
-            Your first adventure will create a path here. Places, photos, and notes build into
-            a record of the days you shared.
+            {everydayWalks.length > 0
+              ? 'Quick Walks are saved below. Pick a dog-friendly spot when you want a bigger memory on the adventure path.'
+              : 'Your first adventure will create a path here. Places, photos, and notes build into a record of the days you shared.'}
           </p>
           <div className="journey-memory-track journey-memory-track--preview">
             <div className="journey-memory-spine" aria-hidden="true" />
@@ -160,6 +172,45 @@ export function JourneyStoryPath({
           </button>
         </div>
       )}
+
+      {everydayWalks.length > 0 ? (
+        <section className="journey-everyday-walks" aria-label="Everyday walks">
+          <div className="journey-everyday-head">
+            <div>
+              <div className="journey-story-kicker">Everyday walks</div>
+              <h3>Quick Walks</h3>
+            </div>
+            <span>{everydayWalks.length}</span>
+          </div>
+          <p className="journey-everyday-copy">
+            Usual-route walks keep the habit alive. They count for streaks and challenges without
+            crowding the adventure map.
+          </p>
+          <div className="journey-everyday-list">
+            {everydayWalks.slice(0, 4).map((entry) => (
+              <button
+                key={entry.id}
+                type="button"
+                className="journey-everyday-row tap-target"
+                onClick={() => onOpenMemory?.(entry.id)}
+                disabled={!onOpenMemory}
+              >
+                <span className="journey-everyday-icon" aria-hidden="true">
+                  <i className="ti ti-walk" />
+                </span>
+                <span className="journey-everyday-row-copy">
+                  <strong>{formatMemoryDate(entry)}</strong>
+                  <span>
+                    {entry.durationLabel ?? 'Walk saved'}
+                    {entry.photoUrls?.some(Boolean) ? ' · photo saved' : ''}
+                  </span>
+                </span>
+                <i className="ti ti-chevron-right" aria-hidden="true" />
+              </button>
+            ))}
+          </div>
+        </section>
+      ) : null}
     </section>
   )
 }
