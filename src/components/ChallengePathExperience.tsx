@@ -56,6 +56,14 @@ export function ChallengePathExperience({
         onStartAdventure={(placeId, options) => {
           setSelectedNode(null)
           const durationLabel = options?.durationLabel
+          if (challenge.metric.kind === 'neighborhood_walks') {
+            if (onStartNeighborhoodWalk) {
+              onStartNeighborhoodWalk(durationLabel)
+              return
+            }
+            onStartAdventure(NEIGHBORHOOD_WALK_PLACE_ID, options)
+            return
+          }
           if (!placeId || placeId === NEIGHBORHOOD_WALK_PLACE_ID) {
             if (onStartNeighborhoodWalk) {
               onStartNeighborhoodWalk(durationLabel)

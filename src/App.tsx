@@ -1100,23 +1100,27 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   const startNeighborhoodWalk = (durationLabel = 'Open end') => {
     if (blockIfActiveAdventure()) return
 
+    const liveState = latestStateRef.current
+    const startedAt = new Date().toISOString()
+    const activeDogId = liveState.activeDogId ?? liveState.dogs[0]?.id
+    const selectedDogIds = liveState.dogs.map((dog) => dog.id)
+    const localAdventure = createActiveAdventure(
+      NEIGHBORHOOD_WALK_PLACE_ID,
+      'Neighborhood Walk',
+      durationLabel,
+      {
+        started: true,
+        startedAt,
+        source: 'neighborhood',
+        dogId: activeDogId,
+        selectedDogIds,
+      },
+    )
+
     setState((current) => {
-      const startedAt = new Date().toISOString()
-      const activeAdventure = createActiveAdventure(
-        NEIGHBORHOOD_WALK_PLACE_ID,
-        'Neighborhood Walk',
-        durationLabel,
-        {
-          started: true,
-          startedAt,
-          source: 'neighborhood',
-          dogId: current.activeDogId ?? current.dogs[0]?.id,
-          selectedDogIds: current.dogs.map((dog) => dog.id),
-        },
-      )
       return {
         ...current,
-        activeAdventure,
+        activeAdventure: localAdventure,
         activeAdventureView: 'focused',
         adventurePhotos: ['', '', ''],
         selectedJourneyEntryId: null,
@@ -1126,6 +1130,35 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         buildMyMonthFlowStep: 0,
       }
     })
+
+    if (useProductionBackend && auth.user && activeDogId) {
+      void startAdventureOnServer({
+        userId: auth.user.id,
+        dogId: activeDogId,
+        placeId: NEIGHBORHOOD_WALK_PLACE_ID,
+        durationLabel,
+        selectedDogIds,
+        source: 'neighborhood',
+        started: true,
+        startedAt,
+      }).then((serverAdventure) => {
+        if (!serverAdventure) return
+        setState((current) => {
+          if (current.activeAdventure?.id !== localAdventure.id) return current
+          return {
+            ...current,
+            activeAdventure: {
+              ...serverAdventure,
+              started: true,
+              startedAt,
+            },
+          }
+        })
+      }).catch(() => {
+        // The local active session keeps running; finish falls back locally if
+        // the backend is unavailable.
+      })
+    }
   }
 
   const startAdventure = async (
@@ -1247,7 +1280,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     const isCustom = isCustomAdventure(activeAdventureForFinish)
     const durationLabel = getFinishedDurationLabel(activeAdventureForFinish)
 
-    if (useProductionBackend && auth.user && activeDogId && place && !isNeighborhoodWalk) {
+    if (useProductionBackend && auth.user && activeDogId && place) {
       try {
         const adventureDogs = getDogsForAdventure(
           liveState.dogs,
@@ -1281,6 +1314,8 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             ...current,
             ...clearActiveAdventureFields(),
             activeTab: 'journey',
+            selectedJourneyEntryId: memory.id,
+            selectedChallengeId: null,
             adventureCount: journeyEntries.length,
             placeCount,
             journeyEntries,
@@ -1294,12 +1329,18 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         finishingAdventureRef.current = false
         return
       } catch {
-        setState((current) => ({
-          ...current,
-          memorySaveToast: 'Could not save memory. Check your connection and try again.',
-        }))
-        finishingAdventureRef.current = false
-        return
+        if (isNeighborhoodWalk) {
+          // Keep the memory visible locally if the backend path is unavailable.
+          // The 017 migration makes this path persist once production has the
+          // neighborhood-walk place row.
+        } else {
+          setState((current) => ({
+            ...current,
+            memorySaveToast: 'Could not save memory. Check your connection and try again.',
+          }))
+          finishingAdventureRef.current = false
+          return
+        }
       }
     }
 
@@ -1330,37 +1371,33 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
           })
         : null
 
-      const journeyEntries = isCustom
+      const savedJourneyEntry = isCustom
         ? customMemory
-          ? [customMemory, ...current.journeyEntries]
-          : current.journeyEntries
         : isNeighborhoodWalk
-          ? [
-              createJourneyEntryFromNeighborhoodWalk(adventureDogs, {
+          ? createJourneyEntryFromNeighborhoodWalk(adventureDogs, {
+              photoUrls: capturedPhotos,
+              durationLabel,
+              recapLabels: payload.recapLabels,
+            })
+          : place
+            ? createJourneyEntryFromPlace(place, adventureDogs, {
                 photoUrls: capturedPhotos,
                 durationLabel,
                 recapLabels: payload.recapLabels,
-              }),
-              ...current.journeyEntries,
-            ]
-          : place
-            ? [
-                createJourneyEntryFromPlace(place, adventureDogs, {
-                  photoUrls: capturedPhotos,
-                  durationLabel,
-                  recapLabels: payload.recapLabels,
-                }),
-                ...current.journeyEntries,
-              ]
-            : current.journeyEntries
+              })
+            : null
+
+      const journeyEntries = savedJourneyEntry
+        ? [savedJourneyEntry, ...current.journeyEntries]
+        : current.journeyEntries
 
       const adventureCount = journeyEntries.length
       const placeCount = new Set(journeyEntries.map(getDistinctPlaceKey)).size
       const locationCandidate =
-        isCustom && customMemory
+        isCustom && savedJourneyEntry
           ? createLocationCandidate({
               activeAdventure: currentAdventure,
-              sourceMemoryId: customMemory.id,
+              sourceMemoryId: savedJourneyEntry.id,
               photoCount: capturedPhotos.length,
             })
           : null
@@ -1369,6 +1406,8 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         ...current,
         ...clearActiveAdventureFields(),
         activeTab: 'journey',
+        selectedJourneyEntryId: savedJourneyEntry?.id ?? null,
+        selectedChallengeId: null,
         adventureCount,
         placeCount,
         journeyEntries,

@@ -1,0 +1,58 @@
+-- Quick Walk / neighborhood adventures need a real catalog row because
+-- adventures.place_id and memories.place_id both reference public.places.
+
+insert into public.places (
+  id,
+  name,
+  city,
+  region,
+  category,
+  tags,
+  distance_label,
+  leash_info,
+  dog_friendly_notes,
+  why_dogs_love_it,
+  best_time,
+  energy_level,
+  featured,
+  popular_now,
+  image_url,
+  image_alt,
+  image_tone,
+  is_active
+) values (
+  'neighborhood-walk',
+  'Neighborhood Walk',
+  'Home',
+  'San Diego',
+  'Neighborhood',
+  array['neighborhood', 'everyday', 'walk'],
+  '0 mi',
+  'On-leash',
+  'Your everyday loop — sniff stops, slow corners, and familiar routes.',
+  'Around the neighborhood — the route they know by heart.',
+  'Anytime',
+  'Low',
+  false,
+  false,
+  '/sample-images/neighborhood.jpg',
+  'Neighborhood Walk — everyday dog walk',
+  'warm',
+  true
+)
+on conflict (id) do update set
+  name = excluded.name,
+  city = excluded.city,
+  region = excluded.region,
+  category = excluded.category,
+  tags = excluded.tags,
+  distance_label = excluded.distance_label,
+  leash_info = excluded.leash_info,
+  dog_friendly_notes = excluded.dog_friendly_notes,
+  why_dogs_love_it = excluded.why_dogs_love_it,
+  best_time = excluded.best_time,
+  energy_level = excluded.energy_level,
+  image_url = excluded.image_url,
+  image_alt = excluded.image_alt,
+  image_tone = excluded.image_tone,
+  is_active = excluded.is_active;
