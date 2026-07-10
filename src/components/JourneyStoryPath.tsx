@@ -95,6 +95,7 @@ export function JourneyStoryPath({
           {adventureEntries.map((entry, index) => {
             const side = index % 2 === 0 ? 'left' : 'right'
             const imageUrl = getJourneyEntryDisplayImageUrl(state.journeyEntries, entry)
+            const photoCount = entry.photoUrls?.filter(Boolean).length ?? 0
 
             return (
               <article
@@ -110,6 +111,12 @@ export function JourneyStoryPath({
                   <span className="journey-memory-dot" aria-hidden="true">
                     {index + 1}
                   </span>
+                  {photoCount > 0 ? (
+                    <span className="journey-memory-photo-count" aria-label={`${photoCount} saved photos`}>
+                      <i className="ti ti-camera" aria-hidden="true" />
+                      {photoCount}
+                    </span>
+                  ) : null}
                   <img src={imageUrl} alt="" className="journey-memory-photo" />
                   <span className="journey-memory-copy">
                     <span className="journey-memory-date">{formatMemoryDate(entry)}</span>

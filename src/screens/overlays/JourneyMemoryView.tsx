@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { Dog, JourneyEntry, PackAccessMember } from '../../data/demo'
 import { getPackDisplayName } from '../../lib/dogLabels'
 import { CardImage } from '../../components/CardImage'
 import { LIVE_PRODUCT } from '../../lib/liveProductFeatures'
 import { getJourneyMemoryDetail } from '../../data/journeyMemories'
-import { getPlaceById } from '../../data/places'
+import { getPlaceById, isNeighborhoodWalkPlace } from '../../data/places'
 import { buildMemoryShareText, shareContent } from '../../lib/shareContent'
 import { StatusBar } from '../../components/StatusBar'
 
@@ -27,6 +27,7 @@ export function JourneyMemoryView({
   onGoAgain,
   onCreateStory,
 }: JourneyMemoryViewProps) {
+  const scrollRef = useRef<HTMLElement | null>(null)
   const [shareNote, setShareNote] = useState<string | null>(null)
   const [shareIsError, setShareIsError] = useState(false)
   const place = entry.placeId ? getPlaceById(entry.placeId) : undefined
@@ -35,8 +36,16 @@ export function JourneyMemoryView({
   const dogLabel =
     contentDogs.length > 0 ? getPackDisplayName(contentDogs) : 'your dog'
   const familyMember = packAccessMembers.find((member) => member.name === 'Dog Mom')
-  const savedPhotos = entry.photoUrls ?? []
+  const savedPhotos = entry.photoUrls?.filter(Boolean) ?? []
   const heroPhoto = savedPhotos[0]
+  const isQuickWalk = isNeighborhoodWalkPlace(entry.placeId)
+  const memoryKindLabel = isQuickWalk ? 'Everyday walk saved' : 'Adventure memory saved'
+  const photoCountLabel =
+    savedPhotos.length === 1 ? '1 photo saved' : `${savedPhotos.length} photos saved`
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: 0 })
+  }, [entry.id])
 
   const handleShare = async () => {
     setShareNote(null)
@@ -66,7 +75,7 @@ export function JourneyMemoryView({
     <div className="app-viewport">
       <div className="app-shell">
         <StatusBar />
-        <main className="scroll scroll--overlay">
+        <main ref={scrollRef} className="scroll scroll--overlay">
           <div className="overlay-topbar">
             <button type="button" className="overlay-back tap-target" onClick={onBack}>
               <i className="ti ti-arrow-left" aria-hidden="true" />
@@ -101,15 +110,36 @@ export function JourneyMemoryView({
               />
             ) : (
               <div className="memory-hero-empty">
-                <i className="ti ti-camera-off" aria-hidden="true" />
-                <p>No photos saved for this memory yet.</p>
+                <i className="ti ti-camera" aria-hidden="true" />
+                <strong>{isQuickWalk ? 'Quick Walk saved.' : 'Memory saved.'}</strong>
+                <p>
+                  {isQuickWalk
+                    ? 'No photo needed for the usual route. Add one when something stands out.'
+                    : 'No photos were added this time. The place, notes, and progress are still saved.'}
+                </p>
               </div>
             )}
-            <div className="memory-hero-badge">Memory saved</div>
+            <div className="memory-hero-badge">{memoryKindLabel}</div>
             <div className="memory-hero-text">
               <div className="memory-place">{entry.place}</div>
               <div className="memory-date">{entry.date}</div>
               <div className="memory-subtitle">{memory.memorySubtitle}</div>
+            </div>
+          </div>
+
+          <div className={`memory-save-confidence detail-card-warm${savedPhotos.length > 0 ? ' memory-save-confidence--photo' : ''}`}>
+            <i className={`ti ${savedPhotos.length > 0 ? 'ti-photo-check' : 'ti-check'}`} aria-hidden="true" />
+            <div>
+              <strong>
+                {savedPhotos.length > 0 ? photoCountLabel : 'Saved to Journey'}
+              </strong>
+              <span>
+                {savedPhotos.length > 0
+                  ? 'Your photo is attached to this memory and will show on the adventure map.'
+                  : isQuickWalk
+                    ? 'This Quick Walk is saved under Everyday walks.'
+                    : 'This adventure is saved even without photos.'}
+              </span>
             </div>
           </div>
 
@@ -178,7 +208,9 @@ export function JourneyMemoryView({
           </div>
 
           <div className="memory-section detail-card-warm">
-            <div className="memory-section-title">Memory gallery</div>
+            <div className="memory-section-title">
+              {savedPhotos.length > 0 ? 'Saved photos' : 'Photo status'}
+            </div>
             {savedPhotos.length > 0 ? (
               <div className="memory-gallery">
                 {savedPhotos.map((url, index) => (
@@ -189,7 +221,9 @@ export function JourneyMemoryView({
               </div>
             ) : (
               <div className="memory-gallery-empty">
-                Photos you capture during adventures will show up here.
+                {isQuickWalk
+                  ? 'Quick Walks stay lightweight. Photos are optional and only show here when you capture one.'
+                  : 'Photos you capture during adventures will show up here immediately after finishing.'}
               </div>
             )}
           </div>
