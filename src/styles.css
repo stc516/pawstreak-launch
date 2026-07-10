@@ -5658,7 +5658,7 @@ select.field-input {
 
 .memory-hero-badge {
   position: absolute;
-  bottom: 12px;
+  top: 12px;
   left: 12px;
   padding: 6px 10px;
   border-radius: 999px;
@@ -8716,8 +8716,22 @@ select.field-input {
 
 /* Journey memory */
 .memory-hero--rich {
+  display: grid;
+  min-height: 220px;
   box-shadow: var(--detail-shadow);
   border: 0.5px solid rgba(254, 215, 170, 0.45);
+}
+
+.memory-hero--rich .memory-hero-img,
+.memory-hero--rich .memory-hero-img.card-img {
+  width: 100%;
+  height: 220px;
+  min-height: 220px;
+  border-radius: inherit;
+}
+
+.memory-hero--rich .memory-hero-empty {
+  min-height: 220px;
 }
 
 .memory-hero-badge {
@@ -8785,17 +8799,24 @@ select.field-input {
 }
 
 .memory-gallery {
-  gap: 6px;
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 8px;
+  overflow: visible;
   padding: 2px;
 }
 
 .memory-gallery-item {
-  flex: 0 0 88px;
-  height: 88px;
+  min-height: 92px;
   border-radius: 10px;
   overflow: hidden;
   border: 0.5px solid var(--accent-border);
   box-shadow: var(--detail-shadow-soft);
+}
+
+.memory-gallery-item:first-child {
+  grid-row: span 2;
+  min-height: 192px;
 }
 
 .memory-gallery-img {
@@ -8820,6 +8841,12 @@ select.field-input {
   text-align: center;
 }
 
+.memory-hero-empty strong {
+  color: var(--color-text-primary);
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
 .memory-hero-empty i {
   font-size: 1.5rem;
   opacity: 0.72;
@@ -8840,6 +8867,50 @@ select.field-input {
   line-height: 1.5;
   color: var(--on-surface-var);
   text-align: center;
+}
+
+.memory-save-confidence {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  margin: 0 0 14px;
+  padding: 11px 12px;
+  border-color: rgba(92, 122, 107, 0.22);
+}
+
+.memory-save-confidence > i {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border-radius: 12px;
+  background: #eef5ef;
+  color: #1b3022;
+  font-size: 20px;
+}
+
+.memory-save-confidence--photo > i {
+  background: #fff7ed;
+  color: #9a3412;
+}
+
+.memory-save-confidence strong,
+.memory-save-confidence span {
+  display: block;
+}
+
+.memory-save-confidence strong {
+  color: #1c1410;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.memory-save-confidence span {
+  margin-top: 2px;
+  color: #5d655d;
+  font-size: 11px;
+  line-height: 1.3;
 }
 
 .community-soon {
@@ -15760,6 +15831,28 @@ select.field-input {
   color: #9a3412;
   font-size: 12px;
   font-weight: 900;
+}
+
+.journey-memory-photo-count {
+  position: absolute;
+  z-index: 2;
+  right: 11px;
+  bottom: 88px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  min-height: 24px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: rgba(28, 20, 16, 0.76);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 900;
+  box-shadow: 0 4px 14px rgba(28, 20, 16, 0.18);
+}
+
+.journey-memory-photo-count i {
+  font-size: 13px;
 }
 
 .journey-memory-photo {
