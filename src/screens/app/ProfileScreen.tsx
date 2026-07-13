@@ -329,14 +329,13 @@ export function ProfileScreen({
       <header className="st-appbar profile-screen-header">
         <div className="st-appbar-actions">
           {profileDogs[0] ? (
-            <div className="st-avatar-single">
-              <div className={`dog-av ${profileDogs[0].avatarClass}`}>
-                {profileDogs[0].photoUrl ? (
-                  <img src={profileDogs[0].photoUrl} alt="" className="dog-av-img" />
-                ) : (
-                  profileDogs[0].initial
-                )}
-              </div>
+            <div className="pack-mini-portrait" aria-label={`${packLabel} pack portrait`}>
+              {profileDogs.slice(0, 2).map((dog) => (
+                <span key={dog.id} className={`pack-mini-portrait-dog ${dog.avatarClass}`}>
+                  {dog.photoUrl ? <img src={dog.photoUrl} alt="" /> : <span aria-hidden="true">{dog.profileEmoji}</span>}
+                </span>
+              ))}
+              <span className="pack-mini-portrait-spark" aria-hidden="true">✦</span>
             </div>
           ) : null}
           <div>
