@@ -25,6 +25,7 @@ import { GENERIC_ADVENTURE_TYPES } from '../../lib/genericAdventures'
 import { getHomeUpcomingItems } from '../../lib/homeUpcoming'
 import { BrandLogoCircle } from '../../components/BrandLogoCircle'
 import { DogAdventureScene, type DogAdventureSceneState } from '../../components/DogAdventureScene'
+import { DogAdventureSticker } from '../../components/DogAdventureSticker'
 
 interface HomeScreenProps {
   state: AppState
@@ -137,15 +138,16 @@ export function HomeScreen({
             <i className="ti ti-settings" aria-hidden="true" />
           </button>
           <button type="button" className="st-avatar-btn tap-target home-dog-pill" onClick={onOpenProfile}>
-            {profileDogs.slice(0, 2).map((dog) => (
-              <div key={dog.id} className={`dog-av ${dog.avatarClass}`}>
-                {dog.photoUrl ? (
-                  <img src={dog.photoUrl} alt="" className="dog-av-img" />
-                ) : (
-                  dog.initial
-                )}
-              </div>
-            ))}
+            {profileDogs.length > 0 ? (
+              <span className="pack-mini-portrait pack-mini-portrait--header" aria-hidden="true">
+                {profileDogs.slice(0, 2).map((dog) => (
+                  <span key={dog.id} className={`pack-mini-portrait-dog ${dog.avatarClass}`}>
+                    {dog.photoUrl ? <img src={dog.photoUrl} alt="" /> : <span>{dog.profileEmoji}</span>}
+                  </span>
+                ))}
+                <span className="pack-mini-portrait-spark">✦</span>
+              </span>
+            ) : null}
             {profileDogs.length > 0 ? (
               <span className="dog-names">{dogLabel}</span>
             ) : null}
@@ -216,7 +218,9 @@ export function HomeScreen({
               imageUrl={heroImageUrl}
               imageAlt={heroPlace.imageAlt ?? heroPlace.name}
               imageTone={heroPlace.imageTone ?? 'warm'}
-            />
+            >
+              <DogAdventureSticker dog={leadDog} className="dog-adventure-sticker--hero" />
+            </CardImage>
           </div>
           <div className="home-quick-adventure-body">
             <div className="home-quick-adventure-kicker">Today&apos;s Pick for {dogLabel}</div>
@@ -385,7 +389,9 @@ export function HomeScreen({
                     imageUrl={imageUrl}
                     imageAlt={place.imageAlt ?? place.name}
                     imageTone={place.imageTone}
-                  />
+                  >
+                    <DogAdventureSticker dog={leadDog} className="dog-adventure-sticker--compact" />
+                  </CardImage>
                   <div className="st-suggested-spots-tile-name">{place.name.split(',')[0]}</div>
                   <div className="st-suggested-spots-tile-meta">{getPlanMagicMeta(place)}</div>
                 </button>

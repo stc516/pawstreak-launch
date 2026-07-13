@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from 'react'
 import type { AppState } from '../../data/demo'
 import { getDisplayDogLabel, getProfileDogs } from '../../lib/profileDisplay'
 import { CardImage } from '../../components/CardImage'
+import { DogAdventureSticker } from '../../components/DogAdventureSticker'
 import { PlanAdventureMap } from '../../components/PlanAdventureMap'
 import { JourneyPlannedSection } from '../../components/JourneyPlannedSection'
 import { getAdventureDisplayImageUrl } from '../../lib/adventureDisplayImage'
@@ -298,7 +299,9 @@ export function PlanScreen({
             imageUrl={getAdventureDisplayImageUrl([], selectedPlace)}
             imageAlt={selectedPlace.name}
             imageTone={selectedPlace.imageTone}
-          />
+          >
+            <DogAdventureSticker dog={leadDog} className="dog-adventure-sticker--hero" />
+          </CardImage>
           <div className="plan-place-detail-body">
             <div className="plan-place-detail-kicker">{selectedPlace.category}</div>
             <h2 className="plan-place-detail-title">{selectedPlace.name}</h2>
@@ -416,7 +419,9 @@ export function PlanScreen({
                 imageUrl={cardImageUrl}
                 imageAlt={place.imageAlt ?? place.name}
                 imageTone={place.imageTone}
-              />
+              >
+                <DogAdventureSticker dog={leadDog} className="dog-adventure-sticker--compact" />
+              </CardImage>
               <div className="pinfo">
                 <div className="pname">{place.name}</div>
                 {isRoadTrip ? (

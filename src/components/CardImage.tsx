@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import type { PlaceImageTone } from '../types/place'
 
 interface CardImageProps {
@@ -6,6 +7,7 @@ interface CardImageProps {
   imageTone?: PlaceImageTone
   className?: string
   placeholderLabel?: string
+  children?: ReactNode
 }
 
 export function CardImage({
@@ -14,6 +16,7 @@ export function CardImage({
   imageTone = 'warm',
   className = '',
   placeholderLabel = 'Photo coming soon',
+  children,
 }: CardImageProps) {
   const toneClass = `card-img--${imageTone}`
   const isEmpty = !imageUrl
@@ -32,6 +35,7 @@ export function CardImage({
       }
     >
       {isEmpty ? <span className="card-img-placeholder">{placeholderLabel}</span> : null}
+      {children}
     </div>
   )
 }

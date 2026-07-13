@@ -1,5 +1,23 @@
 import type { PlaceCategory } from '../types/place'
 
+const PUBLIC_SAMPLE_IMAGES: Record<PlaceCategory, string> = {
+  Beach: '/sample-images/pawstreak-beach-v2.jpg',
+  Trail: '/sample-images/pawstreak-trail-v2.jpg',
+  Park: '/sample-images/pawstreak-park-v2.jpg',
+  'Dog Park': '/sample-images/pawstreak-park-v2.jpg',
+  Coffee: '/sample-images/pawstreak-cafe-v2.jpg',
+  Patio: '/sample-images/pawstreak-cafe-v2.jpg',
+  Brewery: '/sample-images/pawstreak-cafe-v2.jpg',
+  Restaurant: '/sample-images/pawstreak-cafe-v2.jpg',
+  Lake: '/sample-images/pawstreak-beach-v2.jpg',
+  Campground: '/sample-images/pawstreak-trail-v2.jpg',
+  'Scenic Spot': '/sample-images/pawstreak-trail-v2.jpg',
+  Gardens: '/sample-images/pawstreak-park-v2.jpg',
+  'Road trip': '/sample-images/pawstreak-road-trip-v2.jpg',
+  Neighborhood: '/sample-images/pawstreak-neighborhood-v2.jpg',
+  Custom: '/sample-images/pawstreak-neighborhood-v2.jpg',
+}
+
 interface CategoryArt {
   label: string
   sky: string
@@ -198,26 +216,26 @@ export function getSampleImageForPlace(
   category: PlaceCategory,
   placeId: string,
 ): string {
-  return buildCategoryArtUrl(category, placeId)
+  return PUBLIC_SAMPLE_IMAGES[category] ?? buildCategoryArtUrl(category, placeId)
 }
 
 export const SAMPLE_IMAGES = {
-  beach: buildCategoryArtUrl('Beach', 'sample-beach'),
-  trail: buildCategoryArtUrl('Trail', 'sample-trail'),
-  park: buildCategoryArtUrl('Park', 'sample-park'),
-  cafe: buildCategoryArtUrl('Coffee', 'sample-coffee'),
-  roadTrip: buildCategoryArtUrl('Road trip', 'sample-road-trip'),
-  gardens: buildCategoryArtUrl('Gardens', 'sample-gardens'),
-  brewery: buildCategoryArtUrl('Brewery', 'sample-brewery'),
-  dogPark: buildCategoryArtUrl('Dog Park', 'sample-dog-park'),
-  neighborhood: buildCategoryArtUrl('Neighborhood', 'sample-neighborhood'),
-  coastal: buildCategoryArtUrl('Scenic Spot', 'sample-coastal'),
-  mountain: buildCategoryArtUrl('Campground', 'sample-mountain'),
-  patio: buildCategoryArtUrl('Patio', 'sample-patio'),
-  restaurant: buildCategoryArtUrl('Restaurant', 'sample-restaurant'),
-  lake: buildCategoryArtUrl('Lake', 'sample-lake'),
-  campground: buildCategoryArtUrl('Campground', 'sample-campground'),
-  scenic: buildCategoryArtUrl('Scenic Spot', 'sample-scenic'),
-  training: buildCategoryArtUrl('Custom', 'sample-training'),
-  genericAdventure: buildCategoryArtUrl('Custom', 'sample-custom'),
+  beach: PUBLIC_SAMPLE_IMAGES.Beach,
+  trail: PUBLIC_SAMPLE_IMAGES.Trail,
+  park: PUBLIC_SAMPLE_IMAGES.Park,
+  cafe: PUBLIC_SAMPLE_IMAGES.Coffee,
+  roadTrip: PUBLIC_SAMPLE_IMAGES['Road trip'],
+  gardens: PUBLIC_SAMPLE_IMAGES.Gardens,
+  brewery: PUBLIC_SAMPLE_IMAGES.Brewery,
+  dogPark: PUBLIC_SAMPLE_IMAGES['Dog Park'],
+  neighborhood: PUBLIC_SAMPLE_IMAGES.Neighborhood,
+  coastal: PUBLIC_SAMPLE_IMAGES['Scenic Spot'],
+  mountain: PUBLIC_SAMPLE_IMAGES.Campground,
+  patio: PUBLIC_SAMPLE_IMAGES.Patio,
+  restaurant: PUBLIC_SAMPLE_IMAGES.Restaurant,
+  lake: PUBLIC_SAMPLE_IMAGES.Lake,
+  campground: PUBLIC_SAMPLE_IMAGES.Campground,
+  scenic: PUBLIC_SAMPLE_IMAGES['Scenic Spot'],
+  training: PUBLIC_SAMPLE_IMAGES.Custom,
+  genericAdventure: PUBLIC_SAMPLE_IMAGES.Custom,
 } as const
