@@ -13,10 +13,9 @@ import { isStandaloneDisplayMode } from '../../lib/pwa'
 import { ROUTES, getAppSignInUrl } from '../../lib/routes'
 
 export function StartPage() {
-  const [installed, setInstalled] = useState(false)
+  const [installed] = useState(isStandaloneDisplayMode)
 
   useEffect(() => {
-    setInstalled(isStandaloneDisplayMode())
     document.title = 'Start using PawStreak — PawStreak'
     return () => {
       document.title = 'PawStreak'

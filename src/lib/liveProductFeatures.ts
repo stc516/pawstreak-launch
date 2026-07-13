@@ -12,12 +12,11 @@ const NAV_TAB_ORDER: TabId[] = [
   'home',
   'plan',
   'journey',
-  'milestones',
-  'rewards',
-  'community',
+  'profile',
 ]
 
-export function isNavTabVisible(tab: TabId, _mode: AppMode = 'app'): boolean {
+export function isNavTabVisible(tab: TabId, mode: AppMode = 'app'): boolean {
+  void mode
   return NAV_TAB_ORDER.includes(tab)
 }
 

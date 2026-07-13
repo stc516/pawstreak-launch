@@ -1,5 +1,16 @@
+import { useEffect, useState } from 'react'
 import type { AppState } from '../../data/demo'
 import { getDisplayDogLabel, getProfileDogs } from '../../lib/profileDisplay'
+import { ROUTES } from '../../lib/routes'
+import {
+  DEFAULT_PUSH_PREFERENCES,
+  disablePushNotifications,
+  enablePushNotifications,
+  getPushNotificationState,
+  updatePushPreferences,
+  type PushNotificationState,
+  type PushPreferences,
+} from '../../lib/pushNotifications'
 
 interface SettingsScreenProps {
   state: AppState
@@ -10,6 +21,7 @@ interface SettingsScreenProps {
   onApplyLocation: () => void
   onManageDogs: () => void
   onSignOut?: () => Promise<void>
+  onDeleteAccount?: () => Promise<void>
 }
 
 function SettingsIconRow({
@@ -71,7 +83,15 @@ export function SettingsScreen({
   onApplyLocation,
   onManageDogs,
   onSignOut,
+  onDeleteAccount,
 }: SettingsScreenProps) {
+  const [deleteArmed, setDeleteArmed] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
+  const [pushState, setPushState] = useState<PushNotificationState | null>(null)
+  const [pushPreferences, setPushPreferences] = useState<PushPreferences>(DEFAULT_PUSH_PREFERENCES)
+  const [pushBusy, setPushBusy] = useState(false)
+  const [pushMessage, setPushMessage] = useState<string | null>(null)
   const profileDogs = getProfileDogs(state)
   const packLabel = getDisplayDogLabel(state)
   const leadDog = profileDogs[0]
@@ -81,11 +101,59 @@ export function SettingsScreen({
       ? `Signed in as ${accountEmail}`
       : 'Your account details appear here after sign-in.'
 
+  useEffect(() => {
+    if (isDemoMode) return
+    let cancelled = false
+    void getPushNotificationState().then((next) => {
+      if (cancelled) return
+      setPushState(next)
+      setPushPreferences(next.preferences)
+    }).catch((error) => {
+      if (!cancelled) setPushMessage(error instanceof Error ? error.message : 'Could not load notification settings.')
+    })
+    return () => { cancelled = true }
+  }, [isDemoMode])
+
+  const enableReminders = async () => {
+    setPushBusy(true)
+    setPushMessage(null)
+    try {
+      await enablePushNotifications(pushPreferences)
+      const next = await getPushNotificationState()
+      setPushState(next)
+      setPushPreferences(next.preferences)
+      setPushMessage('Morning and evening reminders are on.')
+    } catch (error) {
+      setPushMessage(error instanceof Error ? error.message : 'Could not enable notifications.')
+    } finally {
+      setPushBusy(false)
+    }
+  }
+
+  const saveReminderPreferences = async (next: PushPreferences) => {
+    setPushPreferences(next)
+    setPushBusy(true)
+    setPushMessage(null)
+    try {
+      if (!next.morningEnabled && !next.eveningEnabled) {
+        await disablePushNotifications()
+        setPushMessage('Daily reminders are paused.')
+      } else {
+        await updatePushPreferences(next)
+        setPushMessage('Reminder schedule saved.')
+      }
+    } catch (error) {
+      setPushMessage(error instanceof Error ? error.message : 'Could not save reminder settings.')
+    } finally {
+      setPushBusy(false)
+    }
+  }
+
   return (
     <div className="settings-screen settings-screen--stitch">
       <header className="st-appbar settings-screen-header settings-screen-header--stitch">
         <div className="st-appbar-actions">
-          <button type="button" className="settings-back settings-back--stitch tap-target" onClick={onBack}>
+          <button type="button" className="settings-back settings-back--stitch tap-target" aria-label="Back to profile" onClick={onBack}>
             <i className="ti ti-arrow-left" aria-hidden="true" />
           </button>
           <div className="st-headline-md settings-screen-title">Settings</div>
@@ -147,14 +215,95 @@ export function SettingsScreen({
 
       <section className="settings-section">
         <h2 className="st-section-label settings-section-label">Notifications</h2>
-        <div className="settings-group settings-group--stitch">
-          <SettingsIconRow
-            icon="ti-bell"
-            title="Notifications"
-            detail="Push and email reminders are coming soon."
-            action="Soon"
-            disabled
-          />
+        <div className="settings-group settings-group--stitch settings-notifications">
+          {isDemoMode ? (
+            <SettingsIconRow
+              icon="ti-bell"
+              title="Daily reminders"
+              detail="Sign in to turn on morning and evening push notifications."
+              disabled
+            />
+          ) : pushState?.isIos && !pushState.installed ? (
+            <div className="settings-notification-setup">
+              <i className="ti ti-device-mobile-share" aria-hidden="true" />
+              <div>
+                <strong>Add PawStreak to your Home Screen</strong>
+                <p>On iPhone, tap Share, choose “Add to Home Screen,” then open the installed PawStreak app to enable reminders.</p>
+              </div>
+            </div>
+          ) : pushState && (!pushState.supported || !pushState.configured) ? (
+            <SettingsIconRow
+              icon="ti-bell-off"
+              title="Daily reminders"
+              detail={pushState.supported
+                ? 'Push delivery is awaiting its production key.'
+                : 'This browser does not support push notifications.'}
+              disabled
+            />
+          ) : pushState?.permission === 'denied' ? (
+            <SettingsIconRow
+              icon="ti-bell-off"
+              title="Notifications blocked"
+              detail="Allow PawStreak notifications in your device or browser settings, then return here."
+              disabled
+            />
+          ) : pushState?.subscribed ? (
+            <div className="settings-reminder-editor">
+              <p className="settings-reminder-intro">Keep the day moving with two useful nudges. Times use your current timezone.</p>
+              <label className="settings-reminder-row">
+                <span>
+                  <strong>Morning momentum</strong>
+                  <small>Pick today’s walk before the day fills up.</small>
+                </span>
+                <input
+                  type="time"
+                  aria-label="Morning reminder time"
+                  value={pushPreferences.morningTime}
+                  disabled={!pushPreferences.morningEnabled || pushBusy}
+                  onChange={(event) => void saveReminderPreferences({ ...pushPreferences, morningTime: event.target.value })}
+                />
+                <input
+                  type="checkbox"
+                  aria-label="Enable morning reminder"
+                  checked={pushPreferences.morningEnabled}
+                  disabled={pushBusy}
+                  onChange={(event) => void saveReminderPreferences({ ...pushPreferences, morningEnabled: event.target.checked })}
+                />
+              </label>
+              <label className="settings-reminder-row">
+                <span>
+                  <strong>Evening streak check</strong>
+                  <small>A quick walk still counts—don’t lose the day.</small>
+                </span>
+                <input
+                  type="time"
+                  aria-label="Evening reminder time"
+                  value={pushPreferences.eveningTime}
+                  disabled={!pushPreferences.eveningEnabled || pushBusy}
+                  onChange={(event) => void saveReminderPreferences({ ...pushPreferences, eveningTime: event.target.value })}
+                />
+                <input
+                  type="checkbox"
+                  aria-label="Enable evening reminder"
+                  checked={pushPreferences.eveningEnabled}
+                  disabled={pushBusy}
+                  onChange={(event) => void saveReminderPreferences({ ...pushPreferences, eveningEnabled: event.target.checked })}
+                />
+              </label>
+            </div>
+          ) : (
+            <div className="settings-notification-setup settings-notification-setup--enable">
+              <i className="ti ti-bell-ringing" aria-hidden="true" />
+              <div>
+                <strong>Make today count</strong>
+                <p>Get a morning planning nudge at 8:00 and an evening streak check at 7:00.</p>
+                <button type="button" className="settings-enable-notifications tap-target" disabled={pushBusy || !pushState} onClick={() => void enableReminders()}>
+                  {pushBusy ? 'Turning on…' : 'Turn on daily reminders'}
+                </button>
+              </div>
+            </div>
+          )}
+          {pushMessage ? <p className="settings-notification-status" role="status">{pushMessage}</p> : null}
         </div>
       </section>
 
@@ -187,16 +336,14 @@ export function SettingsScreen({
           <SettingsIconRow
             icon="ti-shield"
             title="Privacy policy"
-            detail="Full policy publishing soon."
-            action="Soon"
-            disabled
+            detail="How PawStreak handles account, location, and photo data."
+            onClick={() => window.location.assign(ROUTES.privacy)}
           />
           <SettingsIconRow
             icon="ti-file-text"
             title="Terms of service"
-            detail="Full terms publishing soon."
-            action="Soon"
-            disabled
+            detail="The terms for using PawStreak."
+            onClick={() => window.location.assign(ROUTES.terms)}
           />
         </div>
       </section>
@@ -207,9 +354,8 @@ export function SettingsScreen({
           <SettingsIconRow
             icon="ti-help-circle"
             title="Support"
-            detail="Help center and contact options are coming soon."
-            action="Soon"
-            disabled
+            detail="Get help with your account or report a problem."
+            onClick={() => window.location.assign(ROUTES.support)}
           />
         </div>
       </section>
@@ -220,12 +366,37 @@ export function SettingsScreen({
           <SettingsIconRow
             icon="ti-message-circle"
             title="Feedback"
-            detail="Share what would make PawStreak better."
-            action="Soon"
-            disabled
+            detail="Email feedback to the PawStreak team."
+            onClick={() => window.location.assign('mailto:hello@pawstreakapp.com?subject=PawStreak%20Feedback')}
           />
         </div>
       </section>
+
+      {!isDemoMode && onDeleteAccount ? (
+        <section className="settings-section settings-danger-zone">
+          <h2 className="st-section-label settings-section-label">Account deletion</h2>
+          <p className="settings-location-copy">Permanently removes your account, dog profiles, adventures, memories, pack access, and stored photos.</p>
+          {!deleteArmed ? (
+            <button type="button" className="settings-delete-account tap-target" onClick={() => setDeleteArmed(true)}>Delete account</button>
+          ) : (
+            <div className="settings-delete-confirm">
+              <p>This cannot be undone. Delete your PawStreak account?</p>
+              <div className="settings-delete-actions">
+                <button type="button" className="settings-delete-account tap-target" disabled={deleting} onClick={() => {
+                  setDeleting(true)
+                  setDeleteError(null)
+                  void onDeleteAccount().catch((error) => {
+                    setDeleteError(error instanceof Error ? error.message : 'Could not delete account.')
+                    setDeleting(false)
+                  })
+                }}>{deleting ? 'Deleting…' : 'Yes, permanently delete'}</button>
+                <button type="button" className="settings-cancel-delete tap-target" disabled={deleting} onClick={() => setDeleteArmed(false)}>Cancel</button>
+              </div>
+              {deleteError ? <p className="demo-feedback-status" role="alert">{deleteError}</p> : null}
+            </div>
+          )}
+        </section>
+      ) : null}
 
       <section className="settings-section settings-section--signout">
         <button

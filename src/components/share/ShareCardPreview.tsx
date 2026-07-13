@@ -230,7 +230,7 @@ export function ShareCardPreview({ data, onClose }: ShareCardPreviewProps) {
       />
       <div className="share-preview-shell" role="dialog" aria-modal="true">
         <div className="share-preview-topbar">
-          <button type="button" className="share-preview-close tap-target" onClick={onClose}>
+          <button type="button" className="share-preview-close tap-target" aria-label="Close share preview" onClick={onClose}>
             <i className="ti ti-x" aria-hidden="true" />
           </button>
           <div className="share-preview-title">Create Story</div>

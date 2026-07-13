@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import type { AppState } from '../../data/demo'
-import { getDisplayDogLabel } from '../../lib/profileDisplay'
+import { getDisplayDogLabel, getProfileDogs } from '../../lib/profileDisplay'
 import { CardImage } from '../../components/CardImage'
 import { PlanAdventureMap } from '../../components/PlanAdventureMap'
 import { JourneyPlannedSection } from '../../components/JourneyPlannedSection'
@@ -67,7 +67,7 @@ export function PlanScreen({
   const locationSupported = state.locationSupported
   const places = useMemo(
     () => getPlanNearbyPlaces(state.selectedPlanCategoryId, proximityBucket, prefs, state),
-    [state, state.selectedPlanCategoryId, proximityBucket, prefs],
+    [state, proximityBucket, prefs],
   )
   const mapPlaces = useMemo(
     () =>
@@ -79,6 +79,7 @@ export function PlanScreen({
   const suggestedPicks = useMemo(() => getMapPreviewPlaces(prefs, state), [prefs, state])
   const visiblePlaces = showAllPlaces ? places : places.slice(0, 6)
   const dogLabel = getDisplayDogLabel(state)
+  const leadDog = getProfileDogs(state)[0]
   const locationRegion = /orange\s*county/i.test(state.locationLabel)
     ? 'Orange County'
     : /san\s*diego/i.test(state.locationLabel)
@@ -199,9 +200,9 @@ export function PlanScreen({
             <BrandLogoCircle size={28} />
             <span>PawStreak</span>
           </div>
-          <div className="alogo">Find Spots Nearby</div>
+          <div className="alogo">What are we doing today?</div>
           <p className="plan-screen-sub">
-            Dog-friendly places for {dogLabel} near {state.locationLabel || state.zipCode}.
+            Pick something that makes {dogLabel} lose their mind—in a good way.
           </p>
         </div>
         {onCreateStory ? (
@@ -211,6 +212,25 @@ export function PlanScreen({
           </button>
         ) : null}
       </div>
+
+      <section className="explore-hype" aria-label={`${dogLabel} is ready to explore`}>
+        <div className="explore-hype-dog">
+          {leadDog?.photoUrl ? (
+            <img src={leadDog.photoUrl} alt={leadDog.name} />
+          ) : (
+            <span aria-hidden="true">{leadDog?.profileEmoji ?? '🐕'}</span>
+          )}
+          <i className="explore-hype-bandana" aria-hidden="true" />
+        </div>
+        <div className="explore-hype-copy">
+          <span>Adventure mode</span>
+          <strong>{dogLabel} is ready. Pick the mission.</strong>
+        </div>
+        <div className="explore-hype-words" aria-hidden="true">
+          <span>RUN</span><span>SNIFF</span><span>SPLASH</span>
+        </div>
+        <div className="explore-hype-paws" aria-hidden="true">🐾 🐾 🐾</div>
+      </section>
 
       {state.randomPlanResult ? (
         <section
@@ -336,7 +356,7 @@ export function PlanScreen({
                     onOpenAddAdventure?.()
                   }}
                 >
-                  Go
+                  Let&apos;s go
                 </button>
               </div>
             ))}
@@ -425,7 +445,7 @@ export function PlanScreen({
                   handlePlaceGo(place.id)
                 }}
               >
-                Go
+                Let&apos;s go
               </button>
             </div>
           )

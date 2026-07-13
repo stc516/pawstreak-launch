@@ -117,7 +117,7 @@ export async function persistOnboardingToSupabase(
   locationOverride?: LocationProfile,
 ) {
   const location = locationOverride ?? resolveLocationProfile(result.locationQuery)
-  await upsertProfileFromOnboarding(userId, email, result, {
+  const savedProfile = await upsertProfileFromOnboarding(userId, email, result, {
     zipCode: location.zipCode,
     locationQuery: location.query,
     locationLabel: location.label,
@@ -126,6 +126,9 @@ export async function persistOnboardingToSupabase(
 
   const localDogs = buildDogsFromOnboarding(result.dogs)
   const createdDogs = await createDogsForUser(userId, localDogs)
+  if (!savedProfile.onboarding_complete || createdDogs.length !== localDogs.length) {
+    throw new Error('PawStreak could not confirm your saved setup. Please try again.')
+  }
 
   if (result.dogPhotoDataUrl && createdDogs[0]) {
     const photoPath = await uploadDogPhoto(

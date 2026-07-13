@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import type { AppState, CommunityPost } from '../../data/demo'
 import { getDisplayDogLabel } from '../../lib/profileDisplay'
 import { CardImage } from '../../components/CardImage'
@@ -21,6 +21,7 @@ export function CommunityComposeOverlay({
     memoryOptions[0]?.id ?? '',
   )
   const [caption, setCaption] = useState('')
+  const postId = useId()
 
   const selectedEntry = memoryOptions.find((entry) => entry.id === selectedEntryId)
   const place = selectedEntry?.placeId
@@ -34,7 +35,7 @@ export function CommunityComposeOverlay({
 
     const dogLabel = getDisplayDogLabel(state)
     onSubmit({
-      id: `user-post-${Date.now()}`,
+      id: `user-post-${postId}`,
       placeId: selectedEntry?.placeId,
       photoUrl: previewUrl,
       avatarClass: 'cp-av1',

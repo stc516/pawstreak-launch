@@ -36,7 +36,7 @@ export function AchievementDetailView({
               Back
             </button>
             {onCreateStory ? (
-              <button type="button" className="overlay-action tap-target" onClick={onCreateStory}>
+              <button type="button" className="overlay-action tap-target" aria-label="Share achievement" onClick={onCreateStory}>
                 <i className="ti ti-share" aria-hidden="true" />
               </button>
             ) : null}

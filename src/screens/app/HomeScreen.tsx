@@ -21,11 +21,10 @@ import {
 } from '../../lib/monthlyPlan'
 import { getCurrentTrainingSession } from '../../lib/trainingSchedule'
 import { getTrainingProgramById } from '../../data/training'
-import { getFeaturedTrainingProgram } from '../../lib/trainingEngine'
 import { GENERIC_ADVENTURE_TYPES } from '../../lib/genericAdventures'
 import { getHomeUpcomingItems } from '../../lib/homeUpcoming'
-import { AdventureGuideDog } from '../../components/AdventureGuideDog'
 import { BrandLogoCircle } from '../../components/BrandLogoCircle'
+import { DogAdventureScene, type DogAdventureSceneState } from '../../components/DogAdventureScene'
 
 interface HomeScreenProps {
   state: AppState
@@ -48,17 +47,18 @@ interface HomeScreenProps {
 
 export function HomeScreen({
   state,
+  isDemoMode = false,
   onSelectActivity,
   onStartAdventure,
   onStartNeighborhoodWalk,
   onOpenProfile,
   onOpenChallenge,
+  onOpenMemory,
   onGoToPlan,
   onOpenBuildMyMonth,
   onStartMonthlyPlanAdventure,
   onContinueTraining,
   onOpenAddAdventure,
-  onOpenTrainingProgramFlow,
   onGoToChallenges,
 }: HomeScreenProps) {
   const profileDogs = getProfileDogs(state)
@@ -88,8 +88,22 @@ export function HomeScreen({
   const trainingProgram = state.activeTrainingSchedule
     ? getTrainingProgramById(state.activeTrainingSchedule.programId)
     : null
-  const featuredTraining = useMemo(() => getFeaturedTrainingProgram(state), [state])
-  const featuredTrainingLesson = featuredTraining?.progress.lessons.find((lesson) => !lesson.completed)
+  const todayKey = new Date().toLocaleDateString('en-CA')
+  const todayEntry = state.journeyEntries.find((entry) => {
+    if (entry.date.trim().toLowerCase() === 'today') return true
+    if (!entry.occurredAt) return false
+    const occurred = new Date(entry.occurredAt)
+    return !Number.isNaN(occurred.getTime()) && occurred.toLocaleDateString('en-CA') === todayKey
+  })
+  const sceneState: DogAdventureSceneState = state.activeAdventure
+    ? 'adventuring'
+    : todayEntry
+      ? 'memory'
+      : new Date().getHours() >= 17
+        ? 'evening'
+        : 'ready'
+  const leadDog = profileDogs[0]
+  const todayPhoto = todayEntry?.photoUrls?.find(Boolean)
 
   const handleQuickAdventure = () => {
     onSelectActivity(heroActivityId)
@@ -146,38 +160,47 @@ export function HomeScreen({
         </div>
       ) : null}
 
-      <section className="st-welcome">
-        <div>
-          <h2 className="st-headline-lg home-headline">
-            {welcomeGreeting},
-            <br />
-            {dogLabel}
-          </h2>
-          <p className="st-welcome-meta">
-            {progress.streak} day streak · {progress.adventuresCompleted} adventures ·{' '}
-            {progress.memoriesSaved} memories
-          </p>
-        </div>
-        <AdventureGuideDog className="home-guide-dog" withBurst />
-      </section>
+      <div className="today-greeting">
+        <span>{welcomeGreeting}</span>
+        <strong>{dogLabel}&apos;s day</strong>
+      </div>
 
-      <section className="home-quick-walk-hero" aria-label="Quick Walk">
+      <DogAdventureScene
+        dog={leadDog}
+        packLabel={dogLabel}
+        state={sceneState}
+        memoryPhotoUrl={todayPhoto}
+      />
+
+      <section className="today-actions" aria-label="Today’s adventure">
         <button
           type="button"
-          className="home-quick-walk-btn tap-target"
-          onClick={onStartNeighborhoodWalk}
+          className="today-primary-action tap-target"
+          onClick={todayEntry && onOpenMemory ? () => onOpenMemory(todayEntry.id) : handleQuickAdventure}
         >
-          <span className="home-quick-walk-icon" aria-hidden="true">
-            <i className="ti ti-walk" />
+          <span>
+            <small>{todayEntry ? 'Today’s story' : 'Recommended for today'}</small>
+            <strong>{todayEntry ? `Remember ${todayEntry.place}` : 'Choose today’s adventure'}</strong>
           </span>
-          <span className="home-quick-walk-copy">
-            <span className="home-quick-walk-title">Quick Walk</span>
-            <span className="home-quick-walk-sub">Use the usual route when today is simple.</span>
-          </span>
-          <span className="home-quick-walk-arrow" aria-hidden="true">
-            <i className="ti ti-arrow-right" />
-          </span>
+          <i className={`ti ${todayEntry ? 'ti-book' : 'ti-arrow-right'}`} aria-hidden="true" />
         </button>
+        <div className="today-secondary-actions">
+          <button type="button" className="tap-target" onClick={onStartNeighborhoodWalk}>
+            <i className="ti ti-walk" aria-hidden="true" />
+            Quick Walk
+          </button>
+          <button type="button" className="tap-target" onClick={onOpenAddAdventure}>
+            <i className="ti ti-plus" aria-hidden="true" />
+            Add your own
+          </button>
+        </div>
+        {!isDemoMode && progress.adventuresCompleted > 0 ? (
+          <div className="today-real-progress" aria-label="Your real progress">
+            <span>{progress.adventuresCompleted} {progress.adventuresCompleted === 1 ? 'story' : 'stories'} saved</span>
+            {progress.places > 0 ? <span>{progress.places} {progress.places === 1 ? 'place' : 'places'} explored</span> : null}
+            {progress.streak > 1 ? <span>{progress.streak} active days</span> : null}
+          </div>
+        ) : null}
       </section>
 
       {state.locationSupported ? (
@@ -241,49 +264,9 @@ export function HomeScreen({
         </section>
       )}
 
-      <section className="home-training-feature detail-card-warm" aria-label="Training">
-        <div className="home-training-feature-art" aria-hidden="true">
-          <i className="ti ti-school" />
-        </div>
-        <div className="home-training-feature-copy">
-          <div className="home-training-feature-kicker">Training</div>
-          <h2>
-            {trainingSession && trainingProgram
-              ? `Today: ${trainingSession.lessonTitle}`
-              : featuredTraining
-                ? featuredTraining.title
-                : 'Train together'}
-          </h2>
-          <p>
-            {trainingSession && trainingProgram
-              ? `${trainingProgram.title} · short practice that makes adventures easier.`
-              : featuredTrainingLesson
-                ? `${featuredTrainingLesson.lesson.title} · ${featuredTraining?.subtitle ?? 'Build good habits in short sessions.'}`
-                : 'Short practice for calmer walks, better check-ins, and easier outings.'}
-          </p>
-        </div>
-        <button
-          type="button"
-          className="home-training-feature-cta tap-target"
-          onClick={() => {
-            if (trainingProgram) {
-              onContinueTraining(trainingProgram.id)
-              return
-            }
-            if (featuredTraining) {
-              onContinueTraining(featuredTraining.id)
-              return
-            }
-            onOpenTrainingProgramFlow()
-          }}
-        >
-          {trainingSession ? 'Continue' : 'Open'}
-        </button>
-      </section>
-
-      <section className="home-plan-new" aria-label="Better Dog Days">
+      <section className="home-plan-new" aria-label="More ways to make today count">
         <div className="st-section-head">
-          <h2 className="st-headline-md">Better Dog Days</h2>
+          <h2 className="st-headline-md">More ways to make today count</h2>
         </div>
         <div className="home-plan-grid">
           <button type="button" className="home-plan-action tap-target" onClick={onGoToPlan}>

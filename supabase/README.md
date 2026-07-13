@@ -27,11 +27,15 @@
    supabase/migrations/009_user_events.sql
    supabase/migrations/010_storage_memory_photos.sql
    supabase/migrations/011_waitlist_signups.sql
-   supabase/migrations/012_places_sd_oc_expansion.sql
-   supabase/migrations/013_location_candidates.sql
-   supabase/migrations/014_add_adventure_scheduling.sql
-   supabase/migrations/015_remove_demo_counts.sql
-   supabase/migrations/016_pack_access_mvp.sql
+	   supabase/migrations/012_dogs_photo_path.sql
+	   supabase/migrations/013_custom_adventure.sql
+	   supabase/migrations/014_location_candidates.sql
+	   supabase/migrations/015_location_expansion_requests.sql
+	   supabase/migrations/016_pack_access_mvp.sql
+	   supabase/migrations/017_neighborhood_walk_place.sql
+	   supabase/migrations/018_release_privacy_hardening.sql
+	   supabase/migrations/019_release_storage_and_invite_hardening.sql
+	   supabase/migrations/020_push_notifications.sql
    supabase/seed/places.sql
    ```
 
@@ -40,6 +44,7 @@
    ```bash
    VITE_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
    VITE_SUPABASE_ANON_KEY=YOUR_ANON_KEY
+   VITE_WEB_PUSH_PUBLIC_KEY=YOUR_VAPID_PUBLIC_KEY
    # Vercel Production only:
    # VITE_SITE_URL=https://pawstreakapp.com
    ```
@@ -51,10 +56,28 @@
    supabase secrets set RESEND_FROM_EMAIL="PawStreak <hello@pawstreakapp.com>"
    supabase secrets set SITE_URL="https://pawstreakapp.com"
    supabase functions deploy pack-invites
-   supabase functions deploy pack-invite-accept
+	   supabase functions deploy pack-invite-accept
+	   supabase functions deploy delete-account
+	   supabase functions deploy push-subscriptions
+	   supabase functions deploy send-push-reminders
    ```
 
+10. Morning and evening Web Push reminders require a VAPID key pair. Generate
+    the pair once; the private key must never
+    be added to the browser bundle or committed:
+
+   ```bash
+   npx web-push generate-vapid-keys
+   supabase secrets set WEB_PUSH_VAPID_PUBLIC_KEY="..." WEB_PUSH_VAPID_PRIVATE_KEY="..." WEB_PUSH_VAPID_SUBJECT="mailto:hello@pawstreakapp.com"
+   ```
+
+   Put the same public key in Vercel as `VITE_WEB_PUSH_PUBLIC_KEY`. Migration
+   `020` creates the 15-minute cron job and uses expiring, single-use database
+   tokens to authenticate each sender invocation.
+
 7. Restart dev server.
+
+9. Mark trusted internal users from a service-role environment by setting protected Auth `app_metadata.internal=true`. Internal routes and feedback reads reject all other users.
 
 Regenerate places seed after catalog changes:
 
@@ -80,6 +103,7 @@ npx tsx scripts/generate-places-seed.mjs
 | `pack_invites` | Email-only invite tokens |
 | `rate_limit_events` | Daily write limit ledger |
 | `challenge_requests` | Unsupported-market local challenge requests |
+| `push_subscriptions` | Per-device Web Push endpoint and AM/evening schedule |
 | `demo_feedback` | Legacy demo tester feedback (unchanged) |
 
 ## Storage

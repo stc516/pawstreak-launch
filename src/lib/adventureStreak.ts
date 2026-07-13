@@ -34,7 +34,7 @@ export function calculateAdventureStreak(entries: JourneyEntry[]): number {
   if (dayKeys.size === 0) return 0
 
   const today = new Date()
-  let cursor = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+  const cursor = new Date(today.getFullYear(), today.getMonth(), today.getDate())
 
   const todayKey = toLocalDayKey(cursor)
   if (!dayKeys.has(todayKey)) {

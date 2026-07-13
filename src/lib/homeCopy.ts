@@ -142,6 +142,7 @@ export function getMemoryWarmLabel(index: number): string {
   return 'A place they loved'
 }
 
-export function getPackEnergyNote(_locationLabel: string): string {
+export function getPackEnergyNote(locationLabel: string): string {
+  void locationLabel
   return 'The pack is out exploring — your turn next.'
 }

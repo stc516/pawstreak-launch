@@ -26,9 +26,9 @@ export async function upsertProfileFromOnboarding(
     locationLabel: string
     locationSupported: boolean
   },
-): Promise<ProfileRow | null> {
+): Promise<ProfileRow> {
   const supabase = getSupabaseClient()
-  if (!supabase) return null
+  if (!supabase) throw new Error('PawStreak could not connect to your account. Please try again.')
 
   const payload = {
     id: userId,
@@ -49,7 +49,8 @@ export async function upsertProfileFromOnboarding(
     .select('*')
     .single()
 
-  if (error || !data) return null
+  if (error) throw new Error(`Could not save your profile: ${error.message}`)
+  if (!data) throw new Error('Could not confirm your saved profile. Please try again.')
   return data as ProfileRow
 }
 

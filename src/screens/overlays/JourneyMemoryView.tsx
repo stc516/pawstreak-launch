@@ -76,6 +76,9 @@ export function JourneyMemoryView({
       <div className="app-shell">
         <StatusBar />
         <main ref={scrollRef} className="scroll scroll--overlay">
+          <div className="memory-cinema-burst" aria-hidden="true">
+            <span>✦</span><span>✦</span><span>✦</span><span>✦</span>
+          </div>
           <div className="overlay-topbar">
             <button type="button" className="overlay-back tap-target" onClick={onBack}>
               <i className="ti ti-arrow-left" aria-hidden="true" />
@@ -100,7 +103,23 @@ export function JourneyMemoryView({
             </div>
           ) : null}
 
+          <div className="memory-story-saved">
+            <div className="memory-story-dog">
+              {contentDogs[0]?.photoUrl ? (
+                <img src={contentDogs[0].photoUrl} alt={contentDogs[0].name} />
+              ) : (
+                <span aria-hidden="true">{contentDogs[0]?.profileEmoji ?? '🐕'}</span>
+              )}
+            </div>
+            <div>
+              <span>YOU TWO ACTUALLY DID THAT</span>
+              <strong>That was a good day.</strong>
+            </div>
+            <i className="ti ti-check" aria-hidden="true" />
+          </div>
+
           <div className="memory-hero memory-hero--rich">
+            <div className="memory-film-mark" aria-hidden="true">PAWSTREAK REPLAY</div>
             {heroPhoto ? (
               <CardImage
                 className="memory-hero-img"
@@ -110,12 +129,24 @@ export function JourneyMemoryView({
               />
             ) : (
               <div className="memory-hero-empty">
-                <i className="ti ti-camera" aria-hidden="true" />
-                <strong>{isQuickWalk ? 'Quick Walk saved.' : 'Memory saved.'}</strong>
+                <div className="memory-empty-world" aria-hidden="true">
+                  <i className="memory-empty-sun" />
+                  <i className="memory-empty-hill memory-empty-hill--back" />
+                  <i className="memory-empty-hill memory-empty-hill--front" />
+                  <span className="memory-empty-paws">🐾 🐾 🐾</span>
+                  <span className="memory-empty-dog">
+                    {contentDogs[0]?.photoUrl ? (
+                      <img src={contentDogs[0].photoUrl} alt="" />
+                    ) : (
+                      contentDogs[0]?.profileEmoji ?? '🐕'
+                    )}
+                  </span>
+                </div>
+                <strong>No camera. Still a story.</strong>
                 <p>
                   {isQuickWalk
-                    ? 'No photo needed for the usual route. Add one when something stands out.'
-                    : 'No photos were added this time. The place, notes, and progress are still saved.'}
+                    ? 'The usual route still counts when you did it together.'
+                    : 'You went. You explored. PawStreak kept the day.'}
                 </p>
               </div>
             )}
@@ -131,7 +162,7 @@ export function JourneyMemoryView({
             <i className={`ti ${savedPhotos.length > 0 ? 'ti-photo-check' : 'ti-check'}`} aria-hidden="true" />
             <div>
               <strong>
-                {savedPhotos.length > 0 ? photoCountLabel : 'Saved to Journey'}
+                {savedPhotos.length > 0 ? photoCountLabel : 'This one stays with you'}
               </strong>
               <span>
                 {savedPhotos.length > 0
@@ -145,16 +176,16 @@ export function JourneyMemoryView({
 
           <div className="memory-context detail-card-warm">
             <div className="memory-context-item">
-              <span className="memory-context-label">Visits</span>
-              <span>{memory.visitCount} times here</span>
+              <span className="memory-context-label">Saved</span>
+              <span>{entry.date}</span>
             </div>
             <div className="memory-context-item">
               <span className="memory-context-label">Type</span>
               <span>{memory.adventureType}</span>
             </div>
             <div className="memory-context-item">
-              <span className="memory-context-label">Mood</span>
-              <span>{memory.memoryMood}</span>
+              <span className="memory-context-label">Photos</span>
+              <span>{savedPhotos.length}</span>
             </div>
           </div>
 
@@ -188,16 +219,18 @@ export function JourneyMemoryView({
             <p className="memory-favorite">{memory.favoriteMoment}</p>
           </div>
 
-          <div className="memory-section detail-card-warm">
-            <div className="memory-section-title">
-              What {dogLabel} loved
+          {memory.whatDogsLoved.length > 0 ? (
+            <div className="memory-section detail-card-warm">
+              <div className="memory-section-title">
+                What {dogLabel} loved
+              </div>
+              <ul className="memory-loved">
+                {memory.whatDogsLoved.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
             </div>
-            <ul className="memory-loved">
-              {memory.whatDogsLoved.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
+          ) : null}
 
           <div className="memory-chips">
             {memory.adventureChips.map((chip) => (
