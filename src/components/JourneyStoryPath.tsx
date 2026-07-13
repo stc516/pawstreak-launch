@@ -81,11 +81,11 @@ export function JourneyStoryPath({
             <span className="journey-story-rank-value">{completedCount}</span>
           </div>
         </div>
-        <h2 className="journey-story-title">Adventure path</h2>
+        <h2 className="journey-story-title">The good days</h2>
         <p className="journey-story-line">
           {completedCount > 0
-            ? `${completedCount} completed ${completedCount === 1 ? 'outing' : 'outings'} saved.`
-            : 'No completed adventures yet this month.'}
+            ? `${completedCount} ${completedCount === 1 ? 'adventure' : 'adventures'} worth remembering.`
+            : 'The first ridiculous little mission starts here.'}
         </p>
       </div>
 

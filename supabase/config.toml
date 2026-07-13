@@ -5,3 +5,12 @@ verify_jwt = true
 
 [functions.pack-invite-accept]
 verify_jwt = true
+
+[functions.delete-account]
+verify_jwt = true
+
+[functions.push-subscriptions]
+verify_jwt = true
+
+[functions.send-push-reminders]
+verify_jwt = false

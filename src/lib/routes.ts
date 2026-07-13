@@ -9,6 +9,10 @@ export const ROUTES = {
   demoApp: '/demo/app',
   demoOnboarding: '/demo/onboarding',
   earlyAccess: '/early-access',
+  privacy: '/privacy',
+  terms: '/terms',
+  support: '/support',
+  deleteAccount: '/delete-account',
 } as const
 
 export function isLandingRoute(pathname = window.location.pathname): boolean {
@@ -21,7 +25,13 @@ export function isStartRoute(pathname = window.location.pathname): boolean {
 
 /** Marketing pages that use landing layout + document scroll. */
 export function isMarketingRoute(pathname = window.location.pathname): boolean {
-  return isLandingRoute(pathname) || isStartRoute(pathname)
+  return isLandingRoute(pathname) || isStartRoute(pathname) || isLegalRoute(pathname)
+}
+
+export function isLegalRoute(pathname = window.location.pathname): boolean {
+  return [ROUTES.privacy, ROUTES.terms, ROUTES.support, ROUTES.deleteAccount].some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`),
+  )
 }
 
 export function isProductionAppRoute(pathname = window.location.pathname): boolean {

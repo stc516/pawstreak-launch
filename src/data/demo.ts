@@ -386,9 +386,9 @@ export const defaultAppState: AppState = {
       circleClass: 'dc-o',
     },
   ],
-  streak: 14,
-  adventureCount: 47,
-  placeCount: 22,
+  streak: 1,
+  adventureCount: 5,
+  placeCount: 5,
   durations: ['15 min', '30 min', 'Open end'],
   activities: [
     { id: 'beach', emoji: '🏖️', label: 'Beach' },
@@ -483,8 +483,8 @@ export const defaultAppState: AppState = {
   ],
   journeyTitle: "Bailey + Meiomi's Journey",
   journeyMap: {
-    title: '47 adventures saved',
-    subtitle: '22 places discovered · Tap to open your map',
+    title: '5 sample adventures saved',
+    subtitle: '5 sample places · Tap to open the map',
   },
   journeyFilters: [
     { id: 'all', label: 'All' },
@@ -494,9 +494,8 @@ export const defaultAppState: AppState = {
     { id: 'map-view', label: 'Map view' },
   ],
   flashback: {
-    title: '1 year ago today',
-    subtitle:
-      "Bailey's first visit to Torrey Pines. You've been back 6 times since.",
+    title: 'A favorite sample memory',
+    subtitle: 'Bailey and Meiomi found a trail worth remembering.',
   },
   journeyEntries: [
     {
@@ -514,7 +513,7 @@ export const defaultAppState: AppState = {
       place: 'Torrey Pines State Reserve',
       date: 'Tuesday',
       magicLine: 'Meiomi set the pace on the ridge.',
-      tags: ['Trail', 'On-leash', 'Bailey + Meiomi', '6th visit'],
+      tags: ['Trail', 'On-leash', 'Bailey + Meiomi', 'Sample memory'],
       photoUrls: [],
     },
     {
@@ -523,7 +522,7 @@ export const defaultAppState: AppState = {
       place: 'Julian Day Trip',
       date: 'Saturday',
       magicLine: 'Big adventure if they need to burn energy.',
-      tags: ['Road trip', '62 mi', 'Both dogs', 'New place'],
+      tags: ['Road trip', 'Both dogs', 'New place'],
       photoUrls: [],
     },
     {
@@ -558,22 +557,22 @@ export const defaultAppState: AppState = {
   bondLevel: {
     label: 'Journey Level',
     rank: 'Trail Scout',
-    fillWidth: '62%',
-    subtitle: '47 adventures · 22 places · Bailey + Meiomi',
+    fillWidth: '50%',
+    subtitle: '5 sample adventures · Bailey + Meiomi',
     nextRank: 'Local Legend',
-    nextUnlock: '3 more trail adventures to reach Local Legend.',
+    nextUnlock: 'Keep exploring to discover the next trail patch.',
     favoriteCategory: 'Beach days',
-    beachDays: 8,
+    beachDays: 1,
     recentMoments: [
       {
         emoji: '🏖️',
         title: 'First Beach Day',
-        subtitle: 'Dog Beach, OB · March 12',
+        subtitle: 'Dog Beach, OB · sample memory',
       },
       {
         emoji: '🌲',
         title: 'Trail Scout progress',
-        subtitle: 'Torrey Pines · 6 visits',
+        subtitle: 'Torrey Pines · sample memory',
       },
       {
         emoji: '🚗',
@@ -597,21 +596,21 @@ export const defaultAppState: AppState = {
       placeId: 'dog-beach-ocean-beach',
       emoji: '🏖️',
       name: 'Dog Beach, Ocean Beach',
-      visits: '12 visits · photos · memories',
+      visits: 'Sample favorite · photos · memories',
     },
     {
       id: 'fav-torrey',
       placeId: 'torrey-pines',
       emoji: '🌲',
       name: 'Torrey Pines Trail',
-      visits: '6 visits · photos · memories',
+      visits: 'Sample favorite · photos · memories',
     },
     {
       id: 'fav-julian',
       placeId: 'julian-day-trip',
       emoji: '🚗',
       name: 'Julian Day Trip',
-      visits: '2 visits · road trip · photos',
+      visits: 'Sample favorite · road trip · photos',
     },
   ],
   hasUserDogProfile: false,

@@ -49,7 +49,7 @@ export function PlanMapView({
       zoom: getMapInitialZoom(places),
       duration: 450,
     })
-  }, [bounds, mapCenter.lat, mapCenter.lng, places.length])
+  }, [bounds, mapCenter.lat, mapCenter.lng, places])
 
   useEffect(() => {
     if (!selectedPlaceId) return

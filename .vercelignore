@@ -1,0 +1,13 @@
+.git
+.tmp
+.vercel
+node_modules
+dist
+qa/evidence
+audits
+americana launch
+Baileys Big Climb
+references
+*.zip
+*.pdf
+ChatGPT Image *.png

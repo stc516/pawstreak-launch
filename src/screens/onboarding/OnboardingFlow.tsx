@@ -18,6 +18,7 @@ import {
   CTA_CREATE_ACCOUNT,
 } from '../../lib/brand'
 import type { EmailAuthResult } from '../../lib/auth'
+import { ROUTES } from '../../lib/routes'
 import {
   AUTH_EMAIL_CONFIRMATION_MESSAGE,
   AUTH_MAGIC_LINK_SENT_MESSAGE,
@@ -494,7 +495,8 @@ export function OnboardingFlow({
               </p>
             ) : null}
             <p className="caption onboarding-legal">
-              By joining you agree to our Privacy Policy and Terms.
+              By joining you agree to our <a href={ROUTES.privacy}>Privacy Policy</a> and{' '}
+              <a href={ROUTES.terms}>Terms</a>.
             </p>
           </div>
         </div>
@@ -562,6 +564,9 @@ export function OnboardingFlow({
                     {dogPhotoError}
                   </p>
                 ) : null}
+                <p className="caption onboarding-avatar-note">
+                  This becomes your dog&apos;s avatar throughout PawStreak.
+                </p>
               </div>
             ) : null}
 

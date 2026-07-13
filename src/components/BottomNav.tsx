@@ -8,17 +8,15 @@ interface BottomNavProps {
   mode?: 'app' | 'demo'
 }
 
-const TAB_META: Record<
-  Exclude<TabId, 'profile'>,
-  { label: string; icon: string }
-> = {
-  home: { label: 'Home', icon: 'ti-home' },
-  plan: { label: 'Plan', icon: 'ti-map' },
+const TAB_META: Record<TabId, { label: string; icon: string }> = {
+  home: { label: 'Today', icon: 'ti-home' },
+  plan: { label: 'Explore', icon: 'ti-map' },
   journey: { label: 'Journey', icon: 'ti-compass' },
   community: { label: 'Community', icon: 'ti-users' },
   milestones: { label: 'Challenges', icon: 'ti-trophy' },
   rewards: { label: 'Rewards', icon: 'ti-medal' },
   achievements: { label: 'Achievements', icon: 'ti-medal' },
+  profile: { label: 'Pack', icon: 'ti-paw' },
 }
 
 export function BottomNav({
@@ -32,7 +30,6 @@ export function BottomNav({
   return (
     <nav className={className} aria-label="Main navigation">
       {tabs.map((tab) => {
-        if (tab === 'profile') return null
         const isActive = activeTab === tab
         const meta = TAB_META[tab]
 

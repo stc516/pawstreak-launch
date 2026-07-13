@@ -78,7 +78,8 @@ export async function fetchDogsForUser(userId: string): Promise<Dog[]> {
 
 export async function createDogsForUser(userId: string, dogs: Dog[]): Promise<Dog[]> {
   const supabase = getSupabaseClient()
-  if (!supabase || dogs.length === 0) return dogs
+  if (dogs.length === 0) return []
+  if (!supabase) throw new Error('PawStreak could not connect to your account. Please try again.')
 
   const rows = dogs.map((dog, index) => ({
     user_id: userId,
@@ -93,7 +94,10 @@ export async function createDogsForUser(userId: string, dogs: Dog[]): Promise<Do
   }))
 
   const { data, error } = await supabase.from('dogs').insert(rows).select('*')
-  if (error || !data) return dogs
+  if (error) throw new Error(`Could not save your dog profile: ${error.message}`)
+  if (!data || data.length !== rows.length) {
+    throw new Error('Could not confirm every saved dog profile. Please try again.')
+  }
   return Promise.all((data as DogRow[]).map(dogRowToDog))
 }
 

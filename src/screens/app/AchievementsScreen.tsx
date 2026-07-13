@@ -4,6 +4,7 @@ import type { Achievement } from '../../data/achievements'
 import { resolveAchievementsByCategory } from '../../lib/achievementEngine'
 import { AchievementIdentityCard } from '../../components/AchievementIdentityCard'
 import { AdventureGuideDog } from '../../components/AdventureGuideDog'
+import { getProfileDogs } from '../../lib/profileDisplay'
 import { BrandLogoCircle } from '../../components/BrandLogoCircle'
 
 interface AchievementsScreenProps {
@@ -22,6 +23,7 @@ export function AchievementsScreen({
   onOpenAchievement,
   onCreateStory,
 }: AchievementsScreenProps) {
+  const leadDog = getProfileDogs(state)[0]
   const grouped = useMemo(() => resolveAchievementsByCategory(state), [state])
   const earned = useMemo(
     () => sortAchievements(grouped.flatMap((group) => group.achievements.filter((item) => item.status === 'done'))),
@@ -55,7 +57,7 @@ export function AchievementsScreen({
             </button>
           ) : null}
         </div>
-        <AdventureGuideDog className="achievements-guide-dog" withBurst />
+        <AdventureGuideDog className="achievements-guide-dog" withBurst dog={leadDog} />
       </header>
 
       <section className="achievements-section">

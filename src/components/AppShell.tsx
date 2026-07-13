@@ -52,9 +52,11 @@ export function AppShell({
         ) : null}
         <main
           ref={scrollRef}
-          className={`scroll${activeTab === 'home' ? ' scroll--home' : ''}`}
+          className={`scroll scroll--energy scroll--energy-${activeTab}${activeTab === 'home' ? ' scroll--home' : ''}`}
         >
-          {children}
+          <div key={`${activeTab}-${navTapCount}`} className="screen-energy-stage">
+            {children}
+          </div>
         </main>
         {showNavigation ? (
           <footer className="app-shell-footer">

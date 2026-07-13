@@ -36,10 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const supabase = getSupabaseClient()
-    if (!supabase) {
-      setLoading(false)
-      return
-    }
+    if (!supabase) return
 
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session)

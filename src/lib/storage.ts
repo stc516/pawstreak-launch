@@ -265,11 +265,12 @@ export function applyLaunchSessionState(state: AppState): AppState {
 }
 
 function normalizeAppState(state: AppState, mode: AppMode): AppState {
-  const { heroSpot: _heroSpot, planPlaces: _planPlaces, ...rest } =
-    state as AppState & {
+  const rest = { ...state } as AppState & {
       heroSpot?: unknown
       planPlaces?: unknown
     }
+  delete rest.heroSpot
+  delete rest.planPlaces
 
   let normalized: AppState = {
     ...rest,

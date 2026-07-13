@@ -42,6 +42,7 @@ import {
   getInviteToken,
   isLandingRoute,
   isMarketingRoute,
+  isLegalRoute,
   isProductionAppRoute,
   isStartRoute,
   ROUTES,
@@ -134,11 +135,7 @@ import {
   startAdventureOnServer,
 } from './lib/appDataSync'
 import { applyRealUserContent } from './lib/productionState'
-import {
-  getDefaultNavTab,
-  isNavTabVisible,
-  LIVE_PRODUCT,
-} from './lib/liveProductFeatures'
+import { LIVE_PRODUCT } from './lib/liveProductFeatures'
 import { deleteDogForUser, setActiveDog, updateDogForUser } from './lib/db/dogs'
 import { fetchMemoriesForUser, countDistinctPlaces, memoryRowToJourneyEntry } from './lib/db/memories'
 import { insertEarlyAccessSignup } from './lib/db/earlyAccess'
@@ -159,6 +156,9 @@ import {
   sendPackInvite,
 } from './lib/db/packAccess'
 import { ShareCardPreview } from './components/share/ShareCardPreview'
+import { deleteCurrentAccount } from './lib/accountDeletion'
+import { DeleteAccountPage, PrivacyPage, SupportPage, TermsPage } from './screens/LegalPage'
+import { InternalAccessGate } from './screens/internal/InternalAccessGate'
 import { buildShareCardData, type ShareCardRequest } from './lib/shareCardData'
 
 function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
@@ -203,12 +203,12 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   useEffect(() => {
     if (!useProductionBackend || auth.loading) return
     if (!auth.user) {
-      setDataHydrated(true)
+      queueMicrotask(() => setDataHydrated(true))
       return
     }
 
     let cancelled = false
-    void hydrateProductionState(auth.user.id, state).then((next) => {
+    void hydrateProductionState(auth.user.id, latestStateRef.current).then((next) => {
       if (cancelled) return
       setState((current) => ({ ...current, ...next }))
       setDataHydrated(true)
@@ -217,7 +217,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     return () => {
       cancelled = true
     }
-  }, [auth.user?.id, auth.loading, useProductionBackend])
+  }, [auth.user, auth.loading, useProductionBackend])
 
   useEffect(() => {
     if (!useProductionBackend || !auth.user || !dataHydrated) return
@@ -225,15 +225,15 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     if (!inviteToken || acceptedInviteTokenRef.current === inviteToken) return
 
     acceptedInviteTokenRef.current = inviteToken
+    window.history.replaceState({}, '', ROUTES.app)
     void acceptPackInvite(inviteToken)
       .then(async () => {
-        const refreshed = await hydrateProductionState(auth.user!.id, state)
+        const refreshed = await hydrateProductionState(auth.user!.id, latestStateRef.current)
         setState((current) => ({
           ...current,
           ...refreshed,
           packAccessToast: 'Pack invite accepted. Welcome in.',
         }))
-        window.history.replaceState({}, '', ROUTES.app)
       })
       .catch((error) => {
         const message =
@@ -244,7 +244,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
           packAccessToast: message,
         }))
       })
-  }, [auth.user?.id, dataHydrated, useProductionBackend])
+  }, [auth.user, dataHydrated, useProductionBackend])
 
   useEffect(() => {
     saveAppState(state, appMode)
@@ -275,7 +275,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   }, [])
 
   useEffect(() => {
-    setState((current) => {
+    queueMicrotask(() => setState((current) => {
       const patch: Partial<AppState> = {}
 
       if (
@@ -315,7 +315,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       }
 
       return { ...current, ...patch }
-    })
+    }))
   }, [
     state.journeyEntries,
     state.joinedChallenges,
@@ -1584,6 +1584,12 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     }
   }
 
+  const handleDeleteAccount = async () => {
+    await deleteCurrentAccount()
+    resetProductionAppState()
+    window.location.assign(ROUTES.landing)
+  }
+
   const handleGoogleAuth = async () => {
     setAuthLoading(true)
     setAuthError(null)
@@ -1653,13 +1659,6 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       })
     })
   }
-
-  useEffect(() => {
-    if (state.activeTab === 'profile') return
-    const mode = isDemoMode ? 'demo' : 'app'
-    if (isNavTabVisible(state.activeTab, mode)) return
-    setState((current) => ({ ...current, activeTab: getDefaultNavTab() }))
-  }, [state.activeTab, isDemoMode])
 
   const clearMemorySaveToast = () => {
     setState((current) => ({ ...current, memorySaveToast: null }))
@@ -2058,12 +2057,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     }
   }
 
-  const screenTab =
-    state.activeTab === 'profile'
-      ? 'profile'
-      : isNavTabVisible(state.activeTab, isDemoMode ? 'demo' : 'app')
-        ? state.activeTab
-        : getDefaultNavTab()
+  const screenTab = state.activeTab
 
   const renderScreen = () => {
     switch (screenTab) {
@@ -2119,12 +2113,12 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onGoToPlan={() => setActiveTab('plan')}
             onDismissToast={clearMemorySaveToast}
             onCreateStory={() => setShareCardRequest({ kind: 'monthly-recap' })}
+            onOpenChallenges={() => setActiveTab('milestones')}
+            onOpenRewards={() => setActiveTab('rewards')}
+            onOpenCommunity={() => setActiveTab('community')}
           />
         )
       case 'community':
-        if (!isNavTabVisible('community', isDemoMode ? 'demo' : 'app')) {
-          return null
-        }
         return <CommunityScreen />
       case 'rewards':
       case 'achievements':
@@ -2159,6 +2153,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onZipChange={setZipCode}
             onApplyLocation={applyLocationFromZip}
             onSignOut={useProductionBackend ? handleSignOut : undefined}
+            onDeleteAccount={useProductionBackend ? handleDeleteAccount : undefined}
           />
         )
       default:
@@ -2216,11 +2211,11 @@ function App() {
   }, [pathname])
 
   if (isContentStudioRoute(pathname)) {
-    return <ContentStudio />
+    return <InternalAccessGate><ContentStudio /></InternalAccessGate>
   }
 
   if (isFeedbackDashboardRoute(pathname)) {
-    return <FeedbackDashboard />
+    return <InternalAccessGate><FeedbackDashboard /></InternalAccessGate>
   }
 
   if (isEarlyAccessRoute(pathname)) {
@@ -2233,6 +2228,13 @@ function App() {
 
   if (isStartRoute(pathname)) {
     return <StartPage />
+  }
+
+  if (isLegalRoute(pathname)) {
+    if (pathname.startsWith(ROUTES.privacy)) return <PrivacyPage />
+    if (pathname.startsWith(ROUTES.terms)) return <TermsPage />
+    if (pathname.startsWith(ROUTES.support)) return <SupportPage />
+    return <DeleteAccountPage />
   }
 
   if (demoRoute === 'launcher') {

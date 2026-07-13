@@ -99,9 +99,11 @@ function isNeighborhoodEntry(entry: JourneyEntry): boolean {
 }
 
 export function isChallengeWindowActive(
-  _challenge: Challenge,
-  _now = Date.now(),
+  challenge: Challenge,
+  now = Date.now(),
 ): boolean {
+  void challenge
+  void now
   return true
 }
 

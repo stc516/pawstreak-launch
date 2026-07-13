@@ -297,7 +297,7 @@ export function ContentStudio() {
 
   useEffect(() => {
     if (focusedId && !filtered.some((item) => item.id === focusedId)) {
-      setFocusedId(null)
+      queueMicrotask(() => setFocusedId(null))
     }
   }, [filtered, focusedId])
 

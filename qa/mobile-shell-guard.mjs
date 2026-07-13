@@ -23,11 +23,10 @@ const OUT_DIR =
   process.env.QA_OUT_DIR || path.join(__dirname, 'evidence', 'mobile-shell-guard')
 
 const APP_TABS = [
-  { id: 'home', label: 'Home' },
-  { id: 'plan', label: 'Plan' },
+  { id: 'home', label: 'Today' },
+  { id: 'plan', label: 'Explore' },
   { id: 'journey', label: 'Journey' },
-  { id: 'challenges', label: 'Challenges' },
-  { id: 'community', label: 'Community' },
+  { id: 'profile', label: 'Pack' },
 ]
 
 async function openDemoApp(page) {
@@ -38,7 +37,7 @@ async function openDemoApp(page) {
 }
 
 async function checkScreen(page, screen) {
-  if (screen.label !== 'Home') {
+  if (screen.id !== 'home') {
     await page.getByRole('button', { name: screen.label, exact: true }).click()
     await page.waitForTimeout(500)
   }
@@ -83,51 +82,6 @@ async function main() {
       }
     }
 
-    await page.getByRole('button', { name: 'Challenges', exact: true }).click()
-    await page.waitForTimeout(400)
-    await page.getByRole('button', { name: /Badges & Achievements/i }).click()
-    await page.waitForTimeout(500)
-    const achievementsMetrics = await page.evaluate(collectShellLayoutMetrics)
-    const achievementsResult = assertShellLayout(achievementsMetrics, { requireNav: true })
-    results.push({
-      screen: 'achievements',
-      metrics: achievementsMetrics,
-      result: achievementsResult,
-    })
-    console.log(
-      `[${achievementsResult.ok ? 'PASS' : 'FAIL'}] achievements: ${
-        achievementsResult.ok
-          ? 'shell ok'
-          : `${achievementsResult.code} — ${achievementsResult.detail}`
-      }`,
-    )
-    if (!achievementsResult.ok) {
-      await page.screenshot({
-        path: path.join(OUT_DIR, 'fail-achievements.png'),
-        fullPage: false,
-      })
-    }
-
-    // Profile uses header pill, not bottom nav — still must fill the shell.
-    // Profile opens from the dog pill on Home.
-    await page.getByRole('button', { name: 'Home', exact: true }).click()
-    await page.waitForTimeout(400)
-    await page.locator('.home-dog-pill').click()
-    await page.waitForTimeout(500)
-    const profileMetrics = await page.evaluate(collectShellLayoutMetrics)
-    const profileResult = assertShellLayout(profileMetrics, { requireNav: true })
-    results.push({ screen: 'profile', metrics: profileMetrics, result: profileResult })
-    console.log(
-      `[${profileResult.ok ? 'PASS' : 'FAIL'}] profile: ${
-        profileResult.ok ? 'shell ok' : `${profileResult.code} — ${profileResult.detail}`
-      }`,
-    )
-    if (!profileResult.ok) {
-      await page.screenshot({
-        path: path.join(OUT_DIR, 'fail-profile.png'),
-        fullPage: false,
-      })
-    }
   } finally {
     await browser.close()
   }

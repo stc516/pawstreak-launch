@@ -27,6 +27,7 @@ interface ProfileScreenProps {
   onZipChange?: (zipCode: string) => void
   onApplyLocation?: () => void
   onSignOut?: () => Promise<void>
+  onDeleteAccount?: () => Promise<void>
 }
 
 interface DogCardProps {
@@ -241,6 +242,7 @@ export function ProfileScreen({
   onZipChange,
   onApplyLocation,
   onSignOut,
+  onDeleteAccount,
 }: ProfileScreenProps) {
   const profileDogs = getProfileDogs(state)
   const dogListRef = useRef<HTMLDivElement | null>(null)
@@ -317,6 +319,7 @@ export function ProfileScreen({
           })
         }}
         onSignOut={onSignOut}
+        onDeleteAccount={onDeleteAccount}
       />
     )
   }
@@ -340,7 +343,9 @@ export function ProfileScreen({
             <div className="st-headline-md alogo">{packLabel}</div>
             {memoryCount > 0 ? (
               <p className="profile-screen-sub st-body-md">
-                {memoryCount} {memoryCount === 1 ? 'memory' : 'memories'}
+                {isDemoMode
+                  ? 'Sample pack'
+                  : `${memoryCount} ${memoryCount === 1 ? 'memory' : 'memories'}`}
               </p>
             ) : null}
           </div>
@@ -356,6 +361,23 @@ export function ProfileScreen({
           </button>
         ) : null}
       </header>
+
+      {profileDogs.length > 0 ? (
+        <section className="pack-hype" aria-label={`${packLabel}, the adventure crew`}>
+          <div className="pack-hype-avatars">
+            {profileDogs.slice(0, 2).map((dog, index) => (
+              <span key={dog.id} className={`pack-hype-avatar pack-hype-avatar--${index + 1}`}>
+                {dog.photoUrl ? <img src={dog.photoUrl} alt={dog.name} /> : dog.profileEmoji}
+              </span>
+            ))}
+          </div>
+          <div className="pack-hype-copy">
+            <span>THE ADVENTURE CREW</span>
+            <strong>Built for bad ideas and very good stories.</strong>
+          </div>
+          <div className="pack-hype-sparks" aria-hidden="true">✦ ✦ ✦</div>
+        </section>
+      ) : null}
 
       <section className="profile-section" ref={dogListRef}>
         {profileDogs.length === 0 ? (
@@ -494,7 +516,7 @@ export function ProfileScreen({
 
       <section className="profile-section">
         <div className="st-section-head">
-          <h2 className="st-headline-lg">Your Stats</h2>
+          <h2 className="st-headline-lg">{isDemoMode ? 'Sample activity' : 'Your Stats'}</h2>
         </div>
         <div className="profile-stats-grid">
           <div className="profile-stat-card profile-stat-card--stitch">
