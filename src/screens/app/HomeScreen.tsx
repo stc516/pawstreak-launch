@@ -316,18 +316,20 @@ export function HomeScreen({
       ) : null}
 
       {trainingSession && trainingProgram ? (
-        <section className="home-training-active detail-card-warm" aria-label="Active training">
+        <section className="home-training-active home-training-active--electric" aria-label="Active training">
+          <div className="home-training-active-bolt" aria-hidden="true">⚡</div>
           <div className="home-active-plan-head">
             <div>
-              <div className="home-active-plan-kicker">{trainingProgram.title}</div>
-              <div className="home-active-plan-title">Today: {trainingSession.lessonTitle}</div>
+              <div className="home-active-plan-kicker">Today&apos;s skill quest · {trainingProgram.title}</div>
+              <div className="home-active-plan-title">{trainingSession.lessonTitle}</div>
+              <div className="home-training-active-sub">One tiny session. One better adventure.</div>
             </div>
             <button
               type="button"
               className="st-btn st-btn--forest tap-target"
               onClick={() => onContinueTraining(trainingProgram.id)}
             >
-              Continue
+              Let&apos;s train
             </button>
           </div>
         </section>

@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import type { AppState } from '../../data/demo'
 import type { TrainingProgram } from '../../data/training'
 import { CardImage } from '../../components/CardImage'
 import { resolveTrainingProgram } from '../../lib/trainingEngine'
+import { getDisplayDogLabel, getProfileDogs } from '../../lib/profileDisplay'
 
 interface TrainingProgramDetailViewProps {
   program: TrainingProgram
@@ -20,6 +22,15 @@ export function TrainingProgramDetailView({
 }: TrainingProgramDetailViewProps) {
   const resolved = resolveTrainingProgram(program, state)
   const { progress, reward } = resolved
+  const dogLabel = getDisplayDogLabel(state)
+  const leadDog = getProfileDogs(state)[0]
+  const [celebration, setCelebration] = useState<string | null>(null)
+  const nextLesson = progress.lessons.find((item) => !item.completed)
+
+  const handleComplete = (lessonId: string, lessonTitle: string) => {
+    setCelebration(lessonTitle)
+    onCompleteLesson(lessonId)
+  }
 
   return (
     <>
@@ -30,22 +41,31 @@ export function TrainingProgramDetailView({
         </button>
       </div>
 
-      <div className="training-detail-intro detail-tint detail-tint--warm">
-        <div className="training-detail-kicker">Training program</div>
-        <h1 className="training-detail-title">
-          <span aria-hidden="true">{resolved.emoji}</span> {resolved.title}
-        </h1>
-        <p className="training-detail-copy">{resolved.description}</p>
+      <div className="training-detail-intro training-detail-intro--electric">
+        <div className="training-detail-copy-block">
+          <div className="training-detail-kicker">{progress.completed ? 'Quest complete' : 'Active skill quest'}</div>
+          <h1 className="training-detail-title">
+            <span aria-hidden="true">{resolved.emoji}</span> {resolved.title}
+          </h1>
+          <p className="training-detail-copy">{resolved.description}</p>
+        </div>
+
+        {leadDog ? (
+          <div className="training-detail-dog" aria-label={`${leadDog.name}'s training portrait`}>
+            {leadDog.photoUrl ? <img src={leadDog.photoUrl} alt="" /> : <span aria-hidden="true">{leadDog.profileEmoji}</span>}
+            <i aria-hidden="true">⚡</i>
+          </div>
+        ) : null}
 
         <div className="training-detail-meta">
           <div className="training-detail-meta-item">
-            <span className="training-detail-meta-label">Progress</span>
+            <span className="training-detail-meta-label">Missions crushed</span>
             <span>
               {progress.lessonsCompleted}/{progress.lessonsTotal} lessons
             </span>
           </div>
           <div className="training-detail-meta-item">
-            <span className="training-detail-meta-label">Reward</span>
+            <span className="training-detail-meta-label">Quest reward</span>
             <span>{reward.title}</span>
           </div>
         </div>
@@ -58,14 +78,34 @@ export function TrainingProgramDetailView({
         </div>
       </div>
 
-      <div className="sec">Lessons</div>
+      {celebration ? (
+        <div className="training-win-burst" role="status">
+          <span className="training-win-confetti" aria-hidden="true">✦ ⚡ ✦</span>
+          <div>
+            <strong>MISSION CRUSHED!</strong>
+            <p>{dogLabel} nailed “{celebration}.” That&apos;s a real win.</p>
+          </div>
+          <button type="button" className="tap-target" onClick={() => setCelebration(null)}>
+            Keep going
+          </button>
+        </div>
+      ) : null}
+
+      <div className="training-mission-section-head">
+        <span>Mission path</span>
+        <strong>{nextLesson ? `Up next: ${nextLesson.lesson.title}` : 'Every mission complete!'}</strong>
+      </div>
 
       <div className="training-lesson-list">
-        {progress.lessons.map((item) => (
+        {progress.lessons.map((item, index) => (
           <article
             key={item.lessonId}
-            className={`training-lesson-card detail-card-warm${item.completed ? ' training-lesson-card--done' : ''}`}
+            className={`training-lesson-card detail-card-warm${item.completed ? ' training-lesson-card--done' : ''}${nextLesson?.lessonId === item.lessonId ? ' training-lesson-card--current' : ''}`}
           >
+            <div className="training-lesson-eyebrow">
+              <span>Mission {index + 1}</span>
+              {item.completed ? <strong>Crushed</strong> : nextLesson?.lessonId === item.lessonId ? <strong>Up next</strong> : null}
+            </div>
             <div className="training-lesson-top">
               <span className="training-lesson-emoji" aria-hidden="true">
                 {item.lesson.emoji}
@@ -73,35 +113,38 @@ export function TrainingProgramDetailView({
               <div>
                 <h2 className="training-lesson-title">{item.lesson.title}</h2>
                 <p className="training-lesson-desc">{item.lesson.description}</p>
-                <p className="training-lesson-hint">{item.lesson.practiceHint}</p>
+                <p className="training-lesson-hint"><i className="ti ti-bolt" aria-hidden="true" /> {item.lesson.practiceHint}</p>
               </div>
             </div>
 
             {item.completed ? (
               <div className="training-lesson-actions">
-                <span className="training-lesson-done">Completed</span>
+                <span className="training-lesson-done">✓ Mission crushed</span>
                 <button
                   type="button"
                   className="training-lesson-reset tap-target"
                   onClick={() => onResetLesson(item.lessonId)}
                 >
-                  Mark incomplete
+                  Undo
                 </button>
               </div>
             ) : (
               <button
                 type="button"
                 className="training-lesson-complete tap-target"
-                onClick={() => onCompleteLesson(item.lessonId)}
+                onClick={() => handleComplete(item.lessonId, item.lesson.title)}
               >
-                Mark lesson complete
+                We nailed it! ⚡
               </button>
             )}
           </article>
         ))}
       </div>
 
-      <div className="sec">Completion reward</div>
+      <div className="training-mission-section-head training-mission-section-head--reward">
+        <span>Finish-line reward</span>
+        <strong>{progress.rewardUnlocked ? 'Claimed by the pack' : 'Waiting at the finish'}</strong>
+      </div>
 
       <div
         className={`training-reward-card detail-card-warm${progress.rewardUnlocked ? ' training-reward-card--unlocked' : ''}`}
@@ -121,7 +164,7 @@ export function TrainingProgramDetailView({
           <div className="training-reward-status">
             {progress.rewardUnlocked
               ? `Unlocked${progress.rewardUnlockedAt ? ` · ${new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' }).format(Date.parse(progress.rewardUnlockedAt))}` : ''}`
-              : `Complete all ${progress.lessonsTotal} lessons to unlock`}
+              : `Crush all ${progress.lessonsTotal} missions to unlock`}
           </div>
         </div>
       </div>
