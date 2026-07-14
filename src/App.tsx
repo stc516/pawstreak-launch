@@ -449,6 +449,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   const openTrainingProgram = (selectedTrainingProgramId: string) => {
     setState((current) => ({
       ...current,
+      trainingProgramFlowStep: 0,
       selectedTrainingProgramId,
       selectedChallengeId: null,
       selectedAchievementId: null,
