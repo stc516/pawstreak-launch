@@ -44,7 +44,7 @@ const posts = [
   },
   {
     id: '06-real-walk-memory',
-    headline: 'The walk ends. The story stays.',
+    headline: 'The adventure ends. The story stays.',
     subhead: 'A real walk photo, saved as a PawStreak memory.',
     caption: 'This is a real photo from a real walk. PawStreak turns the days you actually lived together into memories you can come back to.\n\n#PawStreak #DogWalk #DogMemories #LifeWithDogs',
   },
