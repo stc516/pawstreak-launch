@@ -72,9 +72,10 @@ try {
   await page.screenshot({ path: path.join(OUT_DIR, '02-instagram-story-mobile.png'), fullPage: true })
 
   await page.getByRole('button', { name: 'Instagram', exact: true }).click()
-  await page.waitForFunction(() => window.__pawstreakQaShare?.fileCount === 1, null, {
-    timeout: 15000,
-  })
+  for (let attempt = 0; attempt < 15; attempt += 1) {
+    if (await page.evaluate(() => window.__pawstreakQaShare?.fileCount === 1)) break
+    await page.waitForTimeout(1000)
+  }
   const sharePayload = await page.evaluate(() => window.__pawstreakQaShare)
   record(
     'instagram-image-share',
@@ -89,6 +90,10 @@ try {
   await page.getByRole('button', { name: 'Back', exact: true }).click()
   await page.getByRole('button', { name: 'Explore', exact: true }).click()
   await page.locator('.plan-map-card--adventure').waitFor({ state: 'visible', timeout: 10000 })
+  await page
+    .locator('.plan-map-pin--mapbox, .plan-map-pin--fallback')
+    .first()
+    .waitFor({ state: 'visible', timeout: 15000 })
   const mapboxPins = page.locator('.plan-map-pin--mapbox')
   const fallbackPins = page.locator('.plan-map-pin--fallback')
   const pinCount = (await mapboxPins.count()) + (await fallbackPins.count())
