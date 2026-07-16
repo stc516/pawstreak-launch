@@ -15431,7 +15431,10 @@ select.field-input {
 }
 
 .share-card--story .share-card-metric strong {
-  font-size: 13px;
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .share-card--story .share-card-progress-row strong {
