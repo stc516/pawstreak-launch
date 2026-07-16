@@ -320,7 +320,7 @@ export function HomeScreen({
           <div className="home-training-active-bolt" aria-hidden="true">⚡</div>
           <div className="home-active-plan-head">
             <div>
-              <div className="home-active-plan-kicker">Today&apos;s skill quest · {trainingProgram.title}</div>
+              <div className="home-active-plan-kicker">Today&apos;s training adventure · {trainingProgram.title}</div>
               <div className="home-active-plan-title">{trainingSession.lessonTitle}</div>
               <div className="home-training-active-sub">One tiny session. One better adventure.</div>
             </div>

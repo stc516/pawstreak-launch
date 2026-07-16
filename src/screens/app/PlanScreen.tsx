@@ -225,7 +225,7 @@ export function PlanScreen({
         </div>
         <div className="explore-hype-copy">
           <span>Adventure mode</span>
-          <strong>{dogLabel} is ready. Pick the mission.</strong>
+          <strong>{dogLabel} is ready. Pick the adventure.</strong>
         </div>
         <div className="explore-hype-words" aria-hidden="true">
           <span>RUN</span><span>SNIFF</span><span>SPLASH</span>

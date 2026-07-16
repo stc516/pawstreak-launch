@@ -48,6 +48,7 @@ export async function insertScheduledAdventure(input: {
   locationLabel?: string
   notes?: string
   selectedDogIds: string[]
+  scheduledFor?: string
 }): Promise<ScheduledAdventure | null> {
   const supabase = getSupabaseClient()
   if (!supabase) return null
@@ -60,6 +61,7 @@ export async function insertScheduledAdventure(input: {
       title: input.title.trim(),
       location_label: input.locationLabel?.trim() ?? '',
       notes: input.notes?.trim() ?? '',
+      scheduled_for: input.scheduledFor ?? null,
     })
     .select('*')
     .single()

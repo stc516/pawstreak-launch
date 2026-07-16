@@ -85,7 +85,7 @@ export function JourneyStoryPath({
         <p className="journey-story-line">
           {completedCount > 0
             ? `${completedCount} ${completedCount === 1 ? 'adventure' : 'adventures'} worth remembering.`
-            : 'The first ridiculous little mission starts here.'}
+            : 'The first ridiculous little adventure starts here.'}
         </p>
       </div>
 

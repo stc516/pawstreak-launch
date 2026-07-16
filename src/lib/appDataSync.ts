@@ -278,6 +278,7 @@ export async function saveScheduledAdventureOnServer(input: {
   locationLabel?: string
   notes?: string
   selectedDogIds: string[]
+  scheduledFor?: string
 }) {
   return insertScheduledAdventure(input)
 }

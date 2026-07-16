@@ -15,6 +15,7 @@
     "social:capture": "node social-assets/capture.mjs",
     "social:capture:screens": "node social-assets/capture.mjs --screens-only",
     "social:capture:video": "node social-assets/capture.mjs --video-only",
+    "social:launch-kit": "node scripts/create-instagram-launch-kit.mjs",
     "db:seed-places": "npx tsx scripts/generate-places-seed.mjs"
   },
   "dependencies": {

@@ -43,7 +43,7 @@ export function TrainingProgramDetailView({
 
       <div className="training-detail-intro training-detail-intro--electric">
         <div className="training-detail-copy-block">
-          <div className="training-detail-kicker">{progress.completed ? 'Quest complete' : 'Active skill quest'}</div>
+          <div className="training-detail-kicker">{progress.completed ? 'Training adventure complete' : 'Active training adventure'}</div>
           <h1 className="training-detail-title">
             <span aria-hidden="true">{resolved.emoji}</span> {resolved.title}
           </h1>
@@ -59,13 +59,13 @@ export function TrainingProgramDetailView({
 
         <div className="training-detail-meta">
           <div className="training-detail-meta-item">
-            <span className="training-detail-meta-label">Missions crushed</span>
+            <span className="training-detail-meta-label">Sessions complete</span>
             <span>
               {progress.lessonsCompleted}/{progress.lessonsTotal} lessons
             </span>
           </div>
           <div className="training-detail-meta-item">
-            <span className="training-detail-meta-label">Quest reward</span>
+            <span className="training-detail-meta-label">Adventure reward</span>
             <span>{reward.title}</span>
           </div>
         </div>
@@ -82,7 +82,7 @@ export function TrainingProgramDetailView({
         <div className="training-win-burst" role="status">
           <span className="training-win-confetti" aria-hidden="true">✦ ⚡ ✦</span>
           <div>
-            <strong>MISSION CRUSHED!</strong>
+            <strong>SKILL UNLOCKED!</strong>
             <p>{dogLabel} nailed “{celebration}.” That&apos;s a real win.</p>
           </div>
           <button type="button" className="tap-target" onClick={() => setCelebration(null)}>
@@ -92,8 +92,8 @@ export function TrainingProgramDetailView({
       ) : null}
 
       <div className="training-mission-section-head">
-        <span>Mission path</span>
-        <strong>{nextLesson ? `Up next: ${nextLesson.lesson.title}` : 'Every mission complete!'}</strong>
+        <span>Training adventure</span>
+        <strong>{nextLesson ? `Up next: ${nextLesson.lesson.title}` : 'Every session complete!'}</strong>
       </div>
 
       <div className="training-lesson-list">
@@ -103,7 +103,7 @@ export function TrainingProgramDetailView({
             className={`training-lesson-card detail-card-warm${item.completed ? ' training-lesson-card--done' : ''}${nextLesson?.lessonId === item.lessonId ? ' training-lesson-card--current' : ''}`}
           >
             <div className="training-lesson-eyebrow">
-              <span>Mission {index + 1}</span>
+              <span>Session {index + 1}</span>
               {item.completed ? <strong>Crushed</strong> : nextLesson?.lessonId === item.lessonId ? <strong>Up next</strong> : null}
             </div>
             <div className="training-lesson-top">
@@ -119,7 +119,7 @@ export function TrainingProgramDetailView({
 
             {item.completed ? (
               <div className="training-lesson-actions">
-                <span className="training-lesson-done">✓ Mission crushed</span>
+                <span className="training-lesson-done">✓ Session complete</span>
                 <button
                   type="button"
                   className="training-lesson-reset tap-target"
@@ -164,7 +164,7 @@ export function TrainingProgramDetailView({
           <div className="training-reward-status">
             {progress.rewardUnlocked
               ? `Unlocked${progress.rewardUnlockedAt ? ` · ${new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' }).format(Date.parse(progress.rewardUnlockedAt))}` : ''}`
-              : `Crush all ${progress.lessonsTotal} missions to unlock`}
+              : `Complete all ${progress.lessonsTotal} sessions to unlock`}
           </div>
         </div>
       </div>

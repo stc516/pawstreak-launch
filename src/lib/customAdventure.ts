@@ -15,6 +15,7 @@ export interface AddAdventureDraft {
   title: string
   locationLabel: string
   notes: string
+  scheduledFor: string
   photoDataUrl: string | null
   selectedDogIds: string[]
 }
@@ -34,6 +35,7 @@ export const EMPTY_ADD_ADVENTURE_DRAFT: AddAdventureDraft = {
   title: '',
   locationLabel: '',
   notes: '',
+  scheduledFor: '',
   photoDataUrl: null,
   selectedDogIds: [],
 }
@@ -126,6 +128,7 @@ export function createCustomActiveAdventure(
 export function scheduledFromDraft(
   draft: AddAdventureDraft,
 ): ScheduledAdventure {
+  const scheduledDate = draft.scheduledFor ? new Date(draft.scheduledFor) : null
   return {
     id: crypto.randomUUID(),
     title: draft.title.trim(),
@@ -134,6 +137,10 @@ export function scheduledFromDraft(
     photoDataUrl: draft.photoDataUrl ?? undefined,
     selectedDogIds: [...draft.selectedDogIds],
     createdAt: new Date().toISOString(),
+    scheduledFor:
+      scheduledDate && !Number.isNaN(scheduledDate.getTime())
+        ? scheduledDate.toISOString()
+        : undefined,
   }
 }
 
