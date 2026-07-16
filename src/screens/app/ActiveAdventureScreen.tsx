@@ -165,7 +165,7 @@ export function ActiveAdventureScreen({
             </div>
 
             <div className="adv-mini-quest detail-card-warm">
-              <div className="adv-mini-quest-kicker">Optional mini-quest</div>
+              <div className="adv-mini-quest-kicker">Optional adventure bonus</div>
               <div className="adv-mini-quest-title">
                 <span aria-hidden="true">{miniQuest.emoji}</span> {miniQuest.title}
               </div>
@@ -240,7 +240,7 @@ export function ActiveAdventureScreen({
 
         <main className="scroll scroll--active">
           <div className="adv-mini-quest adv-mini-quest--active detail-card-warm">
-            <div className="adv-mini-quest-kicker">Optional mini-quest</div>
+            <div className="adv-mini-quest-kicker">Optional adventure bonus</div>
             <div className="adv-mini-quest-title">
               <span aria-hidden="true">{miniQuest.emoji}</span> {miniQuest.title}
             </div>

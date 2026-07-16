@@ -1,6 +1,8 @@
 import type { Challenge } from '../data/challenges'
 import type { MonthlyPlanResult } from './monthlyPlan'
 import type { ResolvedChallengeNode } from './challengeEngine'
+import type { ScheduledAdventure } from './customAdventure'
+import type { ActiveTrainingSchedule } from './trainingSchedule'
 
 interface CalendarEventDraft {
   title: string
@@ -109,11 +111,67 @@ function buildIcs(events: CalendarEventDraft[], calendarName: string): string {
     if (event.location) {
       lines.push(`LOCATION:${escapeIcsText(event.location)}`)
     }
-    lines.push('END:VEVENT')
+    lines.push(
+      'BEGIN:VALARM',
+      'ACTION:DISPLAY',
+      'DESCRIPTION:PawStreak adventure tomorrow',
+      'TRIGGER:-P1D',
+      'END:VALARM',
+      'BEGIN:VALARM',
+      'ACTION:DISPLAY',
+      'DESCRIPTION:PawStreak adventure in one hour',
+      'TRIGGER:-PT1H',
+      'END:VALARM',
+      'END:VEVENT',
+    )
   })
 
   lines.push('END:VCALENDAR')
   return `${lines.join('\r\n')}\r\n`
+}
+
+export function downloadScheduledAdventureCalendar(
+  adventure: ScheduledAdventure,
+  packLabel: string,
+) {
+  if (!adventure.scheduledFor) return false
+  const start = new Date(adventure.scheduledFor)
+  if (Number.isNaN(start.getTime())) return false
+  downloadIcs('pawstreak-planned-adventure.ics', 'PawStreak Adventures', [
+    {
+      title: `PawStreak: ${adventure.title}`,
+      description: [
+        `Planned adventure with ${packLabel}.`,
+        adventure.notes,
+        'Open PawStreak when you are ready to start.',
+      ].filter(Boolean).join('\n'),
+      location: adventure.locationLabel,
+      start,
+      durationMinutes: 60,
+    },
+  ])
+  return true
+}
+
+export function downloadTrainingScheduleCalendar(
+  schedule: ActiveTrainingSchedule,
+  programTitle: string,
+  packLabel: string,
+) {
+  const events = schedule.sessions.flatMap((session) => {
+    if (!session.scheduledFor) return []
+    const start = new Date(session.scheduledFor)
+    if (Number.isNaN(start.getTime())) return []
+    return [{
+      title: `PawStreak training: ${session.lessonTitle}`,
+      description: `${programTitle} with ${packLabel}. Open PawStreak for the session steps.`,
+      start,
+      durationMinutes: 15,
+    }]
+  })
+  if (events.length === 0) return false
+  downloadIcs('pawstreak-training-adventure.ics', `PawStreak ${programTitle}`, events)
+  return true
 }
 
 function downloadIcs(filename: string, calendarName: string, events: CalendarEventDraft[]) {

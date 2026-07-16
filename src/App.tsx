@@ -160,6 +160,9 @@ import { deleteCurrentAccount } from './lib/accountDeletion'
 import { DeleteAccountPage, PrivacyPage, SupportPage, TermsPage } from './screens/LegalPage'
 import { InternalAccessGate } from './screens/internal/InternalAccessGate'
 import { buildShareCardData, type ShareCardRequest } from './lib/shareCardData'
+import { getDisplayDogLabel } from './lib/profileDisplay'
+import { ProductTour } from './components/ProductTour'
+import { PRODUCT_TOUR_STEPS } from './lib/productTour'
 
 function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   const auth = useAuth()
@@ -172,6 +175,9 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   const [dataHydrated, setDataHydrated] = useState(!useProductionBackend)
   const [splashComplete, setSplashComplete] = useState(false)
   const [shareCardRequest, setShareCardRequest] = useState<ShareCardRequest | null>(null)
+  const [productTourStep, setProductTourStep] = useState<number | null>(() =>
+    new URLSearchParams(window.location.search).get('tour') === '1' ? 0 : null,
+  )
   const acceptedInviteTokenRef = useRef<string | null>(null)
   const latestStateRef = useRef(state)
   const finishingAdventureRef = useRef(false)
@@ -338,6 +344,18 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       showJourneyLevelOverlay: false,
       showCommunityCompose: false,
     }))
+  }
+
+  const advanceProductTour = () => {
+    if (productTourStep === null) return
+    const nextStep = productTourStep + 1
+    if (nextStep >= PRODUCT_TOUR_STEPS.length) {
+      setProductTourStep(null)
+      setActiveTab('home')
+      return
+    }
+    setProductTourStep(nextStep)
+    setActiveTab(PRODUCT_TOUR_STEPS[nextStep].tab)
   }
 
   const setSelectedActivity = (selectedActivityId: string) => {
@@ -765,11 +783,25 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     }))
   }
 
+  const setTrainingTiming = (timing: { startDate?: string; startTime?: string }) => {
+    setState((current) => ({
+      ...current,
+      trainingProgramDraft: { ...current.trainingProgramDraft, ...timing },
+    }))
+  }
+
   const advanceTrainingProgramFlow = () => {
     setState((current) => {
       const { programId, cadence } = current.trainingProgramDraft
-      if (current.trainingProgramFlowStep === 2 && programId && cadence) {
-        const schedule = generateTrainingSchedule(programId, cadence, current)
+      if (
+        current.trainingProgramFlowStep === 2 &&
+        programId &&
+        cadence
+      ) {
+        const schedule = generateTrainingSchedule(programId, cadence, current, {
+          startDate: current.trainingProgramDraft.startDate,
+          startTime: current.trainingProgramDraft.startTime,
+        })
         return {
           ...current,
           trainingProgramFlowStep: 3,
@@ -1044,6 +1076,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         locationLabel: planned.locationLabel,
         notes: planned.notes,
         selectedDogIds: planned.selectedDogIds,
+        scheduledFor: planned.scheduledFor,
       })
       if (saved) {
         setState((current) => ({
@@ -1080,6 +1113,9 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       title: planned.title,
       locationLabel: planned.locationLabel ?? '',
       notes: planned.notes ?? '',
+      scheduledFor: planned.scheduledFor
+        ? new Date(planned.scheduledFor).toISOString().slice(0, 16)
+        : '',
       photoDataUrl: planned.photoDataUrl ?? null,
       selectedDogIds: [...planned.selectedDogIds],
     }
@@ -1484,6 +1520,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         },
         appMode,
       )
+      if (appMode === 'app') setProductTourStep(0)
       return
     }
 
@@ -1497,6 +1534,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       saveAppState(nextState, appMode)
       return nextState
     })
+    if (appMode === 'app') setProductTourStep(0)
     if (appMode === 'demo') {
       navigateTo(ROUTES.demoApp)
     }
@@ -1843,6 +1881,9 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
           updateAddAdventureDraft({ locationLabel })
         }
         onNotesChange={(notes) => updateAddAdventureDraft({ notes })}
+        onScheduledForChange={(scheduledFor) =>
+          updateAddAdventureDraft({ scheduledFor })
+        }
         onToggleDog={toggleAddAdventureDog}
         onPhotoChange={(photoDataUrl) => updateAddAdventureDraft({ photoDataUrl })}
         onStartNow={submitAddAdventureStartNow}
@@ -1880,6 +1921,8 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         onBack={handleTrainingProgramBack}
         onSelectProgram={setTrainingProgramSelection}
         onSelectCadence={setTrainingCadence}
+        onStartDateChange={(startDate) => setTrainingTiming({ startDate })}
+        onStartTimeChange={(startTime) => setTrainingTiming({ startTime })}
         onNext={advanceTrainingProgramFlow}
         onSave={saveTrainingProgramFlow}
         onOpenLesson={openTrainingProgram}
@@ -2179,6 +2222,14 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       </AppShell>
       {activeAdventureOverlayNode}
       {shareCardOverlayNode}
+      {productTourStep !== null ? (
+        <ProductTour
+          step={productTourStep}
+          dogLabel={getDisplayDogLabel(state)}
+          onNext={advanceProductTour}
+          onSkip={() => setProductTourStep(null)}
+        />
+      ) : null}
     </>
   )
 }

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { AppState } from '../../data/demo'
 import { getDisplayDogLabel, getProfileDogs } from '../../lib/profileDisplay'
 import {
@@ -8,6 +9,12 @@ import {
 } from '../../lib/trainingSchedule'
 import { StatusBar } from '../../components/StatusBar'
 import { StaggeredProgressPath } from '../../components/StaggeredProgressPath'
+import { downloadTrainingScheduleCalendar } from '../../lib/calendarExport'
+import {
+  DEFAULT_PUSH_PREFERENCES,
+  enablePushNotifications,
+} from '../../lib/pushNotifications'
+import { getTrainingProgramById } from '../../data/training'
 
 interface TrainingProgramFlowProps {
   state: AppState
@@ -17,6 +24,8 @@ interface TrainingProgramFlowProps {
   onBack: () => void
   onSelectProgram: (programId: string) => void
   onSelectCadence: (cadence: NonNullable<TrainingProgramDraft['cadence']>) => void
+  onStartDateChange: (startDate: string) => void
+  onStartTimeChange: (startTime: string) => void
   onNext: () => void
   onSave: () => void
   onOpenLesson: (programId: string) => void
@@ -30,10 +39,13 @@ export function TrainingProgramFlow({
   onBack,
   onSelectProgram,
   onSelectCadence,
+  onStartDateChange,
+  onStartTimeChange,
   onNext,
   onSave,
   onOpenLesson,
 }: TrainingProgramFlowProps) {
+  const [scheduleStatus, setScheduleStatus] = useState<string | null>(null)
   const dogLabel = getDisplayDogLabel(state)
   const leadDog = getProfileDogs(state)[0]
   const programs = getHomeTrainingPrograms()
@@ -56,7 +68,7 @@ export function TrainingProgramFlow({
 
           <div className="training-flow-hero training-flow-hero--electric">
             <div className="training-flow-hero-copy">
-              <div className="training-flow-kicker">Skill quest</div>
+              <div className="training-flow-kicker">Training adventure</div>
               <h1 className="training-flow-title">Turn {dogLabel}&apos;s chaos into a superpower.</h1>
               <p className="training-flow-copy">Tiny real sessions. Big adventure energy.</p>
             </div>
@@ -93,7 +105,7 @@ export function TrainingProgramFlow({
                       <div className="training-flow-program-sub">{program.subtitle}</div>
                     </div>
                     <span className="training-flow-program-pick">
-                      {draft.programId === program.id ? 'Quest picked' : 'Pick'}
+                      {draft.programId === program.id ? 'Adventure picked' : 'Pick'}
                     </span>
                   </button>
                 ))}
@@ -122,17 +134,45 @@ export function TrainingProgramFlow({
                   </button>
                 ))}
               </div>
+              <div className="training-schedule-fields detail-card-warm">
+                <div className="training-schedule-prompt">
+                  <i className="ti ti-calendar-heart" aria-hidden="true" />
+                  <div>
+                    <strong>Want this to actually happen?</strong>
+                    <span>Add dates for calendar alerts. Optional, always.</span>
+                  </div>
+                </div>
+                <label>
+                  <span>Start date <em>Optional</em></span>
+                  <input
+                    type="date"
+                    value={draft.startDate}
+                    onChange={(event) => onStartDateChange(event.target.value)}
+                    aria-label="Training start date"
+                  />
+                </label>
+                <label>
+                  <span>Training time <em>Optional</em></span>
+                  <input
+                    type="time"
+                    value={draft.startTime}
+                    onChange={(event) => onStartTimeChange(event.target.value)}
+                    aria-label="Training time"
+                  />
+                </label>
+                <p>If you add both, PawStreak can create calendar events with one-day and one-hour alerts. Nothing is added without your tap.</p>
+              </div>
             </section>
           ) : null}
 
           {step === 3 && schedule ? (
             <section className="training-flow-step">
               <div className="training-flow-step-head training-flow-step-head--ready">
-                <span>Quest loaded</span>
-                <strong>{dogLabel}&apos;s mission path is ready</strong>
+                <span>Adventure scheduled</span>
+                <strong>{dogLabel}&apos;s training adventure is ready</strong>
               </div>
               <StaggeredProgressPath
-                title="Superpower mission path"
+                title="Training adventure path"
                 subtitle="Short practice, real-world payoff, one honest win at a time."
                 countLabel={`0/${schedule.sessions.length}`}
                 className="training-session-path"
@@ -140,8 +180,10 @@ export function TrainingProgramFlow({
                   id: `${session.dayLabel}-${session.lessonId}`,
                   eyebrow: session.dayLabel,
                   title: session.lessonTitle,
-                  meta: session.completed ? 'Mission crushed' : index === 0 ? 'Up next' : 'Ready when you are',
-                  detail: index === 0 ? `Your next tiny win with ${dogLabel}.` : 'Unlocks after the mission before it.',
+                  meta: session.completed ? 'Session complete' : index === 0 ? 'Up next' : 'Scheduled',
+                  detail: session.scheduledFor
+                    ? new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(session.scheduledFor))
+                    : `Your next small win with ${dogLabel}.`,
                   state: session.completed ? 'complete' : index === 0 ? 'current' : 'locked',
                 }))}
               />
@@ -150,8 +192,51 @@ export function TrainingProgramFlow({
                 className="st-btn st-btn--primary tap-target build-month-start-first"
                 onClick={() => onOpenLesson(schedule.programId)}
               >
-                Preview first mission
+                Preview first session
               </button>
+              <div className="training-schedule-actions">
+                <button
+                  type="button"
+                  className="st-btn st-btn--primary tap-target"
+                  onClick={() => {
+                    const hasScheduledSessions = schedule.sessions.some((session) => session.scheduledFor)
+                    if (!hasScheduledSessions) {
+                      onBack()
+                      return
+                    }
+                    const program = getTrainingProgramById(schedule.programId)
+                    const downloaded = downloadTrainingScheduleCalendar(
+                      schedule,
+                      program?.title ?? 'Training adventure',
+                      dogLabel,
+                    )
+                    setScheduleStatus(downloaded
+                      ? 'Calendar ready with alerts for every session.'
+                      : 'Choose real dates and times before exporting.')
+                  }}
+                >
+                  <i className="ti ti-calendar-plus" aria-hidden="true" />
+                  {schedule.sessions.some((session) => session.scheduledFor)
+                    ? 'Add every session to calendar'
+                    : 'Add dates for calendar alerts'}
+                </button>
+                <button
+                  type="button"
+                  className="st-btn st-btn--ghost tap-target"
+                  onClick={() => {
+                    setScheduleStatus('Turning on daily adventure reminders…')
+                    void enablePushNotifications(DEFAULT_PUSH_PREFERENCES)
+                      .then(() => setScheduleStatus('Morning and evening adventure reminders are on.'))
+                      .catch((error) => setScheduleStatus(
+                        error instanceof Error ? error.message : 'Could not enable reminders.',
+                      ))
+                  }}
+                >
+                  <i className="ti ti-bell-ringing" aria-hidden="true" />
+                  Turn on daily reminders
+                </button>
+              </div>
+              {scheduleStatus ? <p className="training-schedule-status" role="status">{scheduleStatus}</p> : null}
             </section>
           ) : null}
 
@@ -163,11 +248,11 @@ export function TrainingProgramFlow({
                 disabled={!canContinue}
                 onClick={onNext}
               >
-                {step === 1 ? 'Choose this quest' : 'Build my mission path'}
+                {step === 1 ? 'Choose this adventure' : 'Schedule my training adventure'}
               </button>
             ) : (
               <button type="button" className="st-btn st-btn--forest tap-target" onClick={onSave}>
-                Save quest to Today
+                Save training adventure to Today
               </button>
             )}
           </div>

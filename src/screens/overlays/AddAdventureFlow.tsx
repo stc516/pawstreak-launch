@@ -13,6 +13,7 @@ interface AddAdventureFlowProps {
   onTitleChange: (title: string) => void
   onLocationChange: (locationLabel: string) => void
   onNotesChange: (notes: string) => void
+  onScheduledForChange: (scheduledFor: string) => void
   onToggleDog: (dogId: string) => void
   onPhotoChange: (photoDataUrl: string | null) => void
   onStartNow: () => void
@@ -26,6 +27,7 @@ export function AddAdventureFlow({
   onTitleChange,
   onLocationChange,
   onNotesChange,
+  onScheduledForChange,
   onToggleDog,
   onPhotoChange,
   onStartNow,
@@ -126,6 +128,22 @@ export function AddAdventureFlow({
                   {titleError}
                 </span>
               ) : null}
+            </label>
+
+            <label className="add-adventure-field">
+              <span className="add-adventure-label">
+                When <span className="add-adventure-optional">Optional</span>
+              </span>
+              <input
+                type="datetime-local"
+                className="add-adventure-input"
+                value={draft.scheduledFor}
+                onChange={(event) => onScheduledForChange(event.target.value)}
+                data-testid="add-adventure-scheduled-for"
+              />
+              <span className="add-adventure-field-note">
+                Add a time to unlock a calendar event with one-day and one-hour alerts.
+              </span>
             </label>
 
             <div className="add-adventure-field">
@@ -230,7 +248,7 @@ export function AddAdventureFlow({
               onClick={handleSaveLater}
               data-testid="add-adventure-save-later"
             >
-              Save for later
+              {draft.scheduledFor ? 'Save with calendar option' : 'Save for later'}
             </button>
           </div>
         </main>
