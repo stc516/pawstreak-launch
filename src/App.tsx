@@ -1327,21 +1327,16 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
                 : current.monthlyPlanResult,
           }),
         )
+        setShareCardRequest({
+          kind: 'adventure-complete',
+          entryId: memory.id,
+        })
         finishingAdventureRef.current = false
         return
       } catch {
-        if (isNeighborhoodWalk) {
-          // Keep the memory visible locally if the backend path is unavailable.
-          // The 017 migration makes this path persist once production has the
-          // neighborhood-walk place row.
-        } else {
-          setState((current) => ({
-            ...current,
-            memorySaveToast: 'Could not save memory. Check your connection and try again.',
-          }))
-          finishingAdventureRef.current = false
-          return
-        }
+        // Never trap someone in a finished adventure because the network or
+        // backend is unavailable. Preserve the full memory locally so the
+        // completion loop remains usable and the photo is not discarded.
       }
     }
 
@@ -1415,13 +1410,17 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         locationCandidates: locationCandidate
           ? [locationCandidate, ...current.locationCandidates]
           : current.locationCandidates,
-        memorySaveToast: 'Memory saved — worth remembering.',
+        memorySaveToast:
+          useProductionBackend && auth.user
+            ? 'Memory saved on this phone — your adventure is safe.'
+            : 'Memory saved — worth remembering.',
         monthlyPlanResult:
           current.monthlyPlanResult && place && !isCustom
             ? advanceMonthlyPlanAfterAdventure(current.monthlyPlanResult, place.id)
             : current.monthlyPlanResult,
       })
     })
+    setShareCardRequest({ kind: 'adventure-complete' })
     finishingAdventureRef.current = false
   }
 

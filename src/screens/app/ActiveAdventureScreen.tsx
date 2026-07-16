@@ -20,7 +20,7 @@ interface ActiveAdventureScreenProps {
   state: AppState
   onStart: () => void
   onCancel: () => void
-  onFinish: (payload: AdventureFinishPayload) => void
+  onFinish: (payload: AdventureFinishPayload) => void | Promise<void>
   onMinimize?: () => void
   onAddPhoto: (photoDataUrl: string) => void
 }
@@ -36,6 +36,7 @@ export function ActiveAdventureScreen({
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [, setTick] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
+  const [isFinishing, setIsFinishing] = useState(false)
   const [pausedElapsed, setPausedElapsed] = useState<number | null>(null)
   const [selectedRecaps, setSelectedRecaps] = useState<string[]>([
     'Loved every second',
@@ -102,11 +103,17 @@ export function ActiveAdventureScreen({
     )
   }
 
-  const handleFinish = () => {
-    onFinish({
-      recapLabels:
-        selectedRecaps.length > 0 ? selectedRecaps : ['Loved every second'],
-    })
+  const handleFinish = async () => {
+    if (isFinishing) return
+    setIsFinishing(true)
+    try {
+      await onFinish({
+        recapLabels:
+          selectedRecaps.length > 0 ? selectedRecaps : ['Loved every second'],
+      })
+    } finally {
+      setIsFinishing(false)
+    }
   }
 
   if (!adventure) {
@@ -324,8 +331,15 @@ export function ActiveAdventureScreen({
               >
                 {isPaused ? 'Resume' : 'Pause'}
               </button>
-              <button type="button" className="cbtn pri tap-target" onClick={handleFinish}>
-                Finish adventure
+              <button
+                type="button"
+                className="cbtn pri tap-target"
+                onClick={() => void handleFinish()}
+                disabled={isFinishing}
+                aria-busy={isFinishing}
+                aria-label="Finish adventure"
+              >
+                {isFinishing ? 'Saving memory…' : 'Finish adventure + save memory'}
               </button>
             </div>
             <button type="button" className="adv-cancel-btn tap-target" onClick={onCancel}>

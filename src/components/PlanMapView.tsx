@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, type CSSProperties } from 'react'
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import Map, { AttributionControl, Marker, type MapRef } from 'react-map-gl/mapbox'
 import type { Place } from '../types/place'
 import type { MapCenter } from '../lib/mapbox'
@@ -22,6 +22,56 @@ interface PlanMapViewProps {
 }
 
 const MAP_PADDING = { top: 28, bottom: 28, left: 24, right: 24 }
+const FALLBACK_PIN_POSITIONS = [
+  { left: 18, top: 30 },
+  { left: 54, top: 22 },
+  { left: 78, top: 44 },
+  { left: 34, top: 60 },
+  { left: 64, top: 70 },
+  { left: 13, top: 76 },
+]
+
+function AdventureMapFallback({
+  places,
+  selectedPlaceId,
+  onSelectPlace,
+}: Pick<PlanMapViewProps, 'places' | 'selectedPlaceId' | 'onSelectPlace'>) {
+  return (
+    <div className="plan-map-fallback" aria-label="Adventure places map">
+      <div className="plan-map-terrain" aria-hidden="true">
+        <span className="plan-map-coast" />
+        <span className="plan-map-hills" />
+        <span className="plan-map-road plan-map-road--north" />
+        <span className="plan-map-road plan-map-road--east" />
+        <span className="plan-map-road plan-map-road--south" />
+      </div>
+      <div className="plan-map-fallback-hint">Tap a pin. Pick your next story.</div>
+      {places.slice(0, FALLBACK_PIN_POSITIONS.length).map((place, index) => {
+        const position = FALLBACK_PIN_POSITIONS[index]
+        const isSelected = selectedPlaceId === place.id
+        return (
+          <button
+            key={place.id}
+            type="button"
+            className={`plan-map-pin plan-map-pin--adventure plan-map-pin--fallback tap-target${isSelected ? ' on' : ''}`}
+            style={{
+              left: `${position.left}%`,
+              top: `${position.top}%`,
+              '--pin-delay': `${index * 0.25}s`,
+            } as CSSProperties}
+            aria-pressed={isSelected}
+            aria-label={place.name}
+            onClick={() => onSelectPlace(place.id)}
+          >
+            <span className="plan-map-pin-pulse" aria-hidden="true" />
+            <span className="plan-map-pin-dot plan-map-pin-dot--adventure" aria-hidden="true" />
+            <span className="plan-map-pin-label">{shortPlaceMapLabel(place.name)}</span>
+          </button>
+        )
+      })}
+    </div>
+  )
+}
 
 export function PlanMapView({
   places,
@@ -32,6 +82,7 @@ export function PlanMapView({
   emptyCopy = 'Try another category or proximity filter to see places on the map.',
 }: PlanMapViewProps) {
   const mapRef = useRef<MapRef>(null)
+  const [mapFailed, setMapFailed] = useState(false)
   const accessToken = getMapboxAccessToken()
   const bounds = useMemo(() => getMapFitBounds(places), [places])
 
@@ -63,18 +114,6 @@ export function PlanMapView({
     })
   }, [places, selectedPlaceId])
 
-  if (!isMapboxConfigured() || !accessToken) {
-    return (
-      <div className="plan-map-empty plan-map-empty--config detail-card-warm">
-        <div className="plan-map-empty-title">Map unavailable</div>
-        <p className="plan-map-empty-copy">
-          Map setup is missing <code>VITE_MAPBOX_TOKEN</code>. Add it in Vercel Production
-          environment variables and redeploy the app.
-        </p>
-      </div>
-    )
-  }
-
   if (places.length === 0) {
     return (
       <div className="plan-map-empty detail-card-warm">
@@ -83,6 +122,16 @@ export function PlanMapView({
           {emptyCopy}
         </p>
       </div>
+    )
+  }
+
+  if (!isMapboxConfigured() || !accessToken || mapFailed) {
+    return (
+      <AdventureMapFallback
+        places={places}
+        selectedPlaceId={selectedPlaceId}
+        onSelectPlace={onSelectPlace}
+      />
     )
   }
 
@@ -98,13 +147,14 @@ export function PlanMapView({
       }}
       style={{ width: '100%', height: '100%' }}
       attributionControl={false}
-      dragPan={false}
+      dragPan
       scrollZoom={false}
       boxZoom={false}
-      doubleClickZoom={false}
-      touchZoomRotate={false}
-      keyboard={false}
+      doubleClickZoom
+      touchZoomRotate
+      keyboard
       reuseMaps
+      onError={() => setMapFailed(true)}
       onClick={() => {
         // Keep map taps from bubbling to card list handlers.
       }}
