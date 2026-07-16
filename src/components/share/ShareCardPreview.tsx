@@ -233,10 +233,10 @@ export function ShareCardPreview({ data, onClose }: ShareCardPreviewProps) {
           <button type="button" className="share-preview-close tap-target" aria-label="Close share preview" onClick={onClose}>
             <i className="ti ti-x" aria-hidden="true" />
           </button>
-          <div className="share-preview-title">Create Story</div>
+          <div className="share-preview-title">Share the adventure</div>
           <button type="button" className="share-preview-share tap-target" onClick={() => void handleShare()}>
-            <i className="ti ti-share" aria-hidden="true" />
-            Share
+            <i className="ti ti-brand-instagram" aria-hidden="true" />
+            Instagram
           </button>
         </div>
 
@@ -277,7 +277,7 @@ export function ShareCardPreview({ data, onClose }: ShareCardPreviewProps) {
         </div>
 
         <p className="share-preview-note">
-          Share opens your phone share sheet for Instagram, TikTok, Messages, and more when supported.
+          We create the image, then open your phone’s share sheet. Pick Instagram to post it.
         </p>
         <button type="button" className="share-preview-save tap-target" onClick={() => void handleSave()}>
           <i className="ti ti-download" aria-hidden="true" />

@@ -77,7 +77,20 @@ export async function hydrateProductionState(
   const profile = await fetchProfile(userId)
   const dogs = await fetchDogsForUser(userId)
   const activeDog = getActiveDog(dogs, profile?.active_dog_id)
-  const journeyEntries = await fetchMemoriesForUser(userId, activeDog?.id ?? null)
+  const serverJourneyEntries = await fetchMemoriesForUser(userId, activeDog?.id ?? null)
+  // A completed adventure must survive a refresh even if its first server save
+  // happened while offline. Server IDs are UUIDs; locally preserved fallbacks
+  // use these explicit prefixes.
+  const localJourneyEntries = base.journeyEntries.filter((entry) =>
+    /^(adventure-|custom-adventure-|neighborhood-walk-)/.test(entry.id),
+  )
+  const serverIds = new Set(serverJourneyEntries.map((entry) => entry.id))
+  const journeyEntries = [
+    ...localJourneyEntries.filter((entry) => !serverIds.has(entry.id)),
+    ...serverJourneyEntries,
+  ].sort((left, right) =>
+    String(right.occurredAt ?? '').localeCompare(String(left.occurredAt ?? '')),
+  )
   const placeCount = await countDistinctPlaces(userId, activeDog?.id ?? null)
   const scheduledAdventures = await fetchScheduledAdventuresForUser(userId)
   const packAccessMembers = await fetchPackAccessMembers(userId)
@@ -101,7 +114,7 @@ export async function hydrateProductionState(
     hasUserDogProfile: dogs.length > 0,
     journeyEntries,
     adventureCount: journeyEntries.length,
-    placeCount,
+    placeCount: Math.max(placeCount, new Set(journeyEntries.map((entry) => entry.placeId ?? entry.place)).size),
     activeDogId: activeDog?.id ?? null,
     scheduledAdventures,
     packAccessMembers,

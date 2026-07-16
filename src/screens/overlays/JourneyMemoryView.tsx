@@ -118,6 +118,21 @@ export function JourneyMemoryView({
             <i className="ti ti-check" aria-hidden="true" />
           </div>
 
+          <button
+            type="button"
+            className="memory-instagram-cta tap-target"
+            onClick={onCreateStory ?? (() => void handleShare())}
+          >
+            <span className="memory-instagram-cta__icon" aria-hidden="true">
+              <i className="ti ti-brand-instagram" />
+            </span>
+            <span>
+              <strong>Share today’s adventure</strong>
+              <small>Instagram Story ready in one tap</small>
+            </span>
+            <i className="ti ti-arrow-up-right" aria-hidden="true" />
+          </button>
+
           <div className="memory-hero memory-hero--rich">
             <div className="memory-film-mark" aria-hidden="true">PAWSTREAK REPLAY</div>
             {heroPhoto ? (
@@ -278,7 +293,7 @@ export function JourneyMemoryView({
               onClick={onCreateStory ?? (() => void handleShare())}
             >
               <i className="ti ti-share" aria-hidden="true" />
-              Create Story
+              Share to Instagram
             </button>
           </div>
         </main>
