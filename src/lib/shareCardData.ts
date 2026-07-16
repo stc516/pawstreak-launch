@@ -4,7 +4,7 @@ import type { Challenge } from '../data/challenges'
 import { getChallengeById } from '../data/challenges'
 import { resolveChallenge } from './challengeEngine'
 import { getPackDisplayName } from './dogLabels'
-import { getPlaceById } from '../data/places'
+import { getPlaceById, isNeighborhoodWalkPlace } from '../data/places'
 import { getJourneyEntryDisplayImageUrl } from './adventureDisplayImage'
 import { getPlanNearbyPlaces } from './planDiscovery'
 import { getRecommendationPrefs } from './onboardingProfile'
@@ -46,7 +46,9 @@ function buildAdventureCompleteCard(
   const imageUrl = entry
     ? getJourneyEntryDisplayImageUrl(state.journeyEntries, entry) ?? place?.imageUrl
     : undefined
-  const category = place?.category ?? entry?.tags[0] ?? 'Adventure'
+  const category = entry && isNeighborhoodWalkPlace(entry.placeId)
+    ? 'Quick walk'
+    : place?.category ?? entry?.tags[0] ?? 'Adventure'
   const photoCount = entry?.photoUrls?.filter(Boolean).length ?? 0
 
   return {
