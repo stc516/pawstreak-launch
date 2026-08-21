@@ -4,6 +4,8 @@
   "rewrites": [
     { "source": "/", "destination": "/index.html" },
     { "source": "/san-diego", "destination": "/index.html" },
+    { "source": "/san-diego/guides", "destination": "/san-diego/guides/index.html" },
+    { "source": "/san-diego/guides/ocean-beach-dog-day", "destination": "/san-diego/guides/ocean-beach-dog-day/index.html" },
     { "source": "/san-diego/:path*", "destination": "/index.html" }
   ],
   "headers": [
