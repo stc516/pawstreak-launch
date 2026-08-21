@@ -51,6 +51,7 @@ export function ActiveAdventureScreen({
     isNeighborhood,
   })
   const hasPhotos = state.adventurePhotos.some(Boolean)
+  const photoCount = state.adventurePhotos.filter(Boolean).length
   const isStarted = adventure?.started ?? false
   const elapsedSeconds =
     adventure && isStarted
@@ -256,7 +257,7 @@ export function ActiveAdventureScreen({
 
           <div className="adv-capture-prompt detail-quote-block detail-quote-block--compact">
             <p className="detail-quote-text">
-              Capture one thing you&apos;ll want to remember.
+              Grab one tiny proof that today happened.
             </p>
           </div>
 
@@ -269,9 +270,9 @@ export function ActiveAdventureScreen({
             onChange={handlePhotoSelected}
           />
 
-          <button type="button" className="cam-row tap-target" onClick={handleCaptureClick}>
+          <button type="button" className="cam-row cam-row--memory tap-target" onClick={handleCaptureClick}>
             <i className="ti ti-camera" aria-hidden="true" />
-            <span>Capture a moment</span>
+            <span>{hasPhotos ? 'Add another moment' : 'Capture the memory'}</span>
           </button>
 
           {!hasPhotos ? (
@@ -280,13 +281,33 @@ export function ActiveAdventureScreen({
             </div>
           ) : (
             <div className="adv-photo-reminder adv-photo-reminder--done">
-              {state.adventurePhotos.filter(Boolean).length} moment
-              {state.adventurePhotos.filter(Boolean).length === 1 ? '' : 's'} saved
+              {photoCount} moment{photoCount === 1 ? '' : 's'} saved
             </div>
           )}
 
-          <div className="rq">What made today worth remembering?</div>
-          <div className="rchips">
+          <section className="adventure-finish-payoff" aria-label="Adventure payoff">
+            <div className="adventure-finish-payoff-dogs" aria-hidden="true">
+              {getProfileDogs(state).slice(0, 2).map((dog) => (
+                <span key={dog.id} className={`adventure-finish-dog ${dog.avatarClass}`}>
+                  {dog.photoUrl ? <img src={dog.photoUrl} alt="" /> : <span>{dog.profileEmoji}</span>}
+                </span>
+              ))}
+            </div>
+            <div className="adventure-finish-payoff-copy">
+              <span>Memory checkpoint</span>
+              <strong>You gave {getDisplayDogLabelForIds(state, adventure.selectedDogIds)} a better day.</strong>
+              <p>
+                Save the good part now — the place, the proof, and the little details you&apos;ll want back later.
+              </p>
+            </div>
+            <div className="adventure-finish-payoff-meta">
+              <span>{formatTimerWithTarget(elapsedSeconds, adventure.durationLabel)}</span>
+              <span>{photoCount > 0 ? `${photoCount} photo${photoCount === 1 ? '' : 's'}` : 'photo optional'}</span>
+            </div>
+          </section>
+
+          <div className="rq rq--memory">What made today worth remembering?</div>
+          <div className="rchips rchips--memory">
             {state.adventureRecapOptions.map((option) => (
               <button
                 key={option.id}
@@ -299,8 +320,8 @@ export function ActiveAdventureScreen({
             ))}
           </div>
 
-          <div className="rq">Photos from today</div>
-          <div className="rphotos">
+          <div className="rq rq--memory">Photos from today</div>
+          <div className="rphotos rphotos--memory">
             {state.adventurePhotos.map((photo, index) => (
               <div key={index} className="rph">
                 {photo ? (
@@ -312,8 +333,8 @@ export function ActiveAdventureScreen({
             ))}
           </div>
 
-          <div className="adv-action-footer">
-            <div className="clk-btns">
+          <div className="adv-action-footer adv-action-footer--memory">
+            <div className="clk-btns clk-btns--memory">
               <button
                 type="button"
                 className="cbtn tap-target"
@@ -333,13 +354,13 @@ export function ActiveAdventureScreen({
               </button>
               <button
                 type="button"
-                className="cbtn pri tap-target"
+                className="cbtn pri cbtn--save-memory tap-target"
                 onClick={() => void handleFinish()}
                 disabled={isFinishing}
                 aria-busy={isFinishing}
-                aria-label="Finish adventure"
+                aria-label="Finish adventure and save memory"
               >
-                {isFinishing ? 'Saving memory…' : 'Finish adventure + save memory'}
+                {isFinishing ? 'Saving memory…' : 'Save this adventure'}
               </button>
             </div>
             <button type="button" className="adv-cancel-btn tap-target" onClick={onCancel}>
