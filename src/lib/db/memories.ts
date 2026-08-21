@@ -37,6 +37,17 @@ export async function uploadMemoryPhotos(
   return paths
 }
 
+async function rollbackIncompleteMemory(memoryId: string, photoPaths: string[]) {
+  const supabase = getSupabaseClient()
+  if (!supabase) return
+
+  if (photoPaths.length > 0) {
+    await supabase.storage.from('memory-photos').remove(photoPaths)
+  }
+
+  await supabase.from('memories').delete().eq('id', memoryId)
+}
+
 export async function getSignedPhotoUrls(paths: string[]): Promise<string[]> {
   const supabase = getSupabaseClient()
   if (!supabase || paths.length === 0) return []
@@ -179,15 +190,24 @@ export async function createMemory(input: {
   const photos = input.photoDataUrls?.filter(Boolean) ?? []
   if (photos.length > 0) {
     const photoPaths = await uploadMemoryPhotos(input.userId, memory.id, photos)
-    if (photoPaths.length > 0) {
-      const { data: updated } = await supabase
-        .from('memories')
-        .update({ photo_paths: photoPaths })
-        .eq('id', memory.id)
-        .select('*')
-        .single()
-      return (updated as MemoryRow) ?? memory
+    if (photoPaths.length !== photos.length) {
+      await rollbackIncompleteMemory(memory.id, photoPaths)
+      throw new Error('Could not save every attached memory photo.')
     }
+
+    const { data: updated, error: updateError } = await supabase
+      .from('memories')
+      .update({ photo_paths: photoPaths })
+      .eq('id', memory.id)
+      .select('*')
+      .single()
+
+    if (updateError || !updated) {
+      await rollbackIncompleteMemory(memory.id, photoPaths)
+      throw new Error('Could not attach memory photos.')
+    }
+
+    return updated as MemoryRow
   }
 
   return memory
