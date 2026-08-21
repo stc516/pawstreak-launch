@@ -578,6 +578,197 @@
   display: none !important;
 }
 
+.curated-spotlight {
+  display: grid;
+  gap: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 77, 0, 0.22);
+  border-radius: 28px;
+  background: #fffdf5;
+  box-shadow: 0 18px 34px rgba(27, 48, 34, 0.13);
+}
+
+.curated-spotlight-art.card-img {
+  position: relative;
+  min-height: 246px;
+  border-radius: 0;
+  background-position: center;
+  background-size: cover;
+}
+
+.curated-spotlight-art.card-img::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(223, 255, 0, 0.46), transparent 26%),
+    linear-gradient(180deg, rgba(8, 27, 19, 0.12) 0%, rgba(8, 27, 19, 0.78) 100%);
+  content: '';
+}
+
+.curated-spotlight-top,
+.curated-spotlight-copy,
+.curated-spotlight-dog {
+  position: absolute;
+  z-index: 2;
+}
+
+.curated-spotlight-top {
+  top: 13px;
+  left: 13px;
+  right: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.curated-spotlight .curated-spotlight-top > span,
+.curated-spotlight .curated-spotlight-top > strong {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 1000;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.curated-spotlight .curated-spotlight-top > span {
+  padding: 8px 11px;
+  background: var(--ps-launch-lime) !important;
+  color: var(--ps-launch-ink) !important;
+  box-shadow: 0 9px 18px rgba(0, 0, 0, 0.22);
+}
+
+.curated-spotlight .curated-spotlight-top > strong {
+  overflow: hidden;
+  max-width: 42%;
+  padding: 7px 10px;
+  background: rgba(8, 27, 19, 0.72) !important;
+  color: #fff !important;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  backdrop-filter: blur(10px);
+}
+
+.curated-spotlight-copy {
+  left: 15px;
+  right: 78px;
+  bottom: 16px;
+  display: grid;
+  gap: 5px;
+}
+
+.curated-spotlight-copy span {
+  color: var(--ps-launch-lime);
+  font-size: 11px;
+  font-weight: 1000;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.34);
+}
+
+.curated-spotlight-copy h2 {
+  margin: 0;
+  color: #fff;
+  font-family: var(--serif, Georgia, serif);
+  font-size: clamp(32px, 8.6vw, 42px);
+  line-height: 0.93;
+  letter-spacing: -0.055em;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.42);
+}
+
+.curated-spotlight-copy p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 12px;
+  font-weight: 850;
+  line-height: 1.25;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.32);
+}
+
+.curated-spotlight-dog {
+  right: 13px;
+  bottom: 18px;
+}
+
+.curated-spotlight-dog .dog-adventure-sticker {
+  transform: rotate(7deg) scale(0.88);
+}
+
+.curated-spotlight-panel {
+  display: grid;
+  gap: 11px;
+  padding: 13px;
+  background:
+    radial-gradient(circle at 96% 0%, rgba(223, 255, 0, 0.24), transparent 25%),
+    linear-gradient(145deg, #fffdf5 0%, #fff5df 100%);
+}
+
+.curated-spotlight-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.curated-spotlight-meta span {
+  display: grid;
+  gap: 5px;
+  align-content: center;
+  min-height: 58px;
+  padding: 8px;
+  border: 1px solid rgba(16, 59, 39, 0.1);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.72);
+  color: rgba(8, 27, 19, 0.78);
+  font-size: 10px;
+  font-weight: 920;
+  line-height: 1.12;
+  box-shadow: 0 8px 16px rgba(27, 48, 34, 0.06);
+}
+
+.curated-spotlight-meta i {
+  color: var(--ps-launch-orange);
+  font-size: 17px;
+}
+
+.curated-spotlight-panel p {
+  margin: 0;
+  color: rgba(8, 27, 19, 0.72);
+  font-size: 12px;
+  font-weight: 780;
+  line-height: 1.36;
+}
+
+.curated-spotlight-actions {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+}
+
+.curated-spotlight-start,
+.curated-spotlight-map {
+  min-height: 46px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 1000;
+}
+
+.curated-spotlight-start {
+  border: 0;
+  background: linear-gradient(135deg, var(--ps-launch-orange), var(--ps-launch-orange-2)) !important;
+  color: #fff !important;
+  box-shadow: 0 10px 18px rgba(255, 77, 0, 0.22) !important;
+}
+
+.curated-spotlight-map {
+  border: 1px solid rgba(16, 59, 39, 0.12);
+  background: #fff !important;
+  color: var(--ps-launch-ink) !important;
+}
+
 .plan-proximity-strip,
 .chips--plan {
   padding: 2px;

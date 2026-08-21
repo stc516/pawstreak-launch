@@ -111,6 +111,20 @@ export function PlanScreen({
         : null,
     [places, selectedPlaceId, suggestedPicks],
   )
+  const featuredPlace = useMemo(
+    () =>
+      selectedPlace ??
+      places.find((place) => place.popularNow) ??
+      places.find((place) => place.featured) ??
+      places[0] ??
+      suggestedPicks[0] ??
+      null,
+    [places, selectedPlace, suggestedPicks],
+  )
+  const selectedCategoryLabel =
+    state.planCategories.find((category) => category.id === state.selectedPlanCategoryId)?.label ??
+    'All'
+  const curatedMapCount = mapPlaces.length
 
   const handleTypedPlanPreview = () => {
     const request = typedPlan.trim()
@@ -237,6 +251,69 @@ export function PlanScreen({
         <div className="explore-hype-paws" aria-hidden="true">🐾 🐾 🐾</div>
       </section>
 
+      {locationSupported && featuredPlace ? (
+        <section className="curated-spotlight" aria-label="Curated adventure pick">
+          <CardImage
+            className="curated-spotlight-art"
+            imageUrl={getAdventureDisplayImageUrl(state.journeyEntries, featuredPlace)}
+            imageAlt={featuredPlace.imageAlt ?? featuredPlace.name}
+            imageTone={featuredPlace.imageTone}
+          >
+            <div className="curated-spotlight-top">
+              <span>Curated pick</span>
+              <strong>{selectedCategoryLabel}</strong>
+            </div>
+            <div className="curated-spotlight-copy">
+              <span>{featuredPlace.category} · {featuredPlace.city}</span>
+              <h2>{featuredPlace.name}</h2>
+              <p>{featuredPlace.whyDogsLoveIt}</p>
+            </div>
+            <div className="curated-spotlight-dog">
+              <DogAdventureSticker dog={leadDog} className="dog-adventure-sticker--hero" />
+            </div>
+          </CardImage>
+          <div className="curated-spotlight-panel">
+            <div className="curated-spotlight-meta">
+              <span>
+                <i className="ti ti-map-pin" aria-hidden="true" />
+                {featuredPlace.distanceLabel}
+              </span>
+              <span>
+                <i className="ti ti-clock" aria-hidden="true" />
+                {featuredPlace.bestTime}
+              </span>
+              <span>
+                <i className="ti ti-paw" aria-hidden="true" />
+                {featuredPlace.leashInfo}
+              </span>
+            </div>
+            <p>{featuredPlace.dogFriendlyNotes}</p>
+            <div className="curated-spotlight-actions">
+              <button
+                type="button"
+                className="curated-spotlight-start tap-target"
+                onClick={() => handlePlaceGo(featuredPlace.id)}
+              >
+                Start this adventure
+              </button>
+              <button
+                type="button"
+                className="curated-spotlight-map tap-target"
+                onClick={() => {
+                  setSelectedPlaceId(featuredPlace.id)
+                  placeCardRefs.current[featuredPlace.id]?.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center',
+                  })
+                }}
+              >
+                Show on map
+              </button>
+            </div>
+          </div>
+        </section>
+      ) : null}
+
       {state.randomPlanResult ? (
         <section
           className="plan-random-result detail-card-warm"
@@ -278,7 +355,7 @@ export function PlanScreen({
         mapTitle={state.mapRegion.title}
         mapSubtitle={
           locationSupported
-            ? 'Each pin is a real place nearby · Tap to find it below'
+            ? `${curatedMapCount} curated dog-friendly pins · Tap a pin or place card`
             : state.mapRegion.subtitle
         }
         emptyTitle={locationSupported ? undefined : 'Generic ideas for your area'}
