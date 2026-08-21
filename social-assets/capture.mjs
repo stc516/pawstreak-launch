@@ -90,9 +90,7 @@ async function assertDevServer() {
     if (!response.ok) fail(`Dev server returned ${response.status} at ${BASE_URL}`)
     log('setup', `Using ${BASE_URL}`)
   } catch {
-    fail(
-      `Cannot reach ${BASE_URL}. Start the app first: npm run dev`,
-    )
+    fail(`Cannot reach ${BASE_URL}. Start the app first: npm run dev`)
   }
 }
 
@@ -178,7 +176,12 @@ async function loadDemoApp(page) {
     fail(`Expected /demo/app but got ${page.url()}`)
   }
   await injectCaptureStyles(page)
-  await wait(400)
+  await wait(500)
+}
+
+async function safeScroll(page, selector) {
+  await page.locator(selector).first().scrollIntoViewIfNeeded().catch(() => {})
+  await wait(280)
 }
 
 async function captureScreenshots(browser) {
@@ -193,14 +196,32 @@ async function captureScreenshots(browser) {
     await loadDemoApp(page)
 
     await clickNav(page, 'Home')
-    await page.locator('.home-intro').scrollIntoViewIfNeeded()
-    await wait(300)
-    await capturePair(page, '01-today-home', generated)
+    await page.locator('.home-adventure-launch-hero').waitFor({ timeout: 15000 })
+    await safeScroll(page, '.home-adventure-launch-hero')
+    await capturePair(page, '01-adventure-launch-home', generated)
+
+    await safeScroll(page, '.home-quick-adventure--today-pick')
+    await capturePair(page, '02-todays-pick-card', generated)
 
     await clickNav(page, 'Plan')
-    await page.locator('.plan-cats, .sec').first().scrollIntoViewIfNeeded().catch(() => {})
-    await wait(350)
-    await capturePair(page, '02-plan-adventure', generated)
+    await page.locator('.explore-hype').waitFor({ timeout: 15000 })
+    await safeScroll(page, '.plan-screen-header')
+    await capturePair(page, '03-discover-adventure-mode', generated)
+
+    await page.locator('.plan-card-list .pcard').first().click()
+    await page.locator('.plan-place-detail').waitFor({ timeout: 15000 })
+    await safeScroll(page, '.plan-place-detail')
+    await capturePair(page, '04-adventure-detail', generated)
+
+    await clickNav(page, 'Home')
+    await page.locator('.today-primary-action').click()
+    await page.locator('.adv-ready-hero').waitFor({ timeout: 15000 })
+    await capturePair(page, '05-adventure-ready', generated)
+
+    await page.getByRole('button', { name: 'Start adventure', exact: true }).click()
+    await page.locator('.clock-bg--active').waitFor({ timeout: 15000 })
+    await safeScroll(page, '.adventure-finish-payoff')
+    await capturePair(page, '06-save-memory-payoff', generated)
 
     await clickNav(page, 'Journey')
     await page.locator('.journey-grid .mcard--grid').first().click()
@@ -208,36 +229,7 @@ async function captureScreenshots(browser) {
     if (!(await page.locator('.memory-hero').isVisible())) {
       fail('Journey memory overlay did not open')
     }
-    await capturePair(page, '03-journey-memory', generated)
-    await page.locator('.overlay-back').click()
-    await wait(450)
-
-    await page.getByRole('button', { name: 'Map view', exact: true }).click()
-    await wait(550)
-    if (!(await page.locator('.jmap-overlay-title').isVisible())) {
-      fail('Journey map overlay did not open')
-    }
-    await page.locator('#pin-torrey').click()
-    await wait(400)
-    await capturePair(page, '04-map-path', generated)
-    await page.locator('.overlay-back').click()
-    await wait(450)
-
-    await clickNav(page, 'Home')
-    await page.locator('.two-dogs').click()
-    await wait(500)
-    if (!(await page.locator('.prof-top, .pack-access-section').first().isVisible())) {
-      fail('Profile screen did not open')
-    }
-    await capturePair(page, '05-profile', generated)
-
-    await page.goto(BASE_URL, { waitUntil: 'networkidle', timeout: 60000 })
-    await page.evaluate(() => localStorage.removeItem('pawstreak:app'))
-    await page.reload({ waitUntil: 'networkidle', timeout: 60000 })
-    await injectCaptureStyles(page)
-    await page.getByRole('button', { name: /Get started/i }).waitFor({ timeout: 15000 })
-    await wait(350)
-    await capturePair(page, '06-early-access', generated)
+    await capturePair(page, '07-journey-memory', generated)
   } finally {
     await page.close()
     await context.close()
@@ -257,29 +249,27 @@ async function captureVideo(browser) {
     await loadDemoApp(page)
 
     await clickNav(page, 'Home')
-    await page.locator('.home-intro').scrollIntoViewIfNeeded()
+    await safeScroll(page, '.home-adventure-launch-hero')
     await wait(1200)
 
+    await safeScroll(page, '.home-quick-adventure--today-pick')
+    await wait(900)
+
     await clickNav(page, 'Plan')
-    await wait(1200)
+    await wait(1000)
+    await page.locator('.plan-card-list .pcard').first().click()
+    await wait(1000)
+
+    await clickNav(page, 'Home')
+    await page.locator('.today-primary-action').click()
+    await wait(900)
+    await page.getByRole('button', { name: 'Start adventure', exact: true }).click()
+    await wait(900)
+    await safeScroll(page, '.adventure-finish-payoff')
+    await wait(1300)
 
     await clickNav(page, 'Journey')
     await wait(1200)
-
-    await page.getByRole('button', { name: 'Map view', exact: true }).click()
-    await wait(800)
-    await page.locator('#pin-torrey').click()
-    await wait(1200)
-
-    await page.locator('.overlay-back').click()
-    await wait(600)
-
-    await page.goto(BASE_URL, { waitUntil: 'networkidle', timeout: 60000 })
-    await page.evaluate(() => localStorage.removeItem('pawstreak:app'))
-    await page.reload({ waitUntil: 'networkidle', timeout: 60000 })
-    await injectCaptureStyles(page)
-    await page.getByRole('button', { name: /Get started/i }).waitFor({ timeout: 15000 })
-    await wait(1800)
   } finally {
     const video = page.video()
     await page.close()
