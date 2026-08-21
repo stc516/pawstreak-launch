@@ -161,44 +161,179 @@
   line-height: 1.34;
 }
 
-.home-screen--adventure-launch .home-adventure-launch-hero .dog-adventure-scene {
-  min-height: 194px;
-  margin: 2px -4px 0;
-  border-color: rgba(255, 255, 255, 0.5);
+.home-adventure-stage {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-height: 206px;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
   border-radius: 22px;
-  box-shadow: 0 15px 30px rgba(16, 59, 39, 0.2);
+  background: #102d21;
+  color: inherit;
+  text-align: left;
+  box-shadow: 0 16px 30px rgba(16, 59, 39, 0.22);
 }
 
-.home-screen--adventure-launch .home-adventure-launch-hero .dog-adventure-character {
-  left: 18px;
-  bottom: 20px;
+.home-adventure-stage-art.card-img {
+  position: absolute;
+  inset: 0;
+  min-height: 100%;
+  border-radius: 22px;
+  background-size: cover;
+  background-position: center;
 }
 
-.home-screen--adventure-launch .home-adventure-launch-hero .dog-adventure-avatar {
-  width: 104px;
-  height: 104px;
-  border-width: 5px;
-  box-shadow: 0 12px 25px rgba(27, 48, 34, 0.25), 0 0 0 4px rgba(223, 255, 0, 0.7);
-  font-size: 56px;
+.home-adventure-stage-art.card-img::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 12% 12%, rgba(223, 255, 0, 0.42), transparent 28%),
+    radial-gradient(circle at 90% 80%, rgba(6, 217, 246, 0.24), transparent 26%),
+    linear-gradient(90deg, rgba(6, 22, 15, 0.86) 0%, rgba(6, 22, 15, 0.48) 52%, rgba(6, 22, 15, 0.18) 100%);
+  content: '';
 }
 
-.home-screen--adventure-launch .home-adventure-launch-hero .dog-adventure-copy {
-  top: 20px;
-  left: 136px;
+.home-adventure-stage-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(180deg, rgba(8, 27, 19, 0.05) 0%, rgba(8, 27, 19, 0.5) 100%),
+    repeating-linear-gradient(118deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 12px);
+  pointer-events: none;
+}
+
+.home-adventure-stage-copy {
+  position: absolute;
+  z-index: 2;
+  left: 13px;
+  right: 72px;
+  bottom: 56px;
+  display: grid;
+  gap: 4px;
+}
+
+.home-adventure-stage-copy span {
+  width: max-content;
+  max-width: 100%;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--ps-launch-lime);
+  color: var(--ps-launch-ink);
+  font-size: 10px;
+  font-weight: 1000;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.home-adventure-stage-copy strong {
+  color: #fff;
+  font-family: var(--serif, Georgia, serif);
+  font-size: clamp(25px, 7.2vw, 33px);
+  line-height: 0.95;
+  letter-spacing: -0.052em;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.38);
+}
+
+.home-adventure-stage-copy small {
+  max-width: 19rem;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 12px;
+  font-weight: 850;
+  line-height: 1.26;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.32);
+}
+
+.home-adventure-stage-route {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  left: 12px;
   right: 12px;
-  padding: 11px 12px;
-  border-color: rgba(255, 255, 255, 0.44);
-  border-radius: 16px;
-  background: linear-gradient(135deg, rgba(255, 253, 245, 0.76), rgba(255, 255, 255, 0.38));
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
-.home-screen--adventure-launch .home-adventure-launch-hero .dog-adventure-copy h1 {
-  font-size: 20px;
+.home-adventure-stage-route span {
+  padding: 6px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 999px;
+  background: rgba(8, 27, 19, 0.52);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 950;
+  backdrop-filter: blur(10px);
 }
 
-.home-screen--adventure-launch .home-adventure-launch-hero .dog-adventure-copy p {
-  font-size: 11px;
-  line-height: 1.28;
+.home-adventure-stage-pack {
+  position: absolute;
+  z-index: 3;
+  right: 12px;
+  bottom: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: calc(100% - 24px);
+  padding: 6px 8px 6px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+}
+
+.home-adventure-stage-dog {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  overflow: hidden;
+  margin-left: -12px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #ffcf5a;
+  color: var(--ps-launch-ink);
+  font-size: 14px;
+  font-weight: 1000;
+  box-shadow: 0 0 0 2px rgba(6, 217, 246, 0.42);
+}
+
+.home-adventure-stage-dog:first-child {
+  margin-left: 0;
+}
+
+.home-adventure-stage-dog img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home-adventure-stage-pack strong {
+  overflow: hidden;
+  color: var(--ps-launch-ink);
+  font-size: 10px;
+  font-weight: 1000;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-adventure-stage-go {
+  position: absolute;
+  z-index: 3;
+  right: 13px;
+  top: 50%;
+  display: grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--ps-launch-orange), var(--ps-launch-orange-2));
+  color: #fff;
+  box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.22), 0 10px 20px rgba(255, 77, 0, 0.3);
+  transform: translateY(-50%);
 }
 
 .home-badge-banner {
@@ -362,11 +497,51 @@
 }
 
 .explore-hype {
+  position: relative;
+  display: block !important;
+  min-height: 160px;
+  padding: 20px 18px !important;
   border: 1px solid rgba(6, 217, 246, 0.36) !important;
   background:
     radial-gradient(circle at 84% 12%, rgba(223, 255, 0, 0.8), transparent 23%),
+    radial-gradient(circle at 14% 86%, rgba(6, 217, 246, 0.22), transparent 30%),
     linear-gradient(135deg, #103b27 0%, #17613f 56%, #06373a 100%) !important;
   box-shadow: 0 16px 30px rgba(16, 59, 39, 0.22) !important;
+}
+
+.explore-hype-dog {
+  position: absolute !important;
+  top: 16px !important;
+  right: 16px !important;
+  left: auto !important;
+  z-index: 3;
+  width: 50px !important;
+  height: 50px !important;
+  border: 3px solid rgba(255, 255, 255, 0.92) !important;
+  border-radius: 999px !important;
+  background: var(--ps-launch-lime) !important;
+  box-shadow:
+    0 0 0 4px rgba(6, 217, 246, 0.36),
+    0 10px 22px rgba(0, 0, 0, 0.18) !important;
+  animation: none !important;
+  transform: rotate(4deg);
+}
+
+.explore-hype-dog img,
+.explore-hype-dog span:first-child {
+  border-radius: inherit;
+}
+
+.explore-hype-bandana {
+  right: -8px !important;
+  bottom: -8px !important;
+  width: 28px !important;
+  height: 21px !important;
+  background: var(--ps-launch-orange) !important;
+}
+
+.explore-hype-copy {
+  max-width: calc(100% - 68px);
 }
 
 .explore-hype-copy span {
@@ -374,13 +549,33 @@
 }
 
 .explore-hype-copy strong {
+  display: block;
+  max-width: 15ch !important;
   color: #fff !important;
+  font-size: clamp(28px, 7.6vw, 36px) !important;
+  line-height: 0.94 !important;
   letter-spacing: -0.02em;
 }
 
+.explore-hype-words {
+  right: 16px !important;
+  bottom: 13px !important;
+  gap: 7px !important;
+  transform: rotate(-4deg) !important;
+}
+
 .explore-hype-words span {
-  color: rgba(255, 255, 255, 0.14) !important;
-  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.22);
+  padding: 5px 7px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(8, 27, 19, 0.32);
+  color: rgba(255, 255, 255, 0.64) !important;
+  -webkit-text-stroke: 0;
+  backdrop-filter: blur(8px);
+}
+
+.explore-hype-paws {
+  display: none !important;
 }
 
 .plan-proximity-strip,
@@ -405,6 +600,149 @@
 .plan-card-list .pcard--map-selected {
   border-color: rgba(6, 217, 246, 0.66) !important;
   box-shadow: 0 0 0 3px rgba(6, 217, 246, 0.18), 0 14px 26px rgba(27, 48, 34, 0.14) !important;
+}
+
+.plan-map-card--adventure {
+  overflow: hidden;
+  border-color: rgba(6, 217, 246, 0.32) !important;
+  background:
+    radial-gradient(circle at 92% 4%, rgba(223, 255, 0, 0.38), transparent 22%),
+    linear-gradient(145deg, #081b13 0%, #103b27 72%, #08313a 100%) !important;
+  box-shadow: 0 18px 34px rgba(16, 59, 39, 0.22) !important;
+}
+
+.plan-map-canvas--adventure.plan-map-canvas--mapbox {
+  min-height: 236px;
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 18% 22%, rgba(6, 217, 246, 0.3), transparent 28%),
+    radial-gradient(circle at 80% 62%, rgba(223, 255, 0, 0.26), transparent 26%),
+    linear-gradient(135deg, #082f33 0%, #124b35 46%, #f0b34b 100%) !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.16) inset;
+}
+
+.plan-map-fallback {
+  background:
+    radial-gradient(circle at 12% 16%, rgba(6, 217, 246, 0.38), transparent 24%),
+    radial-gradient(circle at 86% 14%, rgba(223, 255, 0, 0.36), transparent 24%),
+    linear-gradient(135deg, #07261f 0%, #0d4432 45%, #123d47 100%);
+}
+
+.plan-map-fallback::before {
+  position: absolute;
+  inset: 14px 18px 18px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 28px;
+  background:
+    linear-gradient(115deg, transparent 0 42%, rgba(6, 217, 246, 0.28) 42% 47%, transparent 47% 100%),
+    radial-gradient(ellipse at 24% 72%, rgba(255, 244, 196, 0.9) 0 16%, rgba(255, 151, 58, 0.5) 17% 25%, transparent 26%),
+    radial-gradient(ellipse at 74% 36%, rgba(76, 210, 120, 0.78) 0 18%, rgba(20, 108, 68, 0.7) 19% 32%, transparent 33%);
+  content: '';
+  opacity: 0.92;
+}
+
+.plan-map-fallback::after {
+  position: absolute;
+  left: -18%;
+  bottom: -18%;
+  width: 76%;
+  height: 74%;
+  border-radius: 0 78% 0 0;
+  background:
+    repeating-radial-gradient(circle at 68% 58%, rgba(255, 255, 255, 0.18) 0 2px, transparent 2px 10px),
+    linear-gradient(145deg, rgba(6, 217, 246, 0.46), rgba(16, 108, 132, 0.8));
+  content: '';
+}
+
+.plan-map-terrain {
+  opacity: 0.36;
+  mix-blend-mode: screen;
+}
+
+.plan-map-coast {
+  background: linear-gradient(180deg, rgba(255, 247, 208, 0.88) 0%, rgba(255, 122, 26, 0.46) 100%) !important;
+}
+
+.plan-map-hills {
+  background: linear-gradient(180deg, rgba(223, 255, 0, 0.52) 0%, rgba(23, 97, 63, 0.72) 100%) !important;
+}
+
+.plan-map-road {
+  height: 5px !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  box-shadow:
+    0 0 0 1px rgba(8, 27, 19, 0.12),
+    0 0 18px rgba(223, 255, 0, 0.18) !important;
+}
+
+.plan-map-fallback-hint {
+  top: 12px;
+  border-color: rgba(223, 255, 0, 0.34) !important;
+  background: rgba(8, 27, 19, 0.72) !important;
+  color: #fff !important;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.24) !important;
+  backdrop-filter: blur(12px);
+}
+
+.plan-map-pin-label {
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  background: rgba(8, 27, 19, 0.78) !important;
+  color: #fff !important;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.24) !important;
+  backdrop-filter: blur(10px);
+}
+
+.plan-map-pin-dot--adventure {
+  background: var(--ps-launch-orange) !important;
+  box-shadow:
+    0 0 0 3px rgba(255, 255, 255, 0.92),
+    0 0 0 7px rgba(255, 77, 0, 0.24),
+    0 8px 18px rgba(0, 0, 0, 0.24) !important;
+}
+
+.plan-map-pin--adventure.on .plan-map-pin-dot--adventure {
+  background: var(--ps-launch-lime) !important;
+  box-shadow:
+    0 0 0 4px var(--ps-launch-orange),
+    0 0 0 9px rgba(223, 255, 0, 0.25),
+    0 10px 20px rgba(0, 0, 0, 0.25) !important;
+}
+
+.plan-map-tooltip {
+  border-color: rgba(223, 255, 0, 0.26) !important;
+  background: rgba(255, 253, 245, 0.92) !important;
+  box-shadow: 0 14px 26px rgba(0, 0, 0, 0.2) !important;
+}
+
+.plan-map-footer {
+  color: #fff;
+}
+
+.plan-map-title {
+  color: #fff !important;
+  font-weight: 1000;
+}
+
+.plan-map-sub {
+  color: rgba(255, 255, 255, 0.68) !important;
+}
+
+.plan-map-zip {
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+.plan-map-zip .zip-input {
+  color: #fff !important;
+}
+
+.plan-map-zip .zip-input::placeholder {
+  color: rgba(255, 255, 255, 0.55) !important;
+}
+
+.plan-map-zip .zip-btn {
+  background: var(--ps-launch-orange) !important;
+  color: #fff !important;
 }
 
 .plan-card-list .pname {
@@ -459,12 +797,19 @@
   color: #dfff00;
 }
 
+.scroll--active .cam-row--memory span {
+  color: #fff !important;
+  font-weight: 900;
+}
+
 .adventure-finish-payoff {
   position: relative;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   gap: 10px;
-  overflow: hidden;
+  min-height: 138px;
+  height: auto !important;
+  overflow: visible;
   padding: 13px;
   border: 1px solid rgba(255, 77, 0, 0.28);
   border-radius: 22px;

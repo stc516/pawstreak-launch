@@ -80,7 +80,11 @@ export function PlanScreen({
   const suggestedPicks = useMemo(() => getMapPreviewPlaces(prefs, state), [prefs, state])
   const visiblePlaces = showAllPlaces ? places : places.slice(0, 6)
   const dogLabel = getDisplayDogLabel(state)
-  const leadDog = getProfileDogs(state)[0]
+  const profileDogs = getProfileDogs(state)
+  const leadDog = profileDogs[0]
+  const packReadyLine = profileDogs.length > 1
+    ? `${dogLabel} are ready. Pick the adventure.`
+    : `${dogLabel} is ready. Pick the adventure.`
   const locationRegion = /orange\s*county/i.test(state.locationLabel)
     ? 'Orange County'
     : /san\s*diego/i.test(state.locationLabel)
@@ -225,7 +229,7 @@ export function PlanScreen({
         </div>
         <div className="explore-hype-copy">
           <span>Adventure mode</span>
-          <strong>{dogLabel} is ready. Pick the adventure.</strong>
+          <strong>{packReadyLine}</strong>
         </div>
         <div className="explore-hype-words" aria-hidden="true">
           <span>RUN</span><span>SNIFF</span><span>SPLASH</span>

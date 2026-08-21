@@ -24,7 +24,6 @@ import { getTrainingProgramById } from '../../data/training'
 import { GENERIC_ADVENTURE_TYPES } from '../../lib/genericAdventures'
 import { getHomeUpcomingItems } from '../../lib/homeUpcoming'
 import { BrandLogoCircle } from '../../components/BrandLogoCircle'
-import { DogAdventureScene, type DogAdventureSceneState } from '../../components/DogAdventureScene'
 import { DogAdventureSticker } from '../../components/DogAdventureSticker'
 
 interface HomeScreenProps {
@@ -144,13 +143,6 @@ export function HomeScreen({
     const occurred = new Date(entry.occurredAt)
     return !Number.isNaN(occurred.getTime()) && occurred.toLocaleDateString('en-CA') === todayKey
   })
-  const sceneState: DogAdventureSceneState = state.activeAdventure
-    ? 'adventuring'
-    : todayEntry
-      ? 'memory'
-      : new Date().getHours() >= 17
-        ? 'evening'
-        : 'ready'
   const leadDog = profileDogs[0]
   const todayPhoto = todayEntry?.photoUrls?.find(Boolean)
   const launchBadges = useMemo(() => getAdventureLaunchBadges(state, progress), [state, progress])
@@ -164,7 +156,7 @@ export function HomeScreen({
   const launchHeadline = state.activeAdventure
     ? `${dogLabel} is already out there.`
     : todayEntry
-      ? `You gave ${dogLabel} a better day.`
+      ? `${dogLabel} had a better day.`
       : `Give ${dogLabel} a better day.`
   const launchCopy = state.activeAdventure
     ? 'Finish strong, save the memory, then let the next adventure pull you forward.'
@@ -246,12 +238,42 @@ export function HomeScreen({
           <p>{launchCopy}</p>
         </div>
 
-        <DogAdventureScene
-          dog={leadDog}
-          packLabel={dogLabel}
-          state={sceneState}
-          memoryPhotoUrl={todayPhoto}
-        />
+        <button
+          type="button"
+          className="home-adventure-stage tap-target"
+          onClick={todayEntry && onOpenMemory ? () => onOpenMemory(todayEntry.id) : handleQuickAdventure}
+          aria-label={todayEntry ? `Open today's memory from ${todayEntry.place}` : `Start today's pick: ${heroPlace.name}`}
+        >
+          <CardImage
+            className="home-adventure-stage-art"
+            imageUrl={todayPhoto ?? heroImageUrl}
+            imageAlt={todayEntry ? todayEntry.place : heroPlace.name}
+            imageTone={heroPlace.imageTone ?? 'warm'}
+          >
+            <div className="home-adventure-stage-scrim" aria-hidden="true" />
+            <div className="home-adventure-stage-copy">
+              <span>{todayEntry ? 'Saved today' : 'Today’s pull'}</span>
+              <strong>{todayEntry?.place ?? heroPlace.name}</strong>
+              <small>{todayEntry ? 'Open the memory, then pick what comes next.' : getHeroFitLine(heroPlace, profileDogs)}</small>
+            </div>
+            <div className="home-adventure-stage-route" aria-hidden="true">
+              <span>{heroPlace.distanceLabel}</span>
+              <span>{heroPlace.category}</span>
+              <span>{heroPlace.leashInfo}</span>
+            </div>
+            <div className="home-adventure-stage-pack" aria-hidden="true">
+              {profileDogs.slice(0, 2).map((dog) => (
+                <span key={dog.id} className={`home-adventure-stage-dog ${dog.avatarClass}`}>
+                  {dog.photoUrl ? <img src={dog.photoUrl} alt="" /> : dog.profileEmoji}
+                </span>
+              ))}
+              <strong>{profileDogs.length > 1 ? 'Pack is ready' : `${leadDog?.name ?? 'Dog'} is ready`}</strong>
+            </div>
+            <span className="home-adventure-stage-go" aria-hidden="true">
+              <i className={`ti ${todayEntry ? 'ti-book' : 'ti-arrow-right'}`} />
+            </span>
+          </CardImage>
+        </button>
 
         <div className="home-badge-banner" aria-label="Adventure badges">
           {launchBadges.map((badge) => (
