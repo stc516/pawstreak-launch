@@ -5,6 +5,7 @@ import './styles.css'
 import './styles/stitch-heritage.css'
 import './styles/stitch-parity.css'
 import './styles/landing.css'
+import './styles/home-adventure-energy.css'
 import App from './App.tsx'
 import { AuthProvider } from './context/AuthContext.tsx'
 
