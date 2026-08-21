@@ -46,6 +46,54 @@ interface HomeScreenProps {
   onGoToChallenges: () => void
 }
 
+type HomeBadge = {
+  emoji: string
+  label: string
+  meta: string
+  pending?: boolean
+}
+
+function getAdventureLaunchBadges(state: AppState, progress: ReturnType<typeof getHomeProgressStats>): HomeBadge[] {
+  const entries = state.journeyEntries
+  const tags = entries.flatMap((entry) => [entry.place, ...entry.tags, ...(entry.recapLabels ?? [])].map((tag) => tag.toLowerCase()))
+  const photoMemories = entries.filter((entry) => entry.photoUrls?.some(Boolean)).length
+  const badges: HomeBadge[] = []
+
+  if (progress.streak > 1) {
+    badges.push({ emoji: '🔥', label: `${progress.streak}-day streak`, meta: 'Real adventure momentum' })
+  }
+
+  if (photoMemories > 0) {
+    badges.push({ emoji: '📸', label: photoMemories === 1 ? 'Memory saved' : `${photoMemories} memories`, meta: 'Moments worth keeping' })
+  }
+
+  if (tags.some((tag) => tag.includes('beach') || tag.includes('bay') || tag.includes('coast'))) {
+    badges.push({ emoji: '🌊', label: 'Beach day', meta: 'Salt air unlocked' })
+  }
+
+  if (tags.some((tag) => tag.includes('trail') || tag.includes('hike') || tag.includes('park'))) {
+    badges.push({ emoji: '🌲', label: 'Trailblazer', meta: 'New sniff territory' })
+  }
+
+  if (tags.some((tag) => tag.includes('coffee') || tag.includes('patio') || tag.includes('cafe'))) {
+    badges.push({ emoji: '☕', label: 'Patio pup', meta: 'Human coffee, dog vibes' })
+  }
+
+  if (progress.places > 0) {
+    badges.push({ emoji: '📍', label: progress.places === 1 ? 'First spot' : `${progress.places} spots`, meta: 'Places actually explored' })
+  }
+
+  if (badges.length === 0) {
+    return [
+      { emoji: '🐾', label: 'First adventure', meta: 'Unlocks when you save a real memory', pending: true },
+      { emoji: '🌊', label: 'Beach day', meta: 'Waiting for your first coastal romp', pending: true },
+      { emoji: '🌲', label: 'Trailblazer', meta: 'Find a new route to unlock', pending: true },
+    ]
+  }
+
+  return badges.slice(0, 3)
+}
+
 export function HomeScreen({
   state,
   isDemoMode = false,
@@ -105,6 +153,24 @@ export function HomeScreen({
         : 'ready'
   const leadDog = profileDogs[0]
   const todayPhoto = todayEntry?.photoUrls?.find(Boolean)
+  const launchBadges = useMemo(() => getAdventureLaunchBadges(state, progress), [state, progress])
+  const launchTone = state.activeAdventure
+    ? 'Adventure in motion'
+    : todayEntry
+      ? 'Memory saved today'
+      : progress.streak > 1
+        ? `${progress.streak}-day adventure streak`
+        : 'Ready for a better day'
+  const launchHeadline = state.activeAdventure
+    ? `${dogLabel} is already out there.`
+    : todayEntry
+      ? `You gave ${dogLabel} a better day.`
+      : `Give ${dogLabel} a better day.`
+  const launchCopy = state.activeAdventure
+    ? 'Finish strong, save the memory, then let the next adventure pull you forward.'
+    : todayEntry
+      ? 'Relive the good part, keep the streak honest, and pick the next place before the leash cools off.'
+      : 'Pick one nearby adventure, get out the door, and come back with a real memory — not another chore walk.'
 
   const handleQuickAdventure = () => {
     onSelectActivity(heroActivityId)
@@ -120,7 +186,7 @@ export function HomeScreen({
   }
 
   return (
-    <div className="home-screen home-screen--stitch">
+    <div className="home-screen home-screen--stitch home-screen--adventure-launch">
       <header className="st-appbar home-screen-header">
         <div className="app-brand-lockup home-logo-lockup">
           <BrandLogoCircle size={32} />
@@ -162,31 +228,57 @@ export function HomeScreen({
         </div>
       ) : null}
 
-      <div className="today-greeting">
-        <span>{welcomeGreeting}</span>
-        <strong>{dogLabel}&apos;s day</strong>
-      </div>
+      <section className="home-adventure-launch-hero" aria-label="Today’s adventure launch">
+        <div className="home-adventure-launch-topline">
+          <span className="home-streak-banner">
+            <i className="ti ti-flame" aria-hidden="true" />
+            {launchTone}
+          </span>
+          <span className="home-launch-dog-chip" aria-label={`Adventure companion: ${dogLabel}`}>
+            {leadDog?.photoUrl ? <img src={leadDog.photoUrl} alt="" /> : <span>{leadDog?.profileEmoji ?? '🐶'}</span>}
+            <strong>{dogLabel}</strong>
+          </span>
+        </div>
 
-      <DogAdventureScene
-        dog={leadDog}
-        packLabel={dogLabel}
-        state={sceneState}
-        memoryPhotoUrl={todayPhoto}
-      />
+        <div className="home-adventure-launch-copy">
+          <span>{welcomeGreeting}</span>
+          <h1>{launchHeadline}</h1>
+          <p>{launchCopy}</p>
+        </div>
 
-      <section className="today-actions" aria-label="Today’s adventure">
+        <DogAdventureScene
+          dog={leadDog}
+          packLabel={dogLabel}
+          state={sceneState}
+          memoryPhotoUrl={todayPhoto}
+        />
+
+        <div className="home-badge-banner" aria-label="Adventure badges">
+          {launchBadges.map((badge) => (
+            <span key={`${badge.label}-${badge.meta}`} className={`home-badge-token${badge.pending ? ' home-badge-token--pending' : ''}`}>
+              <span aria-hidden="true">{badge.emoji}</span>
+              <span>
+                <strong>{badge.label}</strong>
+                <small>{badge.meta}</small>
+              </span>
+            </span>
+          ))}
+        </div>
+      </section>
+
+      <section className="today-actions today-actions--launch" aria-label="Today’s adventure">
         <button
           type="button"
-          className="today-primary-action tap-target"
+          className="today-primary-action today-primary-action--electric tap-target"
           onClick={todayEntry && onOpenMemory ? () => onOpenMemory(todayEntry.id) : handleQuickAdventure}
         >
           <span>
-            <small>{todayEntry ? 'Today’s story' : 'Recommended for today'}</small>
-            <strong>{todayEntry ? `Remember ${todayEntry.place}` : 'Choose today’s adventure'}</strong>
+            <small>{todayEntry ? 'Today’s memory' : state.activeAdventure ? 'Adventure in progress' : 'Today’s adventure'}</small>
+            <strong>{todayEntry ? `Relive ${todayEntry.place}` : state.activeAdventure ? `Return to ${state.activeAdventure.location}` : 'Pick the next place'}</strong>
           </span>
           <i className={`ti ${todayEntry ? 'ti-book' : 'ti-arrow-right'}`} aria-hidden="true" />
         </button>
-        <div className="today-secondary-actions">
+        <div className="today-secondary-actions today-secondary-actions--launch">
           <button type="button" className="tap-target" onClick={onStartNeighborhoodWalk}>
             <i className="ti ti-walk" aria-hidden="true" />
             Quick Walk
@@ -208,7 +300,7 @@ export function HomeScreen({
       {state.locationSupported ? (
         <button
           type="button"
-          className="home-quick-adventure detail-card-warm tap-target"
+          className="home-quick-adventure home-quick-adventure--today-pick detail-card-warm tap-target"
           aria-label={`Start today's pick: ${heroPlace.name}`}
           onClick={handleQuickAdventure}
         >
@@ -223,7 +315,7 @@ export function HomeScreen({
             </CardImage>
           </div>
           <div className="home-quick-adventure-body">
-            <div className="home-quick-adventure-kicker">Today&apos;s Pick for {dogLabel}</div>
+            <div className="home-quick-adventure-kicker">Best pick right now</div>
             <h3 className="home-quick-adventure-title">{heroPlace.name}</h3>
             <p className="home-quick-adventure-copy">{getHeroFitLine(heroPlace, profileDogs)}</p>
             <div className="home-quick-adventure-meta">
