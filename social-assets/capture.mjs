@@ -164,7 +164,12 @@ async function capturePair(page, basename, generated) {
 }
 
 async function clickNav(page, label) {
-  await page.getByRole('button', { name: label, exact: true }).click()
+  const currentLabels = {
+    Home: 'Today',
+    Plan: 'Explore',
+  }
+  const navLabel = currentLabels[label] ?? label
+  await page.getByRole('button', { name: navLabel, exact: true }).click()
   await wait(500)
 }
 
@@ -213,8 +218,7 @@ async function captureScreenshots(browser) {
     await safeScroll(page, '.plan-place-detail')
     await capturePair(page, '04-adventure-detail', generated)
 
-    await clickNav(page, 'Home')
-    await page.locator('.today-primary-action').click()
+    await page.locator('.plan-place-detail-start, .plan-place-detail .st-btn--primary').first().click()
     await page.locator('.adv-ready-hero').waitFor({ timeout: 15000 })
     await capturePair(page, '05-adventure-ready', generated)
 
@@ -223,11 +227,15 @@ async function captureScreenshots(browser) {
     await safeScroll(page, '.adventure-finish-payoff')
     await capturePair(page, '06-save-memory-payoff', generated)
 
-    await clickNav(page, 'Journey')
-    await page.locator('.journey-grid .mcard--grid').first().click()
-    await wait(600)
+    await page.getByRole('button', { name: 'Finish adventure and save memory', exact: true }).click()
+    await wait(900)
     if (!(await page.locator('.memory-hero').isVisible())) {
-      fail('Journey memory overlay did not open')
+      await clickNav(page, 'Journey')
+      await page.locator('.journey-grid .mcard--grid').first().click()
+      await wait(600)
+    }
+    if (!(await page.locator('.memory-hero').isVisible())) {
+      fail('Journey memory view did not open after saving')
     }
     await capturePair(page, '07-journey-memory', generated)
   } finally {
@@ -260,15 +268,18 @@ async function captureVideo(browser) {
     await page.locator('.plan-card-list .pcard').first().click()
     await wait(1000)
 
-    await clickNav(page, 'Home')
-    await page.locator('.today-primary-action').click()
+    await page.locator('.plan-place-detail-start, .plan-place-detail .st-btn--primary').first().click()
     await wait(900)
     await page.getByRole('button', { name: 'Start adventure', exact: true }).click()
     await wait(900)
     await safeScroll(page, '.adventure-finish-payoff')
     await wait(1300)
 
-    await clickNav(page, 'Journey')
+    await page.getByRole('button', { name: 'Finish adventure and save memory', exact: true }).click()
+    await wait(900)
+    if (!(await page.locator('.memory-hero').isVisible())) {
+      await clickNav(page, 'Journey')
+    }
     await wait(1200)
   } finally {
     const video = page.video()
