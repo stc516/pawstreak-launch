@@ -17,19 +17,27 @@ export async function shareContent(input: ShareContentInput): Promise<ShareConte
 
   if (typeof navigator.share === 'function') {
     try {
-      const sharePayload: ShareData = {
+      const textSharePayload: ShareData = {
         title,
         text,
         url,
       }
+
       if (input.files?.length && typeof navigator.canShare === 'function') {
-        const filePayload: ShareData = { ...sharePayload, files: input.files }
-        if (navigator.canShare(filePayload)) {
+        const fileSharePayloads: ShareData[] = [
+          { title, text: payload, files: input.files },
+          { title, files: input.files },
+          { files: input.files },
+        ]
+
+        for (const filePayload of fileSharePayloads) {
+          if (!navigator.canShare(filePayload)) continue
           await navigator.share(filePayload)
-          return { ok: true, method: 'share', message: 'Opened your share sheet.' }
+          return { ok: true, method: 'share', message: 'Opened your share sheet with card image.' }
         }
       }
-      await navigator.share(sharePayload)
+
+      await navigator.share(textSharePayload)
       return { ok: true, method: 'share', message: 'Shared.' }
     } catch (error) {
       if (error instanceof Error && error.name === 'AbortError') {
