@@ -1,7 +1,7 @@
 /* PawStreak Home Adventure Launch
    Focused override layer: dog-first energy, real badges, stronger launch CTA. */
 
-.home-screen--adventure-launch {
+:root {
   --ps-launch-ink: #081b13;
   --ps-launch-forest: #103b27;
   --ps-launch-forest-2: #17613f;
@@ -11,6 +11,10 @@
   --ps-launch-cyan: #06d9f6;
   --ps-launch-cream: #fff7e8;
   --ps-launch-paper: #fffdf5;
+}
+
+.home-screen--adventure-launch {
+  color: var(--ps-launch-ink);
 }
 
 .home-screen--adventure-launch .home-screen-header {
@@ -834,6 +838,202 @@
   background:
     radial-gradient(circle at 90% 8%, rgba(223, 255, 0, 0.24), transparent 24%),
     linear-gradient(145deg, #fff 0%, #fff7e8 100%) !important;
+}
+
+.plan-place-detail--briefing {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 0 !important;
+  overflow: hidden;
+  padding: 0 !important;
+  border-radius: 28px !important;
+  box-shadow: 0 18px 34px rgba(27, 48, 34, 0.13) !important;
+}
+
+.plan-place-detail--briefing .plan-place-detail-art.card-img {
+  position: relative;
+  width: 100%;
+  min-height: 232px;
+  aspect-ratio: auto;
+  border-radius: 0;
+  background-position: center;
+  background-size: cover;
+}
+
+.plan-place-detail-art-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(223, 255, 0, 0.3), transparent 26%),
+    linear-gradient(180deg, rgba(8, 27, 19, 0.08) 0%, rgba(8, 27, 19, 0.78) 100%);
+  pointer-events: none;
+}
+
+.plan-place-detail-art-top {
+  position: absolute;
+  top: 13px;
+  left: 13px;
+  right: 13px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.plan-place-detail-art-top span,
+.plan-place-detail-art-top strong {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  padding: 7px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 1000;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  backdrop-filter: blur(10px);
+}
+
+.plan-place-detail-art-top span {
+  background: var(--ps-launch-lime);
+  color: var(--ps-launch-ink);
+}
+
+.plan-place-detail-art-top strong {
+  overflow: hidden;
+  max-width: 46%;
+  background: rgba(8, 27, 19, 0.62);
+  color: #fff;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.plan-place-detail--briefing .dog-adventure-sticker--hero {
+  position: absolute;
+  right: 15px;
+  bottom: 14px;
+  z-index: 3;
+  transform: rotate(7deg) scale(0.86);
+}
+
+.plan-place-detail--briefing .plan-place-detail-body {
+  display: grid;
+  gap: 12px;
+  padding: 15px;
+}
+
+.plan-place-detail--briefing .plan-place-detail-kicker {
+  color: var(--ps-launch-orange) !important;
+  font-size: 11px;
+  font-weight: 1000;
+  letter-spacing: 0.1em;
+}
+
+.plan-place-detail--briefing .plan-place-detail-title {
+  max-width: 13ch;
+  color: var(--ps-launch-ink);
+  font-family: var(--serif, Georgia, serif);
+  font-size: clamp(30px, 8vw, 40px);
+  line-height: 0.94;
+  letter-spacing: -0.055em;
+}
+
+.plan-place-detail--briefing .plan-place-detail-meta {
+  color: rgba(8, 27, 19, 0.62);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.plan-place-brief-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.plan-place-brief-grid article {
+  display: grid;
+  gap: 5px;
+  min-height: 98px;
+  padding: 10px;
+  border: 1px solid rgba(16, 59, 39, 0.1);
+  border-radius: 17px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 8px 16px rgba(27, 48, 34, 0.06);
+}
+
+.plan-place-brief-grid article span {
+  color: var(--ps-launch-orange);
+  font-size: 10px;
+  font-weight: 1000;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.plan-place-brief-grid article p {
+  margin: 0;
+  color: rgba(8, 27, 19, 0.76);
+  font-size: 11px;
+  font-weight: 790;
+  line-height: 1.28;
+}
+
+.plan-place-detail-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.plan-place-detail-tags span {
+  padding: 7px 9px;
+  border: 1px solid rgba(6, 217, 246, 0.24);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: rgba(8, 27, 19, 0.74);
+  font-size: 10px;
+  font-weight: 950;
+}
+
+.plan-place-detail-line--memory {
+  margin: 0 !important;
+  padding: 11px 12px;
+  border: 1px solid rgba(255, 77, 0, 0.18);
+  border-radius: 17px;
+  background:
+    radial-gradient(circle at 95% 0%, rgba(223, 255, 0, 0.32), transparent 28%),
+    rgba(255, 255, 255, 0.68);
+  color: rgba(8, 27, 19, 0.74) !important;
+  font-size: 12px !important;
+  font-weight: 850;
+}
+
+.plan-place-detail-actions {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+}
+
+.plan-place-detail-start,
+.plan-place-detail-secondary {
+  min-height: 48px;
+  border-radius: 17px;
+  font-size: 13px;
+  font-weight: 1000;
+}
+
+.plan-place-detail-start {
+  border: 0;
+  background: linear-gradient(135deg, var(--ps-launch-orange), var(--ps-launch-orange-2)) !important;
+  color: #fff !important;
+  box-shadow: 0 10px 18px rgba(255, 77, 0, 0.22) !important;
+}
+
+.plan-place-detail-secondary {
+  border: 1px solid rgba(16, 59, 39, 0.12);
+  background: #fff !important;
+  color: var(--ps-launch-ink) !important;
+  padding: 0 14px;
 }
 
 .plan-place-detail-kicker,

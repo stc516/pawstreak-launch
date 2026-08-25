@@ -374,37 +374,70 @@ export function PlanScreen({
       />
 
       {selectedPlace ? (
-        <section className="plan-place-detail detail-card-warm" data-testid="plan-place-detail">
+        <section className="plan-place-detail plan-place-detail--briefing detail-card-warm" data-testid="plan-place-detail">
           <CardImage
             className="plan-place-detail-art"
-            imageUrl={getAdventureDisplayImageUrl([], selectedPlace)}
-            imageAlt={selectedPlace.name}
+            imageUrl={getAdventureDisplayImageUrl(state.journeyEntries, selectedPlace)}
+            imageAlt={selectedPlace.imageAlt ?? selectedPlace.name}
             imageTone={selectedPlace.imageTone}
           >
+            <div className="plan-place-detail-art-overlay" aria-hidden="true" />
+            <div className="plan-place-detail-art-top">
+              <span>{selectedPlace.category}</span>
+              <strong>{selectedPlace.energyLevel} energy</strong>
+            </div>
             <DogAdventureSticker dog={leadDog} className="dog-adventure-sticker--hero" />
           </CardImage>
           <div className="plan-place-detail-body">
-            <div className="plan-place-detail-kicker">{selectedPlace.category}</div>
+            <div className="plan-place-detail-kicker">Adventure briefing</div>
             <h2 className="plan-place-detail-title">{selectedPlace.name}</h2>
             <p className="plan-place-detail-meta">
               {selectedPlace.city} · {selectedPlace.distanceLabel}
             </p>
-            {selectedPlace.addressLabel ? (
-              <p className="plan-place-detail-line">{selectedPlace.addressLabel}</p>
-            ) : null}
-            <p className="plan-place-detail-line">Best time: {selectedPlace.bestTime}</p>
-            <p className="plan-place-detail-line">{selectedPlace.dogFriendlyNotes}</p>
-            <p className="plan-place-detail-line">{selectedPlace.whyDogsLoveIt}</p>
-            <p className="plan-place-detail-line">
-              Helps with: Routine Breaker progress, category challenges, and earned memory badges.
+            <div className="plan-place-brief-grid">
+              <article>
+                <span>Why go</span>
+                <p>{selectedPlace.whyDogsLoveIt}</p>
+              </article>
+              <article>
+                <span>Rules</span>
+                <p>{selectedPlace.dogFriendlyNotes}</p>
+              </article>
+              <article>
+                <span>Best window</span>
+                <p>{selectedPlace.bestTime}</p>
+              </article>
+              <article>
+                <span>Location</span>
+                <p>{selectedPlace.addressLabel ?? selectedPlace.city}</p>
+              </article>
+            </div>
+            <div className="plan-place-detail-tags" aria-label="Adventure tags">
+              {selectedPlace.tags.slice(0, 4).map((tag) => (
+                <span key={tag}>{tag}</span>
+              ))}
+            </div>
+            <p className="plan-place-detail-line plan-place-detail-line--memory">
+              Finish it to save the place, photo, and memory into {dogLabel}&apos;s Journey.
             </p>
-            <button
-              type="button"
-              className="st-btn st-btn--primary tap-target"
-              onClick={() => handlePlaceGo(selectedPlace.id)}
-            >
-              Start this adventure
-            </button>
+            <div className="plan-place-detail-actions">
+              <button
+                type="button"
+                className="plan-place-detail-start tap-target"
+                onClick={() => handlePlaceGo(selectedPlace.id)}
+              >
+                Start this adventure
+              </button>
+              {selectedPlace.category === 'Road trip' ? (
+                <button
+                  type="button"
+                  className="plan-place-detail-secondary tap-target"
+                  onClick={() => openRoadTripDirections(selectedPlace)}
+                >
+                  Directions
+                </button>
+              ) : null}
+            </div>
           </div>
         </section>
       ) : null}
