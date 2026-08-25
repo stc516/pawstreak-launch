@@ -80,7 +80,11 @@ export function PlanScreen({
   const suggestedPicks = useMemo(() => getMapPreviewPlaces(prefs, state), [prefs, state])
   const visiblePlaces = showAllPlaces ? places : places.slice(0, 6)
   const dogLabel = getDisplayDogLabel(state)
-  const leadDog = getProfileDogs(state)[0]
+  const profileDogs = getProfileDogs(state)
+  const leadDog = profileDogs[0]
+  const packReadyLine = profileDogs.length > 1
+    ? `${dogLabel} are ready. Pick the adventure.`
+    : `${dogLabel} is ready. Pick the adventure.`
   const locationRegion = /orange\s*county/i.test(state.locationLabel)
     ? 'Orange County'
     : /san\s*diego/i.test(state.locationLabel)
@@ -107,6 +111,20 @@ export function PlanScreen({
         : null,
     [places, selectedPlaceId, suggestedPicks],
   )
+  const featuredPlace = useMemo(
+    () =>
+      selectedPlace ??
+      places.find((place) => place.popularNow) ??
+      places.find((place) => place.featured) ??
+      places[0] ??
+      suggestedPicks[0] ??
+      null,
+    [places, selectedPlace, suggestedPicks],
+  )
+  const selectedCategoryLabel =
+    state.planCategories.find((category) => category.id === state.selectedPlanCategoryId)?.label ??
+    'All'
+  const curatedMapCount = mapPlaces.length
 
   const handleTypedPlanPreview = () => {
     const request = typedPlan.trim()
@@ -225,13 +243,76 @@ export function PlanScreen({
         </div>
         <div className="explore-hype-copy">
           <span>Adventure mode</span>
-          <strong>{dogLabel} is ready. Pick the adventure.</strong>
+          <strong>{packReadyLine}</strong>
         </div>
         <div className="explore-hype-words" aria-hidden="true">
           <span>RUN</span><span>SNIFF</span><span>SPLASH</span>
         </div>
         <div className="explore-hype-paws" aria-hidden="true">🐾 🐾 🐾</div>
       </section>
+
+      {locationSupported && featuredPlace ? (
+        <section className="curated-spotlight" aria-label="Curated adventure pick">
+          <CardImage
+            className="curated-spotlight-art"
+            imageUrl={getAdventureDisplayImageUrl(state.journeyEntries, featuredPlace)}
+            imageAlt={featuredPlace.imageAlt ?? featuredPlace.name}
+            imageTone={featuredPlace.imageTone}
+          >
+            <div className="curated-spotlight-top">
+              <span>Curated pick</span>
+              <strong>{selectedCategoryLabel}</strong>
+            </div>
+            <div className="curated-spotlight-copy">
+              <span>{featuredPlace.category} · {featuredPlace.city}</span>
+              <h2>{featuredPlace.name}</h2>
+              <p>{featuredPlace.whyDogsLoveIt}</p>
+            </div>
+            <div className="curated-spotlight-dog">
+              <DogAdventureSticker dog={leadDog} className="dog-adventure-sticker--hero" />
+            </div>
+          </CardImage>
+          <div className="curated-spotlight-panel">
+            <div className="curated-spotlight-meta">
+              <span>
+                <i className="ti ti-map-pin" aria-hidden="true" />
+                {featuredPlace.distanceLabel}
+              </span>
+              <span>
+                <i className="ti ti-clock" aria-hidden="true" />
+                {featuredPlace.bestTime}
+              </span>
+              <span>
+                <i className="ti ti-paw" aria-hidden="true" />
+                {featuredPlace.leashInfo}
+              </span>
+            </div>
+            <p>{featuredPlace.dogFriendlyNotes}</p>
+            <div className="curated-spotlight-actions">
+              <button
+                type="button"
+                className="curated-spotlight-start tap-target"
+                onClick={() => handlePlaceGo(featuredPlace.id)}
+              >
+                Start this adventure
+              </button>
+              <button
+                type="button"
+                className="curated-spotlight-map tap-target"
+                onClick={() => {
+                  setSelectedPlaceId(featuredPlace.id)
+                  placeCardRefs.current[featuredPlace.id]?.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center',
+                  })
+                }}
+              >
+                Show on map
+              </button>
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       {state.randomPlanResult ? (
         <section
@@ -274,7 +355,7 @@ export function PlanScreen({
         mapTitle={state.mapRegion.title}
         mapSubtitle={
           locationSupported
-            ? 'Each pin is a real place nearby · Tap to find it below'
+            ? `${curatedMapCount} curated dog-friendly pins · Tap a pin or place card`
             : state.mapRegion.subtitle
         }
         emptyTitle={locationSupported ? undefined : 'Generic ideas for your area'}
@@ -293,37 +374,70 @@ export function PlanScreen({
       />
 
       {selectedPlace ? (
-        <section className="plan-place-detail detail-card-warm" data-testid="plan-place-detail">
+        <section className="plan-place-detail plan-place-detail--briefing detail-card-warm" data-testid="plan-place-detail">
           <CardImage
             className="plan-place-detail-art"
-            imageUrl={getAdventureDisplayImageUrl([], selectedPlace)}
-            imageAlt={selectedPlace.name}
+            imageUrl={getAdventureDisplayImageUrl(state.journeyEntries, selectedPlace)}
+            imageAlt={selectedPlace.imageAlt ?? selectedPlace.name}
             imageTone={selectedPlace.imageTone}
           >
+            <div className="plan-place-detail-art-overlay" aria-hidden="true" />
+            <div className="plan-place-detail-art-top">
+              <span>{selectedPlace.category}</span>
+              <strong>{selectedPlace.energyLevel} energy</strong>
+            </div>
             <DogAdventureSticker dog={leadDog} className="dog-adventure-sticker--hero" />
           </CardImage>
           <div className="plan-place-detail-body">
-            <div className="plan-place-detail-kicker">{selectedPlace.category}</div>
+            <div className="plan-place-detail-kicker">Adventure briefing</div>
             <h2 className="plan-place-detail-title">{selectedPlace.name}</h2>
             <p className="plan-place-detail-meta">
               {selectedPlace.city} · {selectedPlace.distanceLabel}
             </p>
-            {selectedPlace.addressLabel ? (
-              <p className="plan-place-detail-line">{selectedPlace.addressLabel}</p>
-            ) : null}
-            <p className="plan-place-detail-line">Best time: {selectedPlace.bestTime}</p>
-            <p className="plan-place-detail-line">{selectedPlace.dogFriendlyNotes}</p>
-            <p className="plan-place-detail-line">{selectedPlace.whyDogsLoveIt}</p>
-            <p className="plan-place-detail-line">
-              Helps with: Routine Breaker progress, category challenges, and earned memory badges.
+            <div className="plan-place-brief-grid">
+              <article>
+                <span>Why go</span>
+                <p>{selectedPlace.whyDogsLoveIt}</p>
+              </article>
+              <article>
+                <span>Rules</span>
+                <p>{selectedPlace.dogFriendlyNotes}</p>
+              </article>
+              <article>
+                <span>Best window</span>
+                <p>{selectedPlace.bestTime}</p>
+              </article>
+              <article>
+                <span>Location</span>
+                <p>{selectedPlace.addressLabel ?? selectedPlace.city}</p>
+              </article>
+            </div>
+            <div className="plan-place-detail-tags" aria-label="Adventure tags">
+              {selectedPlace.tags.slice(0, 4).map((tag) => (
+                <span key={tag}>{tag}</span>
+              ))}
+            </div>
+            <p className="plan-place-detail-line plan-place-detail-line--memory">
+              Finish it to save the place, photo, and memory into {dogLabel}&apos;s Journey.
             </p>
-            <button
-              type="button"
-              className="st-btn st-btn--primary tap-target"
-              onClick={() => handlePlaceGo(selectedPlace.id)}
-            >
-              Start this adventure
-            </button>
+            <div className="plan-place-detail-actions">
+              <button
+                type="button"
+                className="plan-place-detail-start tap-target"
+                onClick={() => handlePlaceGo(selectedPlace.id)}
+              >
+                Start this adventure
+              </button>
+              {selectedPlace.category === 'Road trip' ? (
+                <button
+                  type="button"
+                  className="plan-place-detail-secondary tap-target"
+                  onClick={() => openRoadTripDirections(selectedPlace)}
+                >
+                  Directions
+                </button>
+              ) : null}
+            </div>
           </div>
         </section>
       ) : null}

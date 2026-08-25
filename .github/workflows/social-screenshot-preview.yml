@@ -1,0 +1,67 @@
+name: Social screenshot preview
+
+on:
+  push:
+    branches:
+      - product/home-adventure-energy
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'social-assets/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/social-screenshot-preview.yml'
+  workflow_dispatch:
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Build
+        run: npm run build
+
+      - name: Start preview server
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 5173 > /tmp/pawstreak-preview.log 2>&1 &
+          for i in {1..45}; do
+            if curl -fsS http://127.0.0.1:5173 >/dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+          cat /tmp/pawstreak-preview.log
+          exit 1
+
+      - name: Capture screenshots
+        env:
+          SOCIAL_BASE_URL: http://127.0.0.1:5173
+          SOCIAL_COMMIT: ${{ github.sha }}
+        run: npm run social:capture:screens
+
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: pawstreak-adventure-energy-screenshots
+          path: |
+            social-assets/screenshots/*.png
+            social-assets/stories/*.png
+            social-assets/assets.json
+          if-no-files-found: error
