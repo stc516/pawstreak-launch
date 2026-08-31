@@ -154,20 +154,38 @@ async function runBrowserChecks() {
     )
     await shot(page, '03-demo-home')
 
+    await page.getByRole('button', { name: 'Quick Walk', exact: true }).click()
+    await page.locator('.cbtn--save-memory').waitFor({ state: 'visible', timeout: 20000 })
+    await page.locator('.cbtn--save-memory').click()
+    await page.locator('.memory-hero').waitFor({ state: 'visible', timeout: 20000 })
+    await page.locator('.share-preview-shell').waitFor({ state: 'visible', timeout: 20000 })
+    const finishedMemoryText = await page.locator('body').innerText()
+    record(
+      'quick-walk-finish-save-loop',
+      finishedMemoryText.includes('Open end · Saved to the Journey') &&
+        finishedMemoryText.includes('Share to Instagram') &&
+        finishedMemoryText.includes('Memory saved to Journey'),
+      'Quick Walk can start, finish, save to Journey, and open the share-card preview',
+    )
+    await shot(page, '04-quick-walk-finish-save')
+    await page.locator('.share-preview-close').click()
+    await page.getByRole('button', { name: 'Back', exact: true }).click()
+    await page.getByRole('button', { name: 'Today', exact: true }).click()
+
     await page.getByRole('button', { name: 'Explore', exact: true }).click()
     await page.waitForTimeout(300)
     const exploreOverflow = await page.evaluate(
       () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
     )
     record('explore-mobile-contained', !exploreOverflow, 'Explore remains contained on iPhone viewport')
-    await shot(page, '04-demo-explore')
+    await shot(page, '05-demo-explore')
 
     await page.getByRole('button', { name: 'Journey', exact: true }).click()
     await page.locator('.journey-memory-card:not([disabled])').first().click()
     await page.locator('.memory-hero').waitFor({ state: 'visible', timeout: 10000 })
     const shareButtons = await page.getByRole('button', { name: /share|story|instagram/i }).count()
     record('journey-memory-share-surface', shareButtons > 0, 'Journey memory exposes a share/story action')
-    await shot(page, '05-memory-share-surface')
+    await shot(page, '06-memory-share-surface')
 
     await page.getByRole('button', { name: 'Back', exact: true }).click()
     await page.getByRole('button', { name: 'Today', exact: true }).click()
@@ -175,7 +193,7 @@ async function runBrowserChecks() {
     await page.getByRole('button', { name: 'Open settings' }).click()
     const reminderCopyVisible = await page.getByText('Daily reminders', { exact: true }).isVisible()
     record('reminder-settings-visible', reminderCopyVisible, 'Settings exposes reminder controls')
-    await shot(page, '06-reminder-settings', true)
+    await shot(page, '07-reminder-settings', true)
 
     record('runtime-errors', runtimeErrors.length === 0, runtimeErrors.length ? runtimeErrors.join(' | ') : 'No uncaught page errors')
   } finally {
