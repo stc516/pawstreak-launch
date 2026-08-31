@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "qa:shell-guard": "node qa/mobile-shell-guard.mjs",
     "qa:release-smoke": "node qa/release-smoke.mjs",
+    "qa:beta-critical": "node qa/beta-critical-smoke.mjs",
     "qa:release": "node qa/release-gate.mjs",
     "preview": "vite preview",
     "icons:generate": "node scripts/generate-app-icons.mjs",
