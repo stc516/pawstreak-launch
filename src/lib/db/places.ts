@@ -18,6 +18,7 @@ function rowToPlace(row: PlaceRow): Place {
     bestTime: row.best_time,
     energyLevel: row.energy_level as Place['energyLevel'],
     addressLabel: row.address_label ?? undefined,
+    website: row.website ?? undefined,
     lat: row.lat ?? undefined,
     lng: row.lng ?? undefined,
     featured: row.featured,
