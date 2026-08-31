@@ -62,7 +62,13 @@ export interface PlaceRow {
   image_url: string | null
   image_alt: string | null
   image_tone: string | null
+  website: string | null
+  source_name: string | null
+  source_url: string | null
+  verification: string
   is_active: boolean
+  created_at?: string
+  updated_at?: string
 }
 
 export interface AdventureRow {
