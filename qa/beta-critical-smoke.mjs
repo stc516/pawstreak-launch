@@ -69,6 +69,25 @@ async function runStaticChecks() {
     ]),
     'Attached photo failures roll back incomplete server memories instead of pretending production save succeeded',
   )
+
+  const shareCardPreview = await readRepoFile('src/components/share/ShareCardPreview.tsx')
+  record(
+    'share-card-save-to-photos',
+    includesAll(shareCardPreview, [
+      'const filesOnlyPayload: ShareData = { files: [file] }',
+      'Choose “Save Image” to add it to Photos.',
+      'Save to Photos',
+    ]),
+    'Share-card save action opens an image-only share sheet so iOS can save to Photos instead of only downloading to Files',
+  )
+
+  const shareCardData = await readRepoFile('src/lib/shareCardData.ts')
+  record(
+    'completion-card-real-photos-only',
+    shareCardData.includes('const imageUrl = entry?.photoUrls?.find(Boolean)') &&
+      !shareCardData.includes("from './adventureDisplayImage'"),
+    'Adventure-complete share cards use real captured photos only; no-photo cards stay branded instead of showing fake destination art',
+  )
 }
 
 async function runBrowserChecks() {

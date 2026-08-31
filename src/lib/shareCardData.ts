@@ -5,7 +5,6 @@ import { getChallengeById } from '../data/challenges'
 import { resolveChallenge } from './challengeEngine'
 import { getPackDisplayName } from './dogLabels'
 import { getPlaceById, isNeighborhoodWalkPlace } from '../data/places'
-import { getJourneyEntryDisplayImageUrl } from './adventureDisplayImage'
 import { getPlanNearbyPlaces } from './planDiscovery'
 import { getRecommendationPrefs } from './onboardingProfile'
 import type { ShareCardData } from '../types/shareCards'
@@ -43,9 +42,7 @@ function buildAdventureCompleteCard(
   entry = latestEntry(state),
 ): ShareCardData {
   const place = entry?.placeId ? getPlaceById(entry.placeId) : undefined
-  const imageUrl = entry
-    ? getJourneyEntryDisplayImageUrl(state.journeyEntries, entry) ?? place?.imageUrl
-    : undefined
+  const imageUrl = entry?.photoUrls?.find(Boolean)
   const category = entry && isNeighborhoodWalkPlace(entry.placeId)
     ? 'Quick walk'
     : place?.category ?? entry?.tags[0] ?? 'Adventure'
@@ -78,9 +75,7 @@ function buildAdventureCompleteCard(
 function buildMonthlyRecapCard(state: AppState): ShareCardData {
   const counts = categoryCounts(state)
   const entry = latestEntry(state)
-  const imageUrl = entry
-    ? getJourneyEntryDisplayImageUrl(state.journeyEntries, entry)
-    : undefined
+  const imageUrl = entry?.photoUrls?.find(Boolean)
   const favorite = entry?.place ?? 'First saved adventure'
 
   return {
