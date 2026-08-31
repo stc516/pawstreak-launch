@@ -15378,8 +15378,9 @@ select.field-input {
   flex-direction: column;
   border-radius: 24px;
   background:
-    radial-gradient(circle at 84% 8%, rgba(198, 123, 92, 0.23), transparent 28%),
-    linear-gradient(155deg, #faf7f2 0%, #f3eadf 54%, #d9e2d8 100%);
+    radial-gradient(circle at 86% 8%, rgba(95, 219, 255, 0.2), transparent 29%),
+    radial-gradient(circle at 4% 72%, rgba(91, 232, 138, 0.22), transparent 34%),
+    linear-gradient(155deg, #fffdf5 0%, #eef8f1 48%, #d9f2f7 100%);
   color: #2c2419;
   box-shadow: 0 18px 50px rgba(44, 36, 25, 0.2);
   padding: 20px;
@@ -15467,8 +15468,8 @@ select.field-input {
 .share-card-brand {
   align-self: flex-start;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.62);
-  color: #5c7a6b;
+  background: rgba(20, 53, 42, 0.92);
+  color: #fff;
   padding: 6px 10px;
   font-size: 11px;
   font-weight: 950;
@@ -15480,7 +15481,7 @@ select.field-input {
 }
 
 .share-card-eyebrow {
-  color: #c67b5c;
+  color: #e34b16;
   font-size: 12px;
   font-weight: 950;
   letter-spacing: 0.05em;
@@ -15530,9 +15531,38 @@ select.field-input {
 }
 
 .share-card-photo--empty {
+  display: grid;
+  place-items: center;
   background:
-    linear-gradient(145deg, rgba(92, 122, 107, 0.38), rgba(198, 123, 92, 0.2)),
-    radial-gradient(circle at 25% 22%, rgba(255, 255, 255, 0.72), transparent 24%);
+    radial-gradient(circle at 24% 22%, rgba(255, 246, 184, 0.68), transparent 20%),
+    radial-gradient(circle at 78% 18%, rgba(49, 185, 255, 0.32), transparent 24%),
+    linear-gradient(145deg, #14352a 0%, #257c62 54%, #50c8d8 100%);
+}
+
+.share-card-photo--empty::before {
+  position: absolute;
+  right: 18px;
+  bottom: 22px;
+  width: 48%;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.42);
+  box-shadow:
+    -36px -22px 0 -1px rgba(255, 255, 255, 0.28),
+    -78px 18px 0 -1px rgba(255, 255, 255, 0.2);
+  content: '';
+}
+
+.share-card-photo--empty img {
+  position: relative;
+  z-index: 1;
+  width: min(34%, 112px);
+  max-height: calc(100% - 28px);
+  object-fit: contain;
+  border: 4px solid rgba(255, 255, 255, 0.82);
+  border-radius: 24px;
+  background: rgba(250, 247, 242, 0.96);
+  box-shadow: 0 18px 38px rgba(13, 39, 29, 0.24);
 }
 
 .share-card-badge {
@@ -15545,8 +15575,10 @@ select.field-input {
   place-items: center;
   border: 4px solid rgba(250, 247, 242, 0.9);
   border-radius: 50%;
-  background: #faf7f2;
-  box-shadow: 0 10px 24px rgba(44, 36, 25, 0.22);
+  background:
+    radial-gradient(circle at 34% 22%, #fff6b8, #fff 42%),
+    #faf7f2;
+  box-shadow: 0 10px 24px rgba(44, 36, 25, 0.22), 0 0 0 3px rgba(91, 232, 138, 0.28);
   font-size: 31px;
 }
 
@@ -15555,8 +15587,8 @@ select.field-input {
   left: 14px;
   bottom: 14px;
   border-radius: 999px;
-  background: rgba(250, 247, 242, 0.9);
-  color: #2c2419;
+  background: rgba(20, 53, 42, 0.88);
+  color: #fff;
   padding: 7px 10px;
   font-size: 12px;
   font-weight: 900;
@@ -15571,8 +15603,9 @@ select.field-input {
 
 .share-card-metric {
   border-radius: 14px;
-  background: rgba(250, 247, 242, 0.72);
+  background: rgba(255, 255, 255, 0.7);
   padding: 10px;
+  box-shadow: inset 0 0 0 1px rgba(20, 53, 42, 0.08);
 }
 
 .share-card-metric span,
@@ -15594,8 +15627,9 @@ select.field-input {
 .share-card-progress {
   margin-top: 14px;
   border-radius: 16px;
-  background: rgba(250, 247, 242, 0.74);
+  background: rgba(255, 255, 255, 0.72);
   padding: 12px;
+  box-shadow: inset 0 0 0 1px rgba(20, 53, 42, 0.08);
 }
 
 .share-card-progress-row {
@@ -15622,7 +15656,7 @@ select.field-input {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #c67b5c, #5c7a6b);
+  background: linear-gradient(90deg, #ff5a1f 0%, #ffc857 18%, #5be88a 58%, #31b9ff 100%);
 }
 
 .share-card-slots {
@@ -15637,7 +15671,7 @@ select.field-input {
   align-items: center;
   gap: 9px;
   border-radius: 13px;
-  background: rgba(250, 247, 242, 0.68);
+  background: rgba(255, 255, 255, 0.68);
   padding: 8px 10px;
 }
 
@@ -15668,7 +15702,7 @@ select.field-input {
 }
 
 .share-card-slot--next span {
-  background: #c67b5c;
+  background: #ff5a1f;
   color: #fff;
 }
 
@@ -15678,12 +15712,12 @@ select.field-input {
   gap: 4px;
   margin-top: 14px;
   border-radius: 16px;
-  background: rgba(250, 247, 242, 0.72);
+  background: rgba(255, 255, 255, 0.72);
   padding: 12px;
 }
 
 .share-card-unlocked span {
-  color: #c67b5c;
+  color: #e34b16;
   font-size: 11px;
   font-weight: 900;
   text-transform: uppercase;
@@ -15705,7 +15739,7 @@ select.field-input {
   gap: 10px;
   align-items: center;
   border-radius: 16px;
-  background: rgba(250, 247, 242, 0.72);
+  background: rgba(255, 255, 255, 0.72);
   padding: 8px;
 }
 
@@ -15713,7 +15747,7 @@ select.field-input {
   width: 54px;
   height: 54px;
   border-radius: 13px;
-  background: linear-gradient(145deg, rgba(92, 122, 107, 0.34), rgba(198, 123, 92, 0.22));
+  background: linear-gradient(145deg, rgba(23, 68, 50, 0.42), rgba(49, 185, 255, 0.28));
   background-position: center;
   background-size: cover;
 }
@@ -15754,7 +15788,7 @@ select.field-input {
 
 .share-card-footer span {
   margin-top: 7px;
-  color: #5c7a6b;
+  color: #2f7d59;
   font-size: 12px;
   font-weight: 950;
 }
@@ -15775,9 +15809,11 @@ select.field-input {
   width: 100%;
   min-height: 42px;
   margin-top: 10px;
-  border: 1px solid rgba(92, 122, 107, 0.22);
+  border: 1px solid rgba(49, 185, 255, 0.24);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.76);
+  background:
+    radial-gradient(circle at 14% 20%, rgba(91, 232, 138, 0.2), transparent 32%),
+    rgba(255, 255, 255, 0.86);
   color: #1b3022;
   font-size: 13px;
   font-weight: 900;
@@ -18073,9 +18109,10 @@ html.app-route .bnav--six .ni i { font-size: 1.45rem; }
 
 .share-card--adventure-complete {
   background:
-    radial-gradient(circle at 82% 8%, rgba(255, 226, 0, 0.58), transparent 27%),
-    radial-gradient(circle at 0% 62%, rgba(0, 210, 255, 0.28), transparent 33%),
-    linear-gradient(155deg, #fff7d1 0%, #ffb258 48%, #ff5b3d 100%);
+    radial-gradient(circle at 83% 7%, rgba(255, 230, 92, 0.28), transparent 26%),
+    radial-gradient(circle at 0% 62%, rgba(49, 185, 255, 0.24), transparent 33%),
+    radial-gradient(circle at 82% 78%, rgba(91, 232, 138, 0.24), transparent 30%),
+    linear-gradient(155deg, #fffdf4 0%, #edf8ef 42%, #cceff6 100%);
 }
 
 .share-card--adventure-complete .share-card-brand {
@@ -18084,7 +18121,7 @@ html.app-route .bnav--six .ni i { font-size: 1.45rem; }
 }
 
 .share-card--adventure-complete .share-card-eyebrow {
-  color: #7b1b00;
+  color: #e34b16;
 }
 
 .memory-hero-empty > strong { position: absolute; top: 68px; right: 5%; width: 53%; margin: 0; }

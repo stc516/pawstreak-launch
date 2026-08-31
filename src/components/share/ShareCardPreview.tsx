@@ -83,7 +83,9 @@ function ShareHeroVisual({ data }: { data: ShareCardData }) {
           style={{ backgroundImage: `url("${data.imageUrl}")` }}
         />
       ) : (
-        <div className="share-card-photo share-card-photo--empty" />
+        <div className="share-card-photo share-card-photo--empty">
+          <img src="/pawstreak-logo.png" alt="" />
+        </div>
       )}
       {data.badgeEmoji ? (
         <div className="share-card-badge" aria-hidden="true">
@@ -185,12 +187,26 @@ export function ShareCardPreview({ data, onClose }: ShareCardPreviewProps) {
     })
   }
 
+  const createShareCardFile = async (): Promise<File | null> => {
+    const blob = await renderCardBlob()
+    if (!blob) return null
+    return new File([blob], getShareFileName(data, format), { type: 'image/png' })
+  }
+
+  const downloadCardFile = (file: File) => {
+    const url = URL.createObjectURL(file)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = file.name
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000)
+  }
+
   const handleShare = async () => {
     setStatus('Preparing card...')
-    const blob = await renderCardBlob()
-    const file = blob
-      ? new File([blob], getShareFileName(data, format), { type: 'image/png' })
-      : undefined
+    const file = await createShareCardFile()
     const result = await shareContent({
       title: `${data.title} · PawStreak`,
       text: buildShareText(data),
@@ -201,22 +217,42 @@ export function ShareCardPreview({ data, onClose }: ShareCardPreviewProps) {
   }
 
   const handleSave = async () => {
-    setStatus('Saving card...')
-    const blob = await renderCardBlob()
-    if (!blob) {
+    setStatus('Preparing image...')
+    const file = await createShareCardFile()
+    if (!file) {
       setStatus('Could not create image.')
       window.setTimeout(() => setStatus(null), 2600)
       return
     }
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = getShareFileName(data, format)
-    document.body.appendChild(link)
-    link.click()
-    link.remove()
-    window.setTimeout(() => URL.revokeObjectURL(url), 1000)
-    setStatus('Saved card image.')
+
+    if (typeof navigator.share === 'function') {
+      const filesOnlyPayload: ShareData = { files: [file] }
+      let canShareImage = typeof navigator.canShare !== 'function'
+      if (!canShareImage) {
+        try {
+          canShareImage = navigator.canShare(filesOnlyPayload)
+        } catch {
+          canShareImage = false
+        }
+      }
+      if (canShareImage) {
+        try {
+          await navigator.share(filesOnlyPayload)
+          setStatus('Choose “Save Image” to add it to Photos.')
+          window.setTimeout(() => setStatus(null), 2600)
+          return
+        } catch (error) {
+          if (error instanceof Error && error.name === 'AbortError') {
+            setStatus('Save cancelled.')
+            window.setTimeout(() => setStatus(null), 2600)
+            return
+          }
+        }
+      }
+    }
+
+    downloadCardFile(file)
+    setStatus('Downloaded image. If needed, open it and save to Photos.')
     window.setTimeout(() => setStatus(null), 2600)
   }
 
@@ -277,11 +313,11 @@ export function ShareCardPreview({ data, onClose }: ShareCardPreviewProps) {
         </div>
 
         <p className="share-preview-note">
-          We create the image, then open your phone’s share sheet. Pick Instagram to post it.
+          We create the image, then open your phone’s share sheet. Pick Instagram to post, or Save Image to add it to Photos.
         </p>
         <button type="button" className="share-preview-save tap-target" onClick={() => void handleSave()}>
-          <i className="ti ti-download" aria-hidden="true" />
-          Save card image
+          <i className="ti ti-photo-plus" aria-hidden="true" />
+          Save to Photos
         </button>
         {status ? (
           <div className="share-preview-status" role="status">
