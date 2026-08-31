@@ -130,6 +130,29 @@ async function runBrowserChecks() {
       appBodyText.includes('Create Your Free Account') && demoBadgeCount === 0,
       '/app opens production account entry, not demo mode',
     )
+    const productionDemoLeakPatterns = [
+      /Bailey/i,
+      /Meiomi/i,
+      /Dog Beach/i,
+      /Coronado Dog Beach/i,
+      /Saved today/i,
+      /Pack is ready/i,
+      /Beach day/i,
+      /Trailblazer/i,
+      /Patio pup/i,
+      /Just now/i,
+      /likes/i,
+      /followers/i,
+      /comments/i,
+    ]
+    const productionDemoLeakHits = productionDemoLeakPatterns.filter((pattern) => pattern.test(appBodyText))
+    record(
+      'app-entry-no-demo-data-leak',
+      productionDemoLeakHits.length === 0,
+      productionDemoLeakHits.length
+        ? `/app leaked demo/fake data: ${productionDemoLeakHits.map(String).join(', ')}`
+        : '/app account entry stays generic and does not leak demo dog/place/social data',
+    )
     await page.getByRole('button', { name: 'Create Your Free Account', exact: true }).click()
     await page.locator('.onboarding-legal').waitFor({ state: 'visible', timeout: 20000 })
     const legalLinks = await page.locator('.onboarding-legal a').count()
