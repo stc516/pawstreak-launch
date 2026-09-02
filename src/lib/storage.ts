@@ -243,11 +243,15 @@ function normalizeMonthlyPlanResult(
   }
 }
 
-/** Reset navigation UI on cold start — always land on Home after splash. */
+/** Reset navigation UI on cold start. Places deep links land on Plan. */
 export function applyLaunchSessionState(state: AppState): AppState {
+  const params = new URLSearchParams(window.location.search)
+  const hasPlacePlanDeepLink =
+    Boolean(params.get('place')) && params.get('action') === 'plan'
+
   return {
     ...state,
-    activeTab: 'home',
+    activeTab: hasPlacePlanDeepLink ? 'plan' : 'home',
     selectedJourneyEntryId: null,
     selectedChallengeId: null,
     selectedAchievementId: null,
