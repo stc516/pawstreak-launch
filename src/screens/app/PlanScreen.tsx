@@ -39,6 +39,12 @@ interface PlanScreenProps {
   onCreateStory?: () => void
 }
 
+function deepLinkedPlaceId(): string | null {
+  const params = new URLSearchParams(window.location.search)
+  if (params.get('action') !== 'plan') return null
+  return params.get('place')
+}
+
 export function PlanScreen({
   state,
   onSelectCategory,
@@ -56,7 +62,7 @@ export function PlanScreen({
 }: PlanScreenProps) {
   const prefs = getRecommendationPrefs(state)
   const [proximityBucket, setProximityBucket] = useState<PlanProximityBucket>('15min')
-  const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null)
+  const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(() => deepLinkedPlaceId())
   const [typedPlan, setTypedPlan] = useState('')
   const [typedPlanPreview, setTypedPlanPreview] = useState<string | null>(null)
   const [showAllPlaces, setShowAllPlaces] = useState(false)
