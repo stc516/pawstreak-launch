@@ -7,7 +7,12 @@ import './styles/stitch-parity.css'
 import './styles/landing.css'
 import './styles/home-adventure-energy.css'
 import App from './App.tsx'
+import { registerNativeDeepLinks } from './lib/nativeDeepLinks.ts'
+import { registerNativePhotoRestoreHandler } from './lib/nativePhotoRestore.ts'
 import { AuthProvider } from './context/AuthContext.tsx'
+
+registerNativeDeepLinks()
+registerNativePhotoRestoreHandler()
 
 if (window.location.pathname === '/' || window.location.pathname === '' || window.location.pathname === '/start') {
   document.documentElement.classList.add('landing-route')

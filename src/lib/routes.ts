@@ -1,3 +1,5 @@
+import { NATIVE_APP_SCHEME, isNativeAppRuntime } from './nativeRuntime'
+
 /** Top-level URL paths — single source of truth for marketing vs app entry. */
 
 export const ROUTES = {
@@ -50,6 +52,16 @@ function getSiteOrigin(): string {
 }
 
 export function getAuthRedirectUrl(): string {
+  if (typeof window !== 'undefined' && isNativeAppRuntime()) {
+    if (
+      isProductionAppRoute(window.location.pathname) &&
+      window.location.pathname.startsWith(`${ROUTES.app}/invite`)
+    ) {
+      return `${NATIVE_APP_SCHEME}://auth/invite${window.location.search}`
+    }
+    return `${NATIVE_APP_SCHEME}://auth/callback`
+  }
+
   if (
     typeof window !== 'undefined' &&
     isProductionAppRoute(window.location.pathname) &&

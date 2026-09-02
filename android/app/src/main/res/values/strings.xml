@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">PawStreak</string>
+    <string name="title_activity_main">PawStreak</string>
+    <string name="package_name">com.pawstreak.app</string>
+    <string name="custom_url_scheme">com.pawstreak.app</string>
+</resources>

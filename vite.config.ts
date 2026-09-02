@@ -3,6 +3,8 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import path from 'node:path'
 
+const rootDir = import.meta.dirname
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -70,12 +72,12 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@social-assets': path.resolve(__dirname, 'social-assets'),
+      '@social-assets': path.resolve(rootDir, 'social-assets'),
     },
   },
   server: {
     fs: {
-      allow: ['.', path.resolve(__dirname, 'social-assets')],
+      allow: ['.', path.resolve(rootDir, 'social-assets')],
     },
   },
 })
