@@ -15,6 +15,8 @@ import { getPlaceById, getPlanMagicMeta } from '../../data/places'
 import { getMiniQuestHint } from '../../lib/miniQuestHints'
 import { CardImage } from '../../components/CardImage'
 import { StatusBar } from '../../components/StatusBar'
+import { captureNativeAdventurePhoto } from '../../lib/nativePhotos'
+import { subscribeToNativeRestoredPhotos } from '../../lib/nativePhotoRestore'
 
 interface ActiveAdventureScreenProps {
   state: AppState
@@ -38,6 +40,7 @@ export function ActiveAdventureScreen({
   const [isPaused, setIsPaused] = useState(false)
   const [isFinishing, setIsFinishing] = useState(false)
   const [pausedElapsed, setPausedElapsed] = useState<number | null>(null)
+  const [photoSaveMessage, setPhotoSaveMessage] = useState<string | null>(null)
   const [selectedRecaps, setSelectedRecaps] = useState<string[]>([
     'Loved every second',
   ])
@@ -77,7 +80,35 @@ export function ActiveAdventureScreen({
     }
   }, [adventure?.startedAt, isPaused, isStarted])
 
-  const handleCaptureClick = () => {
+  useEffect(() => {
+    if (!isStarted) return
+
+    return subscribeToNativeRestoredPhotos((dataUrl) => {
+      onAddPhoto(dataUrl)
+      setPhotoSaveMessage('Recovered your camera photo and saved it to PawStreak.')
+      window.setTimeout(() => setPhotoSaveMessage(null), 3200)
+    })
+  }, [isStarted, onAddPhoto])
+
+  const handleCaptureClick = async () => {
+    try {
+      const nativePhoto = await captureNativeAdventurePhoto()
+      if (nativePhoto) {
+        onAddPhoto(nativePhoto.dataUrl)
+        setPhotoSaveMessage(
+          nativePhoto.savedToGallery
+            ? 'Saved to PawStreak and your phone photos.'
+            : 'Saved to PawStreak.',
+        )
+        window.setTimeout(() => setPhotoSaveMessage(null), 3200)
+        return
+      }
+    } catch (error) {
+      setPhotoSaveMessage(error instanceof Error ? error.message : 'Could not capture that photo.')
+      window.setTimeout(() => setPhotoSaveMessage(null), 3200)
+      return
+    }
+
     fileInputRef.current?.click()
   }
 
@@ -94,6 +125,65 @@ export function ActiveAdventureScreen({
     } catch {
       // Ignore invalid selections for now.
     }
+  }
+
+  const dataUrlToPhotoFile = async (photoDataUrl: string, index: number): Promise<File> => {
+    const response = await fetch(photoDataUrl)
+    const blob = await response.blob()
+    return new File([blob], `pawstreak-adventure-photo-${index + 1}.jpg`, {
+      type: blob.type || 'image/jpeg',
+    })
+  }
+
+  const downloadPhotoFile = (file: File) => {
+    const url = URL.createObjectURL(file)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = file.name
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000)
+  }
+
+  const handleSavePhotoToPhone = async (photoDataUrl: string, index: number) => {
+    setPhotoSaveMessage('Preparing photo...')
+    try {
+      const file = await dataUrlToPhotoFile(photoDataUrl, index)
+
+      if (typeof navigator.share === 'function') {
+        const payload: ShareData = { files: [file] }
+        let canSharePhoto = typeof navigator.canShare !== 'function'
+        if (!canSharePhoto) {
+          try {
+            canSharePhoto = navigator.canShare(payload)
+          } catch {
+            canSharePhoto = false
+          }
+        }
+
+        if (canSharePhoto) {
+          try {
+            await navigator.share(payload)
+            setPhotoSaveMessage('Choose “Save Image” to add it to Photos.')
+            window.setTimeout(() => setPhotoSaveMessage(null), 3200)
+            return
+          } catch (error) {
+            if (error instanceof Error && error.name === 'AbortError') {
+              setPhotoSaveMessage('Save cancelled.')
+              window.setTimeout(() => setPhotoSaveMessage(null), 2200)
+              return
+            }
+          }
+        }
+      }
+
+      downloadPhotoFile(file)
+      setPhotoSaveMessage('Downloaded photo. Open it and save to Photos if needed.')
+    } catch {
+      setPhotoSaveMessage('Could not prepare that photo.')
+    }
+    window.setTimeout(() => setPhotoSaveMessage(null), 3200)
   }
 
   const toggleRecap = (label: string) => {
@@ -281,7 +371,7 @@ export function ActiveAdventureScreen({
             </div>
           ) : (
             <div className="adv-photo-reminder adv-photo-reminder--done">
-              {photoCount} moment{photoCount === 1 ? '' : 's'} saved
+              {photoCount} moment{photoCount === 1 ? '' : 's'} saved to PawStreak. Tap a photo to save it to Photos too.
             </div>
           )}
 
@@ -323,15 +413,60 @@ export function ActiveAdventureScreen({
           <div className="rq rq--memory">Photos from today</div>
           <div className="rphotos rphotos--memory">
             {state.adventurePhotos.map((photo, index) => (
-              <div key={index} className="rph">
+              <div key={index} className="rph" style={{ position: 'relative' }}>
                 {photo ? (
-                  <img src={photo} alt="" className="rph-img" />
+                  <>
+                    <img src={photo} alt="" className="rph-img" />
+                    <button
+                      type="button"
+                      className="tap-target"
+                      style={{
+                        position: 'absolute',
+                        right: 5,
+                        bottom: 5,
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 3,
+                        minHeight: 26,
+                        border: 0,
+                        borderRadius: 999,
+                        background: 'rgba(20, 53, 42, 0.88)',
+                        color: '#fff',
+                        padding: '0 8px',
+                        fontSize: 10,
+                        fontWeight: 900,
+                        boxShadow: '0 6px 16px rgba(13, 39, 29, 0.24)',
+                      }}
+                      onClick={() => void handleSavePhotoToPhone(photo, index)}
+                      aria-label={`Save photo ${index + 1} to Photos`}
+                    >
+                      <i className="ti ti-photo-plus" aria-hidden="true" style={{ color: 'inherit', fontSize: 13 }} />
+                      Save
+                    </button>
+                  </>
                 ) : (
                   <i className="ti ti-photo" aria-hidden="true" />
                 )}
               </div>
             ))}
           </div>
+          {photoSaveMessage ? (
+            <div
+              role="status"
+              style={{
+                margin: '8px 0 14px',
+                borderRadius: 14,
+                background: 'rgba(20, 53, 42, 0.1)',
+                border: '1px solid rgba(20, 53, 42, 0.14)',
+                color: 'var(--accent-deep)',
+                padding: '9px 11px',
+                fontSize: 11,
+                fontWeight: 800,
+              }}
+            >
+              {photoSaveMessage}
+            </div>
+          ) : null}
 
           <div className="adv-action-footer adv-action-footer--memory">
             <div className="clk-btns clk-btns--memory">
