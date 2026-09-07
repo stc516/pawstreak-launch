@@ -16,7 +16,7 @@
   },
   "ios": {
     "contentInset": "automatic",
-    "scheme": "PawStreak"
+    "scheme": "App"
   },
   "android": {
     "allowMixedContent": false

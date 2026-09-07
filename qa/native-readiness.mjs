@@ -52,8 +52,8 @@ async function main() {
 
   record(
     'capacitor-config-foundation',
-    cap.appId === 'com.pawstreak.app' && cap.appName === 'PawStreak' && cap.webDir === 'dist',
-    'Capacitor config defines PawStreak bundle ID, app name, and built Vite web directory.',
+    cap.appId === 'com.pawstreak.app' && cap.appName === 'PawStreak' && cap.webDir === 'dist' && cap.ios?.scheme === 'App',
+    'Capacitor config defines PawStreak bundle ID, app name, built Vite web directory, and the generated iOS build scheme.',
   )
 
   record(
