@@ -81,6 +81,20 @@ async function runStaticChecks() {
     'Share-card save action opens an image-only share sheet so iOS can save to Photos instead of only downloading to Files',
   )
 
+  const activeAdventureScreen = await readRepoFile('src/screens/app/ActiveAdventureScreen.tsx')
+  record(
+    'captured-photos-save-to-phone',
+    includesAll(activeAdventureScreen, [
+      'handleSavePhotoToPhone',
+      'const payload: ShareData = { files: [file] }',
+      'captureNativeAdventurePhoto',
+      'Saved to PawStreak and your phone photos.',
+      'Save photo ${index + 1} to Photos',
+      'Tap a photo to save it to Photos too.',
+    ]),
+    'Captured adventure photos expose native gallery save plus an image-only save-to-Photos fallback',
+  )
+
   const shareCardData = await readRepoFile('src/lib/shareCardData.ts')
   record(
     'completion-card-real-photos-only',

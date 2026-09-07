@@ -17,9 +17,20 @@
     "social:capture:screens": "node social-assets/capture.mjs --screens-only",
     "social:capture:video": "node social-assets/capture.mjs --video-only",
     "social:launch-kit": "node scripts/create-instagram-launch-kit.mjs",
-    "db:seed-places": "npx tsx scripts/generate-places-seed.mjs"
+    "db:seed-places": "npx tsx scripts/generate-places-seed.mjs",
+    "native:sync": "npm run build && npx cap sync",
+    "native:ios": "npm run native:sync && npx cap open ios",
+    "native:android": "npm run native:sync && npx cap open android",
+    "qa:native": "node qa/native-readiness.mjs"
   },
   "dependencies": {
+    "@capacitor/app": "^8.1.1",
+    "@capacitor/camera": "^8.2.4",
+    "@capacitor/core": "^8.5.1",
+    "@capacitor/filesystem": "^8.1.3",
+    "@capacitor/preferences": "^8.0.1",
+    "@capacitor/push-notifications": "^8.1.2",
+    "@capacitor/share": "^8.0.1",
     "@supabase/supabase-js": "^2.106.2",
     "html-to-image": "^1.11.13",
     "mapbox-gl": "^3.24.0",
@@ -28,6 +39,9 @@
     "react-map-gl": "^8.1.1"
   },
   "devDependencies": {
+    "@capacitor/android": "^8.5.1",
+    "@capacitor/cli": "^8.5.1",
+    "@capacitor/ios": "^8.5.1",
     "@eslint/js": "^10.0.1",
     "@types/mapbox-gl": "^3.4.1",
     "@types/node": "^24.12.3",
