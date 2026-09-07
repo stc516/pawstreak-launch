@@ -23,6 +23,7 @@ async function main() {
   const runtime = await readFile('src/lib/nativeRuntime.ts', 'utf8')
   const nativePhotos = await readFile('src/lib/nativePhotos.ts', 'utf8')
   const nativePhotoRestore = await readFile('src/lib/nativePhotoRestore.ts', 'utf8')
+  const app = await readFile('src/App.tsx', 'utf8')
   const activeAdventure = await readFile('src/screens/app/ActiveAdventureScreen.tsx', 'utf8')
   const iosInfoPlist = await readFile('ios/App/App/Info.plist', 'utf8').catch(() => '')
   const androidManifest = await readFile('android/app/src/main/AndroidManifest.xml', 'utf8').catch(() => '')
@@ -87,6 +88,19 @@ async function main() {
       "window.dispatchEvent(new PopStateEvent('popstate'))",
     ]) && includesAll(runtime, ['isNativeAppRuntime', 'getNativePlatform', 'NATIVE_APP_SCHEME']),
     'Native app URL opens are routed back into the PawStreak app shell and Supabase code exchange is handled.',
+  )
+
+  record(
+    'native-backend-config-guard',
+    includesAll(app, [
+      'NativeBackendConfigError',
+      'nativeAppMissingBackend',
+      'isNativeAppRuntime()',
+      '!auth.configured',
+      'VITE_SUPABASE_URL',
+      'VITE_SUPABASE_ANON_KEY',
+    ]),
+    'Native app route blocks loudly if Supabase env is missing instead of falling into local-only onboarding.',
   )
 
   record(

@@ -10,6 +10,17 @@ This is the shortest practical path from the current PawStreak PWA to a real nat
 
 ## Step 1 — install and verify native packages
 
+Native builds must use the same production web environment as `pawstreakapp.com`.
+Before building for device, confirm the local build has:
+
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY`
+- `VITE_SITE_URL`
+- `VITE_MAPBOX_TOKEN`
+
+If these are missing, the native app will block with a setup error instead of
+falling into local-only onboarding without Google sign-in.
+
 Android builds require Java 21. On this Mac, verify it before running Gradle:
 
 ```bash
@@ -86,6 +97,25 @@ Do not add payments, social feed expansion, route recording, or new game mechani
 
 ## Step 6 — TestFlight smoke
 
+Use TestFlight for real beta distribution. Local Xcode installs are only for
+engineering smoke tests and can trigger Apple developer-profile trust issues
+that beta users should never see.
+
 Use `docs/native-device-qa.md`. Do not invite external beta users until the core loop passes on a real iPhone:
 
 Signup → onboarding → dog profile → location → discover → start → photo → finish → save memory → share → Journey → next adventure.
+
+## Step 7 — App Store Connect / TestFlight setup
+
+Production native beta needs the paid Apple Developer Program and an App Store
+Connect app record for bundle ID `com.pawstreak.app`.
+
+Required setup:
+
+- Register bundle ID `com.pawstreak.app`
+- Enable Sign in with Apple only if added later; current auth focus is Supabase/Google
+- Add app record in App Store Connect
+- Configure TestFlight internal testing
+- Archive from Xcode with production env already synced into `ios/App/App/public`
+- Upload archive to App Store Connect
+- Run the TestFlight smoke from `docs/native-device-qa.md`

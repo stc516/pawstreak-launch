@@ -47,6 +47,7 @@ import {
   isStartRoute,
   ROUTES,
 } from './lib/routes'
+import { isNativeAppRuntime } from './lib/nativeRuntime'
 import { LandingPage } from './screens/landing/LandingPage'
 import { StartPage } from './screens/landing/StartPage'
 import { ContentStudio } from './screens/internal/ContentStudio'
@@ -164,11 +165,33 @@ import { getDisplayDogLabel } from './lib/profileDisplay'
 import { ProductTour } from './components/ProductTour'
 import { PRODUCT_TOUR_STEPS } from './lib/productTour'
 
+function NativeBackendConfigError() {
+  return (
+    <div className="auth-viewport">
+      <div className="native-config-error" role="alert">
+        <div className="native-config-error__badge">Native setup blocked</div>
+        <h1>Backend config is missing.</h1>
+        <p>
+          This PawStreak native build was compiled without the production
+          Supabase keys, so login and Google sign-in cannot load.
+        </p>
+        <p>
+          Rebuild with <code>VITE_SUPABASE_URL</code> and{' '}
+          <code>VITE_SUPABASE_ANON_KEY</code>, then sync the native project
+          before TestFlight or device QA.
+        </p>
+      </div>
+    </div>
+  )
+}
+
 function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   const auth = useAuth()
   const appMode = demoRoute !== null ? 'demo' : 'app'
   const isDemoMode = appMode === 'demo' && demoRoute === 'app'
   const useProductionBackend = appMode === 'app' && auth.configured
+  const nativeAppMissingBackend =
+    appMode === 'app' && isNativeAppRuntime() && !auth.configured
   const [state, setState] = useState<AppState>(() => loadAppState(appMode, demoRoute))
   const [authError, setAuthError] = useState<string | null>(null)
   const [authLoading, setAuthLoading] = useState(false)
@@ -193,6 +216,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
 
   const inAuthFlow =
     !splashComplete ||
+    nativeAppMissingBackend ||
     (!dataHydrated && useProductionBackend) ||
     !state.onboardingComplete ||
     (useProductionBackend && auth.configured && !auth.user)
@@ -1789,6 +1813,10 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
 
   if (!splashComplete) {
     return <SplashScreen />
+  }
+
+  if (nativeAppMissingBackend) {
+    return <NativeBackendConfigError />
   }
 
   if (!dataHydrated && useProductionBackend) {
