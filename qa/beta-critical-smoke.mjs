@@ -80,6 +80,14 @@ async function runStaticChecks() {
     ]),
     'Share-card save action opens an image-only share sheet so iOS can save to Photos instead of only downloading to Files',
   )
+  record(
+    'share-copy-does-not-promise-direct-instagram',
+    !shareCardPreview.includes('>Instagram<') &&
+      !shareCardPreview.includes('Instagram Story ready in one tap') &&
+      shareCardPreview.includes('Share image') &&
+      shareCardPreview.includes('Pick Instagram to post'),
+    'Share UI describes image/share-sheet behavior instead of implying unavailable direct Instagram publishing',
+  )
 
   const activeAdventureScreen = await readRepoFile('src/screens/app/ActiveAdventureScreen.tsx')
   record(
@@ -93,6 +101,12 @@ async function runStaticChecks() {
       'Tap a photo to save it to Photos too.',
     ]),
     'Captured adventure photos expose native gallery save plus an image-only save-to-Photos fallback',
+  )
+  record(
+    'active-adventure-ready-markup-clean',
+    (activeAdventureScreen.match(/className="adv-mini-quest-title"/g) ?? []).length === 2 &&
+      !activeAdventureScreen.includes('<div className="adv-mini-quest-title">\n              <div className="adv-mini-quest-title">'),
+    'Active adventure ready/active mini-quest markup is not duplicated or nested',
   )
 
   const shareCardData = await readRepoFile('src/lib/shareCardData.ts')
@@ -219,7 +233,7 @@ async function runBrowserChecks() {
     record(
       'quick-walk-finish-save-loop',
       finishedMemoryText.includes('Open end · Saved to the Journey') &&
-        finishedMemoryText.includes('Share to Instagram') &&
+        finishedMemoryText.includes('Share image') &&
         finishedMemoryText.includes('Memory saved to Journey'),
       'Quick Walk can start, finish, save to Journey, and open the share-card preview',
     )

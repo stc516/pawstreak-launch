@@ -10,6 +10,7 @@
     "qa:shell-guard": "node qa/mobile-shell-guard.mjs",
     "qa:release-smoke": "node qa/release-smoke.mjs",
     "qa:beta-critical": "node qa/beta-critical-smoke.mjs",
+    "qa:core-loop-p0": "node qa/core-loop-p0.mjs",
     "qa:release": "node qa/release-gate.mjs",
     "preview": "vite preview",
     "icons:generate": "node scripts/generate-app-icons.mjs",

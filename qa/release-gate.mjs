@@ -1,6 +1,7 @@
 import { spawn } from 'node:child_process'
 
 const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm'
+const releaseEvidenceRoot = process.env.QA_EVIDENCE_ROOT || 'artifacts/qa/release-gate'
 
 function run(args, options = {}) {
   return new Promise((resolve, reject) => {
@@ -25,7 +26,9 @@ async function waitForServer(url, timeoutMs = 30000) {
 }
 
 async function main() {
+  await run(['audit', '--omit=dev', '--audit-level=high'])
   await run(['run', 'lint'])
+  await run(['run', 'qa:native'])
   const deterministicEnv = { ...process.env, VITE_MAPBOX_TOKEN: '' }
   await run(['run', 'build'], { env: deterministicEnv })
 
@@ -33,8 +36,18 @@ async function main() {
   try {
     await waitForServer('http://127.0.0.1:4173')
     const env = { ...process.env, QA_BASE_URL: 'http://127.0.0.1:4173' }
-    await run(['run', 'qa:shell-guard'], { env })
-    await run(['run', 'qa:release-smoke'], { env })
+    await run(['run', 'qa:shell-guard'], {
+      env: { ...env, QA_OUT_DIR: `${releaseEvidenceRoot}/mobile-shell-guard` },
+    })
+    await run(['run', 'qa:release-smoke'], {
+      env: { ...env, QA_OUT_DIR: `${releaseEvidenceRoot}/release-smoke` },
+    })
+    await run(['run', 'qa:beta-critical'], {
+      env: { ...env, QA_OUT_DIR: `${releaseEvidenceRoot}/beta-critical` },
+    })
+    await run(['run', 'qa:core-loop-p0'], {
+      env: { ...env, QA_OUT_DIR: `${releaseEvidenceRoot}/core-loop-p0` },
+    })
   } finally {
     preview.kill('SIGTERM')
   }
