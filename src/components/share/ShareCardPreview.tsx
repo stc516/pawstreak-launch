@@ -271,8 +271,8 @@ export function ShareCardPreview({ data, onClose }: ShareCardPreviewProps) {
           </button>
           <div className="share-preview-title">Share the adventure</div>
           <button type="button" className="share-preview-share tap-target" onClick={() => void handleShare()}>
-            <i className="ti ti-brand-instagram" aria-hidden="true" />
-            Instagram
+            <i className="ti ti-share" aria-hidden="true" />
+            Share image
           </button>
         </div>
 
@@ -313,7 +313,7 @@ export function ShareCardPreview({ data, onClose }: ShareCardPreviewProps) {
         </div>
 
         <p className="share-preview-note">
-          We create the image, then open your phone’s share sheet. Pick Instagram to post, or Save Image to add it to Photos.
+          PawStreak creates the image, then opens your phone’s share sheet. Pick Instagram to post, or Save Image to add it to Photos.
         </p>
         <button type="button" className="share-preview-save tap-target" onClick={() => void handleSave()}>
           <i className="ti ti-photo-plus" aria-hidden="true" />

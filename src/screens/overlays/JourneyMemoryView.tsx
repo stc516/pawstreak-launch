@@ -128,7 +128,7 @@ export function JourneyMemoryView({
             </span>
             <span>
               <strong>Share today’s adventure</strong>
-              <small>Instagram Story ready in one tap</small>
+              <small>Image ready for Instagram or Photos</small>
             </span>
             <i className="ti ti-arrow-up-right" aria-hidden="true" />
           </button>
@@ -293,7 +293,7 @@ export function JourneyMemoryView({
               onClick={onCreateStory ?? (() => void handleShare())}
             >
               <i className="ti ti-share" aria-hidden="true" />
-              Share to Instagram
+              Share image
             </button>
           </div>
         </main>

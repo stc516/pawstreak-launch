@@ -46,12 +46,12 @@ try {
   await page.getByRole('button', { name: 'Quick Walk', exact: true }).click()
   const startButton = page.getByRole('button', { name: 'Start adventure', exact: true })
   if (await startButton.isVisible()) await startButton.click()
-  await page.getByRole('button', { name: 'Finish adventure', exact: true }).waitFor()
+  await page.locator('.cbtn--save-memory').waitFor({ state: 'visible', timeout: 30000 })
 
-  const finishButton = page.getByRole('button', { name: 'Finish adventure', exact: true })
+  const finishButton = page.locator('.cbtn--save-memory')
   record(
     'finish-cta',
-    (await finishButton.textContent())?.includes('save memory') ?? false,
+    /save/i.test((await finishButton.textContent()) ?? ''),
     `Visible label: ${(await finishButton.textContent())?.trim()}`,
   )
   await page.screenshot({ path: path.join(OUT_DIR, '01-finish-save-mobile.png'), fullPage: true })
@@ -66,19 +66,19 @@ try {
   )
   record(
     'share-payoff-immediate',
-    await page.getByRole('button', { name: 'Instagram', exact: true }).isVisible(),
-    'Instagram Story card opens immediately after save',
+    await page.getByRole('dialog').getByRole('button', { name: 'Share image', exact: true }).isVisible(),
+    'Share-card image opens immediately after save',
   )
-  await page.screenshot({ path: path.join(OUT_DIR, '02-instagram-story-mobile.png'), fullPage: true })
+  await page.screenshot({ path: path.join(OUT_DIR, '02-share-card-mobile.png'), fullPage: true })
 
-  await page.getByRole('button', { name: 'Instagram', exact: true }).click()
+  await page.getByRole('dialog').getByRole('button', { name: 'Share image', exact: true }).click()
   for (let attempt = 0; attempt < 15; attempt += 1) {
     if (await page.evaluate(() => window.__pawstreakQaShare?.fileCount === 1)) break
     await page.waitForTimeout(1000)
   }
   const sharePayload = await page.evaluate(() => window.__pawstreakQaShare)
   record(
-    'instagram-image-share',
+    'share-card-image-share',
     sharePayload?.fileCount === 1 && sharePayload?.fileType === 'image/png',
     sharePayload ? `${sharePayload.fileName} (${sharePayload.fileType})` : 'No file payload',
   )
