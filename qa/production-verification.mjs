@@ -1,7 +1,7 @@
 /**
  * Run current mobile product QA against production.
  *
- *   node qa/production-verification.mjs
+ *   QA_PRODUCTION_SHA=<deployed-sha> node qa/production-verification.mjs
  */
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -10,6 +10,7 @@ import { spawn } from 'node:child_process'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const PRODUCTION_URL = process.env.QA_PRODUCTION_URL || 'https://pawstreakapp.com'
+const PRODUCTION_SHA = process.env.QA_PRODUCTION_SHA?.trim() || 'UNVERIFIED'
 const OUT_DIR = process.env.QA_OUT_DIR || path.join(__dirname, 'evidence', 'production-verification')
 
 function run(command, args, options = {}) {
@@ -80,13 +81,14 @@ function summarize(report) {
   return { totals, rows }
 }
 
-function buildMarkdown({ report, commit, summary }) {
+function buildMarkdown({ report, harnessCommit, summary }) {
   const lines = [
     '# Production Verification Report',
     '',
     `**Date:** ${new Date().toISOString()}`,
     `**Production URL:** ${PRODUCTION_URL}`,
-    `**Commit:** \`${commit}\``,
+    `**Production SHA:** \`${PRODUCTION_SHA}\``,
+    `**Audit harness SHA:** \`${harnessCommit}\``,
     '',
     '## Result',
     '',
@@ -115,19 +117,26 @@ function buildMarkdown({ report, commit, summary }) {
 
 async function main() {
   await mkdir(OUT_DIR, { recursive: true })
-  const commit = await run('git', ['rev-parse', '--short', 'HEAD'], { capture: true })
+  const harnessCommit = await run('git', ['rev-parse', '--short', 'HEAD'], { capture: true })
 
-  console.log(`Running production mobile QA against ${PRODUCTION_URL} at ${commit} ...`)
+  console.log(
+    `Running production mobile QA against ${PRODUCTION_URL}; production SHA ${PRODUCTION_SHA}; harness ${harnessCommit} ...`,
+  )
   await runAudit()
 
   const report = JSON.parse(await readFile(path.join(OUT_DIR, 'audit-report.json'), 'utf8'))
   const summary = summarize(report)
-  const markdown = buildMarkdown({ report, commit, summary })
+  const markdown = buildMarkdown({ report, harnessCommit, summary })
 
   await writeFile(path.join(OUT_DIR, 'PRODUCTION-VERIFICATION-REPORT.md'), markdown)
   await writeFile(
     path.join(OUT_DIR, 'production-summary.json'),
-    JSON.stringify({ productionUrl: PRODUCTION_URL, commit, ...summary }, null, 2),
+    JSON.stringify({
+      productionUrl: PRODUCTION_URL,
+      productionSha: PRODUCTION_SHA,
+      harnessCommit,
+      ...summary,
+    }, null, 2),
   )
 
   console.log(`Report: ${path.join(OUT_DIR, 'PRODUCTION-VERIFICATION-REPORT.md')}`)
