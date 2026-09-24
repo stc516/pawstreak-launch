@@ -181,7 +181,8 @@ Do not add a beta signup CTA until enrollment is actually open.
 
 ```text
 Pickle Boo build note: the two-chapter prototype now runs inside generated iOS
-and Android app projects, and the Android debug build compiles.
+and Android app projects. The Android debug build compiles, launches in a phone
+emulator, and keeps gameplay in landscape.
 
 That is the start of the mobile path, not a store launch. Real-device input,
 audio, safe-area, and performance playtests come next.
