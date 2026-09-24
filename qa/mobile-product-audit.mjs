@@ -8,7 +8,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const BASE_URL = process.env.QA_BASE_URL || 'http://127.0.0.1:5173'
 const OUT_DIR = process.env.QA_OUT_DIR || path.join(__dirname, 'evidence', 'mobile-product-audit')
 
-const DEVICE_NAMES = ['iPhone 13', 'iPhone 15 Pro', 'iPhone 15 Pro Max']
+const DEVICE_NAMES = ['iPhone SE (3rd gen)', 'iPhone 15 Pro', 'iPhone 15 Pro Max', 'Pixel 7']
 
 const APP_SCREENS = [
   { id: 'home', label: 'Home', setup: async (page) => {
