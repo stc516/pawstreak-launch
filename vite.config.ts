@@ -9,6 +9,28 @@ const rootDir = import.meta.dirname
 export default defineConfig({
   plugins: [
     react(),
+    {
+      name: 'story-page-routes',
+      // Match Vercel's public route rewrites in local dev/preview as well.
+      configureServer(server) {
+        server.middlewares.use((request, _response, next) => {
+          const [pathname, query] = (request.url || '').split('?')
+          if (/^\/bailey-and-omi(?:\/big-climb)?\/?$/.test(pathname)) {
+            request.url = `${pathname.replace(/\/$/, '')}/index.html${query ? `?${query}` : ''}`
+          }
+          next()
+        })
+      },
+      configurePreviewServer(server) {
+        server.middlewares.use((request, _response, next) => {
+          const [pathname, query] = (request.url || '').split('?')
+          if (/^\/bailey-and-omi(?:\/big-climb)?\/?$/.test(pathname)) {
+            request.url = `${pathname.replace(/\/$/, '')}/index.html${query ? `?${query}` : ''}`
+          }
+          next()
+        })
+      },
+    },
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: [
