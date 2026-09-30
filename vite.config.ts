@@ -28,7 +28,7 @@ export default defineConfig({
         importScripts: ['push-sw.js'],
         globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff2,webmanifest}'],
         navigateFallback: '/index.html',
-        navigateFallbackDenylist: [/^\/api\//],
+        navigateFallbackDenylist: [/^\/api\//, /^\/bailey-and-omi(?:\/|$)/],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
@@ -70,6 +70,15 @@ export default defineConfig({
       },
     }),
   ],
+  build: {
+    rolldownOptions: {
+      input: {
+        app: path.resolve(rootDir, "index.html"),
+        series: path.resolve(rootDir, "bailey-and-omi/index.html"),
+        bigClimb: path.resolve(rootDir, "bailey-and-omi/big-climb/index.html"),
+      },
+    },
+  },
   resolve: {
     alias: {
       '@social-assets': path.resolve(rootDir, 'social-assets'),
