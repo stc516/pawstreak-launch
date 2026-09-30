@@ -1,0 +1,39 @@
+name: Bailey & Omi public pages
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'bailey-and-omi/**'
+      - 'public/bailey-and-omi/**'
+      - 'qa/story-pages.mjs'
+      - 'vite.config.ts'
+      - 'vercel.json'
+      - '.github/workflows/story-pages.yml'
+  workflow_dispatch:
+jobs:
+  story-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      - name: Verify public pages on mobile and desktop
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/story-preview.log 2>&1 &
+          PREVIEW_PID=$!
+          trap 'kill $PREVIEW_PID' EXIT
+          for attempt in {1..30}; do
+            if curl -fsS http://127.0.0.1:4173/bailey-and-omi/ >/dev/null; then break; fi
+            sleep 1
+          done
+          node qa/story-pages.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bailey-omi-browser-evidence
+          path: qa/evidence/story-pages/**

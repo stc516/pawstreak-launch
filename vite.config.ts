@@ -9,6 +9,28 @@ const rootDir = import.meta.dirname
 export default defineConfig({
   plugins: [
     react(),
+    {
+      name: 'story-page-routes',
+      // Match Vercel's public route rewrites in local dev/preview as well.
+      configureServer(server) {
+        server.middlewares.use((request, _response, next) => {
+          const [pathname, query] = (request.url || '').split('?')
+          if (/^\/bailey-and-omi(?:\/big-climb)?\/?$/.test(pathname)) {
+            request.url = `${pathname.replace(/\/$/, '')}/index.html${query ? `?${query}` : ''}`
+          }
+          next()
+        })
+      },
+      configurePreviewServer(server) {
+        server.middlewares.use((request, _response, next) => {
+          const [pathname, query] = (request.url || '').split('?')
+          if (/^\/bailey-and-omi(?:\/big-climb)?\/?$/.test(pathname)) {
+            request.url = `${pathname.replace(/\/$/, '')}/index.html${query ? `?${query}` : ''}`
+          }
+          next()
+        })
+      },
+    },
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: [
@@ -28,7 +50,7 @@ export default defineConfig({
         importScripts: ['push-sw.js'],
         globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff2,webmanifest}'],
         navigateFallback: '/index.html',
-        navigateFallbackDenylist: [/^\/api\//],
+        navigateFallbackDenylist: [/^\/api\//, /^\/bailey-and-omi(?:\/|$)/],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
@@ -70,6 +92,15 @@ export default defineConfig({
       },
     }),
   ],
+  build: {
+    rolldownOptions: {
+      input: {
+        app: path.resolve(rootDir, "index.html"),
+        series: path.resolve(rootDir, "bailey-and-omi/index.html"),
+        bigClimb: path.resolve(rootDir, "bailey-and-omi/big-climb/index.html"),
+      },
+    },
+  },
   resolve: {
     alias: {
       '@social-assets': path.resolve(rootDir, 'social-assets'),

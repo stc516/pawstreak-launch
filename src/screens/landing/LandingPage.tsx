@@ -243,6 +243,7 @@ export function LandingPage() {
             <button type="button" className="landing-footer-link-btn tap-target" onClick={openSignup}>
               Start
             </button>
+            <a href="/bailey-and-omi">Bailey &amp; Omi Adventures</a>
             <a href="mailto:hello@pawstreakapp.com">Contact</a>
           </nav>
           <p className="landing-footer-note">&copy; {new Date().getFullYear()} PawStreak</p>
