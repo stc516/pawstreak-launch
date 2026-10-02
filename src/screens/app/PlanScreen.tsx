@@ -18,6 +18,7 @@ import { getRoadTripDriveTime, openRoadTripDirections } from '../../lib/roadTrip
 import { GENERIC_ADVENTURE_TYPES } from '../../lib/genericAdventures'
 import { getPlaceById } from '../../data/places'
 import { BrandLogoCircle } from '../../components/BrandLogoCircle'
+import { resolvePlanDeepLink } from '../../lib/placesDeepLink'
 
 interface PlanScreenProps {
   state: AppState
@@ -39,12 +40,6 @@ interface PlanScreenProps {
   onCreateStory?: () => void
 }
 
-function deepLinkedPlaceId(): string | null {
-  const params = new URLSearchParams(window.location.search)
-  if (params.get('action') !== 'plan') return null
-  return params.get('place')
-}
-
 export function PlanScreen({
   state,
   onSelectCategory,
@@ -61,8 +56,9 @@ export function PlanScreen({
   onCreateStory,
 }: PlanScreenProps) {
   const prefs = getRecommendationPrefs(state)
+  const deepLink = useMemo(() => resolvePlanDeepLink(), [])
   const [proximityBucket, setProximityBucket] = useState<PlanProximityBucket>('15min')
-  const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(() => deepLinkedPlaceId())
+  const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(deepLink.placeId)
   const [typedPlan, setTypedPlan] = useState('')
   const [typedPlanPreview, setTypedPlanPreview] = useState<string | null>(null)
   const [showAllPlaces, setShowAllPlaces] = useState(false)
@@ -256,6 +252,23 @@ export function PlanScreen({
         </div>
         <div className="explore-hype-paws" aria-hidden="true">🐾 🐾 🐾</div>
       </section>
+
+      {deepLink.missingPlaceId ? (
+        <section className="plan-deep-link-notice" role="status" data-testid="places-deep-link-fallback">
+          <div>
+            <span>Places handoff</span>
+            <strong>That exact listing is not in PawStreak's adventure catalog yet.</strong>
+            <p>
+              Pick a curated outing nearby, or add the place yourself so {dogLabel} can still go.
+            </p>
+          </div>
+          {onOpenAddAdventure ? (
+            <button type="button" className="tap-target" onClick={onOpenAddAdventure}>
+              Add this place
+            </button>
+          ) : null}
+        </section>
+      ) : null}
 
       {locationSupported && featuredPlace ? (
         <section className="curated-spotlight" aria-label="Curated adventure pick">
