@@ -116,6 +116,15 @@ async function runStaticChecks() {
       !shareCardData.includes("from './adventureDisplayImage'"),
     'Adventure-complete share cards use real captured photos only; no-photo cards stay branded instead of showing fake destination art',
   )
+
+  const homeScreen = await readRepoFile('src/screens/app/HomeScreen.tsx')
+  record(
+    'home-single-adventure-launch-source',
+    homeScreen.includes('className="home-adventure-launch-hero"') &&
+      homeScreen.includes('data-testid="home-generic-adventures"') &&
+      !homeScreen.includes('home-quick-adventure--today-pick'),
+    'Home keeps one supported-region launch hero while preserving unsupported-region adventure ideas',
+  )
 }
 
 async function runBrowserChecks() {
@@ -221,6 +230,13 @@ async function runBrowserChecks() {
       'demo-core-nav-only',
       navVisible.every(Boolean) && !hasHorizontalOverflowHome,
       'Demo shell exposes the focused beta nav without horizontal overflow',
+    )
+    const launchHeroCount = await page.locator('.home-adventure-launch-hero').count()
+    const redundantTodayPickCount = await page.locator('.home-quick-adventure--today-pick').count()
+    record(
+      'home-single-adventure-launch',
+      launchHeroCount === 1 && redundantTodayPickCount === 0,
+      `${launchHeroCount} primary launch hero and ${redundantTodayPickCount} redundant Today’s Pick cards rendered`,
     )
     await shot(page, '03-demo-home')
 
