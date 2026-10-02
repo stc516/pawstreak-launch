@@ -52,6 +52,7 @@ jobs:
             sleep 1
           done
           QA_BASE_URL=http://127.0.0.1:4173 npm run qa:beta-critical
+          QA_BASE_URL=http://127.0.0.1:4173 npm run qa:places-deep-link
 
       - name: Upload QA evidence
         if: always()
