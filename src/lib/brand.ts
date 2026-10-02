@@ -29,7 +29,7 @@ export const CTA_ADD_TO_HOME_SCREEN = 'Add PawStreak to your home screen'
 export const APP_ENTRY_TITLE = 'Find better dog days near you.'
 
 export const APP_ENTRY_SUBHEAD =
-  'Tell us about your dog so PawStreak can suggest spots, outings, and challenges that fit.'
+  'Discover a place, go together, save the memory, and watch your journey grow — personalized for your dog.'
 
 export const SIGNUP_SECTION_TITLE = 'Find your next dog-friendly adventure.'
 
