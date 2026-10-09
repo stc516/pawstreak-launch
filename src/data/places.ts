@@ -1175,6 +1175,26 @@ export function createJourneyEntryFromPlace(
   }
 }
 
+export function findPlaceFromAdventure(
+  adventure: { placeId?: string; location: string },
+): Place | undefined {
+  if (adventure.placeId) {
+    const place = getPlaceById(adventure.placeId)
+    if (place) return place
+  }
+
+  const normalizedLocation = adventure.location.trim().toLowerCase()
+  if (!normalizedLocation) return undefined
+
+  return PLACES.find((place) => {
+    const normalizedName = place.name.toLowerCase()
+    return (
+      normalizedName === normalizedLocation ||
+      normalizedLocation.includes(place.name.split(',')[0]!.toLowerCase())
+    )
+  })
+}
+
 export function resolvePlaceFromLocation(location: string): Place {
   const exact = PLACES.find((place) => place.name === location)
   if (exact) return exact
