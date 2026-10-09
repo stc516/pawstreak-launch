@@ -108,6 +108,44 @@ try {
   )
   await page.locator('.plan-map-card--adventure').screenshot({ path: path.join(OUT_DIR, '04-working-adventure-map.png') })
 
+  await page.evaluate(() => {
+    const storageKey = 'pawstreak:demo'
+    const state = JSON.parse(localStorage.getItem(storageKey) || '{}')
+    state.activeAdventure = {
+      id: 'retired-place-adventure',
+      placeId: 'retired-seaside-trail',
+      location: 'Saved Seaside Trail',
+      durationLabel: 'Open end',
+      started: true,
+      startedAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+      status: 'active',
+      source: 'catalog',
+      selectedDogIds: state.dogs?.map((dog) => dog.id) ?? [],
+    }
+    state.activeAdventureView = 'focused'
+    state.adventurePhotos = ['', '', '']
+    localStorage.setItem(storageKey, JSON.stringify(state))
+  })
+  await page.reload({ waitUntil: 'networkidle' })
+  await page.locator('.cbtn--save-memory').waitFor({ state: 'visible', timeout: 30000 })
+  const resumedLocation = await page.locator('.clk-sub').textContent().catch(() => '')
+  record(
+    'retired-place-resume',
+    (resumedLocation ?? '').includes('Saved Seaside Trail'),
+    `Resumed location: ${(resumedLocation ?? '').trim()}`,
+  )
+  await page.locator('.cbtn--save-memory').click()
+  await page.locator('.share-preview-shell').waitFor({ state: 'visible', timeout: 10000 })
+  const recoveredState = await page.evaluate(() => JSON.parse(localStorage.getItem('pawstreak:demo') || '{}'))
+  record(
+    'retired-place-memory',
+    !recoveredState.activeAdventure &&
+      recoveredState.journeyEntries?.[0]?.place === 'Saved Seaside Trail' &&
+      !recoveredState.journeyEntries?.[0]?.placeId,
+    'Original location became a Journey memory without a dead catalog link',
+  )
+  await page.screenshot({ path: path.join(OUT_DIR, '05-retired-place-memory.png'), fullPage: true })
+
   record(
     'runtime-errors',
     runtimeErrors.length === 0,
