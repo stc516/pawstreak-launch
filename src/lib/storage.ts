@@ -10,9 +10,9 @@ import { normalizePhotoSlots } from '../lib/imageUtils'
 import { resolveActiveAdventureView } from './activeAdventureSession'
 import {
   CUSTOM_ADVENTURE_PLACE_ID,
+  findPlaceFromAdventure,
   getPlaceById,
   isNeighborhoodWalkPlace,
-  resolvePlaceFromAdventure,
 } from '../data/places'
 import {
   EMPTY_ADD_ADVENTURE_DRAFT,
@@ -34,6 +34,7 @@ import {
   sanitizeProductionAppState,
 } from './productionState'
 import type { DemoRoute } from './demoRoute'
+import { resolveCatalogAdventureIdentity } from './unavailablePlaceRecovery'
 
 const APP_STORAGE_KEY = 'pawstreak:app'
 const DEMO_STORAGE_KEY = 'pawstreak:demo'
@@ -154,15 +155,21 @@ function normalizeActiveAdventure(
     }
   }
 
-  const place = resolvePlaceFromAdventure(adventure)
+  const identity = resolveCatalogAdventureIdentity(
+    adventure,
+    findPlaceFromAdventure(adventure),
+  )
   return {
     id: adventure.id ?? serverId ?? crypto.randomUUID(),
     serverId,
     dogId: 'dogId' in adventure ? adventure.dogId : undefined,
     selectedDogIds:
       'selectedDogIds' in adventure ? adventure.selectedDogIds : undefined,
-    placeId: place.id,
-    location: place.name,
+    // A catalog entry can be renamed or retired while an adventure is active.
+    // Keep the saved identity and label instead of silently substituting a
+    // different catalog place during hydration.
+    placeId: identity.placeId,
+    location: identity.location,
     durationLabel:
       'durationLabel' in adventure && adventure.durationLabel
         ? adventure.durationLabel
