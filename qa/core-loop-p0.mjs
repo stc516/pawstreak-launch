@@ -48,6 +48,37 @@ try {
   if (await startButton.isVisible()) await startButton.click()
   await page.locator('.cbtn--save-memory').waitFor({ state: 'visible', timeout: 30000 })
 
+  const photoInput = page.locator('.cam-input')
+  await photoInput.setInputFiles({
+    name: 'not-a-photo.txt',
+    mimeType: 'text/plain',
+    buffer: Buffer.from('not an image'),
+  })
+  const photoError = page.getByRole('status').filter({ hasText: 'That photo could not be added' })
+  await photoError.waitFor({ state: 'visible', timeout: 5000 })
+  record(
+    'invalid-photo-recovery',
+    /try another image|take a new one/i.test((await photoError.textContent()) ?? ''),
+    (await photoError.textContent())?.trim() ?? 'No recovery message',
+  )
+  await page.screenshot({ path: path.join(OUT_DIR, '01a-photo-error-recovery.png'), fullPage: true })
+
+  await photoInput.setInputFiles({
+    name: 'valid-memory.png',
+    mimeType: 'image/png',
+    buffer: Buffer.from(
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
+      'base64',
+    ),
+  })
+  const savedPhotoMessage = page.getByText(/1 moment saved to PawStreak/)
+  await savedPhotoMessage.waitFor({ state: 'visible', timeout: 5000 })
+  record(
+    'photo-retry-succeeds',
+    await savedPhotoMessage.isVisible(),
+    'A valid retry is accepted after an invalid selection',
+  )
+
   const finishButton = page.locator('.cbtn--save-memory')
   record(
     'finish-cta',
