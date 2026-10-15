@@ -68,6 +68,18 @@ Status labels when reporting readiness:
 - [ ] Offline shell and honest failed-write behavior
 - [ ] Service-worker update from the previous production version
 
+## Native store builds
+
+- [ ] Supabase custom-scheme redirects work through system-browser Google OAuth on a real iPhone and Android phone
+- [ ] iOS location usage text and Android coarse/fine permissions show the expected allow/deny flows
+- [ ] Native session survives app background, force-close, and relaunch; sign-out removes it
+- [ ] Apple team, bundle identifier, App Store Connect record, version, and build number confirmed
+- [ ] Signed iOS archive uploaded to TestFlight and processed without signing or privacy-manifest errors
+- [ ] Android upload key is backed up securely and Play App Signing is enabled
+- [ ] Signed release `.aab` uploaded to Play internal testing
+- [ ] Native reminders are either APNs/FCM-tested end to end or excluded from first-beta promises
+- [ ] Final screenshots, App Privacy, Google Data safety, content rating, review notes, and test credentials completed
+
 ## Product loop and emotional payoff
 
 - [ ] First-run experience explains Discover → Go → Remember → Progress without requiring founder explanation

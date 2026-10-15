@@ -21,10 +21,12 @@ async function main() {
   const routes = await readFile('src/lib/routes.ts', 'utf8')
   const deepLinks = await readFile('src/lib/nativeDeepLinks.ts', 'utf8')
   const runtime = await readFile('src/lib/nativeRuntime.ts', 'utf8')
+  const supabase = await readFile('src/lib/supabase.ts', 'utf8')
   const nativePhotos = await readFile('src/lib/nativePhotos.ts', 'utf8')
   const nativePhotoRestore = await readFile('src/lib/nativePhotoRestore.ts', 'utf8')
   const app = await readFile('src/App.tsx', 'utf8')
   const activeAdventure = await readFile('src/screens/app/ActiveAdventureScreen.tsx', 'utf8')
+  const pushNotifications = await readFile('src/lib/pushNotifications.ts', 'utf8')
   const iosInfoPlist = await readFile('ios/App/App/Info.plist', 'utf8').catch(() => '')
   const iosAppDelegate = await readFile('ios/App/App/AppDelegate.swift', 'utf8').catch(() => '')
   const androidManifest = await readFile('android/app/src/main/AndroidManifest.xml', 'utf8').catch(() => '')
@@ -39,11 +41,13 @@ async function main() {
     includesAll(JSON.stringify(pkg.dependencies ?? {}), [
       '@capacitor/core',
       '@capacitor/app',
+      '@capacitor/browser',
       '@capacitor/share',
       '@capacitor/filesystem',
       '@capacitor/preferences',
       '@capacitor/push-notifications',
       '@capacitor/camera',
+      '@capacitor/geolocation',
     ]) &&
       includesAll(JSON.stringify(pkg.devDependencies ?? {}), [
         '@capacitor/cli',
@@ -81,6 +85,17 @@ async function main() {
     'Auth redirects switch to the native custom URL scheme inside the native app.',
   )
 
+  const auth = await readFile('src/lib/auth.ts', 'utf8')
+  record(
+    'native-system-browser-auth',
+    includesAll(auth, [
+      "from '@capacitor/browser'",
+      'skipBrowserRedirect: useSystemBrowser',
+      'await Browser.open',
+    ]) && deepLinks.includes('Browser.close()'),
+    'Native Google OAuth opens in the system browser and closes it after the app receives the callback.',
+  )
+
   record(
     'native-deep-link-handler',
     includesAll(deepLinks, [
@@ -90,6 +105,17 @@ async function main() {
       "window.dispatchEvent(new PopStateEvent('popstate'))",
     ]) && includesAll(runtime, ['isNativeAppRuntime', 'getNativePlatform', 'NATIVE_APP_SCHEME']),
     'Native app URL opens are routed back into the PawStreak app shell and Supabase code exchange is handled.',
+  )
+
+  record(
+    'native-auth-session-storage',
+    includesAll(supabase, [
+      "from '@capacitor/preferences'",
+      'storage: nativeStorage',
+      "flowType: 'pkce'",
+      'detectSessionInUrl: false',
+    ]),
+    'Native Supabase auth uses persistent Capacitor storage and PKCE for the deep-link code exchange.',
   )
 
   record(
@@ -139,6 +165,7 @@ async function main() {
       'NSCameraUsageDescription',
       'NSPhotoLibraryAddUsageDescription',
       'NSPhotoLibraryUsageDescription',
+      'NSLocationWhenInUseUsageDescription',
       'CFBundleURLSchemes',
       'com.pawstreak.app',
     ]) &&
@@ -148,6 +175,8 @@ async function main() {
         'android.permission.WRITE_EXTERNAL_STORAGE',
         'android:maxSdkVersion="29"',
         'android.permission.POST_NOTIFICATIONS',
+      'android.permission.ACCESS_COARSE_LOCATION',
+      'android.permission.ACCESS_FINE_LOCATION',
         'android:scheme="com.pawstreak.app"',
       ]),
     'Native projects declare iOS camera/photo/deep-link settings and Android save-to-gallery/deep-link/notification settings.',
@@ -162,6 +191,15 @@ async function main() {
       '.capacitorDidFailToRegisterForRemoteNotifications',
     ]),
     'The iOS app delegate forwards APNs registration success and failure to the Capacitor push plugin.',
+  )
+
+  record(
+    'native-push-beta-guard',
+    includesAll(pushNotifications, [
+      'isNativeAppRuntime()',
+      'Native reminders are not enabled in this beta yet.',
+    ]),
+    'Native builds do not offer the browser-only push subscription path as if it were native push.',
   )
 
   record(

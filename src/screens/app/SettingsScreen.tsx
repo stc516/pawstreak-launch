@@ -235,7 +235,9 @@ export function SettingsScreen({
             <SettingsIconRow
               icon="ti-bell-off"
               title="Daily reminders"
-              detail={pushState.supported
+              detail={pushState.isNative
+                ? 'Native reminders are coming after the first beta. Calendar alerts are available now.'
+                : pushState.supported
                 ? 'Push delivery is awaiting its production key.'
                 : 'This browser does not support push notifications.'}
               disabled

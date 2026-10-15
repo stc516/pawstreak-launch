@@ -1,5 +1,7 @@
+import { Geolocation } from '@capacitor/geolocation'
 import type { ActiveAdventure, LocationCandidate } from '../data/demo'
 import { normalizeCustomTitle } from './customAdventure'
+import { isNativeAppRuntime } from './nativeRuntime'
 
 export type LocationPermissionStatus =
   | 'unknown'
@@ -14,7 +16,40 @@ export interface CapturedLocation {
   capturedAt?: string
 }
 
+async function captureNativeLocation(): Promise<CapturedLocation> {
+  try {
+    let permissions = await Geolocation.checkPermissions()
+    if (permissions.location === 'denied') return { status: 'denied' }
+
+    if (
+      permissions.location === 'prompt' ||
+      permissions.location === 'prompt-with-rationale'
+    ) {
+      permissions = await Geolocation.requestPermissions({ permissions: ['location'] })
+    }
+
+    if (permissions.location !== 'granted') return { status: 'denied' }
+
+    const position = await Geolocation.getCurrentPosition({
+      enableHighAccuracy: false,
+      maximumAge: 60000,
+      timeout: 5000,
+    })
+
+    return {
+      status: 'granted',
+      lat: position.coords.latitude,
+      lng: position.coords.longitude,
+      capturedAt: new Date(position.timestamp).toISOString(),
+    }
+  } catch {
+    return { status: 'unavailable' }
+  }
+}
+
 export async function captureCurrentLocation(): Promise<CapturedLocation> {
+  if (isNativeAppRuntime()) return captureNativeLocation()
+
   if (typeof navigator === 'undefined' || !navigator.geolocation) {
     return { status: 'unavailable' }
   }

@@ -1,4 +1,5 @@
 import { getSupabaseClient } from './supabase'
+import { isNativeAppRuntime } from './nativeRuntime'
 
 export interface PushPreferences {
   morningEnabled: boolean
@@ -15,6 +16,7 @@ export const DEFAULT_PUSH_PREFERENCES: PushPreferences = {
 }
 
 export interface PushNotificationState {
+  isNative: boolean
   supported: boolean
   configured: boolean
   installed: boolean
@@ -29,6 +31,7 @@ function isIosDevice(): boolean {
 }
 
 function isInstalledApp(): boolean {
+  if (isNativeAppRuntime()) return true
   const standaloneNavigator = navigator as Navigator & { standalone?: boolean }
   return window.matchMedia('(display-mode: standalone)').matches || standaloneNavigator.standalone === true
 }
@@ -75,6 +78,7 @@ async function saveSubscription(
 }
 
 export async function getPushNotificationState(): Promise<PushNotificationState> {
+  const isNative = isNativeAppRuntime()
   const supported = isSupported()
   const subscription = supported ? await currentSubscription() : null
   let preferences = DEFAULT_PUSH_PREFERENCES
@@ -99,6 +103,7 @@ export async function getPushNotificationState(): Promise<PushNotificationState>
   }
 
   return {
+    isNative,
     supported,
     configured: Boolean(publicVapidKey()),
     installed: isInstalledApp(),
@@ -112,6 +117,9 @@ export async function getPushNotificationState(): Promise<PushNotificationState>
 export async function enablePushNotifications(
   preferences: PushPreferences = DEFAULT_PUSH_PREFERENCES,
 ): Promise<void> {
+  if (isNativeAppRuntime()) {
+    throw new Error('Native reminders are not enabled in this beta yet. You can still add an adventure to your calendar.')
+  }
   if (!isSupported()) throw new Error('Push notifications are not supported on this browser.')
   if (isIosDevice() && !isInstalledApp()) {
     throw new Error('On iPhone, add PawStreak to your Home Screen before enabling notifications.')

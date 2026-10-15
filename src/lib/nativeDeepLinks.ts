@@ -1,4 +1,5 @@
 import { App as CapacitorApp } from '@capacitor/app'
+import { Browser } from '@capacitor/browser'
 import { getSupabaseClient } from './supabase'
 import { NATIVE_APP_SCHEME, isNativeAppRuntime } from './nativeRuntime'
 
@@ -40,6 +41,10 @@ export function registerNativeDeepLinks(): void {
   void CapacitorApp.addListener('appUrlOpen', (event) => {
     const internalPath = getInternalPathFromNativeUrl(event.url)
     if (!internalPath) return
+
+    void Browser.close().catch(() => {
+      // Android custom tabs close themselves when the app resumes.
+    })
 
     void finishSupabaseCodeExchange(event.url).finally(() => {
       window.history.replaceState({}, '', internalPath)

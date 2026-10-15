@@ -2,6 +2,7 @@ import { chromium, devices } from 'playwright'
 import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { chromiumLaunchOptions } from './lib/playwrightLaunch.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const BASE_URL = process.env.QA_BASE_URL || 'http://127.0.0.1:4173'
@@ -21,7 +22,7 @@ async function shot(page, name, fullPage = false) {
 
 async function main() {
   await mkdir(OUT_DIR, { recursive: true })
-  const browser = await chromium.launch({ headless: true })
+  const browser = await chromium.launch(chromiumLaunchOptions())
   const context = await browser.newContext({
     ...devices['iPhone 13'],
     serviceWorkers: 'block',

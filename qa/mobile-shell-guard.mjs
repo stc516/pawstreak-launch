@@ -16,6 +16,7 @@ import {
   assertShellLayout,
   collectShellLayoutMetrics,
 } from './lib/shellLayoutGuard.mjs'
+import { chromiumLaunchOptions } from './lib/playwrightLaunch.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const BASE_URL = process.env.QA_BASE_URL || 'http://127.0.0.1:5173'
@@ -51,7 +52,7 @@ async function checkScreen(page, screen) {
 async function main() {
   await mkdir(OUT_DIR, { recursive: true })
 
-  const browser = await chromium.launch({ headless: true })
+  const browser = await chromium.launch(chromiumLaunchOptions())
   const context = await browser.newContext({
     ...devices['iPhone 13'],
     isMobile: true,

@@ -1,4 +1,6 @@
+import { Browser } from '@capacitor/browser'
 import { getAuthRedirectUrl } from './routes'
+import { isNativeAppRuntime } from './nativeRuntime'
 import { getSupabaseClient, isSupabaseConfigured } from './supabase'
 
 export { isSupabaseConfigured }
@@ -67,17 +69,26 @@ export async function signInWithGoogle() {
   if (!supabase) throw new Error('Supabase is not configured')
 
   const redirectTo = getAuthRedirectUrl()
+  const useSystemBrowser = isNativeAppRuntime()
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
       redirectTo,
+      skipBrowserRedirect: useSystemBrowser,
     },
   })
   if (error) throw error
 
   if (data?.url && typeof window !== 'undefined') {
-    window.location.assign(data.url)
+    if (useSystemBrowser) {
+      await Browser.open({
+        url: data.url,
+        presentationStyle: 'popover',
+      })
+    } else {
+      window.location.assign(data.url)
+    }
   }
 
   return data

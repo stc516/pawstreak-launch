@@ -23,11 +23,13 @@ Installed packages:
 - `@capacitor/ios`
 - `@capacitor/android`
 - `@capacitor/app`
+- `@capacitor/browser`
 - `@capacitor/share`
 - `@capacitor/filesystem`
 - `@capacitor/preferences`
 - `@capacitor/push-notifications`
 - `@capacitor/camera`
+- `@capacitor/geolocation`
 
 ## Native blockers before TestFlight
 
@@ -55,7 +57,7 @@ The repo now includes native runtime detection and deep-link handling so these a
 
 ### 3. Google OAuth native review
 
-Google sign-in must be tested on device because native app redirects differ from browser redirects. If Google rejects the custom scheme flow, use the Capacitor Browser/App plugin flow and update the Supabase OAuth redirect allowlist accordingly.
+Google sign-in now opens with `@capacitor/browser`, then returns through the Capacitor App deep-link listener. It must still be tested on a real device because native app redirects differ from browser redirects. Keep the Supabase OAuth redirect allowlist in sync with the URLs above.
 
 ### 4. Push notifications
 
@@ -80,6 +82,7 @@ Verify on real devices:
 
 - Mapbox tiles load inside the native WebView
 - location permission prompts appear at the right moment
+- the Capacitor Geolocation allow/deny path returns without trapping the user
 - route/current-position fallbacks do not block adventure completion
 - no horizontal overflow on iPhone sizes
 

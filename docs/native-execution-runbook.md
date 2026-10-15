@@ -73,7 +73,7 @@ Set:
 - Launch screen
 - Associated URL scheme for `com.pawstreak.app://auth/callback`
 - Push notification capability if testing native push
-- Camera/Photos permission strings
+- Camera/Photos/location permission strings
 
 ## Step 4 — configure external services
 
@@ -84,7 +84,7 @@ Supabase Auth redirect URLs:
 - `https://pawstreakapp.com/app`
 - `https://pawstreakapp.com/app/invite`
 
-Google OAuth must be tested on device.
+Google OAuth uses the system browser and must be tested through the full callback on device.
 
 Push requires APNs/FCM setup before native notification PASS.
 
@@ -98,7 +98,7 @@ Implement only what directly improves beta reliability:
 4. Deep-link QA for auth and invite acceptance
 5. Share-card image handoff to native share sheet
 
-Do not add payments, social feed expansion, route recording, or new game mechanics before beta.
+Do not add payments, social feed expansion, route recording, or new game mechanics before beta. The post-beta monetization decision gates are documented in `docs/growth-and-monetization-strategy.md`.
 
 ## Step 6 — TestFlight smoke
 

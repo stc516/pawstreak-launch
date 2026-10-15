@@ -1,6 +1,7 @@
 import { chromium, devices } from 'playwright'
 import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
+import { chromiumLaunchOptions } from './lib/playwrightLaunch.mjs'
 
 const BASE_URL = process.env.QA_BASE_URL || 'http://127.0.0.1:4173'
 const OUT_DIR = process.env.QA_OUT_DIR || path.resolve('qa/evidence/core-loop-p0')
@@ -12,7 +13,7 @@ function record(id, pass, detail) {
 }
 
 await mkdir(OUT_DIR, { recursive: true })
-const browser = await chromium.launch({ headless: true })
+const browser = await chromium.launch(chromiumLaunchOptions())
 const context = await browser.newContext({
   ...devices['iPhone 13'],
   serviceWorkers: 'block',

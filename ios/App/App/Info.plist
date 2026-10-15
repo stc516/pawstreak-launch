@@ -41,6 +41,8 @@
 	<string>PawStreak saves adventure photos to your photo library when you choose to keep them on your phone.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>PawStreak lets you choose photos from your library to save with your dog’s adventure memories.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>PawStreak uses your location while the app is open to find nearby dog-friendly adventures and record where an adventure starts and ends.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
