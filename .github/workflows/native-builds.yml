@@ -1,6 +1,10 @@
 name: Native build validation
 
 on:
+  push:
+    branches:
+      - main
+      - 'native/**'
   pull_request:
     branches: [main]
   workflow_dispatch:

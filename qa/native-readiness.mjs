@@ -208,6 +208,7 @@ async function main() {
     includesAll(nativeBuildWorkflow, [
       'Android debug APK',
       'Native readiness',
+      "'native/**'",
       'npm run qa:native',
       'actions/setup-java@v4',
       'java-version: 21',
