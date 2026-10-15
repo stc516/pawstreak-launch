@@ -26,6 +26,7 @@ async function main() {
   const app = await readFile('src/App.tsx', 'utf8')
   const activeAdventure = await readFile('src/screens/app/ActiveAdventureScreen.tsx', 'utf8')
   const iosInfoPlist = await readFile('ios/App/App/Info.plist', 'utf8').catch(() => '')
+  const iosAppDelegate = await readFile('ios/App/App/AppDelegate.swift', 'utf8').catch(() => '')
   const androidManifest = await readFile('android/app/src/main/AndroidManifest.xml', 'utf8').catch(() => '')
   const launchDocs = await readFile('docs/native-capacitor-launch.md', 'utf8')
   const appStoreDocs = await readFile('docs/native-app-store-metadata.md', 'utf8')
@@ -150,6 +151,17 @@ async function main() {
         'android:scheme="com.pawstreak.app"',
       ]),
     'Native projects declare iOS camera/photo/deep-link settings and Android save-to-gallery/deep-link/notification settings.',
+  )
+
+  record(
+    'ios-push-registration-bridge',
+    includesAll(iosAppDelegate, [
+      'didRegisterForRemoteNotificationsWithDeviceToken',
+      '.capacitorDidRegisterForRemoteNotifications',
+      'didFailToRegisterForRemoteNotificationsWithError',
+      '.capacitorDidFailToRegisterForRemoteNotifications',
+    ]),
+    'The iOS app delegate forwards APNs registration success and failure to the Capacitor push plugin.',
   )
 
   record(
