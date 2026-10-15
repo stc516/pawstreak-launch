@@ -31,6 +31,7 @@ async function main() {
   const appStoreDocs = await readFile('docs/native-app-store-metadata.md', 'utf8')
   const deviceQaDocs = await readFile('docs/native-device-qa.md', 'utf8')
   const runbookDocs = await readFile('docs/native-execution-runbook.md', 'utf8')
+  const nativeBuildWorkflow = await readFile('.github/workflows/native-builds.yml', 'utf8').catch(() => '')
 
   record(
     'capacitor-packages-installed',
@@ -191,15 +192,33 @@ async function main() {
   record(
     'native-execution-runbook',
     includesAll(runbookDocs, [
-      'npm install',
+      'npm ci',
       'Java 21',
-      'npx cap add ios',
-      'npx cap add android',
+      'npm run native:sync',
+      '.github/workflows/native-builds.yml',
       'Supabase Auth redirect URLs',
       'Native camera/photo capture',
       'TestFlight smoke',
     ]),
     'Native execution runbook defines the next concrete shell, service-config, and TestFlight steps.',
+  )
+
+  record(
+    'native-ci-builds',
+    includesAll(nativeBuildWorkflow, [
+      'Android debug APK',
+      'Native readiness',
+      'npm run qa:native',
+      'actions/setup-java@v4',
+      'java-version: 21',
+      './gradlew assembleDebug',
+      'iOS Simulator app',
+      'needs: native-readiness',
+      'xcodebuild',
+      'CODE_SIGNING_ALLOWED=NO',
+      'actions/upload-artifact@v4',
+    ]),
+    'Native CI compiles an Android debug APK and unsigned iOS Simulator app and uploads both artifacts.',
   )
 
   if (!results.every((result) => result.pass)) process.exitCode = 1

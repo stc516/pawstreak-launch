@@ -2,11 +2,11 @@
 
 This is the shortest practical path from the current PawStreak PWA to a real native beta.
 
-## Current branch
+## Release target
 
-- Branch: `native/capacitor-shell`
 - Base: current `origin/main`
 - Goal: iOS TestFlight first, Android internal testing second
+- Native compile validation: `.github/workflows/native-builds.yml`
 
 ## Step 1 — install and verify native packages
 
@@ -35,21 +35,26 @@ export PATH="$JAVA_HOME/bin:$PATH"
 ```
 
 ```bash
-npm install
+npm ci
 npm run qa:native
 npm run lint
 npm run build
 ```
 
-## Step 2 — generate native projects
+## Step 2 — sync the native projects
+
+The generated `ios/` and `android/` projects are committed. Do not run
+`npx cap add` again for an existing checkout. Sync the current web build and
+Capacitor plugins into both projects:
 
 ```bash
-npx cap add ios
-npx cap add android
 npm run native:sync
 ```
 
-Commit generated `ios/` and `android/` directories only after they build locally.
+Pull requests compile an Android debug APK and unsigned iOS Simulator app in
+the native build workflow. Download those artifacts from the workflow run for
+installation in an Android emulator/device or iOS Simulator. They do not
+replace signed TestFlight/device builds.
 
 ## Step 3 — configure iOS
 
