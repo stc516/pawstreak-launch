@@ -3,11 +3,13 @@ import type { AppState } from '../../data/demo'
 import {
   buildJourneyMapPins,
   filterJourneyMapPins,
+  categoryForEntry,
   type JourneyMapFilterId,
 } from '../../data/journeyMapPins'
 import { getJourneyMapStats } from '../../lib/journeyMapStats'
 import { getPlaceById } from '../../data/places'
 import { StatusBar } from '../../components/StatusBar'
+import { GeographicMap } from '../../components/GeographicMap'
 
 const MAP_FILTERS: { id: JourneyMapFilterId; label: string }[] = [
   { id: 'all', label: 'All' },
@@ -27,8 +29,10 @@ interface JourneyMapViewProps {
 export function JourneyMapView({ state, onBack, onOpenMemory }: JourneyMapViewProps) {
   const [filterId, setFilterId] = useState<JourneyMapFilterId>('all')
   const [selectedPinId, setSelectedPinId] = useState<string | null>(null)
-  const allPins = buildJourneyMapPins(state.journeyEntries)
-  const pins = filterJourneyMapPins(allPins, filterId)
+  const allPins = useMemo(() => buildJourneyMapPins(state.journeyEntries), [state.journeyEntries])
+  const pins = useMemo(() => filterJourneyMapPins(allPins, filterId), [allPins, filterId])
+  const entries = state.journeyEntries.filter(entry => filterId === 'all' || categoryForEntry(entry) === filterId)
+  const unmappedCount = entries.filter(entry => !allPins.some(pin => pin.placeId === entry.placeId)).length
   const stats = getJourneyMapStats(state)
 
   const selectedPreview = useMemo(() => {
@@ -103,42 +107,13 @@ export function JourneyMapView({ state, onBack, onOpenMemory }: JourneyMapViewPr
             ))}
           </div>
 
-          <div className="jmap-overlay-panel">
-            {pins.length === 0 ? (
-              <div className="jmap-overlay-empty-list detail-card-warm">
-                {allPins.length === 0
-                  ? 'Your map starts with your first saved adventure.'
-                  : 'No saved adventures match this filter yet.'}
-              </div>
-            ) : (
-              <div className="jmap-overlay-panel-grid">
-                {pins.length > 3 ? (
-                  <div className="jmap-overlay-panel-hint">Tap a pin to see its name</div>
-                ) : null}
-                {pins.map((pin) => {
-                  const isSelected = selectedPinId === pin.id
-                  const showLabel = isSelected || pins.length <= 3
-
-                  return (
-                    <button
-                      key={pin.id}
-                      id={pin.id}
-                      type="button"
-                      className={`jmap-overlay-pin tap-target${isSelected ? ' jmap-overlay-pin--selected' : ''}${showLabel ? ' jmap-overlay-pin--labeled' : ''}`}
-                      style={{ top: pin.top, left: pin.left }}
-                      aria-label={pin.label}
-                      onClick={() => setSelectedPinId(isSelected ? null : pin.id)}
-                    >
-                      <span className="jmap-overlay-pin-dot" />
-                      {showLabel ? (
-                        <span className="jmap-overlay-pin-label">{pin.shortLabel}</span>
-                      ) : null}
-                    </button>
-                  )
-                })}
-              </div>
-            )}
+          <div className="journey-geographic-map">
+            <GeographicMap points={pins} center={state.mapCenter} selectedId={selectedPinId}
+              onSelect={setSelectedPinId} label="Saved adventure places"
+              emptyTitle={entries.length ? 'These memories have no mapped location' : 'No adventures in this view yet'}
+              emptyCopy="Saved memories stay in the list below. Pins appear only for places with known coordinates." />
           </div>
+          {unmappedCount > 0 ? <p className="journey-unmapped-note">{unmappedCount} {unmappedCount === 1 ? 'memory has' : 'memories have'} no mapped location. Nothing is placed at a guessed spot.</p> : null}
 
           {selectedPreview ? (
             <div className="jmap-pin-preview detail-card-warm">
@@ -158,12 +133,12 @@ export function JourneyMapView({ state, onBack, onOpenMemory }: JourneyMapViewPr
 
           <div className="sec sec--warm">Adventure map</div>
           <div className="jmap-overlay-list">
-            {state.journeyEntries.length === 0 ? (
+            {entries.length === 0 ? (
               <div className="jmap-overlay-empty-list detail-card-warm">
                 Your map starts with your first saved adventure.
               </div>
             ) : (
-              state.journeyEntries.slice(0, 4).map((entry) => {
+              entries.map((entry) => {
                 const place = entry.placeId ? getPlaceById(entry.placeId) : undefined
                 return (
                   <button

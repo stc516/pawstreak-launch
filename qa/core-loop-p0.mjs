@@ -122,20 +122,21 @@ try {
   await page.getByRole('button', { name: 'Explore', exact: true }).click()
   await page.locator('.plan-map-card--adventure').waitFor({ state: 'visible', timeout: 10000 })
   await page
-    .locator('.plan-map-pin--mapbox, .plan-map-pin--fallback')
+    .locator('.geographic-map-marker, .geographic-place-row')
     .first()
     .waitFor({ state: 'visible', timeout: 15000 })
-  const mapboxPins = page.locator('.plan-map-pin--mapbox')
-  const fallbackPins = page.locator('.plan-map-pin--fallback')
+  const mapboxPins = page.locator('.geographic-map-marker')
+  const fallbackPins = page.locator('.geographic-place-row')
   const pinCount = (await mapboxPins.count()) + (await fallbackPins.count())
-  record('map-usable', pinCount > 0, `${pinCount} tappable adventure pins rendered`)
+  record('map-or-honest-list', pinCount > 0 && ((await mapboxPins.count()) > 0 || await page.getByTestId('map-unavailable').isVisible()), `${pinCount} real-coordinate markers or explicitly labeled list choices`)
+  record('no-fabricated-map', await page.locator('.plan-map-terrain, .plan-map-pin--fallback, .jmap-overlay-panel-grid').count() === 0, 'No invented terrain or arbitrarily placed fallback pins')
   const firstPin = (await mapboxPins.count()) > 0 ? mapboxPins.first() : fallbackPins.first()
   await firstPin.click({ force: true })
-  await page.locator('.plan-map-tooltip').waitFor({ state: 'visible' })
+  await page.locator('.plan-selected-place').waitFor({ state: 'visible' })
   record(
     'map-pin-selection',
     await page.locator('.pcard--map-selected').first().isVisible(),
-    'Pin tap synchronizes the map tooltip and adventure card',
+    'Place selection synchronizes the detail and adventure card',
   )
   await page.locator('.plan-map-card--adventure').screenshot({ path: path.join(OUT_DIR, '04-working-adventure-map.png') })
 

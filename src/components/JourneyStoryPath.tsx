@@ -1,7 +1,7 @@
 import type { AppState, JourneyEntry } from '../data/demo'
-import { SAMPLE_IMAGES } from '../data/sampleImages'
 import { getJourneyEntryDisplayImageUrl } from '../lib/adventureDisplayImage'
 import { NEIGHBORHOOD_WALK_PLACE_ID } from '../data/places'
+import { authenticPhotoUrls } from '../lib/authenticImages'
 
 interface JourneyStoryPathProps {
   state: AppState
@@ -57,17 +57,17 @@ export function JourneyStoryPath({
     {
       title: 'Beach walk',
       line: 'Photos, places, dates, and little moments will land here after you go.',
-      imageUrl: SAMPLE_IMAGES.beach,
+      icon: 'ti-compass',
     },
     {
       title: 'Photo + note saved',
       line: 'Once you finish an outing, this becomes a saved day you can reopen.',
-      imageUrl: SAMPLE_IMAGES.scenic,
+      icon: 'ti-camera',
     },
     {
       title: 'Favorite walk',
       line: 'Plan a few outings now, then PawStreak saves the best parts after you go.',
-      imageUrl: SAMPLE_IMAGES.neighborhood,
+      icon: 'ti-heart',
     },
   ]
 
@@ -95,7 +95,7 @@ export function JourneyStoryPath({
           {adventureEntries.map((entry, index) => {
             const side = index % 2 === 0 ? 'left' : 'right'
             const imageUrl = getJourneyEntryDisplayImageUrl(state.journeyEntries, entry)
-            const photoCount = entry.photoUrls?.filter(Boolean).length ?? 0
+            const photoCount = authenticPhotoUrls(entry.photoUrls).length
 
             return (
               <article
@@ -117,7 +117,7 @@ export function JourneyStoryPath({
                       {photoCount}
                     </span>
                   ) : null}
-                  <img src={imageUrl} alt="" className="journey-memory-photo" />
+                  {imageUrl ? <img src={imageUrl} alt="" className="journey-memory-photo" /> : <span className="journey-memory-no-photo"><i className="ti ti-notebook" aria-hidden="true" />Memory saved · no photo added</span>}
                   <span className="journey-memory-copy">
                     <span className="journey-memory-date">{formatMemoryDate(entry)}</span>
                     <span className="journey-memory-title">{entry.place}</span>
@@ -153,7 +153,7 @@ export function JourneyStoryPath({
                     <span className="journey-memory-dot" aria-hidden="true">
                       {index + 1}
                     </span>
-                    <img src={node.imageUrl} alt="" className="journey-memory-photo" />
+                    <span className="journey-memory-no-photo" aria-hidden="true"><i className={`ti ${node.icon}`} /></span>
                     <span className="journey-memory-copy">
                       <span className="journey-memory-date">Preview</span>
                       <span className="journey-memory-title">{node.title}</span>
@@ -175,7 +175,7 @@ export function JourneyStoryPath({
               onStartAdventure()
             }}
           >
-            Go to Plan
+            Explore adventures
           </button>
         </div>
       )}
@@ -209,7 +209,7 @@ export function JourneyStoryPath({
                   <strong>{formatMemoryDate(entry)}</strong>
                   <span>
                     {entry.durationLabel ?? 'Walk saved'}
-                    {entry.photoUrls?.some(Boolean) ? ' · photo saved' : ''}
+                    {authenticPhotoUrls(entry.photoUrls).length ? ' · photo saved' : ''}
                   </span>
                 </span>
                 <i className="ti ti-chevron-right" aria-hidden="true" />

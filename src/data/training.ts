@@ -1,4 +1,3 @@
-import { SAMPLE_IMAGES } from './sampleImages'
 import type { ChallengeAccent } from './challenges'
 
 export type TrainingRewardId =
@@ -32,7 +31,7 @@ export interface TrainingReward {
   title: string
   description: string
   emoji: string
-  badgeImageUrl: string
+  badgeImageUrl?: string
 }
 
 export interface TrainingLessonCompletion {
@@ -59,21 +58,18 @@ export const TRAINING_REWARDS: TrainingReward[] = [
     title: 'Good Dog Graduate',
     description: 'Foundations mastered — your pup earned their diploma.',
     emoji: '🎓',
-    badgeImageUrl: SAMPLE_IMAGES.dogPark,
   },
   {
     id: 'adventure-dog',
     title: 'Adventure Ready',
     description: 'Ready for trails, crosswalks, and photo-worthy outings.',
     emoji: '🥾',
-    badgeImageUrl: SAMPLE_IMAGES.trail,
   },
   {
     id: 'explorer-dog',
     title: 'Explorer Dog',
     description: 'Advanced recall and distance skills unlocked.',
     emoji: '🧭',
-    badgeImageUrl: SAMPLE_IMAGES.trail,
   },
 ]
 

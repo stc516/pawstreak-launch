@@ -112,7 +112,7 @@ async function runStaticChecks() {
   const shareCardData = await readRepoFile('src/lib/shareCardData.ts')
   record(
     'completion-card-real-photos-only',
-    shareCardData.includes('const imageUrl = entry?.photoUrls?.find(Boolean)') &&
+    shareCardData.includes('const imageUrl = authenticPhotoUrls(entry?.photoUrls)[0]') &&
       !shareCardData.includes("from './adventureDisplayImage'"),
     'Adventure-complete share cards use real captured photos only; no-photo cards stay branded instead of showing fake destination art',
   )

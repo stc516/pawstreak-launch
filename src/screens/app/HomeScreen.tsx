@@ -246,7 +246,7 @@ export function HomeScreen({
         >
           <CardImage
             className="home-adventure-stage-art"
-            imageUrl={todayPhoto ?? heroImageUrl}
+            imageUrl={todayEntry ? todayPhoto : heroImageUrl}
             imageAlt={todayEntry ? todayEntry.place : heroPlace.name}
             imageTone={heroPlace.imageTone ?? 'warm'}
           >

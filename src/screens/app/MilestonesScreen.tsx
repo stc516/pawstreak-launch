@@ -90,7 +90,7 @@ function DiscoverChallengeCard({
       className={`ms-challenge-card ms-challenge-card--${challenge.accent} detail-card-warm`}
     >
       <div className="ms-challenge-visual" aria-hidden="true">
-        <img src={challenge.heroImageUrl} alt="" />
+        <span className="achievement-symbol">{challenge.emoji}</span>
       </div>
       <div className="ms-challenge-card-top">
         <div>

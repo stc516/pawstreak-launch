@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import type { PlaceImageTone } from '../types/place'
+import { authenticImageUrl } from '../lib/authenticImages'
 
 interface CardImageProps {
   imageUrl?: string
@@ -15,11 +16,12 @@ export function CardImage({
   imageAlt,
   imageTone = 'warm',
   className = '',
-  placeholderLabel = 'Photo coming soon',
+  placeholderLabel = 'No photo added',
   children,
 }: CardImageProps) {
   const toneClass = `card-img--${imageTone}`
-  const isEmpty = !imageUrl
+  const photo = authenticImageUrl(imageUrl)
+  const isEmpty = !photo
 
   return (
     <div
@@ -27,9 +29,9 @@ export function CardImage({
       role={imageAlt ? 'img' : undefined}
       aria-label={imageAlt ?? (isEmpty ? placeholderLabel : undefined)}
       style={
-        imageUrl
+        photo
           ? {
-              backgroundImage: `linear-gradient(to top, rgba(6, 27, 14, 0.52) 0%, rgba(27, 48, 34, 0.12) 48%, transparent 100%), url("${imageUrl}")`,
+              backgroundImage: `linear-gradient(to top, rgba(6, 27, 14, 0.52) 0%, rgba(27, 48, 34, 0.12) 48%, transparent 100%), url("${photo}")`,
             }
           : undefined
       }

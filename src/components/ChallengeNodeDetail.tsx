@@ -1,4 +1,5 @@
 import { CardImage } from './CardImage'
+import { authenticPhotoUrls } from '../lib/authenticImages'
 import type { ResolvedChallengeNode } from '../lib/challengeEngine'
 
 interface ChallengeStartOptions {
@@ -29,7 +30,7 @@ export function ChallengeNodeDetail({
 }: ChallengeNodeDetailProps) {
   if (!node) return null
 
-  const photos = node.journeyEntry?.photoUrls?.filter(Boolean) ?? []
+  const photos = authenticPhotoUrls(node.journeyEntry?.photoUrls)
   const heroImage = node.thumbnailUrl ?? node.imageUrl
 
   return (

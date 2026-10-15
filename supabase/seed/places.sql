@@ -25,7 +25,7 @@ insert into public.places (
   -117.2534,
   true,
   true,
-  '/sample-images/coastal.jpg',
+  null,
   'Dog Beach, Ocean Beach — beach spot',
   'coastal',
   true
@@ -48,7 +48,7 @@ insert into public.places (
   -117.1831,
   true,
   false,
-  '/sample-images/beach.jpg',
+  null,
   'Coronado Dog Beach — beach spot',
   'coastal',
   true
@@ -71,7 +71,7 @@ insert into public.places (
   -117.2653,
   true,
   true,
-  '/sample-images/coastal.jpg',
+  null,
   'Del Mar Dog Beach — beach spot',
   'coastal',
   true
@@ -94,7 +94,7 @@ insert into public.places (
   -117.2189,
   false,
   false,
-  '/sample-images/beach.jpg',
+  null,
   'Fiesta Island — beach spot',
   'coastal',
   true
@@ -117,7 +117,7 @@ insert into public.places (
   -117.2573,
   false,
   false,
-  '/sample-images/coastal.jpg',
+  null,
   'La Jolla Shores Beach — beach spot',
   'coastal',
   true
@@ -140,7 +140,7 @@ insert into public.places (
   -117.2268,
   false,
   false,
-  '/sample-images/coastal.jpg',
+  null,
   'Mission Bay — beach spot',
   'coastal',
   true
@@ -163,7 +163,7 @@ insert into public.places (
   -117.254,
   false,
   false,
-  '/sample-images/coastal.jpg',
+  null,
   'Pacific Beach — beach spot',
   'coastal',
   true
@@ -186,7 +186,7 @@ insert into public.places (
   -117.2794,
   false,
   false,
-  '/sample-images/beach.jpg',
+  null,
   'Cardiff Dog Beach — beach spot',
   'coastal',
   true
@@ -209,7 +209,7 @@ insert into public.places (
   -118.0012,
   true,
   true,
-  '/sample-images/coastal.jpg',
+  null,
   'Huntington Dog Beach — beach spot',
   'coastal',
   true
@@ -232,7 +232,7 @@ insert into public.places (
   -117.9298,
   false,
   false,
-  '/sample-images/beach.jpg',
+  null,
   'Newport Beach Dog Zone — beach spot',
   'coastal',
   true
@@ -255,7 +255,7 @@ insert into public.places (
   -117.2533,
   true,
   false,
-  '/sample-images/park.jpg',
+  null,
   'Torrey Pines State Reserve — trail spot',
   'forest',
   true
@@ -278,7 +278,7 @@ insert into public.places (
   -117.0312,
   true,
   false,
-  '/sample-images/park.jpg',
+  null,
   'Cowles Mountain Trail — trail spot',
   'forest',
   true
@@ -301,7 +301,7 @@ insert into public.places (
   -116.9678,
   false,
   false,
-  '/sample-images/trail.jpg',
+  null,
   'Iron Mountain Trail — trail spot',
   'forest',
   true
@@ -324,7 +324,7 @@ insert into public.places (
   -117.0512,
   false,
   false,
-  '/sample-images/trail.jpg',
+  null,
   'Mission Trails — Kwaay Paay Peak — trail spot',
   'forest',
   true
@@ -347,7 +347,7 @@ insert into public.places (
   -117.1223,
   true,
   false,
-  '/sample-images/cafe.jpg',
+  null,
   'Lestat''s Coffee House — coffee spot',
   'urban',
   true
@@ -370,7 +370,7 @@ insert into public.places (
   -117.1667,
   false,
   true,
-  '/sample-images/cafe.jpg',
+  null,
   'Better Buzz Coffee — Hillcrest — coffee spot',
   'urban',
   true
@@ -393,7 +393,7 @@ insert into public.places (
   -117.1298,
   false,
   false,
-  '/sample-images/cafe.jpg',
+  null,
   'Holsem Coffee — coffee spot',
   'urban',
   true
@@ -416,7 +416,7 @@ insert into public.places (
   -117.1689,
   true,
   false,
-  '/sample-images/cafe.jpg',
+  null,
   'Ballast Point — Little Italy — brewery spot',
   'urban',
   true
@@ -439,7 +439,7 @@ insert into public.places (
   -117.1298,
   false,
   false,
-  '/sample-images/brewery.jpg',
+  null,
   'Modern Times — Flavordome — brewery spot',
   'urban',
   true
@@ -462,7 +462,7 @@ insert into public.places (
   -117.1445,
   true,
   false,
-  '/sample-images/park.jpg',
+  null,
   'Nate''s Point Dog Park — dog park spot',
   'park',
   true
@@ -485,7 +485,7 @@ insert into public.places (
   -117.1291,
   false,
   false,
-  '/sample-images/dog-park.jpg',
+  null,
   'Grape Street Dog Park — dog park spot',
   'park',
   true
@@ -508,7 +508,7 @@ insert into public.places (
   -117.2489,
   false,
   true,
-  '/sample-images/dog-park.jpg',
+  null,
   'Dusty Rhodes Dog Park — dog park spot',
   'park',
   true
@@ -531,7 +531,7 @@ insert into public.places (
   -117.6891,
   false,
   false,
-  '/sample-images/park.jpg',
+  null,
   'Central Bark Dog Park — dog park spot',
   'park',
   true
@@ -554,7 +554,7 @@ insert into public.places (
   -117.1446,
   true,
   false,
-  '/sample-images/park.jpg',
+  null,
   'Balboa Park — park spot',
   'park',
   true
@@ -577,7 +577,7 @@ insert into public.places (
   -117.2412,
   false,
   false,
-  '/sample-images/gardens.jpg',
+  null,
   'Kate Sessions Memorial Park — park spot',
   'park',
   true
@@ -600,7 +600,7 @@ insert into public.places (
   -117.1912,
   false,
   false,
-  '/sample-images/park.jpg',
+  null,
   'Tecolote Canyon Natural Park — park spot',
   'park',
   true
@@ -623,7 +623,7 @@ insert into public.places (
   -117.1489,
   true,
   false,
-  '/sample-images/park.jpg',
+  null,
   'Balboa Park Rose Garden — gardens spot',
   'park',
   true
@@ -646,7 +646,7 @@ insert into public.places (
   -117.2812,
   false,
   false,
-  '/sample-images/gardens.jpg',
+  null,
   'San Diego Botanic Garden — gardens spot',
   'park',
   true
@@ -669,7 +669,7 @@ insert into public.places (
   -117.1298,
   false,
   false,
-  '/sample-images/park.jpg',
+  null,
   'North Park Neighborhood Loop — neighborhood spot',
   'warm',
   true
@@ -692,7 +692,7 @@ insert into public.places (
   -117.2145,
   false,
   false,
-  '/sample-images/neighborhood.jpg',
+  null,
   'Liberty Station Waterfront Walk — neighborhood spot',
   'warm',
   true
@@ -715,7 +715,7 @@ insert into public.places (
   -116.602,
   true,
   false,
-  '/sample-images/mountain.jpg',
+  null,
   'Julian Dog-Friendly Day Trip — road trip spot',
   'mountain',
   true
@@ -738,7 +738,7 @@ insert into public.places (
   -116.5712,
   false,
   false,
-  '/sample-images/mountain.jpg',
+  null,
   'Lake Cuyamaca Recreation Area — road trip spot',
   'mountain',
   true
@@ -761,7 +761,7 @@ insert into public.places (
   -116.4512,
   false,
   false,
-  '/sample-images/mountain.jpg',
+  null,
   'Mount Laguna Trail Day Trip — road trip spot',
   'mountain',
   true
@@ -784,7 +784,7 @@ insert into public.places (
   -116.375,
   true,
   false,
-  '/sample-images/trail.jpg',
+  null,
   'Anza-Borrego Desert State Park — road trip spot',
   'mountain',
   true
@@ -807,7 +807,7 @@ insert into public.places (
   -116.7189,
   false,
   false,
-  '/sample-images/trail.jpg',
+  null,
   'Idyllwild Mountain Village — road trip spot',
   'mountain',
   true
@@ -830,7 +830,7 @@ insert into public.places (
   -117.7512,
   false,
   false,
-  '/sample-images/trail.jpg',
+  null,
   'Laguna Coast Wilderness Park — trail spot',
   'forest',
   true
@@ -853,7 +853,7 @@ insert into public.places (
   -117.9912,
   false,
   false,
-  '/sample-images/gardens.jpg',
+  null,
   'Huntington Central Park — park spot',
   'park',
   true
@@ -876,7 +876,7 @@ insert into public.places (
   -117.3506,
   false,
   false,
-  '/sample-images/park.jpg',
+  null,
   'Carlsbad Village Walk — neighborhood spot',
   'warm',
   true
@@ -899,7 +899,7 @@ insert into public.places (
   -117.3912,
   false,
   false,
-  '/sample-images/neighborhood.jpg',
+  null,
   'Oceanside Harbor Walk — neighborhood spot',
   'warm',
   true
@@ -922,7 +922,7 @@ insert into public.places (
   -117.1484,
   false,
   false,
-  '/sample-images/road-trip.jpg',
+  null,
   'Temecula Dog-Friendly Patio Day — road trip spot',
   'mountain',
   true
@@ -945,7 +945,7 @@ insert into public.places (
   null,
   false,
   false,
-  '/sample-images/gardens.jpg',
+  null,
   'Leash manners loop — park spot',
   'park',
   true
@@ -968,7 +968,7 @@ insert into public.places (
   null,
   false,
   false,
-  '/sample-images/gardens.jpg',
+  null,
   'Confidence walk — park spot',
   'park',
   true
@@ -991,7 +991,7 @@ insert into public.places (
   null,
   false,
   false,
-  '/sample-images/dog-park.jpg',
+  null,
   'Recall practice at the park — dog park spot',
   'park',
   true
@@ -1014,7 +1014,7 @@ insert into public.places (
   null,
   false,
   false,
-  '/sample-images/cafe.jpg',
+  null,
   'Calm cafe sit — coffee spot',
   'urban',
   true
@@ -1037,7 +1037,7 @@ insert into public.places (
   -117.1294,
   false,
   false,
-  '/sample-images/cafe.jpg',
+  null,
   'Dark Horse Coffee Roasters — coffee spot',
   'urban',
   true
@@ -1060,7 +1060,7 @@ insert into public.places (
   null,
   false,
   false,
-  '/sample-images/gardens.jpg',
+  null,
   'Puppy basics session — park spot',
   'park',
   true

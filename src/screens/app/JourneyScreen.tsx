@@ -129,9 +129,9 @@ export function JourneyScreen({
         </div>
       </section>
 
-      <section className="jmap detail-card-warm" aria-label="Adventure map summary">
-        <i className="ti ti-map-2" aria-hidden="true" />
-        <div className="jmap-title">Adventure map summary</div>
+      <section className="jmap detail-card-warm" aria-label="Saved adventure summary">
+        <i className="ti ti-book" aria-hidden="true" />
+        <div className="jmap-title">Your saved adventures</div>
         <div className="jmap-sub">
           {hasMemories ? `${journeyMap.title} · Saved memories are listed above.` : journeyMap.subtitle}
         </div>

@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { toBlob } from 'html-to-image'
 import type { ShareCardData, ShareCardFormat, ShareCardSpot } from '../../types/shareCards'
 import { shareContent } from '../../lib/shareContent'
+import { authenticImageUrl } from '../../lib/authenticImages'
 
 interface ShareCardPreviewProps {
   data: ShareCardData
@@ -62,7 +63,7 @@ function ShareSpots({ spots }: { spots?: ShareCardSpot[] }) {
         <div key={spot.name} className="share-card-spot">
           <div
             className="share-card-spot-art"
-            style={spot.imageUrl ? { backgroundImage: `url("${spot.imageUrl}")` } : undefined}
+            style={authenticImageUrl(spot.imageUrl) ? { backgroundImage: `url("${spot.imageUrl}")` } : undefined}
           />
           <div>
             <strong>{spot.name}</strong>
@@ -77,7 +78,7 @@ function ShareSpots({ spots }: { spots?: ShareCardSpot[] }) {
 function ShareHeroVisual({ data }: { data: ShareCardData }) {
   return (
     <div className={`share-card-visual share-card-visual--${data.kind}`}>
-      {data.imageUrl ? (
+      {authenticImageUrl(data.imageUrl) ? (
         <div
           className="share-card-photo"
           style={{ backgroundImage: `url("${data.imageUrl}")` }}
