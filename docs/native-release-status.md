@@ -11,6 +11,10 @@ Use this page as the short release handoff. Detailed behavioral testing remains 
 - Native Supabase session persistence using Capacitor Preferences
 - APNs registration callbacks bridged to Capacitor
 - CI compilation of an Android debug APK and unsigned iOS Simulator app
+- Protected manual workflow for signed Android bundles, signed iOS archives, Play internal testing, and TestFlight upload
+- Automated store screenshot packages at Apple and Google phone dimensions
+- Weekly aggregate beta-health report that excludes personal content
+- Free 30 Better Dog Days starter pack with a measured start action
 - App icon, launch assets, metadata draft, device QA plan, and native readiness tests
 
 ## Required outside the repository

@@ -50,6 +50,7 @@ async function main() {
     await run(['run', 'qa:core-loop-p0'], {
       env: { ...env, QA_OUT_DIR: `${releaseEvidenceRoot}/core-loop-p0` },
     })
+    await run(['run', 'qa:starter-pack'], { env })
   } finally {
     preview.kill('SIGTERM')
   }

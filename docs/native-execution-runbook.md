@@ -124,3 +124,18 @@ Required setup:
 - Archive from Xcode with production env already synced into `ios/App/App/public`
 - Upload archive to App Store Connect
 - Run the TestFlight smoke from `docs/native-device-qa.md`
+
+## Step 8 — automated signed releases
+
+The `Native store release` workflow is manual and protected by the GitHub `production` environment. It can build either platform or both, always uploads the signed files as private workflow artifacts, and uploads to the stores only when `upload_to_store` is explicitly selected.
+
+Configure these GitHub environment values without putting them in repository files:
+
+- Variable: `VITE_SITE_URL=https://pawstreakapp.com`
+- Shared secrets: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_MAPBOX_TOKEN`
+- Android secrets: `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`, and `GOOGLE_PLAY_SERVICE_ACCOUNT_JSON`
+- Apple secrets: `APPLE_TEAM_ID`, `APP_STORE_CONNECT_API_KEY_ID`, `APP_STORE_CONNECT_ISSUER_ID`, `APP_STORE_CONNECT_API_PRIVATE_KEY_BASE64`, `IOS_DISTRIBUTION_CERTIFICATE_BASE64`, `IOS_DISTRIBUTION_CERTIFICATE_PASSWORD`, and `IOS_PROVISIONING_PROFILE_BASE64`
+
+Base64 values are decoded only into the runner's temporary directory. The release preflight reports presence and structural validity without printing credential values. First run each platform with store upload disabled, install and inspect the resulting artifact, then perform a second explicit upload run.
+
+The `Store screenshot package` workflow produces Apple 1290×2796 and Google 1080×1920 review sets. These are generated from demo state and must be reviewed against the final release candidate before store upload.

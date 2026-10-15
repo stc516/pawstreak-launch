@@ -1,0 +1,41 @@
+name: Store screenshot package
+
+on:
+  workflow_dispatch:
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      - name: Start release preview
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 4173 > /tmp/pawstreak-store-preview.log 2>&1 &
+          for attempt in {1..45}; do
+            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then exit 0; fi
+            sleep 2
+          done
+          exit 1
+      - name: Capture Apple and Google screenshot sets
+        env:
+          QA_BASE_URL: http://127.0.0.1:4173
+        run: npm run store:screenshots
+      - name: Upload screenshot and metadata package
+        uses: actions/upload-artifact@v4
+        with:
+          name: pawstreak-store-screenshots-${{ github.sha }}
+          path: |
+            artifacts/store-screenshots/**
+            docs/native-app-store-metadata.md
+          if-no-files-found: error

@@ -35,6 +35,11 @@ async function main() {
   const deviceQaDocs = await readFile('docs/native-device-qa.md', 'utf8')
   const runbookDocs = await readFile('docs/native-execution-runbook.md', 'utf8')
   const nativeBuildWorkflow = await readFile('.github/workflows/native-builds.yml', 'utf8').catch(() => '')
+  const nativeStoreWorkflow = await readFile('.github/workflows/native-store-release.yml', 'utf8').catch(() => '')
+  const screenshotWorkflow = await readFile('.github/workflows/store-screenshot-package.yml', 'utf8').catch(() => '')
+  const betaReportWorkflow = await readFile('.github/workflows/beta-health-report.yml', 'utf8').catch(() => '')
+  const releasePreflight = await readFile('scripts/release-preflight.mjs', 'utf8').catch(() => '')
+  const starterPack = await readFile('src/data/adventurePacks.ts', 'utf8').catch(() => '')
 
   record(
     'capacitor-packages-installed',
@@ -270,6 +275,33 @@ async function main() {
       'actions/upload-artifact@v4',
     ]),
     'Native CI compiles an Android debug APK and unsigned iOS Simulator app and uploads both artifacts.',
+  )
+
+  record(
+    'native-store-release-automation',
+    includesAll(nativeStoreWorkflow, [
+      'workflow_dispatch',
+      'bundleRelease',
+      'upload-google-play',
+      'xcodebuild',
+      'altool --upload-app',
+      'environment: production',
+    ]) && includesAll(releasePreflight, ['--require-env', '--require-signing', 'value not printed']),
+    'Manual protected workflows build signed Android/iOS artifacts, can upload to internal store tracks, and run a secret-safe preflight.',
+  )
+
+  record(
+    'release-support-automation',
+    includesAll(screenshotWorkflow, ['store:screenshots', 'actions/upload-artifact']) &&
+      includesAll(betaReportWorkflow, ['schedule:', 'beta:report', 'SUPABASE_SERVICE_ROLE_KEY']),
+    'Store screenshots and aggregate beta health reports have reusable artifact workflows.',
+  )
+
+  const starterIdeaCount = (starterPack.match(/\{ id: '[^']+', title:/g) ?? []).length
+  record(
+    'free-starter-pack',
+    starterIdeaCount === 30 && includesAll(starterPack, ["price: 'free'", 'getDailyStarterPackIndex']),
+    `The launch-first 30 Better Dog Days pack contains ${starterIdeaCount} rotating free ideas.`,
   )
 
   if (!results.every((result) => result.pass)) process.exitCode = 1

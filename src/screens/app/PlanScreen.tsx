@@ -18,6 +18,7 @@ import { getRoadTripDriveTime, openRoadTripDirections } from '../../lib/roadTrip
 import { GENERIC_ADVENTURE_TYPES } from '../../lib/genericAdventures'
 import { getPlaceById } from '../../data/places'
 import { BrandLogoCircle } from '../../components/BrandLogoCircle'
+import { BETTER_DOG_DAYS_STARTER_PACK, getDailyStarterPackIndex } from '../../data/adventurePacks'
 
 interface PlanScreenProps {
   state: AppState
@@ -37,6 +38,7 @@ interface PlanScreenProps {
   onJoinChallenge?: (challengeId: string) => void
   onOpenTrainingProgram?: () => void
   onCreateStory?: () => void
+  onStartStarterPackIdea?: (title: string, prompt: string, action: 'quick-walk' | 'custom') => void
 }
 
 function deepLinkedPlaceId(): string | null {
@@ -59,6 +61,7 @@ export function PlanScreen({
   onGenerateRandomPlan,
   onOpenTrainingProgram,
   onCreateStory,
+  onStartStarterPackIdea,
 }: PlanScreenProps) {
   const prefs = getRecommendationPrefs(state)
   const [proximityBucket, setProximityBucket] = useState<PlanProximityBucket>('15min')
@@ -66,6 +69,7 @@ export function PlanScreen({
   const [typedPlan, setTypedPlan] = useState('')
   const [typedPlanPreview, setTypedPlanPreview] = useState<string | null>(null)
   const [showAllPlaces, setShowAllPlaces] = useState(false)
+  const [starterPackIndex, setStarterPackIndex] = useState(() => getDailyStarterPackIndex())
   const [findStatus, setFindStatus] = useState<{
     tone: 'loading' | 'success' | 'fallback' | 'error'
     message: string
@@ -131,6 +135,7 @@ export function PlanScreen({
     state.planCategories.find((category) => category.id === state.selectedPlanCategoryId)?.label ??
     'All'
   const curatedMapCount = mapPlaces.length
+  const starterPackIdea = BETTER_DOG_DAYS_STARTER_PACK.ideas[starterPackIndex]
 
   const handleTypedPlanPreview = () => {
     const request = typedPlan.trim()
@@ -620,6 +625,33 @@ export function PlanScreen({
               <small>Get one fast dog-friendly idea from your location and dog context</small>
             </span>
           </button>
+        </div>
+        <div className="starter-pack-card" data-testid="starter-pack-card" data-idea-action={starterPackIdea.action}>
+          <div className="starter-pack-kicker">Free starter pack · Day {starterPackIndex + 1} of 30</div>
+          <h3>{starterPackIdea.title}</h3>
+          <p>{starterPackIdea.prompt}</p>
+          <div className="starter-pack-meta">{starterPackIdea.duration} · {starterPackIdea.setting}</div>
+          <div className="starter-pack-actions">
+            <button
+              type="button"
+              className="st-btn st-btn--forest tap-target"
+              onClick={() => onStartStarterPackIdea?.(
+                starterPackIdea.title,
+                starterPackIdea.prompt,
+                starterPackIdea.action,
+              )}
+            >
+              Try this adventure
+            </button>
+            <button
+              type="button"
+              className="st-btn st-btn--ghost tap-target"
+              onClick={() => setStarterPackIndex((current) =>
+                (current + 1) % BETTER_DOG_DAYS_STARTER_PACK.ideas.length)}
+            >
+              Another idea
+            </button>
+          </div>
         </div>
         <div className="plan-type-box">
           <label className="plan-type-label" htmlFor="typed-plan-input">Describe your dog day</label>

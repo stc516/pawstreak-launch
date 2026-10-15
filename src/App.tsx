@@ -950,7 +950,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     return true
   }
 
-  const openAddAdventureFlow = () => {
+  const openAddAdventureFlowWithPrefill = (prefill: Partial<AddAdventureDraft>) => {
     if (useProductionBackend && !auth.user) {
       setState((current) => ({
         ...current,
@@ -963,11 +963,13 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     setState((current) => ({
       ...current,
       showAddAdventureFlow: true,
-      addAdventureDraft: createDefaultAddAdventureDraft(current),
+      addAdventureDraft: { ...createDefaultAddAdventureDraft(current), ...prefill },
       selectedJourneyEntryId: null,
       selectedChallengeId: null,
     }))
   }
+
+  const openAddAdventureFlow = () => openAddAdventureFlowWithPrefill({})
 
   const closeAddAdventureFlow = () => {
     setState((current) => ({
@@ -2173,6 +2175,13 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onJoinChallenge={joinChallenge}
             onOpenTrainingProgram={openTrainingProgramFlow}
             onCreateStory={() => setShareCardRequest({ kind: 'plan-next' })}
+            onStartStarterPackIdea={(title, prompt, action) => {
+              if (auth.user) {
+                void trackUserEvent('starter_pack_started', { packId: 'better-dog-days-starter', title }, auth.user.id)
+              }
+              if (action === 'quick-walk') startNeighborhoodWalk()
+              else openAddAdventureFlowWithPrefill({ title, notes: prompt })
+            }}
           />
         )
       case 'journey':

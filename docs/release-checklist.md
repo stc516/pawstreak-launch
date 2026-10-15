@@ -21,7 +21,7 @@ Status labels when reporting readiness:
 
 ## Production backend
 
-- [ ] Migrations 001–020 confirmed in production, including `020_push_notifications.sql`
+- [ ] Migrations 001–023 confirmed in production, including `020_push_notifications.sql` and `023_starter_pack_event.sql`
 - [ ] Required Edge Functions deployed: `pack-invites`, `pack-invite-accept`, `delete-account`, `push-subscriptions`, and `send-push-reminders`
 - [ ] Push cron job `pawstreak-push-reminders` exists in production and calls the production `send-push-reminders` function URL
 - [ ] Web Push VAPID env vars configured in Supabase: `WEB_PUSH_VAPID_PUBLIC_KEY`, `WEB_PUSH_VAPID_PRIVATE_KEY`, and `WEB_PUSH_VAPID_SUBJECT`

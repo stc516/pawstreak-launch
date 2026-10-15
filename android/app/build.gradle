@@ -1,5 +1,18 @@
 apply plugin: 'com.android.application'
 
+def pawstreakVersionCode = System.getenv('PAWSTREAK_VERSION_CODE')
+def pawstreakVersionName = System.getenv('PAWSTREAK_VERSION_NAME')
+def pawstreakKeystorePath = System.getenv('PAWSTREAK_KEYSTORE_PATH')
+def pawstreakKeystorePassword = System.getenv('PAWSTREAK_KEYSTORE_PASSWORD')
+def pawstreakKeyAlias = System.getenv('PAWSTREAK_KEY_ALIAS')
+def pawstreakKeyPassword = System.getenv('PAWSTREAK_KEY_PASSWORD')
+def pawstreakSigningConfigured = [
+    pawstreakKeystorePath,
+    pawstreakKeystorePassword,
+    pawstreakKeyAlias,
+    pawstreakKeyPassword,
+].every { it != null && !it.trim().isEmpty() }
+
 android {
     namespace = "com.pawstreak.app"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -7,8 +20,8 @@ android {
         applicationId "com.pawstreak.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode pawstreakVersionCode ? Integer.parseInt(pawstreakVersionCode) : 1
+        versionName pawstreakVersionName ?: "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -16,8 +29,21 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        if (pawstreakSigningConfigured) {
+            release {
+                storeFile file(pawstreakKeystorePath)
+                storePassword pawstreakKeystorePassword
+                keyAlias pawstreakKeyAlias
+                keyPassword pawstreakKeyPassword
+            }
+        }
+    }
     buildTypes {
         release {
+            if (pawstreakSigningConfigured) {
+                signingConfig signingConfigs.release
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

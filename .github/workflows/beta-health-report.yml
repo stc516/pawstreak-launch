@@ -1,0 +1,51 @@
+name: Beta health report
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 16 * * 1'
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Check reporting credentials
+        id: credentials
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_SERVICE_ROLE_KEY" ]; then
+            echo 'configured=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'configured=false' >> "$GITHUB_OUTPUT"
+            echo 'Beta report skipped: add SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY to the protected production environment.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Generate aggregate beta report
+        if: steps.credentials.outputs.configured == 'true'
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          BETA_REPORT_DAYS: 30
+        run: npm run beta:report
+      - name: Add report to workflow summary
+        if: steps.credentials.outputs.configured == 'true'
+        run: cat artifacts/beta-report/beta-health.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload aggregate report
+        if: steps.credentials.outputs.configured == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pawstreak-beta-health-${{ github.run_number }}
+          path: artifacts/beta-report/**
+          if-no-files-found: error

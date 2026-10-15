@@ -8,6 +8,7 @@ export type UserEventName =
   | 'pack_invite_saved'
   | 'pack_invite_sent'
   | 'pack_invite_accepted'
+  | 'starter_pack_started'
 
 export interface ProfileRow {
   id: string

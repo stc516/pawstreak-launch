@@ -17001,6 +17001,55 @@ select.field-input {
   line-height: 1.2;
 }
 
+.starter-pack-card {
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid rgba(18, 59, 44, 0.16);
+  border-radius: 20px;
+  background: linear-gradient(145deg, rgba(224, 247, 214, 0.96), rgba(255, 247, 218, 0.96));
+  box-shadow: 0 10px 24px rgba(39, 55, 42, 0.1);
+}
+
+.starter-pack-kicker {
+  color: var(--forest, #123b2c);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.starter-pack-card h3 {
+  margin: 6px 0;
+  color: var(--ink, #172033);
+  font-size: 22px;
+  line-height: 1.1;
+}
+
+.starter-pack-card p {
+  margin: 0;
+  color: rgba(23, 32, 51, 0.78);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.starter-pack-meta {
+  margin-top: 10px;
+  color: rgba(18, 59, 44, 0.8);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.starter-pack-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 14px;
+}
+
+.starter-pack-actions .st-btn {
+  flex: 1 1 145px;
+}
+
 .plan-type-box {
   grid-template-columns: minmax(0, 1fr);
   align-items: stretch;
