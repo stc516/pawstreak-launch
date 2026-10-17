@@ -435,7 +435,9 @@ export function ContentStudio() {
 
       <div className="cs-grid">
         {filtered.length === 0 ? (
-          <div className="cs-empty">No assets match these filters.</div>
+          <div className="cs-empty">{CATALOG.length === 0
+            ? 'No current screenshots have been approved. Retired demo images and videos are excluded.'
+            : 'No assets match these filters.'}</div>
         ) : (
           filtered.map((item) => (
             <StudioCard

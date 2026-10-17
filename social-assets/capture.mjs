@@ -22,7 +22,6 @@ const runScreens = !videoOnly
 const runVideo = !screensOnly
 
 const CAPTURE_CLEANUP_CSS = `
-  .demo-mode-bar,
   .demo-feedback-trigger,
   .demo-feedback-overlay,
   .demo-feedback-sheet,

@@ -47,7 +47,9 @@ export interface StudioAnalytics {
   reels: number
 }
 
-const mediaUrls = import.meta.glob('../../social-assets/**/*.{png,webm}', {
+// Archived demo exports contain retired UI and seeded metrics. Only explicitly
+// reviewed current captures belong in the studio (and in the application bundle).
+const mediaUrls = import.meta.glob('../../social-assets/approved/**/*.{png,webm,mp4}', {
   eager: true,
   query: '?url',
   import: 'default',
@@ -77,11 +79,13 @@ export function buildSocialStudioCatalog(): SocialStudioItem[] {
       id: string
       type: SocialAssetType
       path: string
+      reviewStatus?: string
     }[]
     generatedAt?: string
   }
 
   return manifest.assets.flatMap((asset, sortIndex) => {
+    if (asset.reviewStatus !== 'approved-current') return []
     const slug = slugFromAssetId(asset.id)
     const meta = SOCIAL_CONTENT_BY_SLUG[slug]
     if (!meta) return []

@@ -37,6 +37,7 @@ export function AchievementIdentityCard({
             imageUrl={achievement.badgeImageUrl}
             imageAlt=""
             imageTone="warm"
+            placeholderLabel={achievement.emoji}
           />
         </div>
         <span className="st-enamel-tile-title">{locked ? 'Locked' : achievement.title}</span>
@@ -56,6 +57,7 @@ export function AchievementIdentityCard({
           imageUrl={achievement.badgeImageUrl}
           imageAlt=""
           imageTone="warm"
+          placeholderLabel=""
         />
         <span className="identity-card-emoji" aria-hidden="true">
           {achievement.emoji}

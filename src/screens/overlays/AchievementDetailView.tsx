@@ -48,6 +48,7 @@ export function AchievementDetailView({
               imageUrl={achievement.badgeImageUrl}
               imageAlt=""
               imageTone="warm"
+              placeholderLabel=""
             />
             <div className="achdetail-hero-emoji">{achievement.emoji}</div>
             <div className="achdetail-title">{achievement.title}</div>

@@ -28,7 +28,7 @@ export function CommunityComposeOverlay({
     ? getPlaceById(selectedEntry.placeId)
     : undefined
   const previewUrl =
-    selectedEntry?.photoUrls?.[0] ?? place?.imageUrl ?? undefined
+    selectedEntry?.photoUrls?.[0]
 
   const handleSubmit = () => {
     if (!caption.trim()) return
@@ -86,7 +86,7 @@ export function CommunityComposeOverlay({
                 >
                   <CardImage
                     className="comm-compose-memory-img"
-                    imageUrl={entry.photoUrls?.[0] ?? entryPlace?.imageUrl}
+                    imageUrl={entry.photoUrls?.[0]}
                     imageAlt={entry.place}
                     imageTone={entryPlace?.imageTone ?? 'warm'}
                   />

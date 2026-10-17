@@ -1,4 +1,3 @@
-import { SAMPLE_IMAGES } from '../data/sampleImages'
 import { BRAND_NAME } from '../lib/brand'
 
 const SCREENS = [
@@ -7,7 +6,7 @@ const SCREENS = [
     label: 'Today',
     title: "Today's Adventure",
     copy: 'See what’s next — beach mornings, trail runs, patio hangs.',
-    image: SAMPLE_IMAGES.beach,
+    icon: 'ti-compass',
     accent: 'today',
   },
   {
@@ -15,15 +14,15 @@ const SCREENS = [
     label: 'Journey',
     title: 'Their living timeline',
     copy: 'Every walk, road trip, and favorite moment in one story.',
-    image: SAMPLE_IMAGES.coastal,
+    icon: 'ti-notebook',
     accent: 'journey',
   },
   {
     id: 'map',
-    label: 'Map',
-    title: 'Your dog life map',
-    copy: 'Places you’ve loved, trails you’ve conquered, spots to revisit.',
-    image: SAMPLE_IMAGES.trail,
+    label: 'Explore',
+    title: 'Find your next place',
+    copy: 'Discover curated dog-friendly spots and choose your next adventure.',
+    icon: 'ti-map-2',
     accent: 'map',
   },
   {
@@ -31,7 +30,7 @@ const SCREENS = [
     label: 'Memories',
     title: 'Saved where they belong',
     copy: 'Photos, notes, and the little moments that made you smile.',
-    image: SAMPLE_IMAGES.park,
+    icon: 'ti-camera',
     accent: 'memories',
   },
 ] as const
@@ -45,12 +44,7 @@ export function LandingProductScreens() {
             <span className="landing-screen-label">{screen.label}</span>
             <span className="landing-screen-brand">{BRAND_NAME}</span>
           </div>
-          <div
-            className="landing-screen-image"
-            style={{ backgroundImage: `url(${screen.image})` }}
-            role="img"
-            aria-label={screen.title}
-          />
+          <div className="product-preview-symbol" aria-hidden="true"><i className={`ti ${screen.icon}`} /></div>
           <div className="landing-screen-body">
             <h3>{screen.title}</h3>
             <p>{screen.copy}</p>

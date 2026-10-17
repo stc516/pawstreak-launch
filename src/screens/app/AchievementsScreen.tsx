@@ -143,7 +143,7 @@ export function AchievementsScreen({
               onClick={() => onOpenAchievement(achievement.id)}
             >
               <span className="achievements-badge-medal" aria-hidden="true">
-                <img src={achievement.badgeImageUrl} alt="" className="achievements-badge-img" />
+                <span className="achievement-symbol">{achievement.emoji}</span>
               </span>
               <span className="achievements-badge-copy">
                 <strong>{achievement.title}</strong>
