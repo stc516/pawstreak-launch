@@ -1342,7 +1342,12 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     const isCustom = isCustomAdventure(activeAdventureForFinish)
     const durationLabel = getFinishedDurationLabel(activeAdventureForFinish)
 
-    if (useProductionBackend && auth.user && activeDogId && place) {
+    if (
+      useProductionBackend &&
+      auth.user &&
+      activeDogId &&
+      activeAdventureForFinish.placeId.trim()
+    ) {
       try {
         const adventureDogs = getDogsForAdventure(
           liveState.dogs,

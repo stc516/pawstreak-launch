@@ -13,7 +13,7 @@ import { fetchProfile, upsertProfileFromOnboarding } from './db/profiles'
 import { fetchPackAccessMembers } from './db/packAccess'
 import { trackUserEvent } from './db/userEvents'
 import { createAdventure, completeAdventure, cancelAdventure } from './db/adventures'
-import { createMemory } from './db/memories'
+import { createMemory, createMemoryFromUnavailablePlace } from './db/memories'
 import { insertLocationCandidate } from './db/locationCandidates'
 import { CUSTOM_ADVENTURE_PLACE_ID, getPlaceById } from '../data/places'
 import { isCustomAdventure } from './customAdventure'
@@ -223,24 +223,34 @@ export async function finishAdventureOnServer(input: {
   payload: AdventureFinishPayload
 }) {
   const place = getPlaceById(input.activeAdventure.placeId)
-  if (!place) throw new Error('Place not found')
-
   const custom = isCustomAdventure(input.activeAdventure)
-  const memory = await createMemory({
-    userId: input.userId,
-    dogId: input.dogId,
-    adventureId: input.activeAdventure.serverId ?? null,
-    place,
-    dogs: input.dogs,
-    durationLabel: input.activeAdventure.durationLabel,
-    recapLabels: input.payload.recapLabels,
-    photoDataUrls: input.photoDataUrls,
-    displayPlaceName: custom
-      ? (input.activeAdventure.customTitle ?? input.activeAdventure.location)
-      : undefined,
-    customLocationLabel: input.activeAdventure.customLocationLabel,
-    userNotes: input.activeAdventure.userNotes,
-  })
+  const memory = place
+    ? await createMemory({
+        userId: input.userId,
+        dogId: input.dogId,
+        adventureId: input.activeAdventure.serverId ?? null,
+        place,
+        dogs: input.dogs,
+        durationLabel: input.activeAdventure.durationLabel,
+        recapLabels: input.payload.recapLabels,
+        photoDataUrls: input.photoDataUrls,
+        displayPlaceName: custom
+          ? (input.activeAdventure.customTitle ?? input.activeAdventure.location)
+          : undefined,
+        customLocationLabel: input.activeAdventure.customLocationLabel,
+        userNotes: input.activeAdventure.userNotes,
+      })
+    : await createMemoryFromUnavailablePlace({
+        userId: input.userId,
+        dogId: input.dogId,
+        adventureId: input.activeAdventure.serverId ?? null,
+        placeId: input.activeAdventure.placeId,
+        placeName: input.activeAdventure.location,
+        dogs: input.dogs,
+        durationLabel: input.activeAdventure.durationLabel,
+        recapLabels: input.payload.recapLabels,
+        photoDataUrls: input.photoDataUrls,
+      })
 
   if (!memory) throw new Error('Could not save memory')
 
@@ -254,12 +264,12 @@ export async function finishAdventureOnServer(input: {
 
   await trackUserEvent(
     'memory_created',
-    { memoryId: memory.id, placeId: place.id },
+    { memoryId: memory.id, placeId: place?.id ?? input.activeAdventure.placeId },
     input.userId,
   )
   await trackUserEvent(
     'adventure_completed',
-    { adventureId: input.activeAdventure.serverId, placeId: place.id },
+    { adventureId: input.activeAdventure.serverId, placeId: place?.id ?? input.activeAdventure.placeId },
     input.userId,
   )
 

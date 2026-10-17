@@ -15,6 +15,35 @@ export function resolveCatalogAdventureIdentity(
   }
 }
 
+export function buildUnavailablePlaceMemoryPayload(input: {
+  placeId: string
+  placeName: string
+  dogs: Dog[]
+  durationLabel?: string
+  recapLabels?: string[]
+}) {
+  const recapLabels = input.recapLabels ?? []
+  const emotionalLine = buildEmotionalMemoryLine(recapLabels, input.dogs)
+  const memoryMood =
+    recapLabels.includes('Needed a slower pace')
+      ? 'Calm + close'
+      : recapLabels.includes('Loved every second')
+        ? 'Joyful + tired'
+        : 'Warm + steady'
+
+  return {
+    place_id: input.placeId,
+    place_name: input.placeName.trim() || 'Saved adventure',
+    magic_line: 'A day worth keeping.',
+    emotional_line: emotionalLine,
+    favorite_moment: buildFavoriteMoment(recapLabels, input.dogs),
+    memory_mood: memoryMood,
+    tags: ['Adventure'],
+    recap_labels: recapLabels,
+    duration_label: input.durationLabel ?? '',
+  }
+}
+
 export function createJourneyEntryFromUnavailablePlace(
   location: string,
   dogs: Dog[],

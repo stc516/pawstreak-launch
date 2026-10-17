@@ -6,6 +6,7 @@ import {
 } from '../adventureFinish'
 import { CUSTOM_ADVENTURE_PLACE_ID, getMagicLine } from '../../data/places'
 import { normalizeCustomTitle } from '../customAdventure'
+import { buildUnavailablePlaceMemoryPayload } from '../unavailablePlaceRecovery'
 import { getSupabaseClient } from '../supabase'
 import type { MemoryRow } from './types'
 
@@ -211,6 +212,59 @@ export async function createMemory(input: {
   }
 
   return memory
+}
+
+export async function createMemoryFromUnavailablePlace(input: {
+  userId: string
+  dogId: string
+  adventureId: string | null
+  placeId: string
+  placeName: string
+  dogs: Dog[]
+  durationLabel?: string
+  recapLabels?: string[]
+  photoDataUrls?: string[]
+}): Promise<MemoryRow | null> {
+  const supabase = getSupabaseClient()
+  if (!supabase) return null
+
+  const { data, error } = await supabase
+    .from('memories')
+    .insert({
+      user_id: input.userId,
+      dog_id: input.dogId,
+      adventure_id: input.adventureId,
+      occurred_at: new Date().toISOString(),
+      ...buildUnavailablePlaceMemoryPayload(input),
+    })
+    .select('*')
+    .single()
+
+  if (error || !data) return null
+
+  const memory = data as MemoryRow
+  const photos = input.photoDataUrls?.filter(Boolean) ?? []
+  if (photos.length === 0) return memory
+
+  const photoPaths = await uploadMemoryPhotos(input.userId, memory.id, photos)
+  if (photoPaths.length !== photos.length) {
+    await rollbackIncompleteMemory(memory.id, photoPaths)
+    throw new Error('Could not save every attached memory photo.')
+  }
+
+  const { data: updated, error: updateError } = await supabase
+    .from('memories')
+    .update({ photo_paths: photoPaths })
+    .eq('id', memory.id)
+    .select('*')
+    .single()
+
+  if (updateError || !updated) {
+    await rollbackIncompleteMemory(memory.id, photoPaths)
+    throw new Error('Could not attach memory photos.')
+  }
+
+  return updated as MemoryRow
 }
 
 export async function memoryRowToJourneyEntry(row: MemoryRow): Promise<JourneyEntry> {
