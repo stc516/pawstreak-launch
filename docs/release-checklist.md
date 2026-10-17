@@ -21,7 +21,7 @@ Status labels when reporting readiness:
 
 ## Production backend
 
-- [ ] Migrations 001–020 confirmed in production, including `020_push_notifications.sql`
+- [ ] Migrations 001–022 confirmed in production, including `020_push_notifications.sql`
 - [ ] Required Edge Functions deployed: `pack-invites`, `pack-invite-accept`, `delete-account`, `push-subscriptions`, and `send-push-reminders`
 - [ ] Push cron job `pawstreak-push-reminders` exists in production and calls the production `send-push-reminders` function URL
 - [ ] Web Push VAPID env vars configured in Supabase: `WEB_PUSH_VAPID_PUBLIC_KEY`, `WEB_PUSH_VAPID_PRIVATE_KEY`, and `WEB_PUSH_VAPID_SUBJECT`
@@ -29,6 +29,7 @@ Status labels when reporting readiness:
 - [ ] Production web app has Supabase env vars configured; `/app` must not operate as a local-only product in production
 - [ ] Trusted staff has `app_metadata.internal=true`; other accounts cannot read feedback
 - [ ] Private photo bucket, MIME/size limits, and quotas verified
+- [ ] Public-schema tables have RLS or are explicitly inaccessible through the Data API; no privileged `SECURITY DEFINER` RPC is callable by `anon`
 - [ ] Supabase backup/restore and rollback owner confirmed
 - [ ] Mapbox token restrictions and Resend domain authentication verified
 
