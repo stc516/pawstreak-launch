@@ -123,7 +123,8 @@ export function ActiveAdventureScreen({
       const dataUrl = await readImageFileAsDataUrl(file)
       onAddPhoto(dataUrl)
     } catch {
-      // Ignore invalid selections for now.
+      setPhotoSaveMessage('That photo could not be added. Try another image or take a new one.')
+      window.setTimeout(() => setPhotoSaveMessage(null), 4800)
     }
   }
 

@@ -2,6 +2,10 @@ const MAX_EDGE = 640
 const JPEG_QUALITY = 0.82
 
 export function readImageFileAsDataUrl(file: File): Promise<string> {
+  if (!file.type.toLowerCase().startsWith('image/')) {
+    return Promise.reject(new Error('Choose an image file.'))
+  }
+
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.onload = () => {
@@ -11,7 +15,7 @@ export function readImageFileAsDataUrl(file: File): Promise<string> {
       }
       resizeDataUrl(reader.result)
         .then(resolve)
-        .catch(() => resolve(reader.result as string))
+        .catch(() => reject(new Error('Could not load image')))
     }
     reader.onerror = () => reject(reader.error ?? new Error('Could not read image'))
     reader.readAsDataURL(file)
