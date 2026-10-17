@@ -23,6 +23,7 @@ import {
   scheduledFromDraft,
   type AddAdventureDraft,
 } from './lib/customAdventure'
+import { createJourneyEntryFromUnavailablePlace } from './lib/unavailablePlaceRecovery'
 import {
   applyEndLocation,
   applyStartLocation,
@@ -1441,7 +1442,15 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
                 durationLabel,
                 recapLabels: payload.recapLabels,
               })
-            : null
+            : createJourneyEntryFromUnavailablePlace(
+                currentAdventure.location,
+                adventureDogs,
+                {
+                  photoUrls: capturedPhotos,
+                  durationLabel,
+                  recapLabels: payload.recapLabels,
+                },
+              )
 
       const journeyEntries = savedJourneyEntry
         ? [savedJourneyEntry, ...current.journeyEntries]
