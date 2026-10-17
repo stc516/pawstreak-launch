@@ -23,6 +23,7 @@ import {
   scheduledFromDraft,
   type AddAdventureDraft,
 } from './lib/customAdventure'
+import { createJourneyEntryFromUnavailablePlace } from './lib/unavailablePlaceRecovery'
 import {
   applyEndLocation,
   applyStartLocation,
@@ -1341,7 +1342,12 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     const isCustom = isCustomAdventure(activeAdventureForFinish)
     const durationLabel = getFinishedDurationLabel(activeAdventureForFinish)
 
-    if (useProductionBackend && auth.user && activeDogId && place) {
+    if (
+      useProductionBackend &&
+      auth.user &&
+      activeDogId &&
+      activeAdventureForFinish.placeId.trim()
+    ) {
       try {
         const adventureDogs = getDogsForAdventure(
           liveState.dogs,
@@ -1441,7 +1447,15 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
                 durationLabel,
                 recapLabels: payload.recapLabels,
               })
-            : null
+            : createJourneyEntryFromUnavailablePlace(
+                currentAdventure.location,
+                adventureDogs,
+                {
+                  photoUrls: capturedPhotos,
+                  durationLabel,
+                  recapLabels: payload.recapLabels,
+                },
+              )
 
       const journeyEntries = savedJourneyEntry
         ? [savedJourneyEntry, ...current.journeyEntries]

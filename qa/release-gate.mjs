@@ -29,6 +29,7 @@ async function main() {
   await run(['audit', '--omit=dev', '--audit-level=high'])
   await run(['run', 'lint'])
   await run(['run', 'qa:native'])
+  await run(['run', 'qa:retired-place-memory'])
   const deterministicEnv = { ...process.env, VITE_MAPBOX_TOKEN: '' }
   await run(['run', 'build'], { env: deterministicEnv })
 
