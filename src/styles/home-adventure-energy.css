@@ -451,6 +451,60 @@
 }
 
 /* Discover / Plan: make choosing feel like the leash is already in hand. */
+.plan-deep-link-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 12px 0;
+  padding: 16px;
+  border: 1px solid rgba(255, 77, 0, 0.28);
+  border-radius: 20px;
+  background: linear-gradient(135deg, #fff9e8 0%, #ffffff 62%, #f1fff4 100%);
+  box-shadow: 0 10px 22px rgba(27, 48, 34, 0.09);
+}
+
+.plan-deep-link-notice span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--ps-launch-orange);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.plan-deep-link-notice strong {
+  display: block;
+  color: var(--ps-launch-ink);
+  line-height: 1.18;
+}
+
+.plan-deep-link-notice p {
+  margin: 5px 0 0;
+  color: rgba(8, 27, 19, 0.7);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.plan-deep-link-notice button {
+  flex: 0 0 auto;
+  min-height: 46px;
+  padding: 0 15px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--ps-launch-orange);
+  color: #fff;
+  font-weight: 900;
+}
+
+@media (max-width: 520px) {
+  .plan-deep-link-notice {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
 .plan-screen-header {
   position: relative;
   overflow: hidden;
