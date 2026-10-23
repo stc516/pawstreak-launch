@@ -23,7 +23,8 @@
     "native:sync": "npm run build && npx cap sync",
     "native:ios": "npm run native:sync && npx cap open ios",
     "native:android": "npm run native:sync && npx cap open android",
-    "qa:native": "node qa/native-readiness.mjs"
+    "qa:native": "node qa/native-readiness.mjs",
+    "qa:security-acl": "node qa/security-definer-acl.mjs"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",
