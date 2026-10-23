@@ -4,6 +4,7 @@ import type { Challenge } from '../data/challenges'
 import type { Place, PlaceCategory } from '../types/place'
 import { getPlacesForPlanCategory, getPlaceById } from '../data/places'
 import { getJourneyEntryDisplayImageUrl } from './adventureDisplayImage'
+import { authenticImageUrl } from './authenticImages'
 import { getRecommendationPrefs, resolveLocationProfile } from './onboardingProfile'
 import type { ChallengeNodeState } from './challengeEngine'
 
@@ -304,7 +305,7 @@ export interface EnrichedChallengeNodeContent {
   title: string
   name: string
   description: string
-  imageUrl: string
+  imageUrl?: string
   planHint: string
   placeId?: string
   isGenericFallback: boolean
@@ -315,17 +316,14 @@ export interface EnrichedChallengeNodeContent {
 }
 
 function enrichCompletedNode(
-  node: { imageUrl: string; description: string; planHint: string },
+  node: { imageUrl?: string; description: string; planHint: string },
   entry: JourneyEntry,
   state: AppState,
 ): EnrichedChallengeNodeContent {
   const place = entry.placeId ? getPlaceById(entry.placeId) : undefined
   const title = place?.name ?? entry.place
-  const imageUrl =
-    getJourneyEntryDisplayImageUrl(state.journeyEntries, entry) ??
-    place?.imageUrl ??
-    node.imageUrl
-  const memoryCount = entry.photoUrls?.filter(Boolean).length ?? 0
+  const imageUrl = getJourneyEntryDisplayImageUrl(state.journeyEntries, entry)
+  const memoryCount = entry.photoUrls?.filter(url => Boolean(authenticImageUrl(url))).length ?? 0
 
   return {
     title,
@@ -339,14 +337,14 @@ function enrichCompletedNode(
     planHint: place ? buildPlacePlanHint(place) : node.planHint,
     placeId: entry.placeId,
     isGenericFallback: !place && !entry.placeId,
-    thumbnailUrl: entry.photoUrls?.find(Boolean) ?? imageUrl,
+    thumbnailUrl: imageUrl,
     completionDate: entry.date,
     memoryCount: memoryCount > 0 ? memoryCount : undefined,
   }
 }
 
 function enrichPlaceNode(
-  node: { imageUrl: string },
+  node: { imageUrl?: string },
   slot: ChallengeNodeSlotTemplate,
   slotIndex: number,
   state: AppState,
@@ -405,7 +403,7 @@ export function enrichChallengeNodeContent(
   nodeState: ChallengeNodeState,
   baseNode: {
     title: string
-    imageUrl: string
+    imageUrl?: string
     description: string
     planHint: string
   },

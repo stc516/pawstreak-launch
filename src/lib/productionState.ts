@@ -112,19 +112,21 @@ function countDistinctPlaces(entries: AppState['journeyEntries']): number {
 }
 
 export function getJourneyMapSummary(state: AppState): AppState['journeyMap'] {
-  if (state.adventureCount === 0) {
+  const adventures = state.journeyEntries.length
+  const places = countDistinctPlaces(state.journeyEntries)
+  if (adventures === 0) {
     return {
-      title: 'Your map is waiting',
-      subtitle: 'Your map starts with your first saved adventure.',
+      title: 'Your adventures start here',
+      subtitle: 'Finish an adventure to save your first memory.',
     }
   }
 
-  const adventureLabel = `${state.adventureCount} adventure${state.adventureCount === 1 ? '' : 's'} on your map`
-  const placeLabel = `${state.placeCount} place${state.placeCount === 1 ? '' : 's'} visited`
+  const adventureLabel = `${adventures} adventure${adventures === 1 ? '' : 's'} saved`
+  const placeLabel = `${places} place${places === 1 ? '' : 's'} visited`
 
   return {
     title: adventureLabel,
-    subtitle: `${placeLabel} · Tap to open your map`,
+    subtitle: placeLabel,
   }
 }
 
@@ -221,8 +223,7 @@ export function sanitizeProductionAppState(state: AppState): AppState {
   )
 
   const adventureCount = journeyEntries.length
-  const placeCount =
-    adventureCount === 0 ? 0 : Math.max(next.placeCount, countDistinctPlaces(journeyEntries))
+  const placeCount = countDistinctPlaces(journeyEntries)
 
   const stripDemoHistory = adventureCount === 0
 

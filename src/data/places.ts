@@ -8,7 +8,7 @@ import {
 } from '../lib/adventureFinish'
 import type { RecommendationPrefs } from '../lib/onboardingProfile'
 import { scorePlaceForProfile } from '../lib/onboardingProfile'
-import { getSampleImageForPlace } from './sampleImages'
+import { authenticImageUrl } from '../lib/authenticImages'
 import { EXPANDED_LOCAL_PLACES } from './placesExpanded'
 
 export { getMagicLine, getHeroMagicSubtitle, getPlanMagicMeta }
@@ -876,8 +876,7 @@ function applyPlaceImages(place: Place): Place {
   return {
     ...place,
     imageTone: place.imageTone ?? CATEGORY_IMAGE_TONE[place.category],
-    imageUrl:
-      place.imageUrl ?? getSampleImageForPlace(place.category, place.id),
+    imageUrl: authenticImageUrl(place.imageUrl),
     imageAlt:
       place.imageAlt ?? `${place.name} — ${place.category.toLowerCase()} spot`,
   }

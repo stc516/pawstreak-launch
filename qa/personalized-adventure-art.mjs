@@ -23,7 +23,7 @@ try {
     const raw = localStorage.getItem('pawstreak:demo')
     if (!raw) return
     const state = JSON.parse(raw)
-    if (state.dogs?.[0]) state.dogs[0].photoUrl = '/sample-images/dogs-outdoors.jpg'
+    if (state.dogs?.[0]) state.dogs[0].photoUrl = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="80" height="80"%3E%3Crect width="80" height="80" fill="teal"/%3E%3C/svg%3E'
     localStorage.setItem('pawstreak:demo', JSON.stringify(state))
   })
   await page.reload({ waitUntil: 'networkidle' })

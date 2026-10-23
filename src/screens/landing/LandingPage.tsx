@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { navigateTo } from '../../lib/demoRoute'
 import { ROUTES, getAppSignInUrl } from '../../lib/routes'
-import { SAMPLE_IMAGES } from '../../data/sampleImages'
 import { BrandLogoCircle } from '../../components/BrandLogoCircle'
 import { LandingPhonePreview } from '../../components/LandingPhonePreview'
 import {
@@ -18,21 +17,18 @@ const KEY_FEATURES = [
     icon: 'ti-compass',
     title: 'Adventure planner',
     copy: 'Pick dog-friendly beaches, trails, patios, and parks — then go.',
-    image: SAMPLE_IMAGES.trail,
     tone: 'planner',
   },
   {
     icon: 'ti-book-2',
-    title: 'Memory journal + map',
+    title: 'Adventure memories',
     copy: 'Save the places, photos, notes, and favorite days you will want back later.',
-    image: SAMPLE_IMAGES.coastal,
     tone: 'journal',
   },
   {
     icon: 'ti-users',
     title: 'Pack sharing',
     copy: 'Let partners, family, roommates, and walkers help without sharing a password.',
-    image: SAMPLE_IMAGES.park,
     tone: 'family',
   },
 ] as const
@@ -50,7 +46,7 @@ const HOW_IT_WORKS = [
   },
   {
     step: '03',
-    title: 'Build their adventure map',
+    title: 'Build their adventure history',
     copy: 'Your favorite places, saved days, and milestones fill in over time.',
   },
 ] as const
@@ -121,12 +117,6 @@ export function LandingPage() {
               key={feature.title}
               className={`landing-feature-card landing-feature-card--${feature.tone}`}
             >
-              <div
-                className="landing-feature-image"
-                style={{ backgroundImage: `url(${feature.image})` }}
-                role="img"
-                aria-label={feature.title}
-              />
               <div className="landing-feature-body">
                 <i className={`ti ${feature.icon} landing-feature-icon`} aria-hidden="true" />
                 <h3>{feature.title}</h3>
@@ -155,20 +145,7 @@ export function LandingPage() {
             </p>
           </div>
           <div className="landing-story-visual" aria-hidden="true">
-            <div className="landing-story-photo-stack">
-              <div
-                className="landing-story-photo landing-story-photo--back"
-                style={{ backgroundImage: `url(${SAMPLE_IMAGES.trail})` }}
-              />
-              <div
-                className="landing-story-photo landing-story-photo--mid"
-                style={{ backgroundImage: `url(${SAMPLE_IMAGES.beach})` }}
-              />
-              <div
-                className="landing-story-photo landing-story-photo--front"
-                style={{ backgroundImage: `url(${SAMPLE_IMAGES.park})` }}
-              />
-            </div>
+            <div className="product-memory-note"><i className="ti ti-camera" /><strong>The photo you took.</strong><span>The place you went.</span><span>The bit you want to remember.</span></div>
           </div>
         </div>
       </section>

@@ -152,6 +152,7 @@ export function TrainingProgramDetailView({
         <CardImage
           className="training-reward-badge"
           imageUrl={reward.badgeImageUrl}
+          placeholderLabel={reward.emoji}
           imageAlt=""
           imageTone="warm"
         />

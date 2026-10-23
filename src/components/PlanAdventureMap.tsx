@@ -1,7 +1,6 @@
 import type { MapCenter } from '../lib/mapbox'
 import type { Place } from '../types/place'
 import { PlanMapView } from './PlanMapView'
-import { shortPlaceMapLabel } from '../lib/planMap'
 
 interface PlanAdventureMapProps {
   places: Place[]
@@ -52,19 +51,19 @@ export function PlanAdventureMap({
           emptyCopy={emptyCopy}
         />
 
+      </div>
+
         {selectedPlace ? (
-          <div className="plan-map-tooltip detail-card-warm" aria-live="polite">
+          <div className="plan-selected-place detail-card-warm" aria-live="polite">
             <div className="plan-map-tooltip-kicker">{selectedPlace.category}</div>
             <div className="plan-map-tooltip-title">
-              {shortPlaceMapLabel(selectedPlace.name)}
+              {selectedPlace.name}
             </div>
             <div className="plan-map-tooltip-meta">
               {selectedPlace.distanceLabel} · {selectedPlace.leashInfo}
             </div>
           </div>
         ) : null}
-      </div>
-
       <div className="plan-map-footer">
         <div>
           <div className="plan-map-title">{mapTitle}</div>

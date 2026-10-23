@@ -1,4 +1,3 @@
-import { SAMPLE_IMAGES } from './sampleImages'
 
 export type AchievementCategoryId =
   | 'adventure'
@@ -42,7 +41,7 @@ export interface AchievementDefinition {
   /** Short personality trait — who your dog is becoming. */
   personalityLine: string
   requirementHint: string
-  badgeImageUrl: string
+  badgeImageUrl?: string
   emoji: string
   metric: AchievementMetric
 }
@@ -64,7 +63,7 @@ export interface Achievement {
   description: string
   personalityLine: string
   emoji: string
-  badgeImageUrl: string
+  badgeImageUrl?: string
   status: AchievementStatus
   badge: string
   progress: AchievementProgress
@@ -87,7 +86,6 @@ export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
     description: 'The first completed outing that starts the real record.',
     personalityLine: 'One real adventure finished — the streak has a beginning.',
     requirementHint: 'Finish 1 adventure',
-    badgeImageUrl: SAMPLE_IMAGES.neighborhood,
     emoji: '🐾',
     metric: { kind: 'first_adventure', target: 1 },
   },
@@ -98,7 +96,6 @@ export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
     description: 'Your first saved adventure photo.',
     personalityLine: 'The first saved memory is part of the story now.',
     requirementHint: 'Save 1 photo from an adventure',
-    badgeImageUrl: SAMPLE_IMAGES.scenic,
     emoji: '📸',
     metric: { kind: 'first_memory', target: 1 },
   },
@@ -109,7 +106,6 @@ export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
     description: 'Five saved photos from real completed adventures.',
     personalityLine: 'A growing gallery of days you gave your dog.',
     requirementHint: 'Save 5 photos from adventures',
-    badgeImageUrl: SAMPLE_IMAGES.scenic,
     emoji: '🖼️',
     metric: { kind: 'memories_with_photo', target: 5 },
   },
@@ -120,7 +116,6 @@ export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
     description: 'Three completed outings in a seven-day window.',
     personalityLine: 'A real rhythm of better dog days is forming.',
     requirementHint: 'Complete 3 outings in 7 days',
-    badgeImageUrl: SAMPLE_IMAGES.park,
     emoji: '🔥',
     metric: { kind: 'week_streak', target: 3 },
   },
@@ -131,7 +126,6 @@ export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
     description: 'Three different place types completed.',
     personalityLine: 'Not just one routine — a real mix of adventures.',
     requirementHint: 'Visit 3 different place types',
-    badgeImageUrl: SAMPLE_IMAGES.roadTrip,
     emoji: '🧭',
     metric: { kind: 'place_types', target: 3 },
   },
@@ -142,7 +136,6 @@ export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
     description: 'One social dog-friendly outing completed.',
     personalityLine: 'A little confidence around the social scene.',
     requirementHint: 'Visit 1 social dog-friendly place',
-    badgeImageUrl: SAMPLE_IMAGES.dogPark,
     emoji: '🐕',
     metric: { kind: 'social_adventures', target: 1 },
   },
@@ -153,7 +146,6 @@ export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
     description: 'Three trail outings completed.',
     personalityLine: 'Fresh air and path-sniffing are becoming a thing.',
     requirementHint: 'Complete 3 trail outings',
-    badgeImageUrl: SAMPLE_IMAGES.trail,
     emoji: '🌲',
     metric: { kind: 'trail_visits', target: 3 },
   },
@@ -164,7 +156,6 @@ export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
     description: 'Three beach outings completed.',
     personalityLine: 'Sand, waves, and a pattern worth earning.',
     requirementHint: 'Complete 3 beach outings',
-    badgeImageUrl: SAMPLE_IMAGES.beach,
     emoji: '🏖️',
     metric: { kind: 'beach_visits', target: 3 },
   },
@@ -175,7 +166,6 @@ export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
     description: 'Three short training sessions completed.',
     personalityLine: 'Practice is becoming part of the plan.',
     requirementHint: 'Complete 3 training sessions',
-    badgeImageUrl: SAMPLE_IMAGES.training,
     emoji: '🎯',
     metric: { kind: 'training_sessions', target: 3 },
   },
@@ -186,7 +176,6 @@ export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = [
     description: 'One day-trip adventure completed.',
     personalityLine: 'Out of the usual zip code, into a bigger day.',
     requirementHint: 'Complete 1 day-trip adventure',
-    badgeImageUrl: SAMPLE_IMAGES.roadTrip,
     emoji: '🚗',
     metric: { kind: 'road_trip_adventures', target: 1 },
   },

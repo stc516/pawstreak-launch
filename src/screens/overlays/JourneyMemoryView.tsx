@@ -7,6 +7,7 @@ import { getJourneyMemoryDetail } from '../../data/journeyMemories'
 import { getPlaceById, isNeighborhoodWalkPlace } from '../../data/places'
 import { buildMemoryShareText, shareContent } from '../../lib/shareContent'
 import { StatusBar } from '../../components/StatusBar'
+import { authenticPhotoUrls } from '../../lib/authenticImages'
 
 interface JourneyMemoryViewProps {
   entry: JourneyEntry
@@ -36,7 +37,7 @@ export function JourneyMemoryView({
   const dogLabel =
     contentDogs.length > 0 ? getPackDisplayName(contentDogs) : 'your dog'
   const familyMember = packAccessMembers.find((member) => member.name === 'Dog Mom')
-  const savedPhotos = entry.photoUrls?.filter(Boolean) ?? []
+  const savedPhotos = authenticPhotoUrls(entry.photoUrls)
   const heroPhoto = savedPhotos[0]
   const isQuickWalk = isNeighborhoodWalkPlace(entry.placeId)
   const memoryKindLabel = isQuickWalk ? 'Everyday walk saved' : 'Adventure memory saved'

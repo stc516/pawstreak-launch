@@ -1,4 +1,3 @@
-import { SAMPLE_IMAGES } from '../data/sampleImages'
 
 /** Compact product preview for /app onboarding step 1 — no stats, pins, or phone chrome. */
 export function OnboardingEntryPreview() {
@@ -7,28 +6,19 @@ export function OnboardingEntryPreview() {
       <p className="onboarding-entry-kicker">Today&apos;s adventure</p>
 
       <article className="onboarding-entry-adventure">
-        <div
-          className="onboarding-entry-adventure-image"
-          style={{ backgroundImage: `url(${SAMPLE_IMAGES.beach})` }}
-        />
+        <div className="product-preview-symbol"><i className="ti ti-compass" /></div>
         <h3 className="onboarding-entry-adventure-title">Today&apos;s outing</h3>
       </article>
 
       <article className="onboarding-entry-memory">
-        <div
-          className="onboarding-entry-memory-thumb"
-          style={{ backgroundImage: `url(${SAMPLE_IMAGES.coastal})` }}
-        />
+        <div className="product-preview-symbol product-preview-symbol--small"><i className="ti ti-camera" /></div>
         <div>
-          <p className="onboarding-entry-memory-label">Latest memory</p>
-          <p className="onboarding-entry-memory-title">Your saved moment</p>
+          <p className="onboarding-entry-memory-label">After your adventure</p>
+          <p className="onboarding-entry-memory-title">Add your photo + note</p>
         </div>
       </article>
 
-      <div className="onboarding-entry-places">
-        <span className="onboarding-entry-places-label">Your places</span>
-        <div className="onboarding-entry-places-panel" />
-      </div>
+      <p className="product-preview-note">Your own places. Your own memories.</p>
     </div>
   )
 }
