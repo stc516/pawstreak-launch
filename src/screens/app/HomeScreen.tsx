@@ -257,9 +257,18 @@ export function HomeScreen({
               <small>{todayEntry ? 'Open the memory, then pick what comes next.' : getHeroFitLine(heroPlace, profileDogs)}</small>
             </div>
             <div className="home-adventure-stage-route" aria-hidden="true">
-              <span>{heroPlace.distanceLabel}</span>
-              <span>{heroPlace.category}</span>
-              <span>{heroPlace.leashInfo}</span>
+              {todayEntry ? (
+                <>
+                  <span>Saved in Journey</span>
+                  {todayPhoto ? <span>Photo memory</span> : null}
+                </>
+              ) : (
+                <>
+                  <span>{heroPlace.distanceLabel}</span>
+                  <span>{heroPlace.category}</span>
+                  <span>{heroPlace.leashInfo}</span>
+                </>
+              )}
             </div>
             <div className="home-adventure-stage-pack" aria-hidden="true">
               {profileDogs.slice(0, 2).map((dog) => (
