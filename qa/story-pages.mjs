@@ -59,7 +59,11 @@ try {
     }
     await page.getByRole('link', { name: 'Try Bailey’s Big Climb', exact: true }).click()
     assert(new URL(page.url()).hash === '#try-big-climb')
-    await page.getByRole('link', { name: 'Bailey & Omi', exact: true }).click()
+    const seriesLink = page.getByRole('link', { name: 'Bailey & Omi', exact: true })
+    await Promise.all([
+      page.waitForURL(url => url.pathname.replace(/\/$/, '') === paths[0]),
+      seriesLink.evaluate(link => link.click()),
+    ])
     assert(new URL(page.url()).pathname.replace(/\/$/, '') === paths[0])
     await context.close()
     console.log(`PASS: ${width}px public routes, reload, images, no overflow, navigation, no JavaScript`)
