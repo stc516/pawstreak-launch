@@ -56,19 +56,21 @@ SOCIAL_BASE_URL=https://pawstreak-launch.vercel.app npm run social:capture
 
 | File | Route / flow |
 |---|---|
-| `01-today-home` | `/demo/app` → Home |
-| `02-plan-adventure` | Plan tab |
-| `03-journey-memory` | Journey → memory detail overlay |
-| `04-map-path` | Journey → Map view → Torrey Pines pin |
-| `05-profile` | Home → Bailey + Omi pill → Profile |
-| `06-early-access` | `/` cleared → onboarding welcome |
+| `01-adventure-launch-home` | Current Home product preview |
+| `02-todays-pick-card` | Current secondary Home recommendation; audit-only while PR #39 is open |
+| `03-discover-adventure-mode` | Current Plan / Explore product preview |
+| `04-adventure-detail` | Current place detail and adventure CTA |
+| `05-adventure-ready` | Current pre-adventure confirmation |
+| `06-save-memory-payoff` | Current active-adventure completion payoff |
+| `07-journey-memory` | Current saved-memory share view |
 
 ## Notes
 
-- Demo labels, feedback pill, and toasts are hidden **during capture only** via injected CSS — production UI is unchanged.
+- The visible `DEMO` label is intentionally retained. These captures are current product previews, not authenticated production-user evidence.
 - Story overlays are applied only to exports in `stories/`, not in the live app.
 - Copy and posting guidance: see [`content-index.md`](./content-index.md).
 - Machine-readable manifest: [`assets.json`](./assets.json) (updated each run).
+- The retired dotted Journey map and seeded `47 adventures / 22 places` statistics are excluded from the capture flow and must not be reintroduced.
 
 ## Core message
 
