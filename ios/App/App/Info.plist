@@ -37,6 +37,8 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>PawStreak uses the camera so you can capture photos from your dog’s adventures.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>PawStreak uses your location while the app is open to record adventure start and finish points when you choose.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>PawStreak saves adventure photos to your photo library when you choose to keep them on your phone.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

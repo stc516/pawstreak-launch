@@ -152,6 +152,16 @@ async function main() {
   )
 
   record(
+    'native-location-permissions',
+    iosInfoPlist.includes('NSLocationWhenInUseUsageDescription') &&
+      includesAll(androidManifest, [
+        'android.permission.ACCESS_COARSE_LOCATION',
+        'android.permission.ACCESS_FINE_LOCATION',
+      ]),
+    'Native projects declare foreground location access required by optional adventure start and finish capture.',
+  )
+
+  record(
     'native-launch-docs',
     includesAll(launchDocs, [
       'TestFlight',
