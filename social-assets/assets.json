@@ -11,91 +11,106 @@
   },
   "assets": [
     {
-      "id": "01-today-home",
+      "id": "01-adventure-launch-home",
       "type": "screenshot",
-      "path": "screenshots/01-today-home.png",
+      "path": "screenshots/01-adventure-launch-home.png",
       "width": 390,
       "height": 844
     },
     {
-      "id": "01-today-home-story",
+      "id": "01-adventure-launch-home-story",
       "type": "story",
-      "path": "stories/01-today-home.png",
+      "path": "stories/01-adventure-launch-home.png",
       "width": 390,
       "height": 844,
       "overlay": "subtle top/bottom gradient for Story/TikTok text safe zones"
     },
     {
-      "id": "02-plan-adventure",
+      "id": "02-todays-pick-card",
       "type": "screenshot",
-      "path": "screenshots/02-plan-adventure.png",
+      "path": "screenshots/02-todays-pick-card.png",
       "width": 390,
       "height": 844
     },
     {
-      "id": "02-plan-adventure-story",
+      "id": "02-todays-pick-card-story",
       "type": "story",
-      "path": "stories/02-plan-adventure.png",
+      "path": "stories/02-todays-pick-card.png",
       "width": 390,
       "height": 844,
       "overlay": "subtle top/bottom gradient for Story/TikTok text safe zones"
     },
     {
-      "id": "03-journey-memory",
+      "id": "03-discover-adventure-mode",
       "type": "screenshot",
-      "path": "screenshots/03-journey-memory.png",
+      "path": "screenshots/03-discover-adventure-mode.png",
       "width": 390,
       "height": 844
     },
     {
-      "id": "03-journey-memory-story",
+      "id": "03-discover-adventure-mode-story",
       "type": "story",
-      "path": "stories/03-journey-memory.png",
+      "path": "stories/03-discover-adventure-mode.png",
       "width": 390,
       "height": 844,
       "overlay": "subtle top/bottom gradient for Story/TikTok text safe zones"
     },
     {
-      "id": "04-map-path",
+      "id": "04-adventure-detail",
       "type": "screenshot",
-      "path": "screenshots/04-map-path.png",
+      "path": "screenshots/04-adventure-detail.png",
       "width": 390,
       "height": 844
     },
     {
-      "id": "04-map-path-story",
+      "id": "04-adventure-detail-story",
       "type": "story",
-      "path": "stories/04-map-path.png",
+      "path": "stories/04-adventure-detail.png",
       "width": 390,
       "height": 844,
       "overlay": "subtle top/bottom gradient for Story/TikTok text safe zones"
     },
     {
-      "id": "05-profile",
+      "id": "05-adventure-ready",
       "type": "screenshot",
-      "path": "screenshots/05-profile.png",
+      "path": "screenshots/05-adventure-ready.png",
       "width": 390,
       "height": 844
     },
     {
-      "id": "05-profile-story",
+      "id": "05-adventure-ready-story",
       "type": "story",
-      "path": "stories/05-profile.png",
+      "path": "stories/05-adventure-ready.png",
       "width": 390,
       "height": 844,
       "overlay": "subtle top/bottom gradient for Story/TikTok text safe zones"
     },
     {
-      "id": "06-early-access",
+      "id": "06-save-memory-payoff",
       "type": "screenshot",
-      "path": "screenshots/06-early-access.png",
+      "path": "screenshots/06-save-memory-payoff.png",
       "width": 390,
       "height": 844
     },
     {
-      "id": "06-early-access-story",
+      "id": "06-save-memory-payoff-story",
       "type": "story",
-      "path": "stories/06-early-access.png",
+      "path": "stories/06-save-memory-payoff.png",
+      "width": 390,
+      "height": 844,
+      "overlay": "subtle top/bottom gradient for Story/TikTok text safe zones"
+    },
+    {
+      "id": "07-journey-memory",
+      "type": "screenshot",
+      "path": "screenshots/07-journey-memory.png",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "id": "07-journey-memory-story",
+      "type": "story",
+      "path": "stories/07-journey-memory.png",
       "width": 390,
       "height": 844,
       "overlay": "subtle top/bottom gradient for Story/TikTok text safe zones"
@@ -108,7 +123,7 @@
       "height": 844
     }
   ],
-  "generatedAt": "2026-05-26T21:08:06.708Z",
-  "commit": "41c618074ae6095e2128ca9daa60c792ea59a7fc",
-  "baseUrl": "http://127.0.0.1:5173"
+  "generatedAt": "2026-10-31T06:27:44.044Z",
+  "commit": "02dd7f85a145a83c6979a0ee70f2f2e2dc07a228",
+  "baseUrl": "http://127.0.0.1:4173"
 }
