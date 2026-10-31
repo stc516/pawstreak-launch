@@ -319,41 +319,7 @@ export function HomeScreen({
         ) : null}
       </section>
 
-      {state.locationSupported ? (
-        <button
-          type="button"
-          className="home-quick-adventure home-quick-adventure--today-pick detail-card-warm tap-target"
-          aria-label={`Start today's pick: ${heroPlace.name}`}
-          onClick={handleQuickAdventure}
-        >
-          <div className="home-quick-adventure-media">
-            <CardImage
-              className="home-quick-adventure-photo"
-              imageUrl={heroImageUrl}
-              imageAlt={heroPlace.imageAlt ?? heroPlace.name}
-              imageTone={heroPlace.imageTone ?? 'warm'}
-            >
-              <DogAdventureSticker dog={leadDog} className="dog-adventure-sticker--hero" />
-            </CardImage>
-          </div>
-          <div className="home-quick-adventure-body">
-            <div className="home-quick-adventure-kicker">Best pick right now</div>
-            <h3 className="home-quick-adventure-title">{heroPlace.name}</h3>
-            <p className="home-quick-adventure-copy">{getHeroFitLine(heroPlace, profileDogs)}</p>
-            <div className="home-quick-adventure-meta">
-              <span>
-                <i className="ti ti-map-pin" aria-hidden="true" />
-                {heroPlace.distanceLabel}
-              </span>
-              <span>{heroPlace.leashInfo}</span>
-              <span>{heroPlace.category}</span>
-            </div>
-            <span className="home-quick-adventure-save" aria-hidden="true">
-              <i className="ti ti-bookmark" />
-            </span>
-          </div>
-        </button>
-      ) : (
+      {!state.locationSupported ? (
         <section
           className="home-generic-adventures detail-card-warm"
           aria-label="Adventure ideas"
@@ -380,7 +346,7 @@ export function HomeScreen({
             ))}
           </div>
         </section>
-      )}
+      ) : null}
 
       <section className="home-plan-new" aria-label="More ways to make today count">
         <div className="st-section-head">
