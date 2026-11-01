@@ -115,13 +115,14 @@ async function main() {
       'CameraResultType.DataUrl',
       'CameraSource.Camera',
       'saveToGallery: true',
+      'savedToGallery: photo.saved',
     ]) &&
       includesAll(activeAdventure, [
         'captureNativeAdventurePhoto',
         'Saved to PawStreak and your phone photos.',
         'handleSavePhotoToPhone',
       ]),
-    'Native adventure photo capture uses Capacitor Camera with gallery save and keeps the web fallback.',
+    'Native adventure photo capture uses Capacitor Camera, reports the real gallery-save result, and keeps the web fallback.',
   )
 
   record(
