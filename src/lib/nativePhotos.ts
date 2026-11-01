@@ -23,6 +23,10 @@ export async function captureNativeAdventurePhoto(): Promise<NativePhotoCaptureR
 
   return {
     dataUrl: photo.dataUrl,
-    savedToGallery: true,
+    // Camera can still return the image when gallery permission is denied or
+    // the OS cannot complete the extra gallery write. Keep the PawStreak
+    // memory, but never tell the user the phone copy exists unless Capacitor
+    // confirms it.
+    savedToGallery: photo.saved,
   }
 }

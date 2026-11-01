@@ -61,6 +61,8 @@ Native goal:
 
 - Photo captured inside PawStreak can be saved to Photos/gallery with permission
 - If permission is denied, PawStreak explains how to continue
+- PawStreak must not claim a phone-gallery copy exists when the OS reports that
+  the extra gallery save failed
 - Memory still saves to PawStreak even if phone gallery save fails
 - Uploaded/saved photos do not disappear after app restart
 
