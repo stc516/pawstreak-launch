@@ -21,6 +21,10 @@ Minimum first pass:
 
 ## Auth
 
+- [ ] With PawStreak fully terminated, open an OAuth callback or invite link and
+      confirm the app launches directly into the expected signed-in/invite flow.
+- [ ] Repeat the same link while PawStreak is backgrounded; confirm it routes
+      once without a duplicate navigation flash.
 - Email signup succeeds
 - Email login succeeds
 - Magic link or email confirmation returns to PawStreak when used
