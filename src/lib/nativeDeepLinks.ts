@@ -34,16 +34,35 @@ async function finishSupabaseCodeExchange(urlString: string): Promise<void> {
   }
 }
 
+let lastHandledUrl = ''
+let lastHandledAt = 0
+
+async function handleNativeUrl(urlString: string): Promise<void> {
+  const internalPath = getInternalPathFromNativeUrl(urlString)
+  if (!internalPath) return
+
+  // Capacitor can surface the same cold-start URL through both getLaunchUrl()
+  // and appUrlOpen. Keep a real second tap working while suppressing that pair.
+  const now = Date.now()
+  if (urlString === lastHandledUrl && now - lastHandledAt < 5_000) return
+  lastHandledUrl = urlString
+  lastHandledAt = now
+
+  await finishSupabaseCodeExchange(urlString)
+  window.history.replaceState({}, '', internalPath)
+  window.dispatchEvent(new PopStateEvent('popstate'))
+}
+
 export function registerNativeDeepLinks(): void {
   if (!isNativeAppRuntime()) return
 
   void CapacitorApp.addListener('appUrlOpen', (event) => {
-    const internalPath = getInternalPathFromNativeUrl(event.url)
-    if (!internalPath) return
-
-    void finishSupabaseCodeExchange(event.url).finally(() => {
-      window.history.replaceState({}, '', internalPath)
-      window.dispatchEvent(new PopStateEvent('popstate'))
+    void handleNativeUrl(event.url)
+  }).then(() => {
+    // appUrlOpen covers a running/backgrounded app. getLaunchUrl covers a
+    // terminated app opened directly from OAuth, an invite, or another link.
+    void CapacitorApp.getLaunchUrl().then((launch) => {
+      if (launch?.url) void handleNativeUrl(launch.url)
     })
   })
 }

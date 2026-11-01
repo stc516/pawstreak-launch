@@ -83,11 +83,14 @@ async function main() {
     'native-deep-link-handler',
     includesAll(deepLinks, [
       "addListener('appUrlOpen'",
+      'getLaunchUrl()',
+      'handleNativeUrl',
+      'lastHandledUrl',
       'exchangeCodeForSession',
       '/app/invite',
       "window.dispatchEvent(new PopStateEvent('popstate'))",
     ]) && includesAll(runtime, ['isNativeAppRuntime', 'getNativePlatform', 'NATIVE_APP_SCHEME']),
-    'Native app URL opens are routed back into the PawStreak app shell and Supabase code exchange is handled.',
+    'Warm and cold native URL opens are deduplicated, routed into the PawStreak app shell, and passed through Supabase code exchange.',
   )
 
   record(
