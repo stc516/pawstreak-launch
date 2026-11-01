@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="PawStreak mobile product preview featuring authentic screenshots of adventure discovery, planning, and memory keeping.">
+  <title>PawStreak — Real App Product Preview</title>
+  <style>
+    :root { color-scheme: dark; --ink: #f7f3e9; --muted: #b9c8be; --forest: #102f25; --deep: #092219; --mint: #b9e5bb; --line: rgba(239,249,239,.17); --accent: #f6bd86; }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--deep); color: var(--ink); font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    a { color: inherit; }
+    .wrap { width: min(1160px, calc(100% - 36px)); margin: auto; }
+    header { position: relative; background: radial-gradient(ellipse at 82% 17%, #28523c 0, transparent 44%), linear-gradient(160deg, #163c2d, #0a261d); padding: 24px 0 84px; border-bottom: 1px solid var(--line); }
+    nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 96px; }
+    .brand { font-size: 18px; font-weight: 850; letter-spacing: -.045em; }
+    .brand span { color: var(--accent); }
+    .nav-links { display: flex; flex-wrap: wrap; gap: 22px; font-size: 13px; color: var(--muted); }
+    .nav-links a { text-decoration: none; }
+    .nav-links a:hover, .nav-links a:focus-visible { color: #fff; text-decoration: underline; text-underline-offset: 4px; }
+    .eyebrow { margin: 0 0 18px; letter-spacing: .18em; font-weight: 800; font-size: 11px; text-transform: uppercase; color: var(--mint); }
+    h1 { margin: 0; max-width: 850px; font-size: clamp(46px, 8.2vw, 104px); line-height: .98; letter-spacing: -.07em; font-weight: 850; }
+    h1 em { color: var(--accent); font-style: normal; }
+    .lede { max-width: 635px; margin: 28px 0 30px; color: #d7e2d8; font-size: clamp(17px, 2vw, 22px); line-height: 1.55; }
+    .notice { display: inline-flex; max-width: 710px; border: 1px solid rgba(255,255,255,.24); background: rgba(255,255,255,.065); padding: 13px 17px; border-radius: 14px; color: #e5e8df; font-size: 12px; line-height: 1.5; }
+    main { padding: 78px 0 100px; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 28px; }
+    h2 { font-size: clamp(28px, 4vw, 46px); letter-spacing: -.055em; line-height: 1.08; margin: 0; }
+    .section-head p { color: var(--muted); max-width: 320px; font-size: 14px; line-height: 1.6; margin: 0; }
+    .gallery { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px; }
+    figure { margin: 0; }
+    .shot { overflow: hidden; border: 1px solid var(--line); border-radius: 24px; background: #17392d; }
+    .shot img { width: 100%; height: auto; display: block; object-fit: contain; background: #102b22; }
+    figcaption { padding: 22px 22px 24px; }
+    figcaption small { display: block; color: var(--mint); font-size: 10px; letter-spacing: .15em; text-transform: uppercase; font-weight: 800; margin-bottom: 7px; }
+    figcaption strong { display: block; letter-spacing: -.03em; font-size: 21px; margin-bottom: 7px; }
+    figcaption span { display: block; color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .film { margin-top: 78px; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; padding: 40px; background: linear-gradient(145deg, #1c4835, #103025); border: 1px solid var(--line); border-radius: 28px; }
+    .film p { color: #d5e0d4; font-size: 16px; line-height: 1.7; }
+    .film video { max-height: 575px; width: 100%; border-radius: 16px; background: #071811; }
+    .footnotes { margin-top: 50px; padding-top: 24px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; line-height: 1.8; }
+    footer { padding: 24px 0 40px; color: #b9c9bc; font-size: 12px; }
+    @media (max-width: 850px) { nav { padding-bottom: 66px; } .gallery { grid-template-columns: repeat(2,minmax(0,1fr)); } .film { grid-template-columns: 1fr; gap: 26px; } .section-head { display: block; } .section-head p { margin-top: 13px; } }
+    @media (max-width: 550px) { header { padding-bottom: 58px; } nav { padding-bottom: 54px; } .nav-links { gap: 12px; } main { padding-top: 50px; } .gallery { grid-template-columns: 1fr; } .film { padding: 22px; margin-top: 55px; } .shot { border-radius: 20px; } .lede { margin-top: 22px; } }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  </style>
+</head>
+<body>
+  <header id="top">
+    <div class="wrap">
+      <nav aria-label="Portfolio navigation">
+        <div class="brand">PAW<span>STREAK</span></div>
+        <div class="nav-links"><a href="#screens">Actual app captures</a><a href="#flow">Demo flow</a></div>
+      </nav>
+      <p class="eyebrow">Mobile product preview · Real app captures</p>
+      <h1>More than<br>another <em>walk.</em></h1>
+      <p class="lede">A better day for your dog starts with a place worth exploring. Discover an adventure, go together, and keep the memory.</p>
+      <p class="notice">Transparency: every screen below is an authentic PawStreak application demo capture at 390 × 844, generated from commit <code>02dd7f85</code>. The DEMO labels remain visible. These are not claims of authenticated production use or an App Store release.</p>
+    </div>
+  </header>
+  <main class="wrap">
+    <section id="screens" aria-labelledby="screens-heading">
+      <div class="section-head">
+        <h2 id="screens-heading">One outing. A story worth keeping.</h2>
+        <p>Six genuine product screens, arranged in the order a dog parent experiences them. No stock imagery or invented UI.</p>
+      </div>
+      <div class="gallery">
+        <figure class="shot"><img src="screenshots/01-adventure-launch-home.png" loading="lazy" width="390" height="844" alt="PawStreak Home adventure preview, with visible DEMO label"><figcaption><small>01 / Start</small><strong>A better dog day</strong><span>One obvious starting point for the next adventure.</span></figcaption></figure>
+        <figure class="shot"><img src="screenshots/03-discover-adventure-mode.png" loading="lazy" width="390" height="844" alt="PawStreak Explore and adventure discovery demo screen"><figcaption><small>02 / Discover</small><strong>Choose an adventure</strong><span>Explore outing ideas instead of an endless feed.</span></figcaption></figure>
+        <figure class="shot"><img src="screenshots/04-adventure-detail.png" loading="lazy" width="390" height="844" alt="PawStreak destination detail demo screen"><figcaption><small>03 / Decide</small><strong>Know the destination</strong><span>Check place details and current posted dog rules before leaving.</span></figcaption></figure>
+        <figure class="shot"><img src="screenshots/05-adventure-ready.png" loading="lazy" width="390" height="844" alt="PawStreak adventure ready confirmation demo screen"><figcaption><small>04 / Go</small><strong>Bring your pack</strong><span>Keep the place and adventure preparation together.</span></figcaption></figure>
+        <figure class="shot"><img src="screenshots/06-save-memory-payoff.png" loading="lazy" width="390" height="844" alt="PawStreak adventure completion and memory save demo screen"><figcaption><small>05 / Remember</small><strong>Save the little things</strong><span>Finish the outing and keep what mattered.</span></figcaption></figure>
+        <figure class="shot"><img src="screenshots/07-journey-memory.png" loading="lazy" width="390" height="844" alt="PawStreak Journey memory demo screen"><figcaption><small>06 / Revisit</small><strong>Build your Journey</strong><span>The walks become memories you can come back to.</span></figcaption></figure>
+      </div>
+    </section>
+    <section class="film" id="flow" aria-labelledby="flow-heading">
+      <div>
+        <p class="eyebrow">Recorded from the working app demo</p>
+        <h2 id="flow-heading">From “where to?” to “remember when?”</h2>
+        <p>A real screen recording of the preview experience. It shows the product's intended loop, not a customer activity report or proof of live native-device performance.</p>
+      </div>
+      <video controls preload="metadata" playsinline poster="screenshots/01-adventure-launch-home.png" aria-label="PawStreak product demo screen recording">
+        <source src="videos/pawstreak-demo-flow.webm" type="video/webm">
+        Your browser does not support the demo video.
+      </video>
+    </section>
+    <div class="footnotes">
+      Source manifest: <code>assets.json</code>. Capture timestamp: October 31, 2026 UTC. Product preview only. No fabricated screenshots, customer statistics, or release claims.<br>
+      These local relative assets are preserved in the PawStreak repository. This page is not publicly published.
+    </div>
+  </main>
+  <footer class="wrap">PawStreak · Better adventures together.</footer>
+</body>
+</html>
