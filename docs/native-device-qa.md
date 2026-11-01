@@ -74,6 +74,8 @@ Current PWA fallback:
 
 - Share card generates with real user/adventure content only
 - No fake metrics or fake memories appear
+- Native share sheet receives a PNG file rather than a WebView-only blob URL
+- Shared copy links to `https://pawstreakapp.com/app`, not a local Capacitor URL
 - Instagram/share sheet receives the image file
 - If Instagram drops the image, PawStreak gives a useful fallback
 - Save to Photos works from share card path

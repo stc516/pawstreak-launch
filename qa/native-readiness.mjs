@@ -23,6 +23,7 @@ async function main() {
   const runtime = await readFile('src/lib/nativeRuntime.ts', 'utf8')
   const nativePhotos = await readFile('src/lib/nativePhotos.ts', 'utf8')
   const nativePhotoRestore = await readFile('src/lib/nativePhotoRestore.ts', 'utf8')
+  const shareContent = await readFile('src/lib/shareContent.ts', 'utf8')
   const app = await readFile('src/App.tsx', 'utf8')
   const activeAdventure = await readFile('src/screens/app/ActiveAdventureScreen.tsx', 'utf8')
   const iosInfoPlist = await readFile('ios/App/App/Info.plist', 'utf8').catch(() => '')
@@ -132,6 +133,20 @@ async function main() {
       'subscribeToNativeRestoredPhotos',
     ]) && activeAdventure.includes('Recovered your camera photo and saved it to PawStreak.'),
     'Native camera capture has an appRestoredResult path for OS-killed camera activity recovery.',
+  )
+
+  record(
+    'native-share-card-files',
+    includesAll(shareContent, [
+      "from '@capacitor/share'",
+      "from '@capacitor/filesystem'",
+      'Directory.Cache',
+      'Filesystem.writeFile',
+      'Share.canShare()',
+      'Share.share({',
+      'https://pawstreakapp.com/app',
+    ]),
+    'Native share cards are cached as real files and opened with the Capacitor share sheet using a public app URL.',
   )
 
   record(
