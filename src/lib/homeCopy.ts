@@ -133,10 +133,10 @@ function getBeachFitLine(place: Place, lead: string): string {
   // A beach category does not imply off-leash access. Only repeat clear
   // catalog labels and remind people that seasonal hours and rules can change.
   const leashRule = place.leashInfo.trim().toLowerCase()
-  if (/^on-leash\\.?$/.test(leashRule)) {
+  if (/^on-leash\.?$/.test(leashRule)) {
     return `Beach air for ${lead}. Listed on-leash—check current access hours.`
   }
-  if (/^off-leash(?: area)?\\.?$/.test(leashRule)) {
+  if (/^off-leash(?: area)?\.?$/.test(leashRule)) {
     return `Beach time for ${lead}. Listed off-leash—check posted rules.`
   }
   return `Beach air for ${lead}. Check current dog-access and leash rules.`
