@@ -1,4 +1,4 @@
-# PawStreak seven-day product-preview buffer — October 31–November 6, 2026
+# PawStreak rolling product-preview buffer — October 31–November 7, 2026
 
 Prepared October 30, 2026. All items are **Pending approval** and **Unpublished**. Every primary asset is a real 390 × 844 capture from the running PawStreak application at commit `02dd7f85`; the visible `DEMO` label is retained so the preview state is unambiguous.
 
@@ -13,6 +13,7 @@ Prepared October 30, 2026. All items are **Pending approval** and **Unpublished*
 | Nov 4 | PS-20261104-05 | `../../screenshots/06-save-memory-payoff.png` | Feed / Reel frame | Pending approval |
 | Nov 5 | PS-20261105-06 | `../../screenshots/07-journey-memory.png` | Feed / carousel lead | Pending approval |
 | Nov 6 | PS-20261106-07 | `../../videos/pawstreak-demo-flow.webm` | Reel | Pending approval |
+| Nov 7 | PS-20261107-08 | `../../screenshots/04-adventure-detail.png` + `../../screenshots/05-adventure-ready.png` | Two-frame carousel | Pending approval |
 
 ## PS-20261031-01 — A better dog day starts here
 
@@ -69,6 +70,17 @@ Prepared October 30, 2026. All items are **Pending approval** and **Unpublished*
 - **CTA:** Follow `@pawstreakapp` for the next build and real adventure captures.
 - **Hashtags:** `#PawStreak #DogApp #DogAdventures #BuildInPublic`
 - **Story/Reel variation:** Use the same `pawstreak-demo-flow.webm` with an opening text card: “Pick it. Go. Keep it.”
+
+## PS-20261107-08 — Before you go, know what you're heading into
+
+- **Hook:** Less guessing. More getting out the door together.
+- **Caption:** Product preview: From destination detail to the adventure-ready screen, PawStreak keeps the next outing focused on the place and your pack. Check current posted dog-access rules before you go. These are clearly labeled demo screens, not a user's recorded adventure.
+- **CTA:** What do you check first before heading out with your dog: water, leash rules, or parking?
+- **Hashtags:** `#PawStreak #DogAdventures #DogFriendly #ProductPreview`
+- **Carousel frames:** `../../screenshots/04-adventure-detail.png` then `../../screenshots/05-adventure-ready.png`; keep original visible DEMO labels and don't imply authentic customer usage.
+- **Story companion:** `../../stories/05-adventure-ready.png`; poll: “First check?” Rules / Water.
+
+As of November 1, the November 1–7 rolling seven-day window is filled with seven pending-approval entries. The October 31 item is retained as history. This addition **reuses two verified app-demo captures**, not a newly captured or newly published asset; do not claim it is new product footage.
 
 ## Approval boundary
 

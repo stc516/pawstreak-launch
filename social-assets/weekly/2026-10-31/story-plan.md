@@ -1,4 +1,4 @@
-# PawStreak Story companions — October 31–November 6, 2026
+# PawStreak Story companions — October 31–November 7, 2026
 
 All items are pending approval and retain the visible `DEMO` label.
 
@@ -11,3 +11,4 @@ All items are pending approval and retain the visible `DEMO` label.
 | Nov 4 | `../../stories/06-save-memory-payoff.png` | Question: “One detail from today?” |
 | Nov 5 | `../../stories/07-journey-memory.png` | Poll: Story / Feed |
 | Nov 6 | `../../videos/pawstreak-demo-flow.webm` | Reel opener: “Pick it. Go. Keep it.” |
+| Nov 7 | `../../stories/05-adventure-ready.png` | Poll: “First check?” Rules / Water; use with real-demo screenshot carousel |
