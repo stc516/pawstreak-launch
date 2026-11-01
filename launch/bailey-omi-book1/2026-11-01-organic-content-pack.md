@@ -120,3 +120,11 @@ S.T. Carroll
 - [ ] Upload to approved publishing scheduler; do not post without authorization.
 - [ ] Track by UTM-tagged Book 1 page visits, opt-in signups, and Amazon outbound clicks (not fabricated sales).
 - [ ] Replenish the next seven days after publication.
+
+## November 1 catalog discovery and finished activity companion
+
+- **Paperback identifier corroborated by independent catalogs:** ISBN-13 `9798160563947`; paperback Amazon ASIN `B0HMFT1R5P`. [ThriftBooks](https://www.thriftbooks.com/w/baileys-big-climb_st-carroll/60626430/) and [AbeBooks](https://www.abebooks.it/9798160563947/Bailey%E2%80%99s-Big-Climb-Carroll-S.T/plp) both list the title and S.T. Carroll with this ISBN. They disagree on page count (26 vs. 24), so **do not repeat a page count until KDP is checked**. Retailer listings are evidence of catalog distribution, not Amazon availability or sales.
+- **New proposed no-gate family activity:** `public/bailey-and-omi/one-small-brave-step.html` (plus same-origin print script) is included in this PR. It uses the existing approved Book 1 cover path, original family questions, optional drawing time, safety guidance, and a link back to the existing book-news form. The proposed post-merge URL is `https://pawstreakapp.com/bailey-and-omi/one-small-brave-step.html`; do not promote it until a production release has been approved and verified.
+- **Finished downloadable PDF companion:** Three visually checked pages were also generated separately: a family worksheet, a 20-minute read-aloud facilitator guide, and a library/retailer introduction sheet. This PDF is available as an attachment to the studio run, not yet in the repository or public website.
+- **Updated retailer outreach fact line, for use after confirming KDP:** “*Bailey’s Big Climb* by S.T. Carroll · Bailey & Omi Adventures, Book 1 · Paperback ISBN-13 9798160563947 · Picture-book audience ages 3–7.” Do not invent wholesale terms, pricing, current stock, sales, or customer reviews.
+- **Release guardrails:** PR remains unmerged; no social posting, email campaign, KDP modification, or production page edit occurred.
