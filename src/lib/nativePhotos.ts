@@ -23,6 +23,6 @@ export async function captureNativeAdventurePhoto(): Promise<NativePhotoCaptureR
 
   return {
     dataUrl: photo.dataUrl,
-    savedToGallery: true,
+    savedToGallery: photo.saved === true,
   }
 }
