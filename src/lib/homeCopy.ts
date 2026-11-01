@@ -111,16 +111,35 @@ export function getHeroCuratedLabel(place: Place, dogs: Dog[]): string {
   return `Worth getting out for ${target} today.`
 }
 
+// Fit copy should inspire an outing without inventing access rules, travel time,
+// shade, or other amenities that are not confirmed by a specific listing.
 const FIT_LINES: Partial<Record<PlaceCategory, (lead: string) => string>> = {
-  Beach: (lead) => `Close by, off-leash friendly, and room for ${lead} to run.`,
-  Trail: (lead) => `Fresh air, new smells, and a pace ${lead} can settle into.`,
-  Coffee: () => 'Patio-friendly stop — close by and easy to fit in today.',
-  'Dog Park': (lead) => `Room to roam and meet the pack — ${lead} will love the energy.`,
-  Park: (lead) => `Shaded paths and space to sniff — a calmer win for ${lead}.`,
-  Brewery: () => 'Dog-friendly patio, close by, and low-pressure for a short outing.',
-  Gardens: (lead) => `Quiet loops and new scents — a slower-paced day for ${lead}.`,
-  'Road trip': (lead) => `Worth the drive when ${lead} needs a bigger day out.`,
-  Neighborhood: () => 'Close by, dog-friendly, and enough room to sniff.',
+  Trail: (lead) => `A trail to explore at ${lead}'s pace, with fresh scents along the way.`,
+  Coffee: (lead) => `A coffee break with ${lead}; confirm current outdoor dog rules first.`,
+  'Dog Park': (lead) => `A new stop for ${lead} to sniff and socialize; check park rules.`,
+  Park: (lead) => `Fresh air and new corners for ${lead} to explore.`,
+  Brewery: (lead) => `An outdoor stop with ${lead}; confirm the current dog policy.`,
+  Gardens: (lead) => `A change of scenery for ${lead}; check dog-access rules first.`,
+  'Road trip': (lead) => `A bigger day out together, with something new for ${lead}.`,
+  Neighborhood: (lead) => `A familiar walk with something new to sniff for ${lead}.`,
+  Patio: (lead) => `A patio stop with ${lead}; confirm current dog access first.`,
+  Restaurant: (lead) => `A meal stop with ${lead}; check outdoor dog access first.`,
+  Lake: (lead) => `Water views and new scents for ${lead}; follow posted rules.`,
+  Campground: (lead) => `A bigger outdoor day for ${lead}; check campground pet rules.`,
+  'Scenic Spot': (lead) => `A scenic pause and a new shared memory for ${lead}.`,
+}
+
+function getBeachFitLine(place: Place, lead: string): string {
+  // A beach category does not imply off-leash access. Only repeat clear
+  // catalog labels and remind people that seasonal hours and rules can change.
+  const leashRule = place.leashInfo.trim().toLowerCase()
+  if (/^on-leash\\.?$/.test(leashRule)) {
+    return `Beach air for ${lead}. Listed on-leash—check current access hours.`
+  }
+  if (/^off-leash(?: area)?\\.?$/.test(leashRule)) {
+    return `Beach time for ${lead}. Listed off-leash—check posted rules.`
+  }
+  return `Beach air for ${lead}. Check current dog-access and leash rules.`
 }
 
 export function getHeroFitLine(place: Place, dogs: Dog[]): string {
@@ -129,7 +148,9 @@ export function getHeroFitLine(place: Place, dogs: Dog[]): string {
       ? dogs[0].name
       : dogs.length >= 2
         ? getPackDisplayName(dogs)
-        : 'them'
+        : 'your dog'
+
+  if (place.category === 'Beach') return getBeachFitLine(place, lead)
 
   const template = FIT_LINES[place.category]
   if (template) return template(lead)
