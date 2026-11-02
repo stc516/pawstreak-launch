@@ -1,4 +1,4 @@
-# PawStreak rolling product-preview buffer — October 31–November 7, 2026
+# PawStreak rolling product-preview buffer — October 31–November 8, 2026
 
 Prepared October 30, 2026. All items are **Pending approval** and **Unpublished**. Every primary asset is a real 390 × 844 capture from the running PawStreak application at commit `02dd7f85`; the visible `DEMO` label is retained so the preview state is unambiguous.
 
@@ -14,6 +14,7 @@ Prepared October 30, 2026. All items are **Pending approval** and **Unpublished*
 | Nov 5 | PS-20261105-06 | `../../screenshots/07-journey-memory.png` | Feed / carousel lead | Pending approval |
 | Nov 6 | PS-20261106-07 | `../../videos/pawstreak-demo-flow.webm` | Reel | Pending approval |
 | Nov 7 | PS-20261107-08 | `../../screenshots/04-adventure-detail.png` + `../../screenshots/05-adventure-ready.png` | Two-frame carousel | Pending approval |
+| Nov 8 | PS-20261108-09 | `../../screenshots/07-journey-memory.png` | Feed / Story | Pending approval |
 
 ## PS-20261031-01 — A better dog day starts here
 
@@ -80,7 +81,19 @@ Prepared October 30, 2026. All items are **Pending approval** and **Unpublished*
 - **Carousel frames:** `../../screenshots/04-adventure-detail.png` then `../../screenshots/05-adventure-ready.png`; keep original visible DEMO labels and don't imply authentic customer usage.
 - **Story companion:** `../../stories/05-adventure-ready.png`; poll: “First check?” Rules / Water.
 
-As of November 1, the November 1–7 rolling seven-day window is filled with seven pending-approval entries. The October 31 item is retained as history. This addition **reuses two verified app-demo captures**, not a newly captured or newly published asset; do not claim it is new product footage.
+## PS-20261108-09 — Not every great dog day has a photo
+
+- **Hook:** The photo is optional. The adventure is the point.
+- **Caption:** Product preview: This real PawStreak demo capture shows a completed dog-park adventure saved with **0 photos**—not an invented photo or a pretend customer's story. The place, outing type, and duration still make a memory worth keeping. More time with your dog, less pressure to document every second.
+- **CTA:** What is one dog-day moment you remember without a photo?
+- **Hashtags:** `#PawStreak #DogMemories #DogParents #ProductPreview`
+- **Feed asset:** `../../screenshots/07-journey-memory.png` (real running-app DEMO share preview, original label visible).
+- **Story companion:** `../../stories/07-journey-memory.png`; question: “Ever skip the photo?” All the time / Sometimes.
+- **Optional Reel concept:** Cut a short moment from the existing `../../videos/pawstreak-demo-flow.webm` showing save → memory, with editorial text “0 photos. Still a memory.” Do not claim a new recording or overlay a fabricated photo.
+
+As of November 2, the November 2–8 rolling seven-day window is covered by seven **pending-approval**, unpublished entries. The October 31 and November 1 items remain for archive. The new November 8 concept reuses an authentic, labeled product-demo capture; it is not a new device recording.
+
+
 
 ## Approval boundary
 
