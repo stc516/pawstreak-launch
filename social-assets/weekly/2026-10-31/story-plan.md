@@ -1,4 +1,4 @@
-# PawStreak Story companions — October 31–November 8, 2026
+# PawStreak Story companions — October 31–November 9, 2026
 
 All items are pending approval and retain the visible `DEMO` label.
 
@@ -13,3 +13,4 @@ All items are pending approval and retain the visible `DEMO` label.
 | Nov 6 | `../../videos/pawstreak-demo-flow.webm` | Reel opener: “Pick it. Go. Keep it.” |
 | Nov 7 | `../../stories/05-adventure-ready.png` | Poll: “First check?” Rules / Water; use with real-demo screenshot carousel |
 | Nov 8 | `../../stories/07-journey-memory.png` | Question: “Ever skip the photo?” All the time / Sometimes; DEMO shows 0 photos |
+| Nov 9 | `../../stories/03-discover-adventure-mode.png` | Poll: “This week's pick?” Trail / Beach; existing real DEMO app capture, no availability claim |
