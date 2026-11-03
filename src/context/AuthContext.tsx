@@ -15,6 +15,10 @@ import {
   signOut,
   signUpWithEmail,
 } from '../lib/auth'
+import {
+  clearNativePushAfterAuthLoss,
+  initializeNativePushForAuthenticatedUser,
+} from '../lib/nativePushNotifications'
 
 interface AuthContextValue {
   user: User | null
@@ -41,13 +45,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session)
       setLoading(false)
+      if (data.session) {
+        void initializeNativePushForAuthenticatedUser().catch((error) => {
+          console.warn('[Native push] Could not restore registration.', error)
+        })
+      }
     })
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+    } = supabase.auth.onAuthStateChange((event, nextSession) => {
       setSession(nextSession)
       setLoading(false)
+      if (nextSession) {
+        void initializeNativePushForAuthenticatedUser().catch((error) => {
+          console.warn('[Native push] Could not initialize registration.', error)
+        })
+      } else if (event === 'SIGNED_OUT') {
+        void clearNativePushAfterAuthLoss()
+      }
     })
 
     return () => subscription.unsubscribe()

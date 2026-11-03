@@ -1,4 +1,5 @@
 import { getSupabaseClient } from './supabase'
+import { clearNativePushAfterAuthLoss } from './nativePushNotifications'
 
 export async function deleteCurrentAccount(): Promise<void> {
   const supabase = getSupabaseClient()
@@ -8,4 +9,5 @@ export async function deleteCurrentAccount(): Promise<void> {
   if (error) throw new Error(error.message || 'Could not delete your account.')
 
   await supabase.auth.signOut({ scope: 'local' })
+  await clearNativePushAfterAuthLoss()
 }
