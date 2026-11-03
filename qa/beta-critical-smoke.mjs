@@ -257,6 +257,17 @@ async function runBrowserChecks() {
     await page.locator('.share-preview-close').click()
     await page.getByRole('button', { name: 'Back', exact: true }).click()
     await page.getByRole('button', { name: 'Today', exact: true }).click()
+    const savedMemoryContext = page.getByTestId('home-saved-memory-context')
+    const savedMemoryContextText = (await savedMemoryContext.innerText()).trim()
+    const savedMemoryPlaceholderCount = await page.locator('.home-adventure-stage .card-img-placeholder').count()
+    record(
+      'home-saved-memory-context-truthful',
+      savedMemoryContextText === 'Saved in Journey' && savedMemoryPlaceholderCount === 0,
+      savedMemoryContextText === 'Saved in Journey' && savedMemoryPlaceholderCount === 0
+        ? 'Saved-memory hero shows Journey context without recommendation metadata or an overlapping no-photo label'
+        : `Unexpected saved-memory state: context=${savedMemoryContextText}; placeholders=${savedMemoryPlaceholderCount}`,
+    )
+    await shot(page, '04b-home-saved-memory-context')
 
     await page.getByRole('button', { name: 'Explore', exact: true }).click()
     await page.waitForTimeout(300)

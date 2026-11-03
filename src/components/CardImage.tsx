@@ -8,6 +8,7 @@ interface CardImageProps {
   imageTone?: PlaceImageTone
   className?: string
   placeholderLabel?: string
+  showPlaceholder?: boolean
   children?: ReactNode
 }
 
@@ -17,6 +18,7 @@ export function CardImage({
   imageTone = 'warm',
   className = '',
   placeholderLabel = 'No photo added',
+  showPlaceholder = true,
   children,
 }: CardImageProps) {
   const toneClass = `card-img--${imageTone}`
@@ -36,7 +38,7 @@ export function CardImage({
           : undefined
       }
     >
-      {isEmpty ? <span className="card-img-placeholder">{placeholderLabel}</span> : null}
+      {isEmpty && showPlaceholder ? <span className="card-img-placeholder">{placeholderLabel}</span> : null}
       {children}
     </div>
   )
