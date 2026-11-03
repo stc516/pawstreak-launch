@@ -1,4 +1,4 @@
-# PawStreak rolling product-preview buffer — October 31–November 8, 2026
+# PawStreak rolling product-preview buffer — October 31–November 9, 2026
 
 Prepared October 30, 2026. All items are **Pending approval** and **Unpublished**. Every primary asset is a real 390 × 844 capture from the running PawStreak application at commit `02dd7f85`; the visible `DEMO` label is retained so the preview state is unambiguous.
 
@@ -15,6 +15,7 @@ Prepared October 30, 2026. All items are **Pending approval** and **Unpublished*
 | Nov 6 | PS-20261106-07 | `../../videos/pawstreak-demo-flow.webm` | Reel | Pending approval |
 | Nov 7 | PS-20261107-08 | `../../screenshots/04-adventure-detail.png` + `../../screenshots/05-adventure-ready.png` | Two-frame carousel | Pending approval |
 | Nov 8 | PS-20261108-09 | `../../screenshots/07-journey-memory.png` | Feed / Story | Pending approval |
+| Nov 9 | PS-20261109-10 | `../../screenshots/03-discover-adventure-mode.png` | Story / Feed poll | Pending approval |
 
 ## PS-20261031-01 — A better dog day starts here
 
@@ -91,9 +92,21 @@ Prepared October 30, 2026. All items are **Pending approval** and **Unpublished*
 - **Story companion:** `../../stories/07-journey-memory.png`; question: “Ever skip the photo?” All the time / Sometimes.
 - **Optional Reel concept:** Cut a short moment from the existing `../../videos/pawstreak-demo-flow.webm` showing save → memory, with editorial text “0 photos. Still a memory.” Do not claim a new recording or overlay a fabricated photo.
 
-As of November 2, the November 2–8 rolling seven-day window is covered by seven **pending-approval**, unpublished entries. The October 31 and November 1 items remain for archive. The new November 8 concept reuses an authentic, labeled product-demo capture; it is not a new device recording.
+As of November 2, the November 2–8 rolling seven-day window was covered by seven pending, unpublished entries. November 8 reuses an existing genuine demo capture; no new device recording was made.
 
 
+
+## PS-20261109-10 — Pick the kind of dog day
+
+- **Hook:** Your next adventure starts with one choice.
+- **Caption:** Product preview: This real PawStreak Explore demo shows a way to choose an outing type and check details before setting out. It is not a claim about live nearby availability or an actual customer's trip. The dog day happens offline.
+- **CTA:** Would your dog vote for a trail or a beach this week?
+- **Hashtags:** `#PawStreak #DogAdventures #AdventurePlanning #ProductPreview`
+- **Feed asset:** `../../screenshots/03-discover-adventure-mode.png` from the previously captured PawStreak DEMO; preserve the original label.
+- **Story companion:** `../../stories/03-discover-adventure-mode.png`; editorial poll: “This week's pick?” Trail / Beach. Do not imply either is currently available near the viewer.
+- **Optional Reel concept:** Reuse existing `../../videos/pawstreak-demo-flow.webm` only (no new-video claim); excerpt Home → Explore with on-screen editorial prompt “Where to next?”
+
+As of November 3, the November 3–9 seven-day buffer contains seven **pending-approval**, unpublished entries. The older October 31–November 2 items stay archived. No new live or authenticated app capture was possible today because remote browser access required its originating session.
 
 ## Approval boundary
 
