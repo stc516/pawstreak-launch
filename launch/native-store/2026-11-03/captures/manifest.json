@@ -1,0 +1,15 @@
+{
+  "generatedAt": "2026-11-03T09:09:23.080Z",
+  "commit": "136c320826f3a720fd5df940910a3de9d59d959c",
+  "source": "http://127.0.0.1:4173/demo/app",
+  "disclosure": "Authentic current PawStreak demo UI. Demo dog and activity data are not customer claims.",
+  "files": [
+    "01-today-home.png",
+    "02-explore.png",
+    "03-active-adventure.png",
+    "04-share-card.png",
+    "05-saved-memory.png",
+    "06-reminders-settings.png",
+    "pawstreak-current-demo-flow.webm"
+  ]
+}
