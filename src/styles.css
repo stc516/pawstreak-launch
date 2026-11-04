@@ -15463,7 +15463,7 @@ select.field-input {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  min-height: 36px;
+  min-height: 44px;
   margin-top: 10px;
   padding: 0 12px;
   border: 1px solid rgba(92, 122, 107, 0.24);
@@ -15527,15 +15527,15 @@ select.field-input {
 }
 
 .share-preview-close {
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
 }
 
 .share-preview-share {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  min-height: 38px;
+  min-height: 44px;
   padding: 0 12px;
 }
 
@@ -15550,7 +15550,7 @@ select.field-input {
 }
 
 .share-format-toggle button {
-  min-height: 34px;
+  min-height: 44px;
   border: 0;
   border-radius: 999px;
   background: transparent;
@@ -16008,7 +16008,7 @@ select.field-input {
   justify-content: center;
   gap: 7px;
   width: 100%;
-  min-height: 42px;
+  min-height: 44px;
   margin-top: 10px;
   border: 1px solid rgba(49, 185, 255, 0.24);
   border-radius: 999px;
