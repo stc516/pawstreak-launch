@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import type { AppState } from '../../data/demo'
 import type { Achievement } from '../../data/achievements'
 import { resolveAchievementsByCategory } from '../../lib/achievementEngine'
@@ -37,8 +37,9 @@ export function AchievementsScreen({
     () => sortAchievements(grouped.flatMap((group) => group.achievements.filter((item) => item.status === 'locked'))),
     [grouped],
   )
+  const [showAllAvailable, setShowAllAvailable] = useState(false)
   const earnedPreview = earned.slice(0, 3)
-  const availablePreview = available.slice(0, 4)
+  const visibleAvailable = showAllAvailable ? available : available.slice(0, 4)
 
   return (
     <>
@@ -128,14 +129,14 @@ export function AchievementsScreen({
       <section className="achievements-section">
         <div className="st-section-head">
           <h2 className="st-headline-md">Available to Earn</h2>
-          {available.length > availablePreview.length ? (
+          {available.length > 4 ? (
             <span className="achievements-section-count">
-              {availablePreview.length} of {available.length}
+              {visibleAvailable.length} of {available.length}
             </span>
           ) : null}
         </div>
-        <div className="achievements-available-grid">
-          {availablePreview.map((achievement) => (
+        <div className="achievements-available-grid" id="available-achievements">
+          {visibleAvailable.map((achievement) => (
             <button
               key={achievement.id}
               type="button"
@@ -159,6 +160,18 @@ export function AchievementsScreen({
             </button>
           ))}
         </div>
+        {available.length > 4 ? (
+          <button
+            type="button"
+            className="achievements-view-all tap-target"
+            aria-expanded={showAllAvailable}
+            aria-controls="available-achievements"
+            onClick={() => setShowAllAvailable((isExpanded) => !isExpanded)}
+          >
+            <span>{showAllAvailable ? 'Show fewer rewards' : `View all ${available.length} rewards`}</span>
+            <i className={`ti ti-chevron-${showAllAvailable ? 'up' : 'down'}`} aria-hidden="true" />
+          </button>
+        ) : null}
       </section>
     </>
   )
