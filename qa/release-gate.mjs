@@ -60,6 +60,9 @@ async function main() {
     await run(['run', 'qa:home-memory-clarity'], {
       env: { ...env, QA_OUT_DIR: `${releaseEvidenceRoot}/home-memory-placeholder-clarity` },
     })
+    await run(['run', 'qa:achievements-disclosure'], {
+      env: { ...env, QA_OUT_DIR: `${releaseEvidenceRoot}/achievements-mobile-disclosure` },
+    })
     await run(['run', 'qa:visual-integrity'], {
       env: { ...env, QA_OUT_DIR: `${releaseEvidenceRoot}/visual-integrity` },
     })
