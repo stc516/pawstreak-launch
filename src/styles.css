@@ -13721,6 +13721,7 @@ select.field-input {
 .bnav--six .ni {
   font-size: 7px;
   gap: 1px;
+  min-height: 44px;
   min-width: 0;
   padding: 0 1px;
 }
