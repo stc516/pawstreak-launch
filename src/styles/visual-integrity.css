@@ -20,8 +20,8 @@
 .card-img--empty { position: relative; background: #e6ece4; }
 .home-adventure-stage-art.card-img--empty, .curated-spotlight-art.card-img--empty, .plan-place-detail-art.card-img--empty { background: #214b3c; }
 .home-adventure-stage-art.card-img--empty > .card-img-placeholder, .curated-spotlight-art.card-img--empty > .card-img-placeholder, .plan-place-detail-art.card-img--empty > .card-img-placeholder { position: absolute; top: 58px; left: 12px; color: #dce9de; font-size: 10px; }
-.journey-memory-no-photo { display: flex; min-height: 140px; padding: 18px; box-sizing: border-box; align-items: center; justify-content: center; gap: 10px; flex-direction: column; background: #e6ece4; color: #315445; font: 600 12px/1.5 system-ui; }
-.journey-memory-no-photo i { font-size: 32px; }
+.journey-memory-card--preview .journey-memory-no-photo { display: flex; min-height: 140px; padding: 18px; box-sizing: border-box; align-items: center; justify-content: center; gap: 10px; flex-direction: column; background: #e6ece4; color: #315445; font: 600 12px/1.5 system-ui; }
+.journey-memory-card--preview .journey-memory-no-photo i { font-size: 32px; }
 .product-preview-symbol { min-height: 96px; display: grid; place-items: center; background: #e6ece4; color: #315445; font-size: 36px; border-radius: 12px; }
 .product-preview-symbol--small { min-height: 52px; min-width: 52px; font-size: 24px; }
 .product-preview-note { padding: 12px; color: #315445; text-align: center; font-size: 12px; }
