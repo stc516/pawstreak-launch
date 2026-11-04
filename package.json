@@ -14,6 +14,7 @@
     "qa:core-loop-p0": "node qa/core-loop-p0.mjs",
     "qa:finish-review": "node qa/active-adventure-finish-review.mjs",
     "qa:plan-first-action": "node qa/plan-mobile-first-action.mjs",
+    "qa:challenges-first-action": "node qa/challenges-mobile-first-action.mjs",
     "qa:visual-integrity": "node qa/visual-integrity-unit.mjs && node qa/visual-integrity.mjs",
     "qa:journey-mobile": "node qa/journey-mobile-clarity.mjs",
     "qa:release": "node qa/release-gate.mjs",
