@@ -9,14 +9,14 @@ import { getDisplayDogLabelForIds, getProfileDogs } from '../lib/profileDisplay'
 interface ActiveAdventureBannerProps {
   state: AppState
   onResume: () => void
-  onFinish: () => void
+  onReviewFinish: () => void
   onCancel: () => void
 }
 
 export function ActiveAdventureBanner({
   state,
   onResume,
-  onFinish,
+  onReviewFinish,
   onCancel,
 }: ActiveAdventureBannerProps) {
   const [, setTick] = useState(0)
@@ -84,9 +84,9 @@ export function ActiveAdventureBanner({
         <button
           type="button"
           className="active-adventure-banner-btn active-adventure-banner-btn--primary tap-target"
-          onClick={onFinish}
+          onClick={onReviewFinish}
         >
-          Finish
+          Review &amp; finish
         </button>
         <button type="button" className="active-adventure-banner-btn tap-target" onClick={onCancel}>
           Cancel
