@@ -1113,3 +1113,66 @@ html.app-route .home-screen.home-screen--stitch {
   padding-left: 15px !important;
   padding-right: 15px !important;
 }
+
+/* Challenges should feel like an invitation to act on phones, not a long
+   settings page with a low-contrast, undersized primary control. */
+@media (max-width: 520px) {
+  html.app-route .ms-screen--stitch {
+    gap: 12px;
+  }
+
+  html.app-route .ms-screen--stitch .ms-screen-header {
+    padding-block: 8px;
+  }
+
+  html.app-route .ms-screen--stitch .ms-challenge-lead,
+  html.app-route .ms-screen--stitch .ms-first-challenge {
+    margin: 0;
+  }
+
+  html.app-route .ms-first-challenge {
+    border-color: rgba(6, 217, 246, 0.32);
+    background:
+      radial-gradient(circle at 94% 6%, rgba(223, 255, 0, 0.42), transparent 30%),
+      linear-gradient(145deg, #103b27 0%, #17613f 54%, #06373a 100%);
+    box-shadow: 0 16px 30px rgba(16, 59, 39, 0.22);
+  }
+
+  html.app-route .ms-first-challenge-icon {
+    background: linear-gradient(145deg, #dfff00, #8eff5b);
+    color: #081b13;
+    box-shadow: 0 0 0 3px rgba(6, 217, 246, 0.48), 0 10px 20px rgba(0, 0, 0, 0.18);
+  }
+
+  html.app-route .ms-first-challenge-copy > span {
+    color: #dfff00;
+  }
+
+  html.app-route .ms-first-challenge h2 {
+    color: #fff;
+  }
+
+  html.app-route .ms-first-challenge p {
+    color: rgba(255, 255, 255, 0.82);
+  }
+
+  html.app-route .ms-challenge-card-cta,
+  html.app-route .ms-challenge-card-link {
+    min-height: 44px;
+    font-size: 13px;
+  }
+
+  html.app-route .ms-challenge-card-cta,
+  html.app-route .ms-challenge-card--coastal .ms-challenge-card-cta,
+  html.app-route .ms-challenge-card--forest .ms-challenge-card-cta,
+  html.app-route .ms-challenge-card--festive .ms-challenge-card-cta {
+    border: 0;
+    color: #fff;
+  }
+
+  html.app-route .ms-first-challenge .ms-challenge-card-link {
+    border-color: rgba(255, 255, 255, 0.34);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+  }
+}
