@@ -69,6 +69,9 @@ async function main() {
     await run(['run', 'qa:active-adventure-banner'], {
       env: { ...env, QA_OUT_DIR: `${releaseEvidenceRoot}/active-adventure-mobile-banner` },
     })
+    await run(['run', 'qa:home-core-actions'], {
+      env: { ...env, QA_OUT_DIR: `${releaseEvidenceRoot}/home-core-actions-touch-safety` },
+    })
     await run(['run', 'qa:visual-integrity'], {
       env: { ...env, QA_OUT_DIR: `${releaseEvidenceRoot}/visual-integrity` },
     })

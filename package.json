@@ -19,6 +19,7 @@
     "qa:achievements-disclosure": "node qa/achievements-mobile-disclosure.mjs",
     "qa:active-adventure-hero": "node qa/active-adventure-mobile-hero.mjs",
     "qa:active-adventure-banner": "node qa/active-adventure-mobile-banner.mjs",
+    "qa:home-core-actions": "node qa/home-core-actions-touch-safety.mjs",
     "qa:visual-integrity": "node qa/visual-integrity-unit.mjs && node qa/visual-integrity.mjs",
     "qa:journey-mobile": "node qa/journey-mobile-clarity.mjs",
     "qa:release": "node qa/release-gate.mjs",
