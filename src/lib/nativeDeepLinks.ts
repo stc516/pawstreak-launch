@@ -2,7 +2,18 @@ import { App as CapacitorApp } from '@capacitor/app'
 import { getSupabaseClient } from './supabase'
 import { NATIVE_APP_SCHEME, isNativeAppRuntime } from './nativeRuntime'
 
-function getInternalPathFromNativeUrl(urlString: string): string | null {
+export function getNativeRouteTarget(
+  url: Pick<URL, 'hostname' | 'pathname'>,
+): string {
+  // Android WebView treats a dotted custom scheme as non-special and parses
+  // `com.pawstreak.app://auth/invite` with an empty hostname plus the pathname
+  // `//auth/invite`. Safari and Node expose `auth` as the hostname instead.
+  // Normalize both shapes before deciding which in-app route to open.
+  if (url.hostname) return `${url.hostname}${url.pathname}`
+  return url.pathname.replace(/^\/\//, '')
+}
+
+export function getInternalPathFromNativeUrl(urlString: string): string | null {
   let url: URL
   try {
     url = new URL(urlString)
@@ -13,7 +24,7 @@ function getInternalPathFromNativeUrl(urlString: string): string | null {
   if (url.protocol !== `${NATIVE_APP_SCHEME}:`) return null
 
   const suffix = `${url.search}${url.hash}`
-  if (url.hostname === 'auth' && url.pathname === '/invite') {
+  if (getNativeRouteTarget(url) === 'auth/invite') {
     return `/app/invite${suffix}`
   }
 

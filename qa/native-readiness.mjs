@@ -86,12 +86,14 @@ async function main() {
       "addListener('appUrlOpen'",
       'getLaunchUrl()',
       'handleNativeUrl',
+      'getNativeRouteTarget',
+      "url.pathname.replace(/^\\/\\//, '')",
       'lastHandledUrl',
       'exchangeCodeForSession',
       '/app/invite',
       "window.dispatchEvent(new PopStateEvent('popstate'))",
     ]) && includesAll(runtime, ['isNativeAppRuntime', 'getNativePlatform', 'NATIVE_APP_SCHEME']),
-    'Warm and cold native URL opens are deduplicated, routed into the PawStreak app shell, and passed through Supabase code exchange.',
+    'Warm and cold native URL opens are deduplicated, normalize Android WebView custom-scheme parsing, route into the PawStreak app shell, and pass through Supabase code exchange.',
   )
 
   record(
