@@ -57,6 +57,9 @@ async function main() {
     await run(['run', 'qa:challenges-first-action'], {
       env: { ...env, QA_OUT_DIR: `${releaseEvidenceRoot}/challenges-mobile-first-action` },
     })
+    await run(['run', 'qa:home-memory-clarity'], {
+      env: { ...env, QA_OUT_DIR: `${releaseEvidenceRoot}/home-memory-placeholder-clarity` },
+    })
     await run(['run', 'qa:visual-integrity'], {
       env: { ...env, QA_OUT_DIR: `${releaseEvidenceRoot}/visual-integrity` },
     })
