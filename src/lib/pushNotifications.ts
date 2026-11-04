@@ -1,4 +1,11 @@
 import { getSupabaseClient } from './supabase'
+import { isNativeAppRuntime } from './nativeRuntime'
+import {
+  disableNativePushNotifications,
+  enableNativePushNotifications,
+  getNativePushState,
+  updateNativePushPreferences,
+} from './nativePushNotifications'
 
 export interface PushPreferences {
   morningEnabled: boolean
@@ -75,6 +82,19 @@ async function saveSubscription(
 }
 
 export async function getPushNotificationState(): Promise<PushNotificationState> {
+  if (isNativeAppRuntime()) {
+    const native = await getNativePushState()
+    return {
+      supported: true,
+      configured: true,
+      installed: true,
+      isIos: /iphone|ipad|ipod/i.test(navigator.userAgent),
+      permission: native.permission,
+      subscribed: native.subscribed,
+      preferences: native.preferences,
+    }
+  }
+
   const supported = isSupported()
   const subscription = supported ? await currentSubscription() : null
   let preferences = DEFAULT_PUSH_PREFERENCES
@@ -112,6 +132,11 @@ export async function getPushNotificationState(): Promise<PushNotificationState>
 export async function enablePushNotifications(
   preferences: PushPreferences = DEFAULT_PUSH_PREFERENCES,
 ): Promise<void> {
+  if (isNativeAppRuntime()) {
+    await enableNativePushNotifications(preferences)
+    return
+  }
+
   if (!isSupported()) throw new Error('Push notifications are not supported on this browser.')
   if (isIosDevice() && !isInstalledApp()) {
     throw new Error('On iPhone, add PawStreak to your Home Screen before enabling notifications.')
@@ -136,6 +161,11 @@ export async function enablePushNotifications(
 }
 
 export async function updatePushPreferences(preferences: PushPreferences): Promise<void> {
+  if (isNativeAppRuntime()) {
+    await updateNativePushPreferences(preferences)
+    return
+  }
+
   const subscription = await currentSubscription()
   if (!subscription) {
     await enablePushNotifications(preferences)
@@ -145,6 +175,11 @@ export async function updatePushPreferences(preferences: PushPreferences): Promi
 }
 
 export async function disablePushNotifications(): Promise<void> {
+  if (isNativeAppRuntime()) {
+    await disableNativePushNotifications()
+    return
+  }
+
   const subscription = await currentSubscription()
   if (!subscription) return
   const supabase = getSupabaseClient()
