@@ -21,6 +21,7 @@
     "qa:active-adventure-banner": "node qa/active-adventure-mobile-banner.mjs",
     "qa:home-core-actions": "node qa/home-core-actions-touch-safety.mjs",
     "qa:mobile-navigation": "node qa/mobile-navigation-touch-safety.mjs",
+    "qa:share-touch": "node qa/share-flow-touch-safety.mjs",
     "qa:visual-integrity": "node qa/visual-integrity-unit.mjs && node qa/visual-integrity.mjs",
     "qa:journey-mobile": "node qa/journey-mobile-clarity.mjs",
     "qa:story-site": "node qa/story-site-smoke.mjs",
