@@ -31,5 +31,6 @@ export function getActiveAdventureParticipantLabel(dogs: Dog[]): string {
 export function getActiveAdventureOutLabel(dogs: Dog[]): string {
   if (!dogs.length) return 'Adventure in progress'
   if (dogs.length === 1) return `${dogs[0].name} is out`
+  if (dogs.length > 2) return `${dogs.length} dogs are out`
   return `${getPackDisplayName(dogs)} are out`
 }
