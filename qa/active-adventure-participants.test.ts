@@ -46,6 +46,7 @@ test('legacy adventures without a selection still display the profile pack', () 
     getActiveAdventureParticipants(state, adventure()).map((dog) => dog.id),
     ['bailey', 'omi', 'other'],
   )
+  assert.equal(getActiveAdventureOutLabel(getActiveAdventureParticipants(state, adventure())), '3 dogs are out')
 })
 
 test('unknown selected dog IDs do not falsely show a different dog', () => {
