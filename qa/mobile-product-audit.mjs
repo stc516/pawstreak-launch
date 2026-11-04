@@ -8,7 +8,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const BASE_URL = process.env.QA_BASE_URL || 'http://127.0.0.1:5173'
 const OUT_DIR = process.env.QA_OUT_DIR || path.join(__dirname, 'evidence', 'mobile-product-audit')
 
-const DEVICE_NAMES = ['iPhone 13', 'iPhone 15 Pro', 'iPhone 15 Pro Max']
+const DEVICE_NAMES = ['iPhone SE (3rd gen)', 'iPhone 15 Pro', 'iPhone 15 Pro Max', 'Pixel 7']
 
 const APP_SCREENS = [
   { id: 'home', label: 'Home', setup: async (page) => {
@@ -17,29 +17,17 @@ const APP_SCREENS = [
     await page.reload({ waitUntil: 'networkidle' })
     await page.waitForTimeout(1500)
   }},
-  { id: 'plan', label: 'Plan', setup: async (page) => {
-    await page.getByRole('button', { name: 'Plan', exact: true }).click()
+  { id: 'plan', label: 'Explore', setup: async (page) => {
+    await page.getByRole('button', { name: 'Explore', exact: true }).click()
     await page.waitForTimeout(1200)
   }},
   { id: 'journey', label: 'Journey', setup: async (page) => {
     await page.getByRole('button', { name: 'Journey', exact: true }).click()
     await page.waitForTimeout(1200)
   }},
-  { id: 'challenges', label: 'Challenges', setup: async (page) => {
-    await page.getByRole('button', { name: 'Challenges', exact: true }).click()
+  { id: 'profile', label: 'Pack', setup: async (page) => {
+    await page.getByRole('button', { name: 'Pack', exact: true }).click()
     await page.waitForTimeout(1200)
-  }},
-  { id: 'profile', label: 'Profile', setup: async (page) => {
-    await page.goto(`${BASE_URL}/demo/app`, { waitUntil: 'networkidle' })
-    await page.waitForTimeout(800)
-    const pill = page.locator('.home-dog-pill').first()
-    if (await pill.isVisible().catch(() => false)) {
-      await pill.click()
-      await page.waitForTimeout(800)
-    } else {
-      await page.getByRole('button', { name: 'Challenges', exact: true }).click()
-      await page.waitForTimeout(400)
-    }
   }},
 ]
 
