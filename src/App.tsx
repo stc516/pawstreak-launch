@@ -197,6 +197,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   const [authLoading, setAuthLoading] = useState(false)
   const [dataHydrated, setDataHydrated] = useState(!useProductionBackend)
   const [splashComplete, setSplashComplete] = useState(false)
+  const [finishReviewRequested, setFinishReviewRequested] = useState(false)
   const [shareCardRequest, setShareCardRequest] = useState<ShareCardRequest | null>(null)
   const [productTourStep, setProductTourStep] = useState<number | null>(() =>
     new URLSearchParams(window.location.search).get('tour') === '1' ? 0 : null,
@@ -922,8 +923,9 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     cancelAdventure()
   }
 
-  const finishActiveAdventureFromBanner = () => {
-    void finishAdventure({ recapLabels: ['Loved every second'] })
+  const reviewActiveAdventureFinish = () => {
+    setFinishReviewRequested(true)
+    focusActiveAdventure()
   }
 
   const closeCommunityCompose = () => {
@@ -1865,7 +1867,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     <ActiveAdventureBanner
       state={state}
       onResume={focusActiveAdventure}
-      onFinish={finishActiveAdventureFromBanner}
+      onReviewFinish={reviewActiveAdventureFinish}
       onCancel={requestCancelAdventure}
     />
   ) : null
@@ -1884,6 +1886,8 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
           state.activeAdventure?.started ? minimizeActiveAdventure : undefined
         }
         onAddPhoto={addAdventurePhoto}
+        finishReviewRequested={finishReviewRequested}
+        onFinishReviewShown={() => setFinishReviewRequested(false)}
       />
     </div>
   ) : null

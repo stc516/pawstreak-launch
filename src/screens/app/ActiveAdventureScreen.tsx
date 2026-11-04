@@ -25,6 +25,8 @@ interface ActiveAdventureScreenProps {
   onFinish: (payload: AdventureFinishPayload) => void | Promise<void>
   onMinimize?: () => void
   onAddPhoto: (photoDataUrl: string) => void
+  finishReviewRequested?: boolean
+  onFinishReviewShown?: () => void
 }
 
 export function ActiveAdventureScreen({
@@ -34,8 +36,11 @@ export function ActiveAdventureScreen({
   onFinish,
   onMinimize,
   onAddPhoto,
+  finishReviewRequested = false,
+  onFinishReviewShown,
 }: ActiveAdventureScreenProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const finishReviewRef = useRef<HTMLElement>(null)
   const [, setTick] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
   const [isFinishing, setIsFinishing] = useState(false)
@@ -89,6 +94,17 @@ export function ActiveAdventureScreen({
       window.setTimeout(() => setPhotoSaveMessage(null), 3200)
     })
   }, [isStarted, onAddPhoto])
+
+  useEffect(() => {
+    if (!isStarted || !finishReviewRequested) return
+
+    const frame = window.requestAnimationFrame(() => {
+      finishReviewRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      onFinishReviewShown?.()
+    })
+
+    return () => window.cancelAnimationFrame(frame)
+  }, [finishReviewRequested, isStarted, onFinishReviewShown])
 
   const handleCaptureClick = async () => {
     try {
@@ -376,7 +392,12 @@ export function ActiveAdventureScreen({
             </div>
           )}
 
-          <section className="adventure-finish-payoff" aria-label="Adventure payoff">
+          <section
+            ref={finishReviewRef}
+            className="adventure-finish-payoff"
+            aria-label="Adventure payoff"
+            data-testid="adventure-finish-review"
+          >
             <div className="adventure-finish-payoff-dogs" aria-hidden="true">
               {getProfileDogs(state).slice(0, 2).map((dog) => (
                 <span key={dog.id} className={`adventure-finish-dog ${dog.avatarClass}`}>
