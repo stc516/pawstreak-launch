@@ -16289,6 +16289,196 @@ select.field-input {
   background: #ffedd5;
 }
 
+.journey-memory-no-photo {
+  --memory-sky-top: #a8dcec;
+  --memory-sky-bottom: #f8dd9a;
+  --memory-land-far: #4d8c68;
+  --memory-land-near: #244f3c;
+  --memory-route: #f2d29a;
+  --memory-accent: #ffca52;
+  position: relative;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.5), transparent 22%),
+    linear-gradient(165deg, var(--memory-sky-top), var(--memory-sky-bottom));
+  isolation: isolate;
+}
+
+.journey-memory-no-photo--coast {
+  --memory-sky-top: #79cae9;
+  --memory-sky-bottom: #fff0b7;
+  --memory-land-far: #3eb7b0;
+  --memory-land-near: #167b83;
+  --memory-route: #ffe2a1;
+  --memory-accent: #fff078;
+}
+
+.journey-memory-no-photo--trail {
+  --memory-sky-top: #9bc9b0;
+  --memory-sky-bottom: #f1d08e;
+  --memory-land-far: #47764e;
+  --memory-land-near: #214632;
+  --memory-route: #d9b56c;
+  --memory-accent: #ffd45f;
+}
+
+.journey-memory-no-photo--patio {
+  --memory-sky-top: #f4a57d;
+  --memory-sky-bottom: #ffe3a4;
+  --memory-land-far: #a8553e;
+  --memory-land-near: #623629;
+  --memory-route: #f7c977;
+  --memory-accent: #fff176;
+}
+
+.journey-memory-no-photo--road {
+  --memory-sky-top: #9298df;
+  --memory-sky-bottom: #ffc77a;
+  --memory-land-far: #56607b;
+  --memory-land-near: #30384f;
+  --memory-route: #f5d99a;
+  --memory-accent: #ffca5a;
+}
+
+.journey-memory-no-photo--park {
+  --memory-sky-top: #9fd7bf;
+  --memory-sky-bottom: #f5dc91;
+  --memory-land-far: #5f9664;
+  --memory-land-near: #2d5a3c;
+  --memory-route: #e7c880;
+  --memory-accent: #ffe36f;
+}
+
+.journey-memory-scene-sun {
+  position: absolute;
+  z-index: 0;
+  top: 17px;
+  right: 22px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--memory-accent);
+  box-shadow: 0 0 0 11px color-mix(in srgb, var(--memory-accent) 28%, transparent);
+}
+
+.journey-memory-scene-land {
+  position: absolute;
+  z-index: 0;
+  right: -16%;
+  left: -16%;
+  border-radius: 50% 50% 0 0;
+  transform: rotate(-3deg);
+}
+
+.journey-memory-scene-land--far {
+  bottom: 24%;
+  height: 47%;
+  background: var(--memory-land-far);
+  opacity: 0.84;
+}
+
+.journey-memory-scene-land--near {
+  bottom: -23%;
+  height: 68%;
+  background: var(--memory-land-near);
+  transform: rotate(3deg);
+}
+
+.journey-memory-scene-route {
+  position: absolute;
+  z-index: 1;
+  bottom: -25%;
+  left: 52%;
+  width: 32%;
+  height: 72%;
+  border-radius: 55% 45% 0 0;
+  background: var(--memory-route);
+  transform: rotate(13deg) skewX(-9deg);
+  opacity: 0.9;
+}
+
+.journey-memory-fallback-dog {
+  position: absolute;
+  z-index: 3;
+  right: 14px;
+  bottom: 12px;
+  display: grid;
+  width: 50px;
+  height: 50px;
+  overflow: hidden;
+  place-items: center;
+  border: 3px solid rgba(255, 255, 255, 0.9);
+  border-radius: 43% 57% 48% 52%;
+  background: var(--memory-accent);
+  box-shadow: 0 8px 18px rgba(17, 44, 33, 0.28);
+  font-size: 27px;
+  transform: rotate(4deg);
+}
+
+.journey-memory-fallback-dog img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.journey-memory-fallback-badge {
+  position: absolute;
+  z-index: 3;
+  top: 12px;
+  left: 12px;
+  display: inline-flex;
+  min-height: 27px;
+  align-items: center;
+  gap: 5px;
+  padding: 0 9px;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 999px;
+  background: rgba(22, 54, 39, 0.64);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+}
+
+.journey-memory-fallback-badge i {
+  color: var(--memory-accent);
+  font-size: 14px;
+}
+
+.journey-memory-fallback-caption {
+  position: absolute;
+  z-index: 3;
+  right: 75px;
+  bottom: 14px;
+  left: 13px;
+  color: #fff;
+  text-shadow: 0 2px 9px rgba(13, 35, 26, 0.46);
+}
+
+.journey-memory-fallback-caption strong,
+.journey-memory-fallback-caption small {
+  display: block;
+}
+
+.journey-memory-fallback-caption strong {
+  font-family: Literata, Georgia, serif;
+  font-size: 17px;
+  line-height: 1.04;
+}
+
+.journey-memory-fallback-caption small {
+  margin-top: 3px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 9px;
+  font-weight: 800;
+}
+
 .journey-memory-copy {
   display: block;
   padding: 8px 2px 2px;
@@ -16409,6 +16599,10 @@ select.field-input {
   }
 
   .journey-memory-photo {
+    aspect-ratio: 16 / 9;
+  }
+
+  .journey-memory-no-photo {
     aspect-ratio: 16 / 9;
   }
 
