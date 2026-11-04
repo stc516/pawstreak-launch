@@ -16210,6 +16210,73 @@ select.field-input {
   opacity: 0.88;
 }
 
+/* A phone-sized Journey reads as one story rail. The alternating path remains on larger screens. */
+@media (max-width: 520px) {
+  .journey-save-confirmation {
+    position: relative;
+    inset: auto;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto 10px;
+    transform: none;
+    text-align: center;
+    animation: journey-confirmation-in 0.34s cubic-bezier(.16, 1, .3, 1);
+  }
+
+  .journey-memory-track {
+    gap: 10px;
+    padding: 6px 0 8px 18px;
+  }
+
+  .journey-memory-spine {
+    top: 20px;
+    bottom: 24px;
+    left: 8px;
+    width: 3px;
+    transform: none;
+  }
+
+  .journey-memory-node--left,
+  .journey-memory-node--right {
+    justify-content: stretch;
+    padding: 0;
+  }
+
+  .journey-memory-card {
+    width: 100%;
+    max-width: none;
+  }
+
+  .journey-memory-dot {
+    top: 18px;
+    right: auto;
+    left: -19px;
+    width: 20px;
+    height: 20px;
+    border-width: 2px;
+    font-size: 9px;
+  }
+
+  .journey-memory-photo {
+    aspect-ratio: 16 / 9;
+  }
+
+  .journey-memory-photo-count {
+    bottom: 86px;
+  }
+}
+
+@keyframes journey-confirmation-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 .journey-everyday-walks {
   margin-top: 16px;
   padding-top: 14px;

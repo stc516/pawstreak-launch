@@ -41,7 +41,7 @@ export function JourneyScreen({
   return (
     <>
       {state.memorySaveToast ? (
-        <div className="memory-toast" role="status">
+        <div className="memory-toast journey-save-confirmation" role="status">
           {state.memorySaveToast}
         </div>
       ) : null}
