@@ -1,4 +1,4 @@
-# PawStreak rolling product-preview buffer — October 31–November 9, 2026
+# PawStreak rolling product-preview buffer — October 31–November 10, 2026
 
 Prepared October 30, 2026. All items are **Pending approval** and **Unpublished**. Every primary asset is a real 390 × 844 capture from the running PawStreak application at commit `02dd7f85`; the visible `DEMO` label is retained so the preview state is unambiguous.
 
@@ -16,6 +16,7 @@ Prepared October 30, 2026. All items are **Pending approval** and **Unpublished*
 | Nov 7 | PS-20261107-08 | `../../screenshots/04-adventure-detail.png` + `../../screenshots/05-adventure-ready.png` | Two-frame carousel | Pending approval |
 | Nov 8 | PS-20261108-09 | `../../screenshots/07-journey-memory.png` | Feed / Story | Pending approval |
 | Nov 9 | PS-20261109-10 | `../../screenshots/03-discover-adventure-mode.png` | Story / Feed poll | Pending approval |
+| Nov 10 | PS-20261110-11 | `../../screenshots/01-adventure-launch-home.png` | Feed / Story | Pending approval |
 
 ## PS-20261031-01 — A better dog day starts here
 
@@ -111,3 +112,15 @@ As of November 3, the November 3–9 seven-day buffer contains seven **pending-a
 ## Approval boundary
 
 Nothing in this queue is scheduled or published. Do not crop away the `DEMO` label, add unverified launch claims, or replace these captures with fabricated UI.
+
+## PS-20261110-11 — The everyday adventure still counts
+
+- **Hook:** Not every adventure needs a trailhead.
+- **Caption:** Product preview: PawStreak Home has a Quick Walk option for days when a neighborhood loop fits better than a full outing. A real dog day matters more than a perfect itinerary. This is an authentic running-app demo, not a customer's recorded walk.
+- **CTA:** Where does your dog always ask for one extra stop?
+- **Hashtags:** `#PawStreak #DogAdventures #QuickWalk #ProductPreview`
+- **Feed asset:** `../../screenshots/01-adventure-launch-home.png` — real app demo capture, visible `DEMO` label retained.
+- **Story companion:** `../../stories/01-adventure-launch-home.png`; poll: “Today's adventure?” Neighborhood loop / Destination day.
+- **Reel option:** Only use a genuine, relevant Quick Walk segment from the verified `../../videos/pawstreak-demo-flow.webm` if it actually appears; otherwise do not produce a Reel from this concept. No fabricated footage.
+
+As of November 4, **November 4–10** has seven consecutive pending-approval entries. The screenshot/video set is historical authenticated-demo evidence (October 31), not a fresh November 4 device capture. No posts were published.
