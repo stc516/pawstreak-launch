@@ -51,6 +51,9 @@ async function main() {
     await run(['run', 'qa:finish-review'], {
       env: { ...env, QA_OUT_DIR: `${releaseEvidenceRoot}/active-adventure-finish-review` },
     })
+    await run(['run', 'qa:plan-first-action'], {
+      env: { ...env, QA_OUT_DIR: `${releaseEvidenceRoot}/plan-mobile-first-action` },
+    })
     await run(['run', 'qa:visual-integrity'], {
       env: { ...env, QA_OUT_DIR: `${releaseEvidenceRoot}/visual-integrity` },
     })

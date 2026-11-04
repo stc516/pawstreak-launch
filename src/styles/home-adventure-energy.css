@@ -1231,6 +1231,113 @@
   box-shadow: 0 12px 24px rgba(255, 77, 0, 0.22) !important;
 }
 
+/* Keep the first real Explore action above the mobile nav instead of burying it
+   below three oversized presentation blocks. */
+@media (max-width: 520px) {
+  .plan-screen-header {
+    padding: 10px 11px 11px;
+  }
+
+  .plan-screen-header .app-brand-lockup--screen {
+    display: none;
+  }
+
+  .plan-screen-header .alogo {
+    max-width: 10ch;
+    font-size: 25px;
+    line-height: 0.94;
+  }
+
+  .plan-screen-sub {
+    max-width: 17rem;
+    margin: 3px 0 0;
+    font-size: 11px;
+    line-height: 1.24;
+  }
+
+  .plan-screen-header .share-inline-btn {
+    min-height: 38px;
+    margin: 0;
+    padding: 0 10px;
+    font-size: 11px;
+  }
+
+  .explore-hype {
+    min-height: 104px;
+    padding: 13px 14px !important;
+  }
+
+  .explore-hype-copy {
+    max-width: calc(100% - 56px);
+  }
+
+  .explore-hype-copy strong {
+    max-width: 14ch !important;
+    font-size: 21px !important;
+    line-height: 0.96 !important;
+  }
+
+  .explore-hype-dog {
+    top: 13px !important;
+    right: 13px !important;
+    width: 42px !important;
+    height: 42px !important;
+  }
+
+  .explore-hype-words {
+    display: none !important;
+  }
+
+  .curated-spotlight-art.card-img {
+    min-height: 182px;
+  }
+
+  .curated-spotlight-art > .card-img-placeholder {
+    display: none;
+  }
+
+  .curated-spotlight-copy {
+    right: 68px;
+    bottom: 12px;
+    gap: 3px;
+  }
+
+  .curated-spotlight-copy h2 {
+    font-size: clamp(28px, 7.8vw, 34px);
+  }
+
+  .curated-spotlight-copy p {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .curated-spotlight-dog {
+    right: 9px;
+    bottom: 12px;
+  }
+
+  .curated-spotlight-panel {
+    gap: 8px;
+    padding: 10px 11px 11px;
+  }
+
+  .curated-spotlight-meta span {
+    min-height: 48px;
+    padding: 6px;
+  }
+
+  .curated-spotlight-panel > p {
+    display: none;
+  }
+
+  .curated-spotlight-start,
+  .curated-spotlight-map {
+    min-height: 44px;
+  }
+}
+
 @media (max-width: 360px) {
   .home-adventure-launch-copy h1 {
     max-width: 11ch;
