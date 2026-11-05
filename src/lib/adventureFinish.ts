@@ -71,5 +71,7 @@ export function buildFavoriteMoment(recapLabels: string[], dogs: Dog[] = []): st
   if (recapLabels.includes('Met new friends')) {
     return 'The moment tails started wagging at the same time.'
   }
-  return 'The quiet middle of the outing — when everything felt easy.'
+  return recapLabels.length === 0
+    ? 'A day out together.'
+    : 'The quiet middle of the outing — when everything felt easy.'
 }
