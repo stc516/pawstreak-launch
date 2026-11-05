@@ -1115,7 +1115,7 @@ export function createJourneyEntryFromNeighborhoodWalk(
   const memoryMood =
     recapLabels.includes('Needed a slower pace') ? 'Calm + close' :
     recapLabels.includes('Loved every second') ? 'Joyful + tired' :
-    'Warm + steady'
+    recapLabels.length > 0 ? 'Warm + steady' : undefined
 
   return {
     id: `neighborhood-walk-${Date.now()}`,
@@ -1124,7 +1124,7 @@ export function createJourneyEntryFromNeighborhoodWalk(
     date: 'Today',
     occurredAt: new Date().toISOString(),
     magicLine: 'Around the neighborhood',
-    tags: ['Neighborhood', 'Around the neighborhood', dogNamesLabel(dogs), 'Loved it'],
+    tags: ['Neighborhood', 'Around the neighborhood', dogNamesLabel(dogs), ...(recapLabels.includes('Loved every second') ? ['Loved it'] : [])],
     photoUrls: options.photoUrls?.length ? options.photoUrls : undefined,
     durationLabel: options.durationLabel,
     recapLabels: recapLabels.length > 0 ? recapLabels : undefined,
@@ -1152,7 +1152,7 @@ export function createJourneyEntryFromPlace(
   const memoryMood =
     recapLabels.includes('Needed a slower pace') ? 'Calm + close' :
     recapLabels.includes('Loved every second') ? 'Joyful + tired' :
-    'Warm + steady'
+    recapLabels.length > 0 ? 'Warm + steady' : undefined
 
   return {
     id: `adventure-${place.id}-${Date.now()}`,
@@ -1161,7 +1161,7 @@ export function createJourneyEntryFromPlace(
     date: 'Today',
     occurredAt: new Date().toISOString(),
     magicLine: getMagicLine(place),
-    tags: [place.category, place.leashInfo, dogNamesLabel(dogs), 'Loved it'],
+    tags: [place.category, place.leashInfo, dogNamesLabel(dogs), ...(recapLabels.includes('Loved every second') ? ['Loved it'] : [])],
     photoUrls: options.photoUrls?.length ? options.photoUrls : undefined,
     durationLabel: options.durationLabel,
     recapLabels: recapLabels.length > 0 ? recapLabels : undefined,
