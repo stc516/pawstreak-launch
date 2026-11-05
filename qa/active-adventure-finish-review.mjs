@@ -67,6 +67,30 @@ try {
     'Recap choices and photo review are visible before the final save',
   )
 
+  const recapChips = page.locator('.rchips--memory .rc')
+  const firstRecap = recapChips.first()
+  const recapOptionsCount = await recapChips.count()
+  const initiallyPressed = await recapChips.locator('[aria-pressed="true"]').count()
+  record(
+    'recaps-are-optional',
+    recapOptionsCount > 0 && initiallyPressed === 0,
+    `${recapOptionsCount} options, ${initiallyPressed} preselected; no invented sentiment`,
+  )
+  if (recapOptionsCount > 0) {
+    await firstRecap.click()
+    record(
+      'recap-toggle-accessible',
+      await firstRecap.getAttribute('aria-pressed') === 'true',
+      'Selected recap reports pressed state to assistive technologies',
+    )
+    await firstRecap.click()
+    record(
+      'recap-can-be-cleared',
+      await firstRecap.getAttribute('aria-pressed') === 'false',
+      'Deselected recap does not reintroduce a default choice',
+    )
+  }
+
   await page.getByRole('button', { name: 'Finish adventure and save memory', exact: true }).click()
   await page.locator('.share-preview-shell').waitFor({ state: 'visible' })
   const afterSave = await page.evaluate(() => {
@@ -74,8 +98,14 @@ try {
     return {
       hasActiveAdventure: Boolean(state.activeAdventure),
       journeyCount: state.journeyEntries?.length ?? 0,
+      newestRecapLabels: state.journeyEntries?.[0]?.recapLabels ?? null,
     }
   })
+  record(
+    'no-invented-recap-on-save',
+    Array.isArray(afterSave.newestRecapLabels) && afterSave.newestRecapLabels.length === 0,
+    `Saved recap labels: ${JSON.stringify(afterSave.newestRecapLabels)}`,
+  )
   record(
     'explicit-save-completes',
     !afterSave.hasActiveAdventure && afterSave.journeyCount === beforeReview.journeyCount + 1,
