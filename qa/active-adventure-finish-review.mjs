@@ -70,7 +70,7 @@ try {
   const recapChips = page.locator('.rchips--memory .rc')
   const firstRecap = recapChips.first()
   const recapOptionsCount = await recapChips.count()
-  const initiallyPressed = await recapChips.locator('[aria-pressed="true"]').count()
+  const initiallyPressed = await page.locator('.rchips--memory .rc[aria-pressed="true"]').count()
   record(
     'recaps-are-optional',
     recapOptionsCount > 0 && initiallyPressed === 0,
@@ -99,12 +99,16 @@ try {
       hasActiveAdventure: Boolean(state.activeAdventure),
       journeyCount: state.journeyEntries?.length ?? 0,
       newestRecapLabels: state.journeyEntries?.[0]?.recapLabels ?? null,
+      newestTags: state.journeyEntries?.[0]?.tags ?? [],
+      newestMood: state.journeyEntries?.[0]?.memoryMood ?? null,
     }
   })
   record(
     'no-invented-recap-on-save',
-    Array.isArray(afterSave.newestRecapLabels) && afterSave.newestRecapLabels.length === 0,
-    `Saved recap labels: ${JSON.stringify(afterSave.newestRecapLabels)}`,
+    (afterSave.newestRecapLabels === null ||
+      (Array.isArray(afterSave.newestRecapLabels) && afterSave.newestRecapLabels.length === 0)) &&
+      !afterSave.newestTags.includes('Loved it') && afterSave.newestMood === null,
+    `Saved recap=${JSON.stringify(afterSave.newestRecapLabels)}, tags=${JSON.stringify(afterSave.newestTags)}, mood=${afterSave.newestMood}`, 
   )
   record(
     'explicit-save-completes',
