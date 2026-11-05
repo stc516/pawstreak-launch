@@ -1,4 +1,4 @@
-# PawStreak rolling product-preview buffer — October 31–November 10, 2026
+# PawStreak rolling product-preview buffer — October 31–November 11, 2026
 
 Prepared October 30, 2026. All items are **Pending approval** and **Unpublished**. Every primary asset is a real 390 × 844 capture from the running PawStreak application at commit `02dd7f85`; the visible `DEMO` label is retained so the preview state is unambiguous.
 
@@ -17,6 +17,7 @@ Prepared October 30, 2026. All items are **Pending approval** and **Unpublished*
 | Nov 8 | PS-20261108-09 | `../../screenshots/07-journey-memory.png` | Feed / Story | Pending approval |
 | Nov 9 | PS-20261109-10 | `../../screenshots/03-discover-adventure-mode.png` | Story / Feed poll | Pending approval |
 | Nov 10 | PS-20261110-11 | `../../screenshots/01-adventure-launch-home.png` | Feed / Story | Pending approval |
+| Nov 11 | PS-20261111-12 | `../../screenshots/02-todays-pick-card.png` | Feed / Story | Pending approval |
 
 ## PS-20261031-01 — A better dog day starts here
 
@@ -124,3 +125,15 @@ Nothing in this queue is scheduled or published. Do not crop away the `DEMO` lab
 - **Reel option:** Only use a genuine, relevant Quick Walk segment from the verified `../../videos/pawstreak-demo-flow.webm` if it actually appears; otherwise do not produce a Reel from this concept. No fabricated footage.
 
 As of November 4, **November 4–10** has seven consecutive pending-approval entries. The screenshot/video set is historical authenticated-demo evidence (October 31), not a fresh November 4 device capture. No posts were published.
+
+## PS-20261111-12 — One good idea can get you out the door
+
+- **Hook:** You don't need the perfect plan. Just a good first idea.
+- **Caption:** Product preview: PawStreak's Today's Pick offers a starting point when you want a dog day but don't know where to begin. This is a real running-app **DEMO** screenshot, not a personalized recommendation for the viewer or a claim of live place availability.
+- **CTA:** Would you try the suggested outing or choose your own?
+- **Hashtags:** `#PawStreak #DogAdventures #AdventureIdeas #ProductPreview`
+- **Feed asset:** `../../screenshots/02-todays-pick-card.png` (manifest-backed October 31 authentic app demo).
+- **Story companion:** `../../stories/02-todays-pick-card.png`; poll: “When plans are open?” Try today's pick / Choose my own.
+- **Reel option:** Do not create a new Reel or claim new screen recording. Existing `../../videos/pawstreak-demo-flow.webm` may be reused only if it actually shows this UI.
+
+As of November 5, the **November 5–11** buffer contains seven consecutive entries, all pending approval and unpublished. No fresh live browser capture was possible; original DEMO watermark stays visible and no new customer adventures or destinations are represented.
