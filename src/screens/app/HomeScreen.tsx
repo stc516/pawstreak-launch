@@ -267,7 +267,7 @@ export function HomeScreen({
             imageUrl={state.activeAdventure ? activeImageUrl : todayEntry ? todayPhoto : heroImageUrl}
             imageAlt={state.activeAdventure?.location ?? todayEntry?.place ?? heroPlace.name}
             imageTone={activePlace?.imageTone ?? heroPlace.imageTone ?? 'warm'}
-            placeholderLabel={state.activeAdventure ? 'Adventure in progress' : 'No photo added'}
+            placeholderLabel={state.activeAdventure ? (state.activeAdventure.started ? 'Adventure in progress' : 'Adventure ready') : 'No photo added'}
           >
             <div className="home-adventure-stage-scrim" aria-hidden="true" />
             <div className="home-adventure-stage-copy">
