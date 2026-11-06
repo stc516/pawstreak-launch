@@ -1,4 +1,4 @@
-# PawStreak Story companions — October 31–November 11, 2026
+# PawStreak Story companions — October 31–November 12, 2026
 
 All items are pending approval and retain the visible `DEMO` label.
 
@@ -16,3 +16,4 @@ All items are pending approval and retain the visible `DEMO` label.
 | Nov 9 | `../../stories/03-discover-adventure-mode.png` | Poll: “This week's pick?” Trail / Beach; existing real DEMO app capture, no availability claim |
 | Nov 10 | `../../stories/01-adventure-launch-home.png` | Poll: “Today’s adventure?” Neighborhood loop / Destination day; authentic Home DEMO capture; no user-activity claim |
 | Nov 11 | `../../stories/02-todays-pick-card.png` | Poll: “When plans are open?” Try today's pick / Choose my own; DEMO capture only |
+| Nov 12 | `../../stories/04-adventure-detail.png` | Poll: “Before a new dog-friendly outing?” Check access / Check weather; actual October 31 DEMO detail screen, no live rules claim |
