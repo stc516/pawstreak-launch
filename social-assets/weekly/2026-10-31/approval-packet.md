@@ -1,4 +1,4 @@
-# PawStreak rolling product-preview buffer — October 31–November 11, 2026
+# PawStreak rolling product-preview buffer — October 31–November 12, 2026
 
 Prepared October 30, 2026. All items are **Pending approval** and **Unpublished**. Every primary asset is a real 390 × 844 capture from the running PawStreak application at commit `02dd7f85`; the visible `DEMO` label is retained so the preview state is unambiguous.
 
@@ -18,6 +18,7 @@ Prepared October 30, 2026. All items are **Pending approval** and **Unpublished*
 | Nov 9 | PS-20261109-10 | `../../screenshots/03-discover-adventure-mode.png` | Story / Feed poll | Pending approval |
 | Nov 10 | PS-20261110-11 | `../../screenshots/01-adventure-launch-home.png` | Feed / Story | Pending approval |
 | Nov 11 | PS-20261111-12 | `../../screenshots/02-todays-pick-card.png` | Feed / Story | Pending approval |
+| Nov 12 | PS-20261112-13 | `../../screenshots/04-adventure-detail.png` | Story / Feed saveable tip | Pending approval |
 
 ## PS-20261031-01 — A better dog day starts here
 
@@ -137,3 +138,16 @@ As of November 4, **November 4–10** has seven consecutive pending-approval ent
 - **Reel option:** Do not create a new Reel or claim new screen recording. Existing `../../videos/pawstreak-demo-flow.webm` may be reused only if it actually shows this UI.
 
 As of November 5, the **November 5–11** buffer contains seven consecutive entries, all pending approval and unpublished. No fresh live browser capture was possible; original DEMO watermark stays visible and no new customer adventures or destinations are represented.
+
+
+## PS-20261112-13 — Plan for the dog beside you
+
+- **Hook:** A better dog day begins with the right details.
+- **Caption:** Product preview: PawStreak's actual adventure-detail demo gives you a place to consider an outing before you head out. It is not a live report of leash rules, parking, hours or access. Always check the current official rules for the place you choose.
+- **CTA:** What's your first check before a new dog-friendly outing: access rules, weather, or water?
+- **Hashtags:** `#PawStreak #DogAdventurePlanning #DogFriendly #ProductPreview`
+- **Feed screenshot:** `../../screenshots/04-adventure-detail.png`, real October 31 running-app DEMO capture; do not remove DEMO marking or claim current local facts.
+- **Story image and poll:** `../../stories/04-adventure-detail.png`; “Before a new dog-friendly outing?” Check access / Check weather.
+- **Reel alternative:** No new video was recorded. Do not claim a Reel without a verified relevant segment from the existing demo video.
+
+**November 6–12:** seven consecutive unpublished, approval-pending posts are now buffered in the CSV. All 13 archived-to-current queue entries use the verified October 31 real-app demo asset manifest `social-assets/assets.json` (commit `02dd7f85`); no fresh screenshots, customer photos, location facts, social uploads or scheduling claimed. Remote browser still requires its originating context.
