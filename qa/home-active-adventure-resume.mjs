@@ -68,7 +68,7 @@ try {
   const mainCta = page.locator('.today-primary-action')
   await mainCta.waitFor()
   assert.match(await mainCta.innerText(), new RegExp('Return to', 'i'))
-  assert.match(await mainCta.innerText(), new RegExp(before.location.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'))
+  assert.ok((await mainCta.innerText()).includes(before.location), 'Main CTA must name the active place')
   await page.screenshot({ path: path.join(out, '02-home-return-cta.png') })
   await mainCta.click()
   await page.locator('.clock-bg--active').waitFor()
