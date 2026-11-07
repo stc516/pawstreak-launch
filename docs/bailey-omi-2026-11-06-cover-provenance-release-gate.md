@@ -47,4 +47,4 @@ Primary sources: [Local Author Exhibit rules](https://www.sandiego.gov/public-li
 3. **Check Amazon both editions as a real shopper and test consented signup/unsubscribe.** Only after verification, approve one existing social slot, library pitch and the optional free-family-activity site link.
 4. **Then** review the actual Book 2 manuscript/illustration needs against the Official Creative Bible, without touching finished Book 1 KDP art.
 
-**Change classification:** 3 corrections to previously **unmerged** PR branch HTML assets + this new docs note. No production deployment, public publishing, or spending.
+**Change classification:** 3 corrected previously **unmerged** PR-branch HTML assets, 4 corrected unmerged social-buffer Markdown files, and this new documentation note. No production deployment, social publishing, KDP change, email send, or spending.
