@@ -5,7 +5,7 @@
 ## Source of truth and publishing safeguards
 - Series: [Bailey & Omi Adventures](https://pawstreakapp.com/bailey-and-omi); Book 1: [Bailey's Big Climb](https://pawstreakapp.com/bailey-and-omi/big-climb); author **S.T. Carroll**; intended readers **ages 3–7**.
 - The repository's public book pages contain paperback [B0HMFT1R5P](https://www.amazon.com/dp/B0HMFT1R5P) and Kindle [B0HMDMQ4Y3](https://www.amazon.com/dp/B0HMDMQ4Y3) links. **External Amazon live product pages and current price/availability could not be independently checked this run**. Before using any "buy now" claim or price, open both live product listings and check exact title, author, format, availability and price. Until then, link the Book 1 page, not directly to an unverified listing.
-- **Only approved source images:** `public/bailey-and-omi/woodland-together.webp` (real dogs in snow), `public/bailey-and-omi/real-dogs-together.webp` (real dogs), `public/bailey-and-omi/together.webp` (approved staircase illustration), `public/bailey-and-omi/big-climb.webp` (Book 1 cover). Confirm image paths/file permissions when producing final media.
+- **Only approved source images:** `public/bailey-and-omi/woodland-together.webp` (real dogs in snow), `public/bailey-and-omi/real-dogs-together.webp` (real dogs), `public/bailey-and-omi/together.webp` (approved staircase illustration), `public/bailey-and-omi/big-climb.webp` (approved Book 1 scene illustration; NOT the finished cover). Confirm image paths/file permissions when producing final media.
 - Preserve watercolor/colored-pencil character style. Do not fabricate book spreads, reviews, endorsements, customer photos, or real-life events. Use only approved imagery. If individual crops are needed, crop existing approved real photos with Bailey/Omi accurately identified; do not synthesize dogs.
 - A caption is **not** a finished graphic. Publish only after final art is prepared, link destination is checked, and owner authorizes public posting. Use at most five hashtags per Instagram post.
 - Keep public reader signups consent-based. Do not send bulk cold email to families.
@@ -22,11 +22,11 @@
 **Asset checklist:** Crop in 4:5 without stretching, keep artwork legible, avoid overlay over dog faces.
 
 ### Day 2 — One small brave step
-**Format:** Book 1 cover, 4:5 static post.  
+**Format:** Book 1 scene illustration, 4:5 static post. Do not present it as the printed front cover.  
 **On-image headline:** “Courage starts small.”  
 **Caption:** “Sometimes the biggest adventure begins with the smallest step. In *Bailey’s Big Climb*, an unsure puppy faces a staircase that feels enormous. Omi is nearby, but Bailey has to discover her own courage. A gentle read-together story for ages 3–7. Explore the book and its family activity at the link in bio.”  
 **CTA:** Book 1 page. **Hashtags:** #BaileysBigClimb #PictureBooks #Storytime #BooksForKids  
-**Alt text:** “Illustrated cover of Bailey’s Big Climb, featuring a black-and-white Husky puppy with a green collar looking up a staircase.”  
+**Alt text:** “Approved watercolor scene illustration from Bailey’s Big Climb, featuring a black-and-white Husky puppy with a green collar looking up a staircase.”  
 **Story:** Poll: “What feels like a big step?” choices “Trying something new / Asking for help”.
 
 ### Day 3 — Meet Bailey
@@ -50,19 +50,19 @@
 **On-image headline:** “From real adventures to painted pages.”  
 **Caption:** “One of the most important parts of creating Bailey & Omi was keeping the dogs recognizable. Bailey’s blue eyes and green collar. Omi’s pointed ears and pink collar. Their different personalities. The watercolor artwork brings those details into a world children can explore together. Swipe to see the real dogs, the illustration, and Book 1.”  
 **CTA:** Book 1 page. **Hashtags:** #PictureBookArt #WatercolorIllustration #BaileyAndOmi #KidsBooks  
-**Alt text:** “Carousel showing the real dogs, their approved warm watercolor illustration, and the cover of Bailey’s Big Climb.”  
+**Alt text:** “Carousel showing the real dogs, their approved warm watercolor illustration, and a scene illustration from Bailey’s Big Climb.”  
 **Story:** One 9:16 art comparison frame; label “Real dogs” / “Book illustration.”
 
 ### Day 6 — Read it, then try a little adventure
-**Format:** Story-first post or 3-slide carousel featuring cover + short original typography card + real dog photo.  
+**Format:** Story-first post or 3-slide carousel featuring Book 1 scene art + short original typography card + real dog photo.  
 **On-image headline:** “What’s your little big climb?”  
 **Caption:** “After storytime, ask: ‘What is one little new thing we could try?’ Maybe a different walking path, a new scent in the park, or simply watching something unfamiliar from a comfortable distance. Let your dog set the pace. No pushing, no rushing—just curiosity and time together. There’s a gentle family activity alongside *Bailey’s Big Climb* at the link in bio.”  
 **CTA:** Book 1 activity section. **Hashtags:** #FamilyStorytime #BaileysBigClimb #DogAdventures #ReadingTogether  
-**Alt text:** “Bailey’s Big Climb cover alongside an original family-activity text card and an approved real-dog photograph.”  
+**Alt text:** “Bailey’s Big Climb scene illustration alongside an original family-activity text card and an approved real-dog photograph.”  
 **Story:** Three frames: “Choose a little something new” → “Let your dog decide the pace” → “Remember the moment.” Adult supervision and leash rules apply.
 
 ### Day 7 — The next adventure
-**Format:** Real dogs together + short book cover inset, not a fictional Book 2 cover.  
+**Format:** Real dogs together + small labelled Book 1 scene-art inset, not a fictional Book 2 cover.  
 **On-image headline:** “This is only their first adventure.”  
 **Caption:** “Bailey and Omi have more places to discover, more surprises to share, and a few lessons to learn from each other. *Bailey’s Big Climb* is where their storybook adventures begin. Want to hear when their next story takes shape? Join the Bailey & Omi book-news list on our series page.”  
 **CTA:** Series email signup. **Hashtags:** #BaileyAndOmi #BookSeries #ChildrensPictureBooks #Storytime  
@@ -70,8 +70,8 @@
 **Story:** Question sticker: “Where should Bailey and Omi explore next?” Gather ideas, not invented testimonials.
 
 ## Two Reels from only existing approved assets
-1. **Real dogs → pages (15–20 seconds):** approved real-dog photo (0–4s); approved watercolor illustration (4–8s); actual Book 1 cover (8–13s); book-page CTA (13–18s). Simple cross-dissolves and original instrumental or properly licensed sound only. Script: “Two real sisters. One big-looking staircase. A story about finding courage a little at a time.” **No fake page-turn footage.**
-2. **The littlest adventure (12–18 seconds):** close crop of real Bailey (0–4s); staircase book illustration/cover (4–9s); three text cards “Notice / Pause / Try” (9–14s); page URL (14–18s). Do not imply actual video of an adventure if only static photos exist.
+1. **Real dogs → pages (15–20 seconds):** approved real-dog photo (0–4s); approved watercolor illustration (4–8s); approved Book 1 scene art (8–13s); do not call it a cover; book-page CTA (13–18s). Simple cross-dissolves and original instrumental or properly licensed sound only. Script: “Two real sisters. One big-looking staircase. A story about finding courage a little at a time.” **No fake page-turn footage.**
+2. **The littlest adventure (12–18 seconds):** close crop of real Bailey (0–4s); staircase book illustration (4–9s); three text cards “Notice / Pause / Try” (9–14s); page URL (14–18s). Do not imply actual video of an adventure if only static photos exist.
 
 ## Consent-based book-news email — ready to send to existing opted-in list only
 **Subject:** Meet the real dogs behind Bailey’s Big Climb  
@@ -124,7 +124,7 @@ S.T. Carroll
 ## November 1 catalog discovery and finished activity companion
 
 - **Paperback identifier corroborated by independent catalogs:** ISBN-13 `9798160563947`; paperback Amazon ASIN `B0HMFT1R5P`. [ThriftBooks](https://www.thriftbooks.com/w/baileys-big-climb_st-carroll/60626430/) and [AbeBooks](https://www.abebooks.it/9798160563947/Bailey%E2%80%99s-Big-Climb-Carroll-S.T/plp) both list the title and S.T. Carroll with this ISBN. They disagree on page count (26 vs. 24), so **do not repeat a page count until KDP is checked**. Retailer listings are evidence of catalog distribution, not Amazon availability or sales.
-- **New proposed no-gate family activity:** `public/bailey-and-omi/one-small-brave-step.html` (plus same-origin print script) is included in this PR. It uses the existing approved Book 1 cover path, original family questions, optional drawing time, safety guidance, and a link back to the existing book-news form. The proposed post-merge URL is `https://pawstreakapp.com/bailey-and-omi/one-small-brave-step.html`; do not promote it until a production release has been approved and verified.
+- **New proposed no-gate family activity:** `public/bailey-and-omi/one-small-brave-step.html` (plus same-origin print script) is included in this PR. It uses the existing approved Book 1 scene illustration path, original family questions, optional drawing time, safety guidance, and a link back to the existing book-news form. The proposed post-merge URL is `https://pawstreakapp.com/bailey-and-omi/one-small-brave-step.html`; do not promote it until a production release has been approved and verified.
 - **Finished downloadable PDF companion:** Three visually checked pages were also generated separately: a family worksheet, a 20-minute read-aloud facilitator guide, and a library/retailer introduction sheet. This PDF is available as an attachment to the studio run, not yet in the repository or public website.
 - **Updated retailer outreach fact line, for use after confirming KDP:** “*Bailey’s Big Climb* by S.T. Carroll · Bailey & Omi Adventures, Book 1 · Paperback ISBN-13 9798160563947 · Picture-book audience ages 3–7.” Do not invent wholesale terms, pricing, current stock, sales, or customer reviews.
 - **Release guardrails:** PR remains unmerged; no social posting, email campaign, KDP modification, or production page edit occurred.
