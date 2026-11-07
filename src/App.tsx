@@ -1799,10 +1799,13 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   }
 
   const submitChallengeRequest = async (cityOrZip: string): Promise<boolean> => {
-    if (useProductionBackend && auth.user) {
-      return createChallengeRequest({ cityOrZip })
+    // A demo or unauthenticated session cannot persist a real city request.
+    if (!useProductionBackend || !auth.user) return false
+    try {
+      return await createChallengeRequest({ cityOrZip })
+    } catch {
+      return false
     }
-    return true
   }
 
   useEffect(() => {
@@ -2212,7 +2215,9 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             onOpenChallenge={openChallengeDetail}
             onJoinChallenge={joinChallenge}
             onOpenAchievements={() => setActiveTab('rewards')}
-            onRequestChallenge={submitChallengeRequest}
+            onRequestChallenge={
+              useProductionBackend && auth.user ? submitChallengeRequest : undefined
+            }
           />
         )
       case 'profile':

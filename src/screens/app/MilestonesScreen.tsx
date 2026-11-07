@@ -158,10 +158,14 @@ function RequestChallengeCard({
 
   const submit = async () => {
     const value = cityOrZip.trim()
-    if (!value || status === 'saving') return
+    if (!value || status === 'saving' || !onRequestChallenge) return
     setStatus('saving')
-    const ok = onRequestChallenge ? await onRequestChallenge(value) : true
-    setStatus(ok ? 'saved' : 'error')
+    try {
+      const ok = await onRequestChallenge(value)
+      setStatus(ok ? 'saved' : 'error')
+    } catch {
+      setStatus('error')
+    }
   }
 
   return (
@@ -173,7 +177,13 @@ function RequestChallengeCard({
         <h2>Request a Local Challenge</h2>
         <p>Tell us which city should get dog-friendly challenge packs next.</p>
       </div>
-      <form className="ms-request-form">
+      <form
+        className="ms-request-form"
+        onSubmit={(event) => {
+          event.preventDefault()
+          void submit()
+        }}
+      >
         <input
           type="text"
           placeholder="City or ZIP"
@@ -185,14 +195,18 @@ function RequestChallengeCard({
           }}
         />
         <button
-          type="button"
+          type="submit"
           className="tap-target"
-          disabled={!cityOrZip.trim() || status === 'saving'}
-          onClick={() => void submit()}
+          disabled={!onRequestChallenge || !cityOrZip.trim() || status === 'saving'}
         >
           {status === 'saving' ? 'Sending…' : status === 'saved' ? 'Sent' : 'Request'}
         </button>
       </form>
+      {!onRequestChallenge ? (
+        <p className="ms-request-status">
+          Sign in to the live PawStreak app to send a real city request.
+        </p>
+      ) : null}
       {status === 'saved' ? (
         <p className="ms-request-status">Got it. We&apos;ll use this to prioritize new challenge packs.</p>
       ) : status === 'error' ? (
