@@ -151,3 +151,15 @@ As of November 5, the **November 5–11** buffer contains seven consecutive entr
 - **Reel alternative:** No new video was recorded. Do not claim a Reel without a verified relevant segment from the existing demo video.
 
 **November 6–12:** seven consecutive unpublished, approval-pending posts are now buffered in the CSV. All 13 archived-to-current queue entries use the verified October 31 real-app demo asset manifest `social-assets/assets.json` (commit `02dd7f85`); no fresh screenshots, customer photos, location facts, social uploads or scheduling claimed. Remote browser still requires its originating context.
+
+## PS-20261113-14 — A little day worth keeping
+
+- **Hook:** The finish line is a memory you can come back to.
+- **Caption:** Product preview: This October 31 PawStreak DEMO screen recording shows the app journey from choosing a dog adventure to saving a memory. The recording is a product walkthrough—not a real customer walk, live location report, or newly launched feature.
+- **CTA:** What is one little moment from your last dog walk you would want to keep?
+- **Hashtags:** `#PawStreak #DogMemories #DogAdventures #ProductPreview`
+- **Reel concept:** Use the existing, manifest-backed `../../videos/pawstreak-demo-flow.webm` only. Editorial hook text may be added outside the authentic recorded UI; do not add fictional screens, human/dog footage or location scenes. Keep the original `DEMO` label visible.
+- **Story companion:** `../../stories/06-save-memory-payoff.png`; question sticker “What is worth remembering from a walk?” The place / A tiny moment.
+- **Evidence:** `social-assets/assets.json` records the 390 × 844 recording and Story capture from October 31 (commit `02dd7f85`). No new video was captured or rendered today.
+
+**November 7–13:** seven consecutive **pending-approval, unpublished** concepts are covered by manifest-listed existing real-app DEMO screenshots and screen recording. No live production-user captures, verified customer activity, new releases, social scheduling or publication is claimed. The originating remote browser context remains unavailable.
