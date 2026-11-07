@@ -11,7 +11,7 @@ I inspected the **actual pixels** of `public/bailey-and-omi/big-climb.webp` on t
 - It is suitable for a clearly labelled illustrated *story scene* on the reader website, social graphics, and family activity.
 - It is **not** the `Carroll.jpg` front-cover file requested for the 2026 San Diego Public Library Local Author Exhibit.
 - Previous promotional copy used the inaccurate phrase “published book cover” for this art. Corrected the image description on the PR-branch social studio, library information sheet and family activity to **scene illustration**. These updates do not affect public production pages.
-- Obtain the **actual approved published front cover** from the author/KDP final assets or a scan/photo of the finished paperback before converting/renaming. It must show the real final title and S.T. Carroll credit. Do not construct a new cover from the web illustration, regenerate art, or pull a superseded draft PDF.
+- **November 7 update:** The authentic front-cover image has now been extracted from the approved paperback-wrap PDF in the user's Library as `Carroll.jpg` (details above). It shows the actual printed title and author credit. **Still verify parity with the KDP-published paperback** before upload. Do not regenerate art or substitute a superseded draft PDF.
 - A **separate, tested, browser-only HTML converter** was prepared in this run as a downloadable author utility. It takes an author-selected final cover JPG/PNG/WebP, exports uncropped `Carroll.jpg` under 2,000,000 bytes and requires visual approval. It is not deployed or committed here, and has only been exercised using a clearly marked synthetic QA fixture; no actual published cover file was converted.
 
 ## City library submission — verified November 6
