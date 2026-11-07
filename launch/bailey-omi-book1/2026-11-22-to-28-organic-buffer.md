@@ -25,10 +25,10 @@
 **Truth gate:** Poll choices are new educational prompts, not actual survey results.
 
 ## Tue Nov 24 — Carousel / three discussion prompts
-**Source:** `big-climb.webp` cover or existing approved staircase art only.
+**Source:** `big-climb.webp` scene illustration (NOT printed cover) or existing approved staircase art only.
 **Slides:** (1) “Three questions after storytime”; (2) “What looked biggest to Bailey?”; (3) “Who stayed nearby while she tried?”; (4) “What would your own small brave step be?”
 **Caption:** “A picture book can open a conversation without needing the perfect answer. Read *Bailey's Big Climb* together and ask one question at a time. Pausing counts. Book and family activity: link in bio.”
-**Alt:** “Four original typographic question cards; first includes the published Book 1 cover.”
+**Alt:** “Four original typographic question cards; first includes an approved Book 1 scene illustration.”
 **Hashtags:** #ReadingTogether #BaileysBigClimb #FamilyStorytime
 **Production:** These are **card concepts**, not screenshots of actual book spreads.
 
@@ -40,8 +40,8 @@
 **Alt:** “A real photo of Bailey and Omi followed by the approved watercolor illustration of the same dog sisters.”
 
 ## Thu Nov 26 — Reel concept / paper-to-paws (18 seconds)
-**Assets:** Genuine dog photo `woodland-together.webp`, actual published cover `big-climb.webp`, `together.webp` watercolor. This is a **script only**, not footage.
-**Edit:** 0–5s real photo with slow pan (“Before the book, there were two sisters”); 5–10s approved watercolor (“A little world inspired by them”); 10–15s published cover shown legibly (“*Bailey's Big Climb*”); 15–18s original cream outro (“By S.T. Carroll · Book details in bio”).
+**Assets:** Genuine dog photo `woodland-together.webp`, approved Book 1 scene illustration `big-climb.webp` (NOT printed cover), `together.webp` watercolor. This is a **script only**, not footage.
+**Edit:** 0–5s real photo with slow pan (“Before the book, there were two sisters”); 5–10s approved watercolor (“A little world inspired by them”); 10–15s approved Book 1 scene illustration shown clearly with a separately added original title label (“*Bailey's Big Climb*”); 15–18s original cream outro (“By S.T. Carroll · Book details in bio”).
 **Voiceover:** “Bailey and Omi are real dogs. Their sisterly adventures inspired a picture book about patience and a small step toward courage.”
 **Caption:** “A glimpse of the two real sisters and the original art behind the first Bailey & Omi Adventures book. These are approved still images, not footage of the story. Find Book 1 in bio.”
 **Hashtags:** #BaileyAndOmi #WatercolorArt #PictureBook #DogStories
