@@ -3,7 +3,7 @@
 **Prepared November 3, 2026. Status: draft / owner approval required. No posts have been scheduled or published.**
 
 ## Working creative sources
-- Approved book cover: `public/bailey-and-omi/big-climb.webp`
+- Approved scene art (NOT final cover): `public/bailey-and-omi/big-climb.webp`
 - Approved illustration: `public/bailey-and-omi/together.webp`
 - Approved real photos: `public/bailey-and-omi/bailey-real.webp`, `omi-real.webp`, `real-dogs-together.webp`, `woodland-together.webp`
 - New unmerged helper: `public/bailey-and-omi/social-card-studio.html`. It creates genuine branded PNG compositions from these existing images. **Do not link to it as a live URL unless this PR is approved, merged, deployed and browser-tested.**
@@ -13,10 +13,10 @@
 These are seven **creative slots**, not a recommendation to publish every day. Rotate Feed/Story/Reel; seek approval for final visuals and copy.
 
 ## Sun Nov 15 · Feed — the first small step
-**Visual:** Export `cover` card from social card studio (1080×1350). This shows the genuine published cover, not a fake excerpt.
+**Visual:** Export `cover` card from social card studio (1080×1350). This shows an approved watercolor scene from Book 1, **not** the final published cover or a book excerpt.
 **Caption:** “A staircase can be a mountain when you’re a little puppy. In *Bailey’s Big Climb*, Bailey learns that courage doesn’t need to be loud or fast. Sometimes it’s one small step, with Omi nearby. A gentle illustrated read-aloud by S.T. Carroll for ages 3–7. Get to know the story: link in bio.”
 **CTA:** https://pawstreakapp.com/bailey-and-omi/big-climb
-**Alt:** “Promotional card with the published cover of Bailey’s Big Climb and an original one-small-step headline.”
+**Alt:** “Promotional card with approved watercolor scene art from Bailey’s Big Climb and an original one-small-step headline.”
 **Hashtags:** #BaileysBigClimb #PictureBooks #ReadingTogether
 
 ## Mon Nov 16 · Story — the older sister
@@ -28,7 +28,7 @@ These are seven **creative slots**, not a recommendation to publish every day. R
 ## Tue Nov 17 · Feed — reading together
 **Visual:** Export `questions` Story card, or compose a Feed crop manually without cutting off the question text.
 **Caption:** “A little question can make a picture book last longer than storytime. After *Bailey’s Big Climb*, try asking: What looked biggest to Bailey? When did she need a pause? Who makes you feel safe while you learn? No perfect answers needed. Read-aloud details at the link in bio.”
-**Alt:** “Published cover beside three original family discussion prompts in a cream-and-sage layout.”
+**Alt:** “Approved Book 1 scene illustration beside three original family discussion prompts in a cream-and-sage layout.”
 **Hashtags:** #FamilyReadAloud #BaileyAndOmi #KidsLit #Storytime
 **Note:** The studio's `questions` export is 9:16; use as a Story if no Feed crop can be safely produced.
 
@@ -36,7 +36,7 @@ These are seven **creative slots**, not a recommendation to publish every day. R
 **Footage:** Still-image motion graphics only, using existing approved art/photos. Total 16 seconds, 9:16.
 - 0–4s: real-dogs-together photo, slow scale, text “Two real sisters.”
 - 4–8s: watercolor `together.webp`, crossfade, text “One watercolor world.”
-- 8–12s: actual `big-climb.webp` cover, stationary and completely legible, text “Their first book.”
+- 8–12s: approved `big-climb.webp` scene artwork, stationary and clearly labelled as a book illustration, text “Their first book.”
 - 12–16s: cream end slate, “Bailey’s Big Climb · By S.T. Carroll.”
 **Voiceover:** “Bailey is curious. Omi is her watchful older sister. Their everyday adventures inspired a picture-book story about courage, one small step at a time.”
 **Caption:** “Real dogs, approved story illustrations, and the first book in Bailey & Omi Adventures. These are photographs and still illustrations, not recorded scenes of the story. Explore Book 1 through the link in bio.”
