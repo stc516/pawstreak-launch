@@ -1,5 +1,7 @@
 # Bailey & Omi — November 6 source-of-truth cover and distribution gate
 
+> **November 7 recovery update — real cover now available for submission.** The approved paperback wrap source `Baileys_Big_Climb_Paperback_Cover_8.5x8.5_24pp_PremiumColor.pdf` was located in the user's ChatGPT Library and the **actual right-hand printed front cover** was visually inspected and extracted without changing the source PDF or artwork. The new owner-downloadable `Carroll.jpg` is **1403 × 1418 pixels, 713,910 bytes (below the library's 2 MB limit)**; SHA-256 `0ee32e19116cb2e319e290f44a523a15cce6bfb1fee95ac00f43b122e45e58b2`. The printed title, author credit, Bailey/Omi/Maggie artwork remain intact. A separate illustrated submission-proof PDF and ZIP handoff were created and verified outside GitHub; **the image is not committed to this PR**. Confirm the cover matches the currently published KDP paperback before official registration. This resolves the previous **asset-unavailable** obstacle, not the owner's required form submission or physical bound-copy delivery. No library submission or physical shipment occurred.
+
 **Author:** S.T. Carroll · **Existing title:** *Bailey's Big Climb*, Book 1 · **Status:** working notes only, not submitted/published. No KDP masters, public pages, email data or live bookstore listings changed.
 
 ## Significant source correction — do not use scene art as a book-cover upload
@@ -42,7 +44,7 @@ Primary sources: [Local Author Exhibit rules](https://www.sandiego.gov/public-li
 
 ## Immediate release order
 
-1. **Get authentic final cover master and actual paperback in hand.** Convert to `Carroll.jpg`; inspect title, author name, size/format, and submission proof.
+1. **Cover export prepared (Nov 7).** Visually compare the new `Carroll.jpg` with the currently published print edition; confirm a finished bound paperback is in hand. The earlier missing-cover blocker is resolved for preparation, but neither library acceptance nor source/KDP parity is established.
 2. **Complete city-library form and arrange one bound copy to be received by November 25.** Record only actual confirmation and receipt.
 3. **Check Amazon both editions as a real shopper and test consented signup/unsubscribe.** Only after verification, approve one existing social slot, library pitch and the optional free-family-activity site link.
 4. **Then** review the actual Book 2 manuscript/illustration needs against the Official Creative Bible, without touching finished Book 1 KDP art.
