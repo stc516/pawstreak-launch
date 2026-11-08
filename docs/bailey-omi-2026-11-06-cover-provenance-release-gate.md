@@ -50,3 +50,13 @@ Primary sources: [Local Author Exhibit rules](https://www.sandiego.gov/public-li
 4. **Then** review the actual Book 2 manuscript/illustration needs against the Official Creative Bible, without touching finished Book 1 KDP art.
 
 **Change classification:** 3 corrected previously **unmerged** PR-branch HTML assets, 4 corrected unmerged social-buffer Markdown files, and this new documentation note. No production deployment, social publishing, KDP change, email send, or spending.
+
+## November 8 visual finding and production asset
+
+The actual extracted front-cover `Carroll.jpg` (1403×1418) was visually inspected again. **The art prints `by S. T. Carroll` (spaced initials)**, whereas the locked creative bible and current website/series brand require **`S.T. Carroll`**. This is a real source-cover metadata/brand inconsistency, not a stylistic recommendation or permission to edit the published master. Record it for the **next owner-approved KDP cover revision**; do not silently retouch the current paperback or describe it as consistent with the locked author form.
+
+The cover image was used **unaltered** in an independently created, visually inspected four-PNG social review pack (three 1080×1350 carousel slides and one 1080×1920 Story frame). The source file, sizes, alt text, draft captions, and asset-specific approval checklist are in the separate downloaded `Bailey_Omi_Authentic_Cover_IG_Assets_2026-11-08.zip`, not committed here. It is **prepared, not approved, posted, or proof of Amazon stock**. Marketing overlays use the locked `S.T. Carroll` format; the printed credit inside the authentic image remains as-is until a separately approved print decision.
+
+**New manuscript progress:** `docs/bailey-omi-book2-windy-day-manuscript-v0.1.md` is an original 487-word, 10-spread **unapproved** draft based on the existing October 31-ranked concept. It remains an alternate proposal to the bible's other provisional Book 2 sequence; no new cover or illustration was commissioned.
+
+**Backend evidence:** read-only Supabase count on November 8 found **2 `bailey_omi_book_news` rows** in `public.waitlist_signups` (latest dated November 3). These are signup records only, not verified opt-in subscribers, a working email list, deliveries, readership, or book sales. No emails sent.
