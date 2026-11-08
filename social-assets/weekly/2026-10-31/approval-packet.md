@@ -1,4 +1,4 @@
-# PawStreak rolling product-preview buffer — October 31–November 12, 2026
+# PawStreak rolling product-preview buffer — October 31–November 14, 2026
 
 Prepared October 30, 2026. All items are **Pending approval** and **Unpublished**. Every primary asset is a real 390 × 844 capture from the running PawStreak application at commit `02dd7f85`; the visible `DEMO` label is retained so the preview state is unambiguous.
 
@@ -19,6 +19,8 @@ Prepared October 30, 2026. All items are **Pending approval** and **Unpublished*
 | Nov 10 | PS-20261110-11 | `../../screenshots/01-adventure-launch-home.png` | Feed / Story | Pending approval |
 | Nov 11 | PS-20261111-12 | `../../screenshots/02-todays-pick-card.png` | Feed / Story | Pending approval |
 | Nov 12 | PS-20261112-13 | `../../screenshots/04-adventure-detail.png` | Story / Feed saveable tip | Pending approval |
+| Nov 13 | PS-20261113-14 | `../../videos/pawstreak-demo-flow.webm` | Reel concept / Story cut | Pending approval |
+| Nov 14 | PS-20261114-15 | `../../screenshots/05-adventure-ready.png` | Feed / Story checklist | Pending approval |
 
 ## PS-20261031-01 — A better dog day starts here
 
@@ -163,3 +165,15 @@ As of November 5, the **November 5–11** buffer contains seven consecutive entr
 - **Evidence:** `social-assets/assets.json` records the 390 × 844 recording and Story capture from October 31 (commit `02dd7f85`). No new video was captured or rendered today.
 
 **November 7–13:** seven consecutive **pending-approval, unpublished** concepts are covered by manifest-listed existing real-app DEMO screenshots and screen recording. No live production-user captures, verified customer activity, new releases, social scheduling or publication is claimed. The originating remote browser context remains unavailable.
+
+## PS-20261114-15 — The outing is the main event
+
+- **Hook:** Make the outing the main event.
+- **Caption:** Product preview: This is a real PawStreak DEMO adventure-ready screen. Before you set out, check the weather, pack water and bags, and match the plan to your dog today. Less app time, more dog time. No real trip or current location conditions are implied.
+- **CTA:** What do you always check before starting a weekend dog outing?
+- **Hashtags:** `#PawStreak #DogAdventures #DogCare #ProductPreview`
+- **Feed asset:** `../../screenshots/05-adventure-ready.png`, original October 31 real-app DEMO screenshot.
+- **Story companion:** `../../stories/05-adventure-ready.png`; checklist sticker: weather / water / dog comfort.
+- **Claim guardrails:** The prep checklist is editorial advice, not a new in-app checklist, realtime weather report, verified destination, personal dog photo, or actual customer adventure. Keep the DEMO label visible.
+
+**November 8–14:** seven consecutive pending-approval, unpublished concepts in the CSV, drawing exclusively on the manifest-backed October 31 real-app DEMO captures. No new screenshot/recording, user activity, social publication, or production deployment claimed.
