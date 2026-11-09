@@ -35,7 +35,7 @@ The earlier Rank 1 slate described **scattered items and Omi running/retrieving 
 
 ## Resolve before a single paid/new illustration
 1. Spread 7 text says Maggie “fastened” the cloth, but contains no fastener prop. **Revise the manuscript to a physically shown action** (such as her holding it down) or explicitly introduce a consistent prop first.
-2. Make corner movement Spread 3→7 and Maddie's free hand spatially unambiguous. (Maggie, not “Maddie,” in the final manuscript.)
+2. Make corner movement from Spread 3 through 7 and Maggie's free hand spatially unambiguous.
 3. Spread 9's paw-to-ear attempt must pass anatomical review; don't give Omi humanlike forelimbs.
 4. Determine actual 24- vs 32-page imposition: 10 illustrated spreads equal 20 story pages, leaving front/back matter to allocate; check printer and ebook specs, don't add filler.
 5. Rehearse aloud for ages 3–7 and record observed comprehension before changing copy; don't invent reading-test results.
