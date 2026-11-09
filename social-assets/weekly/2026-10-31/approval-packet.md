@@ -1,4 +1,4 @@
-# PawStreak rolling product-preview buffer — October 31–November 14, 2026
+# PawStreak rolling product-preview buffer — October 31–November 15, 2026
 
 Prepared October 30, 2026. All items are **Pending approval** and **Unpublished**. Every primary asset is a real 390 × 844 capture from the running PawStreak application at commit `02dd7f85`; the visible `DEMO` label is retained so the preview state is unambiguous.
 
@@ -21,6 +21,7 @@ Prepared October 30, 2026. All items are **Pending approval** and **Unpublished*
 | Nov 12 | PS-20261112-13 | `../../screenshots/04-adventure-detail.png` | Story / Feed saveable tip | Pending approval |
 | Nov 13 | PS-20261113-14 | `../../videos/pawstreak-demo-flow.webm` | Reel concept / Story cut | Pending approval |
 | Nov 14 | PS-20261114-15 | `../../screenshots/05-adventure-ready.png` | Feed / Story checklist | Pending approval |
+| Nov 15 | PS-20261115-16 | `../../stories/07-journey-memory.png` | Story / Feed question | Pending approval |
 
 ## PS-20261031-01 — A better dog day starts here
 
@@ -177,3 +178,15 @@ As of November 5, the **November 5–11** buffer contains seven consecutive entr
 - **Claim guardrails:** The prep checklist is editorial advice, not a new in-app checklist, realtime weather report, verified destination, personal dog photo, or actual customer adventure. Keep the DEMO label visible.
 
 **November 8–14:** seven consecutive pending-approval, unpublished concepts in the CSV, drawing exclusively on the manifest-backed October 31 real-app DEMO captures. No new screenshot/recording, user activity, social publication, or production deployment claimed.
+
+## PS-20261115-16 — What would you keep from this weekend?
+
+- **Hook:** The best thing you bring home is the memory.
+- **Caption:** Product preview: This is an authentic PawStreak Journey DEMO capture from October 31. It shows how a saved outing can live beyond the day itself. It does **not** represent a real customer adventure, a new user milestone, or a newly released feature.
+- **CTA:** What would you remember first about a dog day: the place or the little surprise?
+- **Hashtags:** `#PawStreak #DogMemories #DogAdventures #ProductPreview`
+- **Primary Story asset:** `../../stories/07-journey-memory.png`; question sticker: “What makes a dog day memorable?” The place / The surprise.
+- **Feed alternative:** `../../screenshots/07-journey-memory.png`; preserve the original visible DEMO label and do not add customer photos, ratings or location claims.
+- **Source:** `social-assets/assets.json` records these real-app DEMO captures at commit `02dd7f85` on October 31. This is an editorial concept, not a new capture.
+
+**November 9–15:** seven consecutive approval-pending, unpublished content entries in the CSV. No social publishing, new screenshot, actual trip or production app visual audit claimed. The connected remote browser still lacks its originating browser session.
