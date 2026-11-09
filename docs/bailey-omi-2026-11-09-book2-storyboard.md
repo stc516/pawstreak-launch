@@ -30,6 +30,9 @@ Fixed camera looks across a level dog-permitted grassy park. A low wind-shaped s
 | 9 | Omi tries to smooth ear; both watch a settling leaf | Test a credible quadruped paw/ear pose with grounded weight; alternative head-shake would require author text approval | Omi's ear springs right back | Upper left |
 | 10 | Maggie folds cloth; dogs walk away looking up | Mirror opening perspective; shrub-left, trees-right; Maggie carries folded cloth; leashes remain attached | Two noses to the sky, warm quiet finish | Open upper sky |
 
+## Concept-to-manuscript mismatch (release gate)
+The earlier Rank 1 slate described **scattered items and Omi running/retrieving them**, whereas manuscript v0.1 has **no retrieval and no off-leash chase**. Use v0.1 for the storyboard, not that obsolete action. “Windy-Day Chase” remains a **working title** that may need retitling if the quiet observational story survives the read-aloud test. Do not solve this by introducing unsafe dog chasing or secretly changing approved character behavior.
+
 ## Resolve before a single paid/new illustration
 1. Spread 7 text says Maggie “fastened” the cloth, but contains no fastener prop. **Revise the manuscript to a physically shown action** (such as her holding it down) or explicitly introduce a consistent prop first.
 2. Make corner movement Spread 3→7 and Maddie's free hand spatially unambiguous. (Maggie, not “Maddie,” in the final manuscript.)
