@@ -190,3 +190,15 @@ As of November 5, the **November 5–11** buffer contains seven consecutive entr
 - **Source:** `social-assets/assets.json` records these real-app DEMO captures at commit `02dd7f85` on October 31. This is an editorial concept, not a new capture.
 
 **November 9–15:** seven consecutive approval-pending, unpublished content entries in the CSV. No social publishing, new screenshot, actual trip or production app visual audit claimed. The connected remote browser still lacks its originating browser session.
+
+## PS-20261116-17 — Keep the little detail
+
+- **Hook:** The best part is not always the photo.
+- **Caption:** Product preview: This is the authentic October 31 PawStreak DEMO completion screen. It invites you to remember one small detail after an adventure; it is not proof of a real customer's walk or a newly released feature. A photo is optional.
+- **CTA:** What tiny detail from your last dog walk would you write down?
+- **Hashtags:** `#PawStreak #DogMemories #DogAdventureJournal #ProductPreview`
+- **Feed asset:** `../../screenshots/06-save-memory-payoff.png` — real October 31 running-app DEMO capture, label intact.
+- **Story companion:** `../../stories/06-save-memory-payoff.png`; question sticker: “What tiny thing would you remember?” The smell / The surprise.
+- **Claim boundaries:** The photo and text fields are app preview UI; no fabricated dog photos, customer reviews, new feature, place availability, or new device recording.
+
+**November 10–16:** seven consecutive entries remain **pending approval and unpublished**, with assets cross-referenced to `social-assets/assets.json` (source commit `02dd7f85`). Connected remote browser inspection was blocked by originating-session access. No fresh screenshot or video is claimed.
