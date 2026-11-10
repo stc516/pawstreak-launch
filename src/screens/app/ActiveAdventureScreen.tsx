@@ -16,6 +16,7 @@ import { getMiniQuestHint } from '../../lib/miniQuestHints'
 import { CardImage } from '../../components/CardImage'
 import { StatusBar } from '../../components/StatusBar'
 import { captureNativeAdventurePhoto } from '../../lib/nativePhotos'
+import { isNativeCameraCancellation } from '../../lib/nativePhotoErrors'
 import { subscribeToNativeRestoredPhotos } from '../../lib/nativePhotoRestore'
 
 interface ActiveAdventureScreenProps {
@@ -120,6 +121,9 @@ export function ActiveAdventureScreen({
         return
       }
     } catch (error) {
+      // Dismissing the native camera is a choice, not a failed adventure photo.
+      // Do not open the web file picker after the user has cancelled it.
+      if (isNativeCameraCancellation(error)) return
       setPhotoSaveMessage(error instanceof Error ? error.message : 'Could not capture that photo.')
       window.setTimeout(() => setPhotoSaveMessage(null), 3200)
       return
