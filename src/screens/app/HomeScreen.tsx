@@ -23,6 +23,7 @@ import { getCurrentTrainingSession } from '../../lib/trainingSchedule'
 import { getTrainingProgramById } from '../../data/training'
 import { GENERIC_ADVENTURE_TYPES } from '../../lib/genericAdventures'
 import { getHomeUpcomingItems } from '../../lib/homeUpcoming'
+import { findTodaysJourneyEntry } from '../../lib/homeTodayMemory'
 import { BrandLogoCircle } from '../../components/BrandLogoCircle'
 import { DogAdventureSticker } from '../../components/DogAdventureSticker'
 
@@ -136,13 +137,9 @@ export function HomeScreen({
   const trainingProgram = state.activeTrainingSchedule
     ? getTrainingProgramById(state.activeTrainingSchedule.programId)
     : null
-  const todayKey = new Date().toLocaleDateString('en-CA')
-  const todayEntry = state.journeyEntries.find((entry) => {
-    if (entry.date.trim().toLowerCase() === 'today') return true
-    if (!entry.occurredAt) return false
-    const occurred = new Date(entry.occurredAt)
-    return !Number.isNaN(occurred.getTime()) && occurred.toLocaleDateString('en-CA') === todayKey
-  })
+  // Persisted records keep their original "Today" display label even after midnight.
+  // Use the actual outing date so a new day returns to adventure discovery.
+  const todayEntry = findTodaysJourneyEntry(state.journeyEntries, new Date(), isDemoMode)
   const leadDog = profileDogs[0]
   const todayPhoto = todayEntry?.photoUrls?.find(Boolean)
   const launchBadges = useMemo(() => getAdventureLaunchBadges(state, progress), [state, progress])
