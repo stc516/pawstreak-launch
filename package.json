@@ -16,6 +16,7 @@
     "qa:plan-first-action": "node qa/plan-mobile-first-action.mjs",
     "qa:challenges-first-action": "node qa/challenges-mobile-first-action.mjs",
     "qa:home-memory-clarity": "node qa/home-memory-placeholder-clarity.mjs",
+    "qa:home-today-memory": "tsx qa/home-today-memory.mjs",
     "qa:achievements-disclosure": "node qa/achievements-mobile-disclosure.mjs",
     "qa:active-adventure-hero": "node qa/active-adventure-mobile-hero.mjs",
     "qa:active-adventure-banner": "node qa/active-adventure-mobile-banner.mjs",
