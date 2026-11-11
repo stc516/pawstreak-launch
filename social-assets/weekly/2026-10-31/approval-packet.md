@@ -202,3 +202,16 @@ As of November 5, the **November 5–11** buffer contains seven consecutive entr
 - **Claim boundaries:** The photo and text fields are app preview UI; no fabricated dog photos, customer reviews, new feature, place availability, or new device recording.
 
 **November 10–16:** seven consecutive entries remain **pending approval and unpublished**, with assets cross-referenced to `social-assets/assets.json` (source commit `02dd7f85`). Connected remote browser inspection was blocked by originating-session access. No fresh screenshot or video is claimed.
+
+## PS-20261117-18 — Celebrate a real dog day, not a counter
+
+- **Hook:** The streak is not the destination. The dog day is.
+- **Caption:** Product preview: PawStreak's actual DEMO Home screen keeps adventure memories and small progress moments near the next outing. These visible badges belong to a sample demo profile, not verified customer achievements. Real-life time with your dog is what counts.
+- **CTA:** What's one small win for your dog today: a new smell or a new place?
+- **Hashtags:** `#PawStreak #DogAdventures #DogParents #ProductPreview`
+- **Feed / Story assets:** `../../screenshots/01-adventure-launch-home.png` and `../../stories/01-adventure-launch-home.png`, both from the approved October 31 authentic running-app DEMO manifest `social-assets/assets.json`. Preserve DEMO watermark and original UI.
+- **Story interaction:** Poll “One little win today?” A new smell / A new place.
+- **No invented metrics:** Sample memory and badges must not be framed as user growth, new features or verified live achievement totals.
+- **Evidence upgrade:** November 10 GitHub Actions generated independent actual-running-DEMO screenshots ([screenshot workflow](https://github.com/stc516/pawstreak-launch/actions/runs/42855430824), [beta readiness workflow](https://github.com/stc516/pawstreak-launch/actions/runs/42855430827)). They were visually inspected November 11 for a design audit, **not** approved as replacement social assets or physical-device proof.
+
+**November 11–17:** seven consecutive dated, pending-approval concepts. No new production-user photos, new recording, publishing, customer results or live destination assertions. The authorized remote browser remains unavailable without its originating browser session.
