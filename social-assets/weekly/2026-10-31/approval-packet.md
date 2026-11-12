@@ -215,3 +215,16 @@ As of November 5, the **November 5–11** buffer contains seven consecutive entr
 - **Evidence upgrade:** November 10 GitHub Actions generated independent actual-running-DEMO screenshots ([screenshot workflow](https://github.com/stc516/pawstreak-launch/actions/runs/42855430824), [beta readiness workflow](https://github.com/stc516/pawstreak-launch/actions/runs/42855430827)). They were visually inspected November 11 for a design audit, **not** approved as replacement social assets or physical-device proof.
 
 **November 11–17:** seven consecutive dated, pending-approval concepts. No new production-user photos, new recording, publishing, customer results or live destination assertions. The authorized remote browser remains unavailable without its originating browser session.
+
+## PS-20261118-19 — From a maybe to a real plan
+
+- **Hook:** From a maybe to a real plan.
+- **Caption:** Product preview: These are authentic October 31 PawStreak DEMO app screens. One shows a place to explore outing ideas; the next shows the adventure-ready step. No actual dog outing, live nearby availability, or current destination rules are implied. The goal is a better day with your dog—not another hour in an app.
+- **CTA:** What makes it easiest for you to say we're going: a clear place, the right plan, or your dog staring at the door?
+- **Hashtags:** `#PawStreak #DogAdventures #AdventurePlanning #ProductPreview`
+- **Two-frame Feed carousel:** `../../screenshots/03-discover-adventure-mode.png` then `../../screenshots/05-adventure-ready.png`. Both are original authentic screenshots from October 31's running DEMO app. Do not replace or redraw screen content, remove DEMO labels, or imply these depict a user's real trip.
+- **Story:** `../../stories/05-adventure-ready.png`; optional poll: “What gets you out the door?” Clear place / Dog decides. Keep sticker text outside substantive UI.
+- **Provenance:** All three are listed in `social-assets/assets.json` at source commit `02dd7f85`; no new footage, verified live place access, customer statistics or physical-device screenshots.
+- **Approval gate:** This is an editorial package only; nothing scheduled or posted.
+
+**November 12–18:** seven consecutive approval-pending and unpublished concepts are covered. Five-hashtag maximum applies to every CSV row. The newer November 10 CI DEMO images remain evidence only; they are **not** substituted into this approved social source set. No current live visual QA is claimed.
