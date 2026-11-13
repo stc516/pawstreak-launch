@@ -1,4 +1,4 @@
-# PawStreak Story companions — October 31–November 18, 2026
+# PawStreak Story companions — October 31–November 19, 2026
 
 All items are pending approval and retain the visible `DEMO` label.
 
@@ -23,3 +23,4 @@ All items are pending approval and retain the visible `DEMO` label.
 | Nov 16 | `../../stories/06-save-memory-payoff.png` | Question: “What tiny thing would you remember?” The smell / The surprise; genuine Oct 31 DEMO completion still, photo optional, no real-user claim |
 | Nov 17 | `../../stories/01-adventure-launch-home.png` | Poll: “One little win today?” A new smell / A new place. Sample DEMO badges only; no claimed customer progress or realtime streaks |
 | Nov 18 | `../../stories/05-adventure-ready.png` | Poll: “What gets you out the door?” Clear place / Dog decides. Use with two-frame authentic DEMO carousel (Explore + adventure ready); no live local availability or actual outing implied |
+| Nov 19 | `../../stories/02-todays-pick-card.png` | Poll: “Your dog’s next outing?” Familiar favorite / Somewhere new; genuine October 31 DEMO card, not live availability or real user history |
