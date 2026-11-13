@@ -119,9 +119,8 @@ export function PlanScreen({
       places.find((place) => place.popularNow) ??
       places.find((place) => place.featured) ??
       places[0] ??
-      suggestedPicks[0] ??
-      null,
-    [places, selectedPlace, suggestedPicks],
+      (state.selectedPlanCategoryId === 'all' ? suggestedPicks[0] : null),
+    [places, selectedPlace, state.selectedPlanCategoryId, suggestedPicks],
   )
   const selectedCategoryLabel =
     state.planCategories.find((category) => category.id === state.selectedPlanCategoryId)?.label ??
@@ -549,6 +548,7 @@ export function PlanScreen({
                 placeCardRefs.current[place.id] = node
               }}
               className={`pcard pcard--compact${isRoadTrip ? ' pcard--road-trip' : ''}${selectedPlaceId === place.id ? ' pcard--map-selected' : ''}`}
+              data-plan-category={place.category}
               onClick={() => setSelectedPlaceId(place.id)}
             >
               <CardImage
