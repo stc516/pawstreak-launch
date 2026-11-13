@@ -500,13 +500,14 @@ export function PlanScreen({
         </>
       ) : (
         <>
-      <div className="sec">Distance</div>
+      <div className="sec">Distance from your area</div>
       <div className="plan-proximity-strip">
         {PLAN_PROXIMITY_OPTIONS.map((option) => (
           <button
             key={option.id}
             type="button"
             className={`plan-proximity-chip tap-target${proximityBucket === option.id ? ' on' : ''}`}
+            aria-pressed={proximityBucket === option.id}
             onClick={() => handleProximityChange(option.id)}
           >
             <span aria-hidden="true">{option.emoji}</span>
@@ -514,6 +515,8 @@ export function PlanScreen({
           </button>
         ))}
       </div>
+
+      <p className="plan-suggested-lead">Approximate straight-line distance, not drive time. Check directions before heading out.</p>
 
       <div className="sec">Filters</div>
 
@@ -523,6 +526,7 @@ export function PlanScreen({
             key={category.id}
             type="button"
             className={`chip tap-target${state.selectedPlanCategoryId === category.id ? ' on' : ''}`}
+            aria-pressed={state.selectedPlanCategoryId === category.id}
             onClick={() => handleCategorySelect(category.id)}
           >
             <span className="clbl">{category.label}</span>
@@ -589,6 +593,11 @@ export function PlanScreen({
           )
         })}
       </div>
+      {places.length === 0 ? (
+        <div className="plan-area-fallback detail-card-warm" role="status" data-testid="plan-no-matching-places">
+          No curated spots match this distance and filter. Try a wider radius or another adventure type.
+        </div>
+      ) : null}
       {places.length > visiblePlaces.length ? (
         <button
           type="button"
