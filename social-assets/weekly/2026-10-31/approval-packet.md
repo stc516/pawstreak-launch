@@ -1,4 +1,4 @@
-# PawStreak seven-day product-preview buffer — October 31–November 6, 2026
+# PawStreak rolling product-preview buffer — October 31–November 15, 2026
 
 Prepared October 30, 2026. All items are **Pending approval** and **Unpublished**. Every primary asset is a real 390 × 844 capture from the running PawStreak application at commit `02dd7f85`; the visible `DEMO` label is retained so the preview state is unambiguous.
 
@@ -13,6 +13,15 @@ Prepared October 30, 2026. All items are **Pending approval** and **Unpublished*
 | Nov 4 | PS-20261104-05 | `../../screenshots/06-save-memory-payoff.png` | Feed / Reel frame | Pending approval |
 | Nov 5 | PS-20261105-06 | `../../screenshots/07-journey-memory.png` | Feed / carousel lead | Pending approval |
 | Nov 6 | PS-20261106-07 | `../../videos/pawstreak-demo-flow.webm` | Reel | Pending approval |
+| Nov 7 | PS-20261107-08 | `../../screenshots/04-adventure-detail.png` + `../../screenshots/05-adventure-ready.png` | Two-frame carousel | Pending approval |
+| Nov 8 | PS-20261108-09 | `../../screenshots/07-journey-memory.png` | Feed / Story | Pending approval |
+| Nov 9 | PS-20261109-10 | `../../screenshots/03-discover-adventure-mode.png` | Story / Feed poll | Pending approval |
+| Nov 10 | PS-20261110-11 | `../../screenshots/01-adventure-launch-home.png` | Feed / Story | Pending approval |
+| Nov 11 | PS-20261111-12 | `../../screenshots/02-todays-pick-card.png` | Feed / Story | Pending approval |
+| Nov 12 | PS-20261112-13 | `../../screenshots/04-adventure-detail.png` | Story / Feed saveable tip | Pending approval |
+| Nov 13 | PS-20261113-14 | `../../videos/pawstreak-demo-flow.webm` | Reel concept / Story cut | Pending approval |
+| Nov 14 | PS-20261114-15 | `../../screenshots/05-adventure-ready.png` | Feed / Story checklist | Pending approval |
+| Nov 15 | PS-20261115-16 | `../../stories/07-journey-memory.png` | Story / Feed question | Pending approval |
 
 ## PS-20261031-01 — A better dog day starts here
 
@@ -70,6 +79,164 @@ Prepared October 30, 2026. All items are **Pending approval** and **Unpublished*
 - **Hashtags:** `#PawStreak #DogApp #DogAdventures #BuildInPublic`
 - **Story/Reel variation:** Use the same `pawstreak-demo-flow.webm` with an opening text card: “Pick it. Go. Keep it.”
 
+## PS-20261107-08 — Before you go, know what you're heading into
+
+- **Hook:** Less guessing. More getting out the door together.
+- **Caption:** Product preview: From destination detail to the adventure-ready screen, PawStreak keeps the next outing focused on the place and your pack. Check current posted dog-access rules before you go. These are clearly labeled demo screens, not a user's recorded adventure.
+- **CTA:** What do you check first before heading out with your dog: water, leash rules, or parking?
+- **Hashtags:** `#PawStreak #DogAdventures #DogFriendly #ProductPreview`
+- **Carousel frames:** `../../screenshots/04-adventure-detail.png` then `../../screenshots/05-adventure-ready.png`; keep original visible DEMO labels and don't imply authentic customer usage.
+- **Story companion:** `../../stories/05-adventure-ready.png`; poll: “First check?” Rules / Water.
+
+## PS-20261108-09 — Not every great dog day has a photo
+
+- **Hook:** The photo is optional. The adventure is the point.
+- **Caption:** Product preview: This real PawStreak demo capture shows a completed dog-park adventure saved with **0 photos**—not an invented photo or a pretend customer's story. The place, outing type, and duration still make a memory worth keeping. More time with your dog, less pressure to document every second.
+- **CTA:** What is one dog-day moment you remember without a photo?
+- **Hashtags:** `#PawStreak #DogMemories #DogParents #ProductPreview`
+- **Feed asset:** `../../screenshots/07-journey-memory.png` (real running-app DEMO share preview, original label visible).
+- **Story companion:** `../../stories/07-journey-memory.png`; question: “Ever skip the photo?” All the time / Sometimes.
+- **Optional Reel concept:** Cut a short moment from the existing `../../videos/pawstreak-demo-flow.webm` showing save → memory, with editorial text “0 photos. Still a memory.” Do not claim a new recording or overlay a fabricated photo.
+
+As of November 2, the November 2–8 rolling seven-day window was covered by seven pending, unpublished entries. November 8 reuses an existing genuine demo capture; no new device recording was made.
+
+
+
+## PS-20261109-10 — Pick the kind of dog day
+
+- **Hook:** Your next adventure starts with one choice.
+- **Caption:** Product preview: This real PawStreak Explore demo shows a way to choose an outing type and check details before setting out. It is not a claim about live nearby availability or an actual customer's trip. The dog day happens offline.
+- **CTA:** Would your dog vote for a trail or a beach this week?
+- **Hashtags:** `#PawStreak #DogAdventures #AdventurePlanning #ProductPreview`
+- **Feed asset:** `../../screenshots/03-discover-adventure-mode.png` from the previously captured PawStreak DEMO; preserve the original label.
+- **Story companion:** `../../stories/03-discover-adventure-mode.png`; editorial poll: “This week's pick?” Trail / Beach. Do not imply either is currently available near the viewer.
+- **Optional Reel concept:** Reuse existing `../../videos/pawstreak-demo-flow.webm` only (no new-video claim); excerpt Home → Explore with on-screen editorial prompt “Where to next?”
+
+As of November 3, the November 3–9 seven-day buffer contains seven **pending-approval**, unpublished entries. The older October 31–November 2 items stay archived. No new live or authenticated app capture was possible today because remote browser access required its originating session.
+
 ## Approval boundary
 
 Nothing in this queue is scheduled or published. Do not crop away the `DEMO` label, add unverified launch claims, or replace these captures with fabricated UI.
+
+## PS-20261110-11 — The everyday adventure still counts
+
+- **Hook:** Not every adventure needs a trailhead.
+- **Caption:** Product preview: PawStreak Home has a Quick Walk option for days when a neighborhood loop fits better than a full outing. A real dog day matters more than a perfect itinerary. This is an authentic running-app demo, not a customer's recorded walk.
+- **CTA:** Where does your dog always ask for one extra stop?
+- **Hashtags:** `#PawStreak #DogAdventures #QuickWalk #ProductPreview`
+- **Feed asset:** `../../screenshots/01-adventure-launch-home.png` — real app demo capture, visible `DEMO` label retained.
+- **Story companion:** `../../stories/01-adventure-launch-home.png`; poll: “Today's adventure?” Neighborhood loop / Destination day.
+- **Reel option:** Only use a genuine, relevant Quick Walk segment from the verified `../../videos/pawstreak-demo-flow.webm` if it actually appears; otherwise do not produce a Reel from this concept. No fabricated footage.
+
+As of November 4, **November 4–10** has seven consecutive pending-approval entries. The screenshot/video set is historical authenticated-demo evidence (October 31), not a fresh November 4 device capture. No posts were published.
+
+## PS-20261111-12 — One good idea can get you out the door
+
+- **Hook:** You don't need the perfect plan. Just a good first idea.
+- **Caption:** Product preview: PawStreak's Today's Pick offers a starting point when you want a dog day but don't know where to begin. This is a real running-app **DEMO** screenshot, not a personalized recommendation for the viewer or a claim of live place availability.
+- **CTA:** Would you try the suggested outing or choose your own?
+- **Hashtags:** `#PawStreak #DogAdventures #AdventureIdeas #ProductPreview`
+- **Feed asset:** `../../screenshots/02-todays-pick-card.png` (manifest-backed October 31 authentic app demo).
+- **Story companion:** `../../stories/02-todays-pick-card.png`; poll: “When plans are open?” Try today's pick / Choose my own.
+- **Reel option:** Do not create a new Reel or claim new screen recording. Existing `../../videos/pawstreak-demo-flow.webm` may be reused only if it actually shows this UI.
+
+As of November 5, the **November 5–11** buffer contains seven consecutive entries, all pending approval and unpublished. No fresh live browser capture was possible; original DEMO watermark stays visible and no new customer adventures or destinations are represented.
+
+
+## PS-20261112-13 — Plan for the dog beside you
+
+- **Hook:** A better dog day begins with the right details.
+- **Caption:** Product preview: PawStreak's actual adventure-detail demo gives you a place to consider an outing before you head out. It is not a live report of leash rules, parking, hours or access. Always check the current official rules for the place you choose.
+- **CTA:** What's your first check before a new dog-friendly outing: access rules, weather, or water?
+- **Hashtags:** `#PawStreak #DogAdventurePlanning #DogFriendly #ProductPreview`
+- **Feed screenshot:** `../../screenshots/04-adventure-detail.png`, real October 31 running-app DEMO capture; do not remove DEMO marking or claim current local facts.
+- **Story image and poll:** `../../stories/04-adventure-detail.png`; “Before a new dog-friendly outing?” Check access / Check weather.
+- **Reel alternative:** No new video was recorded. Do not claim a Reel without a verified relevant segment from the existing demo video.
+
+**November 6–12:** seven consecutive unpublished, approval-pending posts are now buffered in the CSV. All 13 archived-to-current queue entries use the verified October 31 real-app demo asset manifest `social-assets/assets.json` (commit `02dd7f85`); no fresh screenshots, customer photos, location facts, social uploads or scheduling claimed. Remote browser still requires its originating context.
+
+## PS-20261113-14 — A little day worth keeping
+
+- **Hook:** The finish line is a memory you can come back to.
+- **Caption:** Product preview: This October 31 PawStreak DEMO screen recording shows the app journey from choosing a dog adventure to saving a memory. The recording is a product walkthrough—not a real customer walk, live location report, or newly launched feature.
+- **CTA:** What is one little moment from your last dog walk you would want to keep?
+- **Hashtags:** `#PawStreak #DogMemories #DogAdventures #ProductPreview`
+- **Reel concept:** Use the existing, manifest-backed `../../videos/pawstreak-demo-flow.webm` only. Editorial hook text may be added outside the authentic recorded UI; do not add fictional screens, human/dog footage or location scenes. Keep the original `DEMO` label visible.
+- **Story companion:** `../../stories/06-save-memory-payoff.png`; question sticker “What is worth remembering from a walk?” The place / A tiny moment.
+- **Evidence:** `social-assets/assets.json` records the 390 × 844 recording and Story capture from October 31 (commit `02dd7f85`). No new video was captured or rendered today.
+
+**November 7–13:** seven consecutive **pending-approval, unpublished** concepts are covered by manifest-listed existing real-app DEMO screenshots and screen recording. No live production-user captures, verified customer activity, new releases, social scheduling or publication is claimed. The originating remote browser context remains unavailable.
+
+## PS-20261114-15 — The outing is the main event
+
+- **Hook:** Make the outing the main event.
+- **Caption:** Product preview: This is a real PawStreak DEMO adventure-ready screen. Before you set out, check the weather, pack water and bags, and match the plan to your dog today. Less app time, more dog time. No real trip or current location conditions are implied.
+- **CTA:** What do you always check before starting a weekend dog outing?
+- **Hashtags:** `#PawStreak #DogAdventures #DogCare #ProductPreview`
+- **Feed asset:** `../../screenshots/05-adventure-ready.png`, original October 31 real-app DEMO screenshot.
+- **Story companion:** `../../stories/05-adventure-ready.png`; checklist sticker: weather / water / dog comfort.
+- **Claim guardrails:** The prep checklist is editorial advice, not a new in-app checklist, realtime weather report, verified destination, personal dog photo, or actual customer adventure. Keep the DEMO label visible.
+
+**November 8–14:** seven consecutive pending-approval, unpublished concepts in the CSV, drawing exclusively on the manifest-backed October 31 real-app DEMO captures. No new screenshot/recording, user activity, social publication, or production deployment claimed.
+
+## PS-20261115-16 — What would you keep from this weekend?
+
+- **Hook:** The best thing you bring home is the memory.
+- **Caption:** Product preview: This is an authentic PawStreak Journey DEMO capture from October 31. It shows how a saved outing can live beyond the day itself. It does **not** represent a real customer adventure, a new user milestone, or a newly released feature.
+- **CTA:** What would you remember first about a dog day: the place or the little surprise?
+- **Hashtags:** `#PawStreak #DogMemories #DogAdventures #ProductPreview`
+- **Primary Story asset:** `../../stories/07-journey-memory.png`; question sticker: “What makes a dog day memorable?” The place / The surprise.
+- **Feed alternative:** `../../screenshots/07-journey-memory.png`; preserve the original visible DEMO label and do not add customer photos, ratings or location claims.
+- **Source:** `social-assets/assets.json` records these real-app DEMO captures at commit `02dd7f85` on October 31. This is an editorial concept, not a new capture.
+
+**November 9–15:** seven consecutive approval-pending, unpublished content entries in the CSV. No social publishing, new screenshot, actual trip or production app visual audit claimed. The connected remote browser still lacks its originating browser session.
+
+## PS-20261116-17 — Keep the little detail
+
+- **Hook:** The best part is not always the photo.
+- **Caption:** Product preview: This is the authentic October 31 PawStreak DEMO completion screen. It invites you to remember one small detail after an adventure; it is not proof of a real customer's walk or a newly released feature. A photo is optional.
+- **CTA:** What tiny detail from your last dog walk would you write down?
+- **Hashtags:** `#PawStreak #DogMemories #DogAdventureJournal #ProductPreview`
+- **Feed asset:** `../../screenshots/06-save-memory-payoff.png` — real October 31 running-app DEMO capture, label intact.
+- **Story companion:** `../../stories/06-save-memory-payoff.png`; question sticker: “What tiny thing would you remember?” The smell / The surprise.
+- **Claim boundaries:** The photo and text fields are app preview UI; no fabricated dog photos, customer reviews, new feature, place availability, or new device recording.
+
+**November 10–16:** seven consecutive entries remain **pending approval and unpublished**, with assets cross-referenced to `social-assets/assets.json` (source commit `02dd7f85`). Connected remote browser inspection was blocked by originating-session access. No fresh screenshot or video is claimed.
+
+## PS-20261117-18 — Celebrate a real dog day, not a counter
+
+- **Hook:** The streak is not the destination. The dog day is.
+- **Caption:** Product preview: PawStreak's actual DEMO Home screen keeps adventure memories and small progress moments near the next outing. These visible badges belong to a sample demo profile, not verified customer achievements. Real-life time with your dog is what counts.
+- **CTA:** What's one small win for your dog today: a new smell or a new place?
+- **Hashtags:** `#PawStreak #DogAdventures #DogParents #ProductPreview`
+- **Feed / Story assets:** `../../screenshots/01-adventure-launch-home.png` and `../../stories/01-adventure-launch-home.png`, both from the approved October 31 authentic running-app DEMO manifest `social-assets/assets.json`. Preserve DEMO watermark and original UI.
+- **Story interaction:** Poll “One little win today?” A new smell / A new place.
+- **No invented metrics:** Sample memory and badges must not be framed as user growth, new features or verified live achievement totals.
+- **Evidence upgrade:** November 10 GitHub Actions generated independent actual-running-DEMO screenshots ([screenshot workflow](https://github.com/stc516/pawstreak-launch/actions/runs/42855430824), [beta readiness workflow](https://github.com/stc516/pawstreak-launch/actions/runs/42855430827)). They were visually inspected November 11 for a design audit, **not** approved as replacement social assets or physical-device proof.
+
+**November 11–17:** seven consecutive dated, pending-approval concepts. No new production-user photos, new recording, publishing, customer results or live destination assertions. The authorized remote browser remains unavailable without its originating browser session.
+
+## PS-20261118-19 — From a maybe to a real plan
+
+- **Hook:** From a maybe to a real plan.
+- **Caption:** Product preview: These are authentic October 31 PawStreak DEMO app screens. One shows a place to explore outing ideas; the next shows the adventure-ready step. No actual dog outing, live nearby availability, or current destination rules are implied. The goal is a better day with your dog—not another hour in an app.
+- **CTA:** What makes it easiest for you to say we're going: a clear place, the right plan, or your dog staring at the door?
+- **Hashtags:** `#PawStreak #DogAdventures #AdventurePlanning #ProductPreview`
+- **Two-frame Feed carousel:** `../../screenshots/03-discover-adventure-mode.png` then `../../screenshots/05-adventure-ready.png`. Both are original authentic screenshots from October 31's running DEMO app. Do not replace or redraw screen content, remove DEMO labels, or imply these depict a user's real trip.
+- **Story:** `../../stories/05-adventure-ready.png`; optional poll: “What gets you out the door?” Clear place / Dog decides. Keep sticker text outside substantive UI.
+- **Provenance:** All three are listed in `social-assets/assets.json` at source commit `02dd7f85`; no new footage, verified live place access, customer statistics or physical-device screenshots.
+- **Approval gate:** This is an editorial package only; nothing scheduled or posted.
+
+**November 12–18:** seven consecutive approval-pending and unpublished concepts are covered. Five-hashtag maximum applies to every CSV row. The newer November 10 CI DEMO images remain evidence only; they are **not** substituted into this approved social source set. No current live visual QA is claimed.
+
+## PS-20261119-20 — One idea, more time with the dog
+
+- **Hook:** One good idea beats ten saved tabs.
+- **Caption:** Product preview: This is an authentic October 31 PawStreak DEMO Today’s Pick screen. The goal is to make choosing a worthwhile dog outing feel easier so you can put the phone away and go together. This is a sample interface, not a live recommendation, verified nearby availability, or a real customer outing.
+- **CTA:** Would your dog choose a familiar favorite or somewhere new?
+- **Hashtags:** `#PawStreak #DogAdventures #AdventureIdeas #ProductPreview`
+- **Feed:** `../../screenshots/02-todays-pick-card.png`; **Story:** `../../stories/02-todays-pick-card.png` (both unchanged original running-app DEMO captures from the October 31 source manifest).
+- **Story poll:** “Your dog’s next outing?” Familiar favorite / Somewhere new.
+- **Guardrails:** Preserve the DEMO label, do not suggest actual recommendations are personalized or live, and do not add stock, fake dog photos, speculative features or unverified destination information.
+
+**November 13–19:** seven consecutive approval-pending, unpublished concepts. No social scheduling, publishing, new screenshots, customer adventures, or production changes. Remote browser requires its originating browser context; no new live visual inspection is claimed.
