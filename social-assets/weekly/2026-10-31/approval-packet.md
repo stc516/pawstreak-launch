@@ -228,3 +228,15 @@ As of November 5, the **November 5–11** buffer contains seven consecutive entr
 - **Approval gate:** This is an editorial package only; nothing scheduled or posted.
 
 **November 12–18:** seven consecutive approval-pending and unpublished concepts are covered. Five-hashtag maximum applies to every CSV row. The newer November 10 CI DEMO images remain evidence only; they are **not** substituted into this approved social source set. No current live visual QA is claimed.
+
+## PS-20261119-20 — One idea, more time with the dog
+
+- **Hook:** One good idea beats ten saved tabs.
+- **Caption:** Product preview: This is an authentic October 31 PawStreak DEMO Today’s Pick screen. The goal is to make choosing a worthwhile dog outing feel easier so you can put the phone away and go together. This is a sample interface, not a live recommendation, verified nearby availability, or a real customer outing.
+- **CTA:** Would your dog choose a familiar favorite or somewhere new?
+- **Hashtags:** `#PawStreak #DogAdventures #AdventureIdeas #ProductPreview`
+- **Feed:** `../../screenshots/02-todays-pick-card.png`; **Story:** `../../stories/02-todays-pick-card.png` (both unchanged original running-app DEMO captures from the October 31 source manifest).
+- **Story poll:** “Your dog’s next outing?” Familiar favorite / Somewhere new.
+- **Guardrails:** Preserve the DEMO label, do not suggest actual recommendations are personalized or live, and do not add stock, fake dog photos, speculative features or unverified destination information.
+
+**November 13–19:** seven consecutive approval-pending, unpublished concepts. No social scheduling, publishing, new screenshots, customer adventures, or production changes. Remote browser requires its originating browser context; no new live visual inspection is claimed.
