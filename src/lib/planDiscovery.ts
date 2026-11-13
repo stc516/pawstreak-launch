@@ -12,9 +12,9 @@ export const PLAN_PROXIMITY_OPTIONS: {
   label: string
   emoji: string
 }[] = [
-  { id: '5min', label: '5 min', emoji: '🏘️' },
-  { id: '15min', label: '15 min', emoji: '⏱️' },
-  { id: '30min', label: '30 min', emoji: '🚗' },
+  { id: '5min', label: '2.5 mi', emoji: '🏘️' },
+  { id: '15min', label: '6 mi', emoji: '⏱️' },
+  { id: '30min', label: '14 mi', emoji: '🚗' },
   { id: 'road-trip', label: 'Road trip', emoji: '🛣️' },
 ]
 
@@ -208,24 +208,41 @@ export function getPlacesForProximityBucket(
   return nearby.slice(0, 4)
 }
 
+/** Keep distance and category filters in effect together.
+ * Legacy internal bucket IDs refer to approximate straight-line mile radii,
+ * not calculated driving minutes (2.5, 6 and 14 miles).
+ */
 export function getPlanNearbyPlaces(
   categoryId: string,
   proximityBucket: PlanProximityBucket,
   prefs?: RecommendationPrefs,
   state?: AppState,
 ): Place[] {
-  if (proximityBucket !== '15min') {
+  if (state && !state.locationSupported) return []
+
+  // "All" keeps the short curated nearby list and the quick neighborhood walk.
+  if (categoryId === 'all') {
     return getPlacesForProximityBucket(proximityBucket, prefs, state)
   }
 
-  if (state && !state.locationSupported) return []
+  if (proximityBucket === 'road-trip') {
+    const trips = getPlacesForProximityBucket(proximityBucket, prefs, state)
+    // Road trip is both an adventure type and a distance choice in this UI.
+    if (categoryId === 'road-trip') return trips
+
+    const categoryIds = new Set(
+      getPlacesForPlanCategory(categoryId, prefs).map((place) => place.id),
+    )
+    return trips.filter((place) => categoryIds.has(place.id))
+  }
 
   const context = resolvePlanLocationContext(state)
+  const maxMiles = proximityBucket === '5min' ? 2.5 : proximityBucket === '15min' ? 6 : 14
   const categoryPlaces = getPlacesForPlanCategory(categoryId, prefs).filter((place) => {
     if (place.category === 'Road trip') return false
     if (!sameDevelopedRegion(place, context)) return false
     const miles = getPlaceDistanceMiles(place, state)
-    return miles == null || miles <= 20
+    return miles != null && miles <= maxMiles
   })
 
   return rankAndDecoratePlaces(categoryPlaces, state)
