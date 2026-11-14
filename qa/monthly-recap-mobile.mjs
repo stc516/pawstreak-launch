@@ -63,8 +63,15 @@ try {
   let card = await openMonthlyCard()
   assert.equal(await card.locator('h1').innerText(), '1 adventure this month')
   assert.deepEqual(
-    await card.locator('.share-card-metric').allInnerTexts(),
-    ['Adventures\n1', 'Places visited\n1', 'Photos saved\n0'],
+    await card.locator('.share-card-metric').evaluateAll(elements => elements.map(element => ({
+      label: element.querySelector('span')?.textContent?.trim(),
+      value: element.querySelector('strong')?.textContent?.trim(),
+    }))),
+    [
+      { label: 'Adventures', value: '1' },
+      { label: 'Places visited', value: '1' },
+      { label: 'Photos saved', value: '0' },
+    ],
     'Current-month card must show actual entries, distinct places and photos — never all-time counters',
   )
   assert.equal(await card.locator('.share-card-photo--empty').count(), 1, 'Do not borrow a previous-month photo')
