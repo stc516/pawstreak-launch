@@ -113,7 +113,7 @@ export function JourneyMemoryView({
               )}
             </div>
             <div>
-              <span>YOU TWO ACTUALLY DID THAT</span>
+              <span>A DAY WORTH REMEMBERING</span>
               <strong>That was a good day.</strong>
             </div>
             <i className="ti ti-check" aria-hidden="true" />
@@ -128,8 +128,8 @@ export function JourneyMemoryView({
               <i className="ti ti-brand-instagram" />
             </span>
             <span>
-              <strong>Share today’s adventure</strong>
-              <small>Image ready for Instagram or Photos</small>
+              <strong>Share this memory</strong>
+              <small>Create a story card to save or share</small>
             </span>
             <i className="ti ti-arrow-up-right" aria-hidden="true" />
           </button>
