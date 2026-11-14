@@ -79,7 +79,7 @@ try {
   await page.screenshot({ path: path.join(out, '01-current-month-mobile.png'), fullPage: true })
   checks.push('current-month share overlay: one outing, one place, zero photos, no borrowed image')
 
-  await page.getByRole('button', { name: 'Close share preview' }).click()
+  await page.getByRole('dialog').getByRole('button', { name: 'Close share preview' }).click()
   await seedMonthlyMemories(false)
   card = await openMonthlyCard()
   assert.equal(await card.locator('h1').innerText(), '0 adventures this month')
