@@ -63,8 +63,8 @@ export function JourneyScreen({
             )}
           </div>
           <div>
-            <span className="journey-hero-kicker">LOOK WHAT YOU TWO DID</span>
-            <div className="alogo">This Month With {dogLabel}</div>
+            <span className="journey-hero-kicker">LOOK WHAT YOU DID TOGETHER</span>
+            <div className="alogo">Adventures With {dogLabel}</div>
           </div>
         </div>
         <p className="journey-story-hero-copy">
