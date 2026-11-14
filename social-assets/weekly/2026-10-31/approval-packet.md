@@ -240,3 +240,16 @@ As of November 5, the **November 5–11** buffer contains seven consecutive entr
 - **Guardrails:** Preserve the DEMO label, do not suggest actual recommendations are personalized or live, and do not add stock, fake dog photos, speculative features or unverified destination information.
 
 **November 13–19:** seven consecutive approval-pending, unpublished concepts. No social scheduling, publishing, new screenshots, customer adventures, or production changes. Remote browser requires its originating browser context; no new live visual inspection is claimed.
+ 
+## PS-20261120-21 — The real dog day happens offline
+
+- **Hook:** Three screens. One better dog day.
+- **Caption:** Product preview: This original October 31 PawStreak DEMO walkthrough shows the app loop from choosing an outing to saving a Journey memory. Real adventure time happens off-screen; this is not customer footage, a new recording, or a claim about nearby availability.
+- **CTA:** Would you rather see the next outing idea or the memory after it?
+- **Hashtags:** `#PawStreak #DogAdventures #DogMemories #ProductPreview`
+- **Reel asset:** `../../videos/pawstreak-demo-flow.webm`, the unchanged recorded real-running-app DEMO screen flow (Git blob `aaae115ea1faf05ba6222bfbaa4ddd9cd6a5de39`).
+- **Story companion:** `../../stories/06-save-memory-payoff.png`; “Which part matters more?” Finding an outing / Remembering it. Existing manifest-backed October 31 app screen, not a newly rendered image.
+- **Boundaries:** Never crop out DEMO, cut to invented outdoor footage, insert customer performance numbers, or imply any video was newly recorded.
+- **Approval:** Concept only. Nothing scheduled or posted.
+
+**November 14–20:** seven consecutive unique dates have pending, unpublished entries. All primary and Story references remain authentic October 31 capture-manifest assets; original DEMO labels and source provenance retained. No real-user images, location assertions, new recording, deployment or paid promotion.
