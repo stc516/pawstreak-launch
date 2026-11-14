@@ -63,5 +63,6 @@ jobs:
             qa/evidence/release-readiness/**
             qa/evidence/mobile-shell-guard/**
             qa/evidence/beta-critical/**
+            artifacts/qa/release-gate/monthly-recap-mobile/**
             /tmp/pawstreak-preview.log
           if-no-files-found: ignore
