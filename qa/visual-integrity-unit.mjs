@@ -54,6 +54,17 @@ try {
   assert.equal(recap.imageUrl, photo, 'Last month photos must not appear on the current monthly card')
   assert.deepEqual(recap.metrics, [{ label: 'Adventures', value: '1' }, { label: 'Places visited', value: '1' }, { label: 'Photos saved', value: '1' }])
   assert.equal(recap.slots.length, 1, 'Monthly categories cannot include historic memories')
+  // A newer no-photo outing must not hide an older authentic photo saved in
+  // the same month, nor pull a better-looking image from the previous month.
+  const earlierPhoto = { ...inMonth, id: 'earlier-photo', occurredAt: new Date(now.getFullYear(), now.getMonth(), 5, 12).toISOString(), photoUrls: [photo] }
+  const laterWithoutPhoto = { ...inMonth, id: 'later-no-photo', occurredAt: new Date(now.getFullYear(), now.getMonth(), 14, 12).toISOString(), photoUrls: [] }
+  const mixedPhotoRecap = buildShareCardData(
+    { ...state, journeyEntries: [staleLastMonth, laterWithoutPhoto, earlierPhoto] },
+    { kind: 'monthly-recap' },
+  )
+  assert.equal(mixedPhotoRecap.title, '2 adventures this month')
+  assert.equal(mixedPhotoRecap.imageUrl, photo, 'Choose latest authentic photo from the current month even if newest outing has no photo')
+  assert.equal(mixedPhotoRecap.metrics[2].value, '1', 'A photo-free outing does not erase a photo saved earlier in the month')
   const emptyRecap = buildShareCardData({ ...state, journeyEntries: [staleLastMonth, unverifiedLegacy] }, { kind: 'monthly-recap' })
   assert.equal(emptyRecap.title, '0 adventures this month')
   assert.equal(emptyRecap.imageUrl, undefined, 'A month without memories cannot reuse historical images')
