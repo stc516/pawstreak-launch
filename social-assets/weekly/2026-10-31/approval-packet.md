@@ -1,4 +1,4 @@
-# PawStreak rolling product-preview buffer — October 31–November 15, 2026
+# PawStreak rolling product-preview buffer — October 31–November 21, 2026
 
 Prepared October 30, 2026. All items are **Pending approval** and **Unpublished**. Every primary asset is a real 390 × 844 capture from the running PawStreak application at commit `02dd7f85`; the visible `DEMO` label is retained so the preview state is unambiguous.
 
@@ -253,3 +253,15 @@ As of November 5, the **November 5–11** buffer contains seven consecutive entr
 - **Approval:** Concept only. Nothing scheduled or posted.
 
 **November 14–20:** seven consecutive unique dates have pending, unpublished entries. All primary and Story references remain authentic October 31 capture-manifest assets; original DEMO labels and source provenance retained. No real-user images, location assertions, new recording, deployment or paid promotion.
+
+## PS-20261121-22 — Choose the idea, then check the details
+
+- **Hook:** Curiosity gets you out the door. Details help you go.
+- **Caption:** Product preview: This two-frame carousel uses genuine October 31 PawStreak DEMO screens—Explore and adventure details. Choose the kind of dog outing that sounds good, then check the actual place's current access rules before leaving. It is not a customer trip, live route, or verified availability.
+- **CTA:** Which comes first when choosing a dog outing: the kind of adventure or the place details?
+- **Hashtags:** `#PawStreak #DogAdventures #AdventurePlanning #ProductPreview`
+- **Two-frame carousel:** `../../screenshots/03-discover-adventure-mode.png` then `../../screenshots/04-adventure-detail.png` (same original October 31 real-running-app DEMO capture set).
+- **Story companion:** `../../stories/04-adventure-detail.png`; poll “What decides the next dog outing?” Adventure type / Current access rules.
+- **Source and boundaries:** Original `social-assets/assets.json` manifest commit `02dd7f85`; preserve the visible DEMO label. No current access/availability assertions, new screens, customer adventures, or dog photos. This is an unpublished editorial concept, not a newly rendered post.
+
+**November 15–21:** seven consecutive pending, unpublished entries; keep all content clearly framed as original DEMO previews until verified, current app footage is available. No publishing or scheduling.
