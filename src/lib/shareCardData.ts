@@ -119,11 +119,15 @@ export function getCurrentMonthJourneyEntries(
 function buildMonthlyRecapCard(state: AppState): ShareCardData {
   const entries = getCurrentMonthJourneyEntries(state.journeyEntries)
   const counts = categoryCounts(entries)
-  const latest = [...entries].sort(
+  const datedEntries = [...entries].sort(
     (left, right) => (getMemoryCalendarDate(right)?.getTime() ?? 0) -
       (getMemoryCalendarDate(left)?.getTime() ?? 0),
-  )[0]
-  const imageUrl = authenticPhotoUrls(latest?.photoUrls)[0]
+  )
+  const latest = datedEntries[0]
+  // The newest outing may be photo-free. Use the newest *authentic* photo
+  // from this month rather than showing a blank recap despite saved photos.
+  const latestPhotoEntry = datedEntries.find((entry) => authenticPhotoUrls(entry.photoUrls).length > 0)
+  const imageUrl = authenticPhotoUrls(latestPhotoEntry?.photoUrls)[0]
   const placesVisited = new Set(entries.map(getDistinctPlaceKey)).size
   const photosSaved = entries.reduce(
     (count, entry) => count + authenticPhotoUrls(entry.photoUrls).length,
