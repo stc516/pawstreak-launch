@@ -20,6 +20,7 @@ const book = await readFile('dist/bailey-and-omi/big-climb/index.html', 'utf8')
 assert(book.includes('data-story-adventure-id="big-climb"'))
 assert(book.includes('never pull, force, or frighten'))
 assert(book.includes('href="#try-big-climb"'))
+assert(book.includes('href="#availability-title"'))
 assert(book.includes('href="/app"'))
 assert(book.includes('real-dogs-together.webp'))
 assert(book.includes('https://www.amazon.com/dp/B0HMDMQ4Y3'))
@@ -60,7 +61,7 @@ try {
       await page.reload()
       assert((await page.title()).includes('S.T. Carroll'))
     }
-    await page.getByRole('link', { name: 'Try Bailey’s Big Climb', exact: true }).click()
+    await page.getByRole('link', { name: 'Try the family activity', exact: true }).click()
     assert(new URL(page.url()).hash === '#try-big-climb')
     const seriesLink = page.getByRole('link', { name: 'Bailey & Omi', exact: true })
     await Promise.all([

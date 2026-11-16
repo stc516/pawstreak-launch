@@ -5,10 +5,11 @@ const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY?.trim()
 
 for (const form of forms) {
   const email = form.elements.namedItem('email') as HTMLInputElement | null
+  const consent = form.elements.namedItem('book_news_consent') as HTMLInputElement | null
   const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]')
   const status = form.querySelector<HTMLElement>('[data-signup-status]')
 
-  if (!email || !submit || !status) continue
+  if (!email || !consent || !submit || !status) continue
 
   submit.disabled = false
 
@@ -19,6 +20,12 @@ for (const form of forms) {
     if (!emailPattern.test(value)) {
       status.textContent = 'Please enter a valid email address.'
       email.focus()
+      return
+    }
+
+    if (!consent.checked) {
+      status.textContent = 'Please confirm you would like to receive Bailey & Omi book news.'
+      consent.focus()
       return
     }
 
@@ -40,14 +47,14 @@ for (const form of forms) {
           'Content-Type': 'application/json',
           Prefer: 'return=minimal',
         },
-        body: JSON.stringify({ email: value, source: 'bailey_omi_book_news' }),
+        body: JSON.stringify({ email: value, source: 'bailey_omi_book_news', book_news_consent_version: '2026-11-v1' }),
       })
 
       if (response.ok) {
         status.textContent = 'You’re in! We’ll share Bailey & Omi book news with you.'
         form.reset()
       } else if (response.status === 409) {
-        status.textContent = 'You’re already on the list — thank you!'
+        status.textContent = 'This email is already registered. To update your book-news preferences, email hello@pawstreakapp.com.'
         form.reset()
       } else {
         status.textContent = 'We couldn’t add you just now. Please try again.'
