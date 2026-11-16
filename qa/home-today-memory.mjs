@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import { findTodaysJourneyEntry, isJourneyEntryFromToday } from '../src/lib/homeTodayMemory.ts'
+import { calculateAdventureStreak } from '../src/lib/adventureStreak.ts'
 
 const now = new Date(2026, 10, 11, 8, 0, 0)
 const today = new Date(2026, 10, 11, 0, 1, 0)
@@ -45,4 +46,17 @@ check('demo preview keeps historical sample memory for screenshot QA', () => {
   assert.equal(findTodaysJourneyEntry([make('dog-beach-today', 'Today')], now, true)?.id, 'dog-beach-today')
 })
 
-console.log(`Home today memory: ${passed}/11 checks passed`)
+check('Home today and the streak use the same local date truth', () => {
+  const realToday = make('real', 'Yesterday', today.toISOString())
+  const staleYesterday = make('old', 'Today', yesterday.toISOString())
+  assert.equal(isJourneyEntryFromToday(realToday, now), true)
+  assert.equal(isJourneyEntryFromToday(staleYesterday, now), false)
+  assert.equal(calculateAdventureStreak([realToday, staleYesterday], now), 2)
+})
+check('impossible legacy calendar date is never treated as an outing', () => {
+  const impossible = make('impossible', '2026-11-31')
+  assert.equal(isJourneyEntryFromToday(impossible, now), false)
+  assert.equal(calculateAdventureStreak([impossible], now), 0)
+})
+
+console.log(`Home today memory: ${passed}/13 checks passed`)
