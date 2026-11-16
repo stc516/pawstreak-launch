@@ -44,6 +44,18 @@ async function runStaticChecks() {
     'Release checklist covers push migration, push functions, public key, and real push receipt checks',
   )
 
+  const brand = await readRepoFile('src/lib/brand.ts')
+  record(
+    'first-run-explains-product-loop',
+    includesAll(brand, [
+      'Discover a place',
+      'go together',
+      'save the memory',
+      'watch your journey grow',
+    ]),
+    'First-run copy explains discovery, action, memory, and progress without founder narration',
+  )
+
   const shareContent = await readRepoFile('src/lib/shareContent.ts')
   record(
     'share-image-first',
