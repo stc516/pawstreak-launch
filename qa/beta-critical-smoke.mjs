@@ -33,7 +33,7 @@ async function runStaticChecks() {
   record(
     'checklist-current-production-surface',
     includesAll(checklist, [
-      'Migrations 001–020',
+      'Migrations 001–022',
       '020_push_notifications.sql',
       'push-subscriptions',
       'send-push-reminders',
