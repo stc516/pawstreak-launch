@@ -118,7 +118,10 @@ export function SettingsScreen({
     setPushBusy(true)
     setPushMessage(null)
     try {
-      await enablePushNotifications(pushPreferences)
+      const preferencesToEnable = pushPreferences.morningEnabled || pushPreferences.eveningEnabled
+        ? pushPreferences
+        : DEFAULT_PUSH_PREFERENCES
+      await enablePushNotifications(preferencesToEnable)
       const next = await getPushNotificationState()
       setPushState(next)
       setPushPreferences(next.preferences)

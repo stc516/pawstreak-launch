@@ -1,5 +1,6 @@
 import { getAuthRedirectUrl } from './routes'
 import { getSupabaseClient, isSupabaseConfigured } from './supabase'
+import { clearNativePushForSignOut } from './nativePushNotifications'
 
 export { isSupabaseConfigured }
 
@@ -86,6 +87,7 @@ export async function signInWithGoogle() {
 export async function signOut() {
   const supabase = getSupabaseClient()
   if (!supabase) return
+  await clearNativePushForSignOut()
   await supabase.auth.signOut()
 }
 
