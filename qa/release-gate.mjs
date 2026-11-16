@@ -28,6 +28,7 @@ async function waitForServer(url, timeoutMs = 30000) {
 async function main() {
   await run(['audit', '--omit=dev', '--audit-level=high'])
   await run(['run', 'lint'])
+  await run(['run', 'qa:hero-fit'])
   await run(['run', 'qa:native'])
   const deterministicEnv = { ...process.env, VITE_MAPBOX_TOKEN: '' }
   await run(['run', 'build'], { env: deterministicEnv })
