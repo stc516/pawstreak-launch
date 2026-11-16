@@ -20,6 +20,7 @@ async function main() {
   const cap = await readJson('capacitor.config.json')
   const routes = await readFile('src/lib/routes.ts', 'utf8')
   const deepLinks = await readFile('src/lib/nativeDeepLinks.ts', 'utf8')
+  const deepLinkRoute = await readFile('src/lib/nativeDeepLinkRoute.ts', 'utf8')
   const runtime = await readFile('src/lib/nativeRuntime.ts', 'utf8')
   const nativePhotos = await readFile('src/lib/nativePhotos.ts', 'utf8')
   const nativePhotoRestore = await readFile('src/lib/nativePhotoRestore.ts', 'utf8')
@@ -88,9 +89,16 @@ async function main() {
       'handleNativeUrl',
       'lastHandledUrl',
       'exchangeCodeForSession',
-      '/app/invite',
       "window.dispatchEvent(new PopStateEvent('popstate'))",
-    ]) && includesAll(runtime, ['isNativeAppRuntime', 'getNativePlatform', 'NATIVE_APP_SCHEME']),
+    ]) &&
+      includesAll(deepLinkRoute, [
+        'getInternalPathFromNativeUrl',
+        'isNativeInviteUrl',
+        '/app/invite',
+        "boundary === '?'",
+        "boundary === '#'",
+      ]) &&
+      includesAll(runtime, ['isNativeAppRuntime', 'getNativePlatform', 'NATIVE_APP_SCHEME']),
     'Warm and cold native URL opens are deduplicated, routed into the PawStreak app shell, and passed through Supabase code exchange.',
   )
 

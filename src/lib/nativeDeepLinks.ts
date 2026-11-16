@@ -1,24 +1,7 @@
 import { App as CapacitorApp } from '@capacitor/app'
 import { getSupabaseClient } from './supabase'
 import { NATIVE_APP_SCHEME, isNativeAppRuntime } from './nativeRuntime'
-
-function getInternalPathFromNativeUrl(urlString: string): string | null {
-  let url: URL
-  try {
-    url = new URL(urlString)
-  } catch {
-    return null
-  }
-
-  if (url.protocol !== `${NATIVE_APP_SCHEME}:`) return null
-
-  const suffix = `${url.search}${url.hash}`
-  if (url.hostname === 'auth' && url.pathname === '/invite') {
-    return `/app/invite${suffix}`
-  }
-
-  return `/app${suffix}`
-}
+import { getInternalPathFromNativeUrl } from './nativeDeepLinkRoute'
 
 async function finishSupabaseCodeExchange(urlString: string): Promise<void> {
   const supabase = getSupabaseClient()
@@ -38,7 +21,7 @@ let lastHandledUrl = ''
 let lastHandledAt = 0
 
 async function handleNativeUrl(urlString: string): Promise<void> {
-  const internalPath = getInternalPathFromNativeUrl(urlString)
+  const internalPath = getInternalPathFromNativeUrl(urlString, NATIVE_APP_SCHEME)
   if (!internalPath) return
 
   // Capacitor can surface the same cold-start URL through both getLaunchUrl()
