@@ -249,6 +249,7 @@ export function HomeScreen({
             imageUrl={todayEntry ? todayPhoto : heroImageUrl}
             imageAlt={todayEntry ? todayEntry.place : heroPlace.name}
             imageTone={heroPlace.imageTone ?? 'warm'}
+            showPlaceholder={false}
           >
             <div className="home-adventure-stage-scrim" aria-hidden="true" />
             <div className="home-adventure-stage-copy">
@@ -256,11 +257,22 @@ export function HomeScreen({
               <strong>{todayEntry?.place ?? heroPlace.name}</strong>
               <small>{todayEntry ? 'Open the memory, then pick what comes next.' : getHeroFitLine(heroPlace, profileDogs)}</small>
             </div>
-            <div className="home-adventure-stage-route" aria-hidden="true">
-              <span>{heroPlace.distanceLabel}</span>
-              <span>{heroPlace.category}</span>
-              <span>{heroPlace.leashInfo}</span>
-            </div>
+            {todayEntry ? (
+              <div
+                className="home-adventure-stage-route"
+                data-testid="home-saved-memory-context"
+                aria-hidden="true"
+              >
+                <span>Saved in Journey</span>
+                {todayPhoto ? <span>Photo memory</span> : null}
+              </div>
+            ) : (
+              <div className="home-adventure-stage-route" aria-hidden="true">
+                <span>{heroPlace.distanceLabel}</span>
+                <span>{heroPlace.category}</span>
+                <span>{heroPlace.leashInfo}</span>
+              </div>
+            )}
             <div className="home-adventure-stage-pack" aria-hidden="true">
               {profileDogs.slice(0, 2).map((dog) => (
                 <span key={dog.id} className={`home-adventure-stage-dog ${dog.avatarClass}`}>
