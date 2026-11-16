@@ -2,6 +2,7 @@ import type { AppState, JourneyEntry } from '../data/demo'
 import { getJourneyEntryDisplayImageUrl } from '../lib/adventureDisplayImage'
 import { NEIGHBORHOOD_WALK_PLACE_ID } from '../data/places'
 import { authenticPhotoUrls } from '../lib/authenticImages'
+import { getProfileDogs } from '../lib/profileDisplay'
 
 interface JourneyStoryPathProps {
   state: AppState
@@ -41,6 +42,39 @@ function isEverydayWalk(entry: JourneyEntry): boolean {
   return label.includes('neighborhood walk') || label.includes('around the neighborhood')
 }
 
+type MemoryFallbackTheme = 'coast' | 'trail' | 'park' | 'patio' | 'road'
+
+function getMemoryFallback(entry: JourneyEntry): {
+  theme: MemoryFallbackTheme
+  icon: string
+  label: string
+} {
+  const detail = `${entry.place} ${entry.tags.join(' ')}`.toLowerCase()
+
+  if (detail.includes('beach') || detail.includes('coast') || detail.includes('ocean')) {
+    return { theme: 'coast', icon: 'ti-waves', label: 'Salt-air memory' }
+  }
+
+  if (detail.includes('trail') || detail.includes('hike') || detail.includes('ridge')) {
+    return { theme: 'trail', icon: 'ti-mountain', label: 'Trail memory' }
+  }
+
+  if (
+    detail.includes('coffee') ||
+    detail.includes('cafe') ||
+    detail.includes('restaurant') ||
+    detail.includes('patio')
+  ) {
+    return { theme: 'patio', icon: 'ti-coffee', label: 'Patio memory' }
+  }
+
+  if (detail.includes('trip') || detail.includes('road') || detail.includes('drive')) {
+    return { theme: 'road', icon: 'ti-road', label: 'Road-trip memory' }
+  }
+
+  return { theme: 'park', icon: 'ti-trees', label: 'Park-day memory' }
+}
+
 export function JourneyStoryPath({
   state,
   onOpenMemory,
@@ -53,6 +87,7 @@ export function JourneyStoryPath({
   const adventureEntries = entries.filter((entry) => !isEverydayWalk(entry))
   const everydayWalks = entries.filter(isEverydayWalk)
   const completedCount = adventureEntries.length
+  const leadDog = getProfileDogs(state)[0]
   const previewNodes = [
     {
       title: 'Beach walk',
@@ -96,6 +131,7 @@ export function JourneyStoryPath({
             const side = index % 2 === 0 ? 'left' : 'right'
             const imageUrl = getJourneyEntryDisplayImageUrl(state.journeyEntries, entry)
             const photoCount = authenticPhotoUrls(entry.photoUrls).length
+            const fallback = getMemoryFallback(entry)
 
             return (
               <article
@@ -117,7 +153,34 @@ export function JourneyStoryPath({
                       {photoCount}
                     </span>
                   ) : null}
-                  {imageUrl ? <img src={imageUrl} alt="" className="journey-memory-photo" /> : <span className="journey-memory-no-photo"><i className="ti ti-notebook" aria-hidden="true" />Memory saved · no photo added</span>}
+                  {imageUrl ? (
+                    <img src={imageUrl} alt="" className="journey-memory-photo" />
+                  ) : (
+                    <span
+                      className={`journey-memory-no-photo journey-memory-no-photo--${fallback.theme}`}
+                      aria-label="Memory saved · no photo added"
+                    >
+                      <span className="journey-memory-scene-sun" aria-hidden="true" />
+                      <span className="journey-memory-scene-land journey-memory-scene-land--far" aria-hidden="true" />
+                      <span className="journey-memory-scene-land journey-memory-scene-land--near" aria-hidden="true" />
+                      <span className="journey-memory-scene-route" aria-hidden="true" />
+                      <span className="journey-memory-fallback-dog" aria-hidden="true">
+                        {leadDog?.photoUrl ? (
+                          <img src={leadDog.photoUrl} alt="" />
+                        ) : (
+                          <span>{leadDog?.profileEmoji ?? '🐕'}</span>
+                        )}
+                      </span>
+                      <span className="journey-memory-fallback-badge" aria-hidden="true">
+                        <i className={`ti ${fallback.icon}`} />
+                        Memory kept
+                      </span>
+                      <span className="journey-memory-fallback-caption" aria-hidden="true">
+                        <strong>{fallback.label}</strong>
+                        <small>The day still counts</small>
+                      </span>
+                    </span>
+                  )}
                   <span className="journey-memory-copy">
                     <span className="journey-memory-date">{formatMemoryDate(entry)}</span>
                     <span className="journey-memory-title">{entry.place}</span>
