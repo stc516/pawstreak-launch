@@ -1,4 +1,4 @@
-# PawStreak rolling product-preview buffer — October 31–November 21, 2026
+# PawStreak rolling product-preview buffer — October 31–November 22, 2026
 
 Prepared October 30, 2026. All items are **Pending approval** and **Unpublished**. Every primary asset is a real 390 × 844 capture from the running PawStreak application at commit `02dd7f85`; the visible `DEMO` label is retained so the preview state is unambiguous.
 
@@ -22,6 +22,7 @@ Prepared October 30, 2026. All items are **Pending approval** and **Unpublished*
 | Nov 13 | PS-20261113-14 | `../../videos/pawstreak-demo-flow.webm` | Reel concept / Story cut | Pending approval |
 | Nov 14 | PS-20261114-15 | `../../screenshots/05-adventure-ready.png` | Feed / Story checklist | Pending approval |
 | Nov 15 | PS-20261115-16 | `../../stories/07-journey-memory.png` | Story / Feed question | Pending approval |
+| Nov 22 | PS-20261122-23 | `../../screenshots/01-adventure-launch-home.png` + `../../screenshots/07-journey-memory.png` | Feed carousel / Story question | Pending approval |
 
 ## PS-20261031-01 — A better dog day starts here
 
@@ -265,3 +266,16 @@ As of November 5, the **November 5–11** buffer contains seven consecutive entr
 - **Source and boundaries:** Original `social-assets/assets.json` manifest commit `02dd7f85`; preserve the visible DEMO label. No current access/availability assertions, new screens, customer adventures, or dog photos. This is an unpublished editorial concept, not a newly rendered post.
 
 **November 15–21:** seven consecutive pending, unpublished entries; keep all content clearly framed as original DEMO previews until verified, current app footage is available. No publishing or scheduling.
+
+## PS-20261122-23 — The short walk can be the good one
+
+- **Hook:** The short walk can be the good one.
+- **Caption:** Product preview: PawStreak's real October 31 DEMO Home shows an easy neighborhood-walk start; a separate Journey DEMO screen shows how saved adventures can become memories. These are two sample views—not the same outing, a real customer's walk, or evidence of newly shipped features. The good dog day happens away from the screen.
+- **CTA:** What's one familiar part of your dog's regular walk you would never skip?
+- **Hashtags:** `#PawStreak #DogAdventures #DogMemories #ProductPreview`
+- **Carousel:** `../../screenshots/01-adventure-launch-home.png` then `../../screenshots/07-journey-memory.png`; both original manifest-backed actual DEMO app screenshots, with the visible DEMO label preserved.
+- **Story companion:** `../../stories/07-journey-memory.png`; optional question “The moment you remember from a familiar walk?” The sniff stop / The happy look.
+- **Source:** `social-assets/assets.json`, original October 31 capture commit `02dd7f85`. The two screenshots do **not** depict the same actual user trip; no place-specific, native-device, sales or user-activity claims.
+- **Status:** Pending approval, unpublished. No social network scheduling or external posting.
+
+**November 16–22:** seven consecutive upcoming days remain represented by distinct pending/unpublished concepts; no synthetic images, stock photos, new app footage, or live destination claims.
