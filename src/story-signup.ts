@@ -54,7 +54,7 @@ for (const form of forms) {
         status.textContent = 'You’re in! We’ll share Bailey & Omi book news with you.'
         form.reset()
       } else if (response.status === 409) {
-        status.textContent = 'You’re already on the list — thank you!'
+        status.textContent = 'This email is already registered. To update your book-news preferences, email hello@pawstreakapp.com.'
         form.reset()
       } else {
         status.textContent = 'We couldn’t add you just now. Please try again.'
