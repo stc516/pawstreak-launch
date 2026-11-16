@@ -14,6 +14,7 @@
     "qa:core-loop-p0": "node qa/core-loop-p0.mjs",
     "qa:finish-review": "node qa/active-adventure-finish-review.mjs",
     "qa:plan-first-action": "node qa/plan-mobile-first-action.mjs",
+    "qa:plan-filters": "node qa/plan-proximity-category.mjs",
     "qa:challenges-first-action": "node qa/challenges-mobile-first-action.mjs",
     "qa:home-memory-clarity": "node qa/home-memory-placeholder-clarity.mjs",
     "qa:achievements-disclosure": "node qa/achievements-mobile-disclosure.mjs",

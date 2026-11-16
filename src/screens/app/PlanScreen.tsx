@@ -119,9 +119,8 @@ export function PlanScreen({
       places.find((place) => place.popularNow) ??
       places.find((place) => place.featured) ??
       places[0] ??
-      suggestedPicks[0] ??
-      null,
-    [places, selectedPlace, suggestedPicks],
+      (state.selectedPlanCategoryId === 'all' ? suggestedPicks[0] : null),
+    [places, selectedPlace, state.selectedPlanCategoryId, suggestedPicks],
   )
   const selectedCategoryLabel =
     state.planCategories.find((category) => category.id === state.selectedPlanCategoryId)?.label ??
@@ -500,13 +499,14 @@ export function PlanScreen({
         </>
       ) : (
         <>
-      <div className="sec">Distance</div>
+      <div className="sec">Distance from your area</div>
       <div className="plan-proximity-strip">
         {PLAN_PROXIMITY_OPTIONS.map((option) => (
           <button
             key={option.id}
             type="button"
             className={`plan-proximity-chip tap-target${proximityBucket === option.id ? ' on' : ''}`}
+            aria-pressed={proximityBucket === option.id}
             onClick={() => handleProximityChange(option.id)}
           >
             <span aria-hidden="true">{option.emoji}</span>
@@ -514,6 +514,8 @@ export function PlanScreen({
           </button>
         ))}
       </div>
+
+      <p className="plan-suggested-lead">Approximate straight-line distance, not drive time. Check directions before heading out.</p>
 
       <div className="sec">Filters</div>
 
@@ -523,6 +525,7 @@ export function PlanScreen({
             key={category.id}
             type="button"
             className={`chip tap-target${state.selectedPlanCategoryId === category.id ? ' on' : ''}`}
+            aria-pressed={state.selectedPlanCategoryId === category.id}
             onClick={() => handleCategorySelect(category.id)}
           >
             <span className="clbl">{category.label}</span>
@@ -545,6 +548,7 @@ export function PlanScreen({
                 placeCardRefs.current[place.id] = node
               }}
               className={`pcard pcard--compact${isRoadTrip ? ' pcard--road-trip' : ''}${selectedPlaceId === place.id ? ' pcard--map-selected' : ''}`}
+              data-plan-category={place.category}
               onClick={() => setSelectedPlaceId(place.id)}
             >
               <CardImage
@@ -589,6 +593,11 @@ export function PlanScreen({
           )
         })}
       </div>
+      {places.length === 0 ? (
+        <div className="plan-area-fallback detail-card-warm" role="status" data-testid="plan-no-matching-places">
+          No curated spots match this distance and filter. Try a wider radius or another adventure type.
+        </div>
+      ) : null}
       {places.length > visiblePlaces.length ? (
         <button
           type="button"
