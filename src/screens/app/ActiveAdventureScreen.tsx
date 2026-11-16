@@ -46,9 +46,7 @@ export function ActiveAdventureScreen({
   const [isFinishing, setIsFinishing] = useState(false)
   const [pausedElapsed, setPausedElapsed] = useState<number | null>(null)
   const [photoSaveMessage, setPhotoSaveMessage] = useState<string | null>(null)
-  const [selectedRecaps, setSelectedRecaps] = useState<string[]>([
-    'Loved every second',
-  ])
+  const [selectedRecaps, setSelectedRecaps] = useState<string[]>([])
 
   const adventure = state.activeAdventure
   const place = getPlaceById(adventure?.placeId ?? '')
@@ -216,8 +214,7 @@ export function ActiveAdventureScreen({
     setIsFinishing(true)
     try {
       await onFinish({
-        recapLabels:
-          selectedRecaps.length > 0 ? selectedRecaps : ['Loved every second'],
+        recapLabels: selectedRecaps,
       })
     } finally {
       setIsFinishing(false)
@@ -419,12 +416,14 @@ export function ActiveAdventureScreen({
           </section>
 
           <div className="rq rq--memory">What made today worth remembering?</div>
+          <p className="adv-photo-reminder">Optional — save your adventure even if you skip these.</p>
           <div className="rchips rchips--memory">
             {state.adventureRecapOptions.map((option) => (
               <button
                 key={option.id}
                 type="button"
                 className={`rc tap-target${selectedRecaps.includes(option.label) ? ' on' : ''}`}
+                aria-pressed={selectedRecaps.includes(option.label)}
                 onClick={() => toggleRecap(option.label)}
               >
                 {option.label}

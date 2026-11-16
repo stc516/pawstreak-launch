@@ -163,7 +163,7 @@ export function createJourneyEntryFromCustom(
       ? 'Calm + close'
       : recapLabels.includes('Loved every second')
         ? 'Joyful + tired'
-        : 'Warm + steady'
+        : recapLabels.length > 0 ? 'Warm + steady' : undefined
 
   const locationSnippet = input.locationLabel?.trim()
   const notesSnippet = input.userNotes?.trim()
@@ -175,7 +175,7 @@ export function createJourneyEntryFromCustom(
     'Custom',
     ...(locationSnippet ? [locationSnippet] : []),
     dogNamesLabel(dogs),
-    'Loved it',
+    ...(recapLabels.includes('Loved every second') ? ['Loved it'] : []),
   ]
 
   return {

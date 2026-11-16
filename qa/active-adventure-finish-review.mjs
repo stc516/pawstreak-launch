@@ -67,6 +67,30 @@ try {
     'Recap choices and photo review are visible before the final save',
   )
 
+  const recapChips = page.locator('.rchips--memory .rc')
+  const firstRecap = recapChips.first()
+  const recapOptionsCount = await recapChips.count()
+  const initiallyPressed = await page.locator('.rchips--memory .rc[aria-pressed="true"]').count()
+  record(
+    'recaps-are-optional',
+    recapOptionsCount > 0 && initiallyPressed === 0,
+    `${recapOptionsCount} options, ${initiallyPressed} preselected; no invented sentiment`,
+  )
+  if (recapOptionsCount > 0) {
+    await firstRecap.click()
+    record(
+      'recap-toggle-accessible',
+      await firstRecap.getAttribute('aria-pressed') === 'true',
+      'Selected recap reports pressed state to assistive technologies',
+    )
+    await firstRecap.click()
+    record(
+      'recap-can-be-cleared',
+      await firstRecap.getAttribute('aria-pressed') === 'false',
+      'Deselected recap does not reintroduce a default choice',
+    )
+  }
+
   await page.getByRole('button', { name: 'Finish adventure and save memory', exact: true }).click()
   await page.locator('.share-preview-shell').waitFor({ state: 'visible' })
   const afterSave = await page.evaluate(() => {
@@ -74,8 +98,18 @@ try {
     return {
       hasActiveAdventure: Boolean(state.activeAdventure),
       journeyCount: state.journeyEntries?.length ?? 0,
+      newestRecapLabels: state.journeyEntries?.[0]?.recapLabels ?? null,
+      newestTags: state.journeyEntries?.[0]?.tags ?? [],
+      newestMood: state.journeyEntries?.[0]?.memoryMood ?? null,
     }
   })
+  record(
+    'no-invented-recap-on-save',
+    (afterSave.newestRecapLabels === null ||
+      (Array.isArray(afterSave.newestRecapLabels) && afterSave.newestRecapLabels.length === 0)) &&
+      !afterSave.newestTags.includes('Loved it') && afterSave.newestMood === null,
+    `Saved recap=${JSON.stringify(afterSave.newestRecapLabels)}, tags=${JSON.stringify(afterSave.newestTags)}, mood=${afterSave.newestMood}`, 
+  )
   record(
     'explicit-save-completes',
     !afterSave.hasActiveAdventure && afterSave.journeyCount === beforeReview.journeyCount + 1,
