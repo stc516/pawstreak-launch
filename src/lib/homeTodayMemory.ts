@@ -1,4 +1,5 @@
 import type { JourneyEntry } from '../data/demo'
+import { getJourneyEntryDayKey, toLocalDayKey } from './journeyCalendar'
 
 /**
  * A display label such as "Today" is persisted in older memories and cannot
@@ -9,26 +10,11 @@ export function isJourneyEntryFromToday(
   now: Date = new Date(),
   allowUndatedTodayLabel = false,
 ): boolean {
-  if (entry.occurredAt) {
-    const occurred = new Date(entry.occurredAt)
-    return Number.isFinite(occurred.getTime()) &&
-      occurred.getFullYear() === now.getFullYear() &&
-      occurred.getMonth() === now.getMonth() &&
-      occurred.getDate() === now.getDate()
-  }
-
-  const label = entry.date.trim()
-  // The seeded DEMO story intentionally uses an undated "Today" label.
-  // Never make that assumption for an actual user's older saved memories.
-  if (allowUndatedTodayLabel && /^today$/i.test(label)) return true
-
-  // Exact calendar dates are safe for older timestamp-free records. Parse the
-  // components locally: Date.parse('2026-11-11') interprets midnight as UTC.
-  const isoDay = /^(\d{4})-(\d{2})-(\d{2})$/.exec(label)
-  return isoDay !== null &&
-    Number(isoDay[1]) === now.getFullYear() &&
-    Number(isoDay[2]) === now.getMonth() + 1 &&
-    Number(isoDay[3]) === now.getDate()
+  // Only seeded DEMO entries may deliberately preview a timestamp-free Today.
+  // Corrupt real timestamps never fall back to this presentation convention.
+  if (allowUndatedTodayLabel && !entry.occurredAt && /^today$/i.test(entry.date.trim())) return true
+  const key = getJourneyEntryDayKey(entry)
+  return key !== null && key === toLocalDayKey(now)
 }
 
 export function findTodaysJourneyEntry(
