@@ -9,6 +9,7 @@ import { getPlanNearbyPlaces } from './planDiscovery'
 import { getRecommendationPrefs } from './onboardingProfile'
 import type { ShareCardData } from '../types/shareCards'
 import { authenticPhotoUrls } from './authenticImages'
+import { getDistinctPlaceKey } from './customAdventure'
 
 export type ShareCardRequest =
   | { kind: 'adventure-complete'; entryId?: string }
@@ -26,9 +27,9 @@ function latestEntry(state: AppState): JourneyEntry | undefined {
   return state.journeyEntries[0]
 }
 
-function categoryCounts(state: AppState): { label: string; count: number }[] {
+function categoryCounts(entries: JourneyEntry[]): { label: string; count: number }[] {
   const counts = new Map<string, number>()
-  state.journeyEntries.forEach((entry) => {
+  entries.forEach((entry) => {
     const place = entry.placeId ? getPlaceById(entry.placeId) : undefined
     const label = place?.category ?? entry.tags[0] ?? 'Adventure'
     counts.set(label, (counts.get(label) ?? 0) + 1)
@@ -73,26 +74,83 @@ function buildAdventureCompleteCard(
   }
 }
 
+// Relative labels like "Today" can remain in saved memories after midnight.
+// Only use a persisted timestamp or an explicitly dated legacy entry in recaps.
+function getMemoryCalendarDate(entry: JourneyEntry): Date | null {
+  if (entry.occurredAt) {
+    const occurredAt = new Date(entry.occurredAt)
+    if (!Number.isNaN(occurredAt.getTime())) return occurredAt
+  }
+
+  const label = entry.date.trim()
+  if (!/\b(?:19|20)\d{2}\b/.test(label)) return null
+
+  // Date-only ISO strings are parsed as UTC by JavaScript, which can move
+  // November 1 into October for dogs in Pacific and other western time zones.
+  const isoDate = /^(\d{4})-(\d{2})-(\d{2})$/.exec(label)
+  if (isoDate) {
+    const year = Number(isoDate[1])
+    const month = Number(isoDate[2])
+    const day = Number(isoDate[3])
+    const localDate = new Date(year, month - 1, day, 12)
+    return localDate.getFullYear() === year &&
+      localDate.getMonth() === month - 1 &&
+      localDate.getDate() === day
+      ? localDate
+      : null
+  }
+
+  const dated = new Date(label)
+  return Number.isNaN(dated.getTime()) ? null : dated
+}
+
+export function getCurrentMonthJourneyEntries(
+  entries: JourneyEntry[],
+  now: Date = new Date(),
+): JourneyEntry[] {
+  return entries.filter((entry) => {
+    const date = getMemoryCalendarDate(entry)
+    return date !== null &&
+      date.getFullYear() === now.getFullYear() &&
+      date.getMonth() === now.getMonth()
+  })
+}
+
 function buildMonthlyRecapCard(state: AppState): ShareCardData {
-  const counts = categoryCounts(state)
-  const entry = latestEntry(state)
-  const imageUrl = authenticPhotoUrls(entry?.photoUrls)[0]
-  const favorite = entry?.place ?? 'First saved adventure'
+  const entries = getCurrentMonthJourneyEntries(state.journeyEntries)
+  const counts = categoryCounts(entries)
+  const datedEntries = [...entries].sort(
+    (left, right) => (getMemoryCalendarDate(right)?.getTime() ?? 0) -
+      (getMemoryCalendarDate(left)?.getTime() ?? 0),
+  )
+  const latest = datedEntries[0]
+  // The newest outing may be photo-free. Use the newest *authentic* photo
+  // from this month rather than showing a blank recap despite saved photos.
+  const latestPhotoEntry = datedEntries.find((entry) => authenticPhotoUrls(entry.photoUrls).length > 0)
+  const imageUrl = authenticPhotoUrls(latestPhotoEntry?.photoUrls)[0]
+  const placesVisited = new Set(entries.map(getDistinctPlaceKey)).size
+  const photosSaved = entries.reduce(
+    (count, entry) => count + authenticPhotoUrls(entry.photoUrls).length,
+    0,
+  )
+  const dogNames = dogNamesForShare(state)
 
   return {
     kind: 'monthly-recap',
-    eyebrow: `This month with ${dogNamesForShare(state)}`,
-    title: `${state.journeyEntries.length || state.adventureCount} adventures saved`,
-    subtitle: `New places, shared days, and memories with ${dogNamesForShare(state)}.`,
-    dogNames: dogNamesForShare(state),
+    eyebrow: `This month with ${dogNames}`,
+    title: `${entries.length} ${entries.length === 1 ? 'adventure' : 'adventures'} this month`,
+    subtitle: entries.length
+      ? `Real outings and memories saved with ${dogNames} this month.`
+      : 'No adventures saved this month yet. Your next dog day is waiting.',
+    dogNames,
     cta: 'Save the life you are giving them.',
     brandLine: 'PawStreak',
     imageUrl,
-    location: favorite,
+    location: latest?.place ?? 'Your next adventure',
     metrics: [
-      { label: 'Adventures', value: `${state.journeyEntries.length || state.adventureCount}` },
-      { label: 'New places', value: `${state.placeCount}` },
-      { label: 'Streak', value: `${state.streak} days` },
+      { label: 'Adventures', value: `${entries.length}` },
+      { label: 'Places visited', value: `${placesVisited}` },
+      { label: 'Photos saved', value: `${photosSaved}` },
     ],
     slots: counts.slice(0, 4).map((item) => ({
       label: `${item.count} ${item.label.toLowerCase()}`,

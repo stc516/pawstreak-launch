@@ -78,6 +78,9 @@ async function main() {
     await run(['run', 'qa:share-touch'], {
       env: { ...env, QA_OUT_DIR: `${releaseEvidenceRoot}/share-flow-touch-safety` },
     })
+    await run(['run', 'qa:monthly-recap'], {
+      env: { ...env, QA_OUT_DIR: `${releaseEvidenceRoot}/monthly-recap-mobile` },
+    })
     await run(['run', 'qa:visual-integrity'], {
       env: { ...env, QA_OUT_DIR: `${releaseEvidenceRoot}/visual-integrity` },
     })

@@ -14,7 +14,7 @@ try {
   const { getJourneyMapStats } = await vite.ssrLoadModule('/src/lib/journeyMapStats.ts')
   const { getJourneyMapSummary, sanitizeProductionAppState } = await vite.ssrLoadModule('/src/lib/productionState.ts')
   const { buildSocialStudioCatalog } = await vite.ssrLoadModule('/src/lib/socialStudioCatalog.ts')
-  const { buildShareCardData } = await vite.ssrLoadModule('/src/lib/shareCardData.ts')
+  const { buildShareCardData, getCurrentMonthJourneyEntries } = await vite.ssrLoadModule('/src/lib/shareCardData.ts')
   for (const url of ['/sample-images/beach.jpg', 'https://pawstreakapp.com/sample-images/coastal.jpg', 'https://images.unsplash.com/test']) assert.equal(authenticImageUrl(url), undefined)
   const photo = 'https://example.com/user-upload.jpg'
   assert.equal(authenticImageUrl(photo), photo)
@@ -42,6 +42,37 @@ try {
   assert.equal(shareWithoutPhoto.imageUrl, undefined)
   assert.equal(shareWithoutPhoto.photoCount, 0)
   assert.equal(buildShareCardData(state, { kind: 'adventure-complete', entryId: other.id }).imageUrl, photo)
+  const now = new Date()
+  const thisMonthDate = new Date(now.getFullYear(), now.getMonth(), 14, 12).toISOString()
+  const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 14, 12).toISOString()
+  const inMonth = { ...entry, id: 'this-month', date: 'Today', occurredAt: thisMonthDate, photoUrls: [photo] }
+  const staleLastMonth = { ...entry, id: 'last-month', date: 'Today', occurredAt: lastMonthDate, photoUrls: ['https://example.com/last-month.jpg'] }
+  const unverifiedLegacy = { ...entry, id: 'legacy-unknown', date: 'Today', occurredAt: undefined }
+  assert.deepEqual(getCurrentMonthJourneyEntries([staleLastMonth, unverifiedLegacy, inMonth], now).map(item => item.id), ['this-month'])
+  const recap = buildShareCardData({ ...state, journeyEntries: [staleLastMonth, inMonth, unverifiedLegacy] }, { kind: 'monthly-recap' })
+  assert.equal(recap.title, '1 adventure this month', 'Recap must count only this calendar month')
+  assert.equal(recap.imageUrl, photo, 'Last month photos must not appear on the current monthly card')
+  assert.deepEqual(recap.metrics, [{ label: 'Adventures', value: '1' }, { label: 'Places visited', value: '1' }, { label: 'Photos saved', value: '1' }])
+  assert.equal(recap.slots.length, 1, 'Monthly categories cannot include historic memories')
+  // A newer no-photo outing must not hide an older authentic photo saved in
+  // the same month, nor pull a better-looking image from the previous month.
+  const earlierPhoto = { ...inMonth, id: 'earlier-photo', occurredAt: new Date(now.getFullYear(), now.getMonth(), 5, 12).toISOString(), photoUrls: [photo] }
+  const laterWithoutPhoto = { ...inMonth, id: 'later-no-photo', occurredAt: new Date(now.getFullYear(), now.getMonth(), 14, 12).toISOString(), photoUrls: [] }
+  const mixedPhotoRecap = buildShareCardData(
+    { ...state, journeyEntries: [staleLastMonth, laterWithoutPhoto, earlierPhoto] },
+    { kind: 'monthly-recap' },
+  )
+  assert.equal(mixedPhotoRecap.title, '2 adventures this month')
+  assert.equal(mixedPhotoRecap.imageUrl, photo, 'Choose latest authentic photo from the current month even if newest outing has no photo')
+  assert.equal(mixedPhotoRecap.metrics[2].value, '1', 'A photo-free outing does not erase a photo saved earlier in the month')
+  const emptyRecap = buildShareCardData({ ...state, journeyEntries: [staleLastMonth, unverifiedLegacy] }, { kind: 'monthly-recap' })
+  assert.equal(emptyRecap.title, '0 adventures this month')
+  assert.equal(emptyRecap.imageUrl, undefined, 'A month without memories cannot reuse historical images')
+  assert.equal(emptyRecap.metrics[1].value, '0')
+  assert.equal(emptyRecap.slots.length, 0)
+  const dateOnly = new Date(now.getFullYear(), now.getMonth(), 1, 12)
+  const dateOnlyLabel = `${dateOnly.getFullYear()}-${String(dateOnly.getMonth() + 1).padStart(2, '0')}-01`
+  assert.equal(getCurrentMonthJourneyEntries([{ ...entry, date: dateOnlyLabel, occurredAt: undefined }], now).length, 1, 'A legacy ISO date on the first of the month must use the device-local date')
   const custom = { ...state, journeyEntries: [{ ...entry, placeId: 'custom-adventure', place: 'My beach' }, { ...other, placeId: 'custom-adventure', place: 'My park' }] }
   assert.equal(getJourneyMapStats(custom).places, 2)
   assert.ok(buildSocialStudioCatalog().every(item => item.assetPath.startsWith('approved/')), 'Historical exports must not return to Content Studio')
