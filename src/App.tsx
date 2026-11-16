@@ -57,6 +57,7 @@ import { DemoLauncher } from './screens/demo/DemoLauncher'
 import type { DemoRoute } from './lib/demoRoute'
 import { shouldPersonalizeContent } from './lib/profileDisplay'
 import { fillPhotoSlots } from './lib/imageUtils'
+import { reconcileSelectedDogMemories } from './lib/selectedDogMemoryState'
 import { AppShell } from './components/AppShell'
 import { ActiveAdventureBanner } from './components/ActiveAdventureBanner'
 import { ActiveAdventureScreen } from './screens/app/ActiveAdventureScreen'
@@ -1673,11 +1674,11 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     if (useProductionBackend && auth.user) {
       void setActiveDog(auth.user.id, dogId)
       void fetchMemoriesForUser(auth.user.id, dogId).then((journeyEntries) => {
-        setState((current) => ({
-          ...current,
-          journeyEntries,
-          adventureCount: journeyEntries.length,
-        }))
+        // Ignore an older request if the user switched to another dog while
+        // this dog's memories were loading; keep the place count in sync too.
+        setState((current) =>
+          reconcileSelectedDogMemories(current, dogId, journeyEntries, getDistinctPlaceKey),
+        )
       })
     }
   }
