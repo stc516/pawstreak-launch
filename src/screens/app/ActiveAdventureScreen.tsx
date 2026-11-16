@@ -5,10 +5,10 @@ import {
   getActiveAdventureElapsedSeconds,
 } from '../../data/demo'
 import {
-  getDisplayDogLabelForIds,
-  getDisplayDogsAreOutLabel,
-  getProfileDogs,
-} from '../../lib/profileDisplay'
+  getActiveAdventureParticipantLabel,
+  getActiveAdventureParticipants,
+  getActiveAdventureOutLabel,
+} from '../../lib/activeAdventureParticipants'
 import type { AdventureFinishPayload } from '../../lib/adventureFinish'
 import { readImageFileAsDataUrl } from '../../lib/imageUtils'
 import { getPlaceById, getPlanMagicMeta } from '../../data/places'
@@ -51,6 +51,8 @@ export function ActiveAdventureScreen({
   ])
 
   const adventure = state.activeAdventure
+  const participatingDogs = getActiveAdventureParticipants(state, adventure)
+  const participatingDogLabel = getActiveAdventureParticipantLabel(participatingDogs)
   const place = getPlaceById(adventure?.placeId ?? '')
   const isNeighborhood =
     adventure?.placeId === 'neighborhood-walk' || !place || adventure?.location === 'Neighborhood walk'
@@ -264,7 +266,7 @@ export function ActiveAdventureScreen({
               <div className="adv-ready-row">
                 <span className="adv-ready-meta-label">Dogs</span>
                 <span>
-                  {getDisplayDogLabelForIds(state, adventure.selectedDogIds)}
+                  {participatingDogLabel}
                 </span>
               </div>
               {place ? (
@@ -329,7 +331,7 @@ export function ActiveAdventureScreen({
               Active adventure
             </div>
             <div className="clk-dogs">
-              {getProfileDogs(state).map((dog) => (
+              {participatingDogs.map((dog) => (
                 <div
                   key={dog.id}
                   className={`dog-av dog-av--sm ${dog.avatarClass}`}
@@ -341,7 +343,7 @@ export function ActiveAdventureScreen({
                   )}
                 </div>
               ))}
-              <span>{getDisplayDogsAreOutLabel(state)}</span>
+              <span>{getActiveAdventureOutLabel(participatingDogs)}</span>
             </div>
           </div>
         </div>
@@ -399,7 +401,7 @@ export function ActiveAdventureScreen({
             data-testid="adventure-finish-review"
           >
             <div className="adventure-finish-payoff-dogs" aria-hidden="true">
-              {getProfileDogs(state).slice(0, 2).map((dog) => (
+              {participatingDogs.slice(0, 2).map((dog) => (
                 <span key={dog.id} className={`adventure-finish-dog ${dog.avatarClass}`}>
                   {dog.photoUrl ? <img src={dog.photoUrl} alt="" /> : <span>{dog.profileEmoji}</span>}
                 </span>
@@ -407,7 +409,7 @@ export function ActiveAdventureScreen({
             </div>
             <div className="adventure-finish-payoff-copy">
               <span>Memory checkpoint</span>
-              <strong>You gave {getDisplayDogLabelForIds(state, adventure.selectedDogIds)} a better day.</strong>
+              <strong>You gave {participatingDogLabel} a better day.</strong>
               <p>
                 Save the good part now — the place, the proof, and the little details you&apos;ll want back later.
               </p>
