@@ -274,7 +274,7 @@ export function HomeScreen({
             imageUrl={stageImageUrl}
             imageAlt={stagePlaceName}
             imageTone={activePlace?.imageTone ?? heroPlace.imageTone ?? 'warm'}
-            placeholderLabel={activeAdventure ? 'Adventure in progress' : 'No photo added'}
+            placeholderLabel={activeAdventure ? activeAdventure.started ? 'Adventure in progress' : 'Adventure ready' : 'No photo added'}
           >
             <div className="home-adventure-stage-scrim" aria-hidden="true" />
             <div className="home-adventure-stage-copy">
@@ -312,7 +312,7 @@ export function HomeScreen({
                 </span>
               ))}
               <strong>{activeAdventure
-                ? 'Adventure underway'
+                ? activeAdventure.started ? 'Pack is exploring' : 'Pack is ready to go'
                 : todayEntry
                   ? 'Memory made together'
                   : profileDogs.length > 1 ? 'Pack is ready' : `${leadDog?.name ?? 'Dog'} is ready`}</strong>
