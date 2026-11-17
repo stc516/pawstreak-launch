@@ -10,7 +10,7 @@ import { getHomeProgressStats } from '../../lib/homeStats'
 import { getMapPreviewPlaces, getPlanNearbyPlaces } from '../../lib/planDiscovery'
 import { getPlanMagicMeta } from '../../data/places'
 import { CardImage } from '../../components/CardImage'
-import { getHeroPlace } from '../../data/places'
+import { getHeroPlace, getPlaceById } from '../../data/places'
 import { getRecommendationPrefs } from '../../lib/onboardingProfile'
 import {
   getAdventureDisplayImageUrl,
@@ -32,6 +32,7 @@ interface HomeScreenProps {
   isDemoMode?: boolean
   onSelectActivity: (activityId: string) => void
   onStartAdventure: (placeId: string, durationLabel: string) => void
+  onResumeAdventure: () => void
   onStartNeighborhoodWalk: () => void
   onOpenProfile: () => void
   onOpenChallenge: (challengeId: string) => void
@@ -99,6 +100,7 @@ export function HomeScreen({
   isDemoMode = false,
   onSelectActivity,
   onStartAdventure,
+  onResumeAdventure,
   onStartNeighborhoodWalk,
   onOpenProfile,
   onOpenChallenge,
@@ -140,23 +142,33 @@ export function HomeScreen({
   // Persisted records keep their original "Today" display label even after midnight.
   // Use the actual outing date so a new day returns to adventure discovery.
   const todayEntry = findTodaysJourneyEntry(state.journeyEntries, new Date(), isDemoMode)
+  const activeAdventure = state.activeAdventure
+  const activePlace = activeAdventure ? getPlaceById(activeAdventure.placeId) : undefined
   const leadDog = profileDogs[0]
   const todayPhoto = todayEntry?.photoUrls?.find(Boolean)
+  // Active adventure outranks saved memory and suggestions. Never reuse an
+  // unrelated recommendation's image or place rules for an ongoing session.
+  const stageImageUrl = activeAdventure
+    ? activePlace?.imageUrl
+    : todayEntry ? todayPhoto : heroImageUrl
+  const stagePlaceName = activeAdventure?.location ?? todayEntry?.place ?? heroPlace.name
   const launchBadges = useMemo(() => getAdventureLaunchBadges(state, progress), [state, progress])
-  const launchTone = state.activeAdventure
-    ? 'Adventure in motion'
+  const launchTone = activeAdventure
+    ? activeAdventure.started ? 'Adventure in motion' : 'Adventure ready'
     : todayEntry
       ? 'Memory saved today'
       : progress.streak > 1
         ? `${progress.streak}-day adventure streak`
         : 'Ready for a better day'
-  const launchHeadline = state.activeAdventure
-    ? `${dogLabel} is already out there.`
+  const launchHeadline = activeAdventure
+    ? activeAdventure.started ? `${dogLabel} is already out there.` : `${dogLabel} is ready to explore.`
     : todayEntry
       ? `${dogLabel} had a better day.`
       : `Give ${dogLabel} a better day.`
-  const launchCopy = state.activeAdventure
-    ? 'Finish strong, save the memory, then let the next adventure pull you forward.'
+  const launchCopy = activeAdventure
+    ? activeAdventure.started
+      ? 'Keep going, then save the moments you want to remember.'
+      : 'Your adventure is ready. Start when you and your dog are.'
     : todayEntry
       ? 'Relive the good part, keep the streak honest, and pick the next place before the leash cools off.'
       : 'Pick one nearby adventure, get out the door, and come back with a real memory — not another chore walk.'
@@ -164,6 +176,18 @@ export function HomeScreen({
   const handleQuickAdventure = () => {
     onSelectActivity(heroActivityId)
     onStartAdventure(heroPlace.id, 'Open end')
+  }
+
+  const handlePrimaryAdventureAction = () => {
+    if (activeAdventure) {
+      onResumeAdventure()
+      return
+    }
+    if (todayEntry && onOpenMemory) {
+      onOpenMemory(todayEntry.id)
+      return
+    }
+    handleQuickAdventure()
   }
 
   const handleSuggestedPlaceGo = (placeId: string) => {
@@ -238,25 +262,48 @@ export function HomeScreen({
         <button
           type="button"
           className="home-adventure-stage tap-target"
-          onClick={todayEntry && onOpenMemory ? () => onOpenMemory(todayEntry.id) : handleQuickAdventure}
-          aria-label={todayEntry ? `Open today's memory from ${todayEntry.place}` : `Start today's pick: ${heroPlace.name}`}
+          onClick={handlePrimaryAdventureAction}
+          aria-label={activeAdventure
+            ? `Resume active adventure at ${activeAdventure.location}`
+            : todayEntry
+              ? `Open today's memory from ${todayEntry.place}`
+              : `Start today's pick: ${heroPlace.name}`}
         >
           <CardImage
             className="home-adventure-stage-art"
-            imageUrl={todayEntry ? todayPhoto : heroImageUrl}
-            imageAlt={todayEntry ? todayEntry.place : heroPlace.name}
-            imageTone={heroPlace.imageTone ?? 'warm'}
+            imageUrl={stageImageUrl}
+            imageAlt={stagePlaceName}
+            imageTone={activePlace?.imageTone ?? heroPlace.imageTone ?? 'warm'}
+            placeholderLabel={activeAdventure ? 'Adventure in progress' : 'No photo added'}
           >
             <div className="home-adventure-stage-scrim" aria-hidden="true" />
             <div className="home-adventure-stage-copy">
-              <span>{todayEntry ? 'Saved today' : 'Today’s pull'}</span>
-              <strong>{todayEntry?.place ?? heroPlace.name}</strong>
-              <small>{todayEntry ? 'Open the memory, then pick what comes next.' : getHeroFitLine(heroPlace, profileDogs)}</small>
+              <span>{activeAdventure ? 'Your adventure' : todayEntry ? 'Saved today' : 'Today’s pull'}</span>
+              <strong>{stagePlaceName}</strong>
+              <small>{activeAdventure
+                ? 'Resume this adventure and save the memory when you finish.'
+                : todayEntry
+                  ? 'Open the memory, then pick what comes next.'
+                  : getHeroFitLine(heroPlace, profileDogs)}</small>
             </div>
             <div className="home-adventure-stage-route" aria-hidden="true">
-              <span>{heroPlace.distanceLabel}</span>
-              <span>{heroPlace.category}</span>
-              <span>{heroPlace.leashInfo}</span>
+              {activeAdventure ? (
+                <>
+                  <span>{activeAdventure.started ? 'In progress' : 'Ready to start'}</span>
+                  <span>{activeAdventure.durationLabel}</span>
+                </>
+              ) : todayEntry ? (
+                <>
+                  <span>Journey memory</span>
+                  {todayEntry.durationLabel ? <span>{todayEntry.durationLabel}</span> : null}
+                </>
+              ) : (
+                <>
+                  <span>{heroPlace.distanceLabel}</span>
+                  <span>{heroPlace.category}</span>
+                  <span>{heroPlace.leashInfo}</span>
+                </>
+              )}
             </div>
             <div className="home-adventure-stage-pack" aria-hidden="true">
               {profileDogs.slice(0, 2).map((dog) => (
@@ -264,10 +311,14 @@ export function HomeScreen({
                   {dog.photoUrl ? <img src={dog.photoUrl} alt="" /> : dog.profileEmoji}
                 </span>
               ))}
-              <strong>{profileDogs.length > 1 ? 'Pack is ready' : `${leadDog?.name ?? 'Dog'} is ready`}</strong>
+              <strong>{activeAdventure
+                ? 'Adventure underway'
+                : todayEntry
+                  ? 'Memory made together'
+                  : profileDogs.length > 1 ? 'Pack is ready' : `${leadDog?.name ?? 'Dog'} is ready`}</strong>
             </div>
             <span className="home-adventure-stage-go" aria-hidden="true">
-              <i className={`ti ${todayEntry ? 'ti-book' : 'ti-arrow-right'}`} />
+              <i className={`ti ${!activeAdventure && todayEntry ? 'ti-book' : 'ti-arrow-right'}`} />
             </span>
           </CardImage>
         </button>
@@ -289,13 +340,13 @@ export function HomeScreen({
         <button
           type="button"
           className="today-primary-action today-primary-action--electric tap-target"
-          onClick={todayEntry && onOpenMemory ? () => onOpenMemory(todayEntry.id) : handleQuickAdventure}
+          onClick={handlePrimaryAdventureAction}
         >
           <span>
-            <small>{todayEntry ? 'Today’s memory' : state.activeAdventure ? 'Adventure in progress' : 'Today’s adventure'}</small>
-            <strong>{todayEntry ? `Relive ${todayEntry.place}` : state.activeAdventure ? `Return to ${state.activeAdventure.location}` : 'Pick the next place'}</strong>
+            <small>{activeAdventure ? activeAdventure.started ? 'Adventure in progress' : 'Adventure ready' : todayEntry ? 'Today’s memory' : 'Today’s adventure'}</small>
+            <strong>{activeAdventure ? `Continue ${activeAdventure.location}` : todayEntry ? `Relive ${todayEntry.place}` : 'Pick the next place'}</strong>
           </span>
-          <i className={`ti ${todayEntry ? 'ti-book' : 'ti-arrow-right'}`} aria-hidden="true" />
+          <i className={`ti ${!activeAdventure && todayEntry ? 'ti-book' : 'ti-arrow-right'}`} aria-hidden="true" />
         </button>
         <div className="today-secondary-actions today-secondary-actions--launch">
           <button type="button" className="tap-target" onClick={onStartNeighborhoodWalk}>
