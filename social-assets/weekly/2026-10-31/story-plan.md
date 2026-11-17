@@ -1,4 +1,4 @@
-# PawStreak Story companions — October 31–November 22, 2026
+# PawStreak Story companions — October 31–November 23, 2026
 
 All items are pending approval and retain the visible `DEMO` label.
 
@@ -27,3 +27,4 @@ All items are pending approval and retain the visible `DEMO` label.
 | Nov 20 | `../../stories/06-save-memory-payoff.png` | Question: “Which part matters more?” Finding an outing / Remembering it; pair only with the original October 31 app DEMO walkthrough, no new footage implied |
 | Nov 21 | `../../stories/04-adventure-detail.png` | Poll: “What decides the next dog outing?” Adventure type / Current access rules. Pair with unchanged October 31 DEMO carousel frames Explore then detail; do not imply live availability or verified rules |
 | Nov 22 | `../../stories/07-journey-memory.png` | Question: “The moment you remember from a familiar walk?” The sniff stop / The happy look. Pair with unchanged real DEMO Home + Journey carousel; two separate sample views, not a customer outing |
+| Nov 23 | `../../stories/03-discover-adventure-mode.png` | Poll: “Pick a dog day mood?” Familiar sniff loop / New adventure. Pair with original October 31 Today’s Pick + Explore DEMO stills; no live listings or customer trip implied |
