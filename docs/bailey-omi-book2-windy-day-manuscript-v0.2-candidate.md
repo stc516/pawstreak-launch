@@ -93,7 +93,7 @@ Bailey's fur became a cloud. Omi's ears folded in two different directions.
 
 For a moment they stared at each other.
 
-Then Bailey gave one delighted bark, and even Omi couldn't keep a straight face.
+Then Bailey gave one delighted bark. Omi's tail swished, and her ears flopped again.
 
 ### Spread 9
 Omi shook her head. One ear sprang up. The other stayed folded.
@@ -124,6 +124,9 @@ This time, both sisters looked up.
 4. **Sisterhood:** Bailey's attention and Omi's willingness to wait form the emotional payoff; Omi is wry, capable, and encouraging rather than an incompetent sidekick.
 5. **No false biography:** The park and speech are invented. Real Bailey and Meiomi inspired the characters; this particular outing is **not** documented as a true event.
 
+## November 17 language refinement (still unapproved)
+Spread 8 now uses a visible, dog-like tail-and-ear reaction instead of the phrase “couldn't keep a straight face,” which may be hard for younger listeners to picture. No character, setting, plot or pagination changes; illustration acceptance still required.
+
 ## Ten-spread illustration continuity gate
 - First show low shrub distant left and trees distant right in a **fictional unnamed level, dog-permitted park**. Maggie seated to the right of the rectangular picnic cloth; Bailey foreground left and Omi just right. Never invent a named real destination. Keep sunlight upper-left and location axis consistent.
 - Two collars and leashes visible and attached throughout: Bailey green collar, small black-and-white female Husky puppy, blue eyes and established blaze; Omi pink collar, larger golden-tan mixed rescue, pointed ears. Maggie matches the **approved** young Asian woman in Book 1. Keep restrained watercolor/colored-pencil warmth and realistic anatomy.
@@ -135,5 +138,5 @@ This time, both sisters looked up.
 - Read the full text aloud at normal pace; record duration rather than estimating.
 - Ask a child age 3–7 what Bailey noticed, how Omi helped and why waiting mattered; note actual feedback rather than inventing results.
 - Verify left/right and cloth continuity in an illustrator thumbnail walkthrough.
-- Review spread 8 “straight face” idiom for the younger end of the audience, and confirm the picture-book humor is visual rather than dependent on idiom.
+- Check that spread 8 ear-and-tail gag reads clearly from the illustration alone and does not rely on a difficult idiom.
 - Seek S.T. Carroll's editorial approval before advancing this v0.2 candidate to layout or artwork.
