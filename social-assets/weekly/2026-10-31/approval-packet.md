@@ -279,3 +279,16 @@ As of November 5, the **November 5–11** buffer contains seven consecutive entr
 - **Status:** Pending approval, unpublished. No social network scheduling or external posting.
 
 **November 16–22:** seven consecutive upcoming days remain represented by distinct pending/unpublished concepts; no synthetic images, stock photos, new app footage, or live destination claims.
+
+## PS-20261123-24 — Let curiosity choose the adventure
+
+- **Hook:** Let curiosity choose the adventure.
+- **Caption:** Product preview: Two unchanged October 31 PawStreak DEMO screens show two ways to explore a dog outing idea: Today’s Pick and the wider Explore screen. Both are sample interfaces, not live recommendations, verified current destination rules, or a real customer adventure. Pick a mood, check the actual place, and spend less time planning than walking.
+- **CTA:** What would your dog choose today: a familiar sniff loop or a new kind of place?
+- **Hashtags:** `#PawStreak #DogAdventures #DogParents #ProductPreview`
+- **Two-frame Feed carousel:** `../../screenshots/02-todays-pick-card.png` then `../../screenshots/03-discover-adventure-mode.png`. Use original October 31 real running-app DEMO stills; no synthetic UI or fresh footage.
+- **Story companion:** `../../stories/03-discover-adventure-mode.png`; poll “Pick a dog day mood?” Familiar sniff loop / New adventure.
+- **Provenance:** `social-assets/assets.json` original capture commit `02dd7f85`. Preserve all on-screen DEMO labeling; do not claim current conditions, user achievements, native build readiness or publication.
+- **Status:** Prepared concept only, pending approval; unpublished.
+
+**November 17–23:** seven consecutive dated concepts are prepared using genuine previously captured DEMO app assets. New development in other PRs is not shown or claimed in this content until authentic captures exist.
