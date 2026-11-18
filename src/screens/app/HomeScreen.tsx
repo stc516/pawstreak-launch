@@ -143,6 +143,9 @@ export function HomeScreen({
   // Use the actual outing date so a new day returns to adventure discovery.
   const todayEntry = findTodaysJourneyEntry(state.journeyEntries, new Date(), isDemoMode)
   const activeAdventure = state.activeAdventure
+  // Unsupported regions must not launch a San Diego/Orange County curated pick.
+  // Keep saved memories and live sessions ahead of the generic starter.
+  const hasGenericStarter = !state.locationSupported && !activeAdventure && !todayEntry
   const activePlace = activeAdventure ? getPlaceById(activeAdventure.placeId) : undefined
   const leadDog = profileDogs[0]
   const todayPhoto = todayEntry?.photoUrls?.find(Boolean)
@@ -150,8 +153,9 @@ export function HomeScreen({
   // unrelated recommendation's image or place rules for an ongoing session.
   const stageImageUrl = activeAdventure
     ? activePlace?.imageUrl
-    : todayEntry ? todayPhoto : heroImageUrl
-  const stagePlaceName = activeAdventure?.location ?? todayEntry?.place ?? heroPlace.name
+    : todayEntry ? todayPhoto : hasGenericStarter ? undefined : heroImageUrl
+  const stagePlaceName = activeAdventure?.location ?? todayEntry?.place ??
+    (hasGenericStarter ? 'Neighborhood Walk' : heroPlace.name)
   const launchBadges = useMemo(() => getAdventureLaunchBadges(state, progress), [state, progress])
   const launchTone = activeAdventure
     ? activeAdventure.started ? 'Adventure in motion' : 'Adventure ready'
@@ -159,7 +163,7 @@ export function HomeScreen({
       ? 'Memory saved today'
       : progress.streak > 1
         ? `${progress.streak}-day adventure streak`
-        : 'Ready for a better day'
+        : hasGenericStarter ? 'Adventure starts here' : 'Ready for a better day'
   const launchHeadline = activeAdventure
     ? activeAdventure.started ? `${dogLabel} is already out there.` : `${dogLabel} is ready to explore.`
     : todayEntry
@@ -171,9 +175,15 @@ export function HomeScreen({
       : 'Your adventure is ready. Start when you and your dog are.'
     : todayEntry
       ? 'Relive the good part, keep the streak honest, and pick the next place before the leash cools off.'
-      : 'Pick one nearby adventure, get out the door, and come back with a real memory — not another chore walk.'
+      : hasGenericStarter
+        ? 'Start a neighborhood walk wherever you are, or add your own favorite place. No curated listing needed.'
+        : 'Pick one nearby adventure, get out the door, and come back with a real memory — not another chore walk.'
 
   const handleQuickAdventure = () => {
+    if (hasGenericStarter) {
+      onStartNeighborhoodWalk()
+      return
+    }
     onSelectActivity(heroActivityId)
     onStartAdventure(heroPlace.id, 'Open end')
   }
@@ -267,24 +277,28 @@ export function HomeScreen({
             ? `Resume active adventure at ${activeAdventure.location}`
             : todayEntry
               ? `Open today's memory from ${todayEntry.place}`
-              : `Start today's pick: ${heroPlace.name}`}
+              : hasGenericStarter
+                ? 'Start a neighborhood walk'
+                : `Start today's pick: ${heroPlace.name}`}
         >
           <CardImage
             className="home-adventure-stage-art"
             imageUrl={stageImageUrl}
             imageAlt={stagePlaceName}
-            imageTone={activePlace?.imageTone ?? heroPlace.imageTone ?? 'warm'}
-            placeholderLabel={activeAdventure ? activeAdventure.started ? 'Adventure in progress' : 'Adventure ready' : 'No photo added'}
+            imageTone={hasGenericStarter ? 'park' : activePlace?.imageTone ?? heroPlace.imageTone ?? 'warm'}
+            placeholderLabel={hasGenericStarter ? 'Start where you are' : activeAdventure ? activeAdventure.started ? 'Adventure in progress' : 'Adventure ready' : 'No photo added'}
           >
             <div className="home-adventure-stage-scrim" aria-hidden="true" />
             <div className="home-adventure-stage-copy">
-              <span>{activeAdventure ? 'Your adventure' : todayEntry ? 'Saved today' : 'Today’s pull'}</span>
+              <span>{activeAdventure ? 'Your adventure' : todayEntry ? 'Saved today' : hasGenericStarter ? 'Anywhere adventure' : 'Today’s pull'}</span>
               <strong>{stagePlaceName}</strong>
               <small>{activeAdventure
                 ? 'Resume this adventure and save the memory when you finish.'
                 : todayEntry
                   ? 'Open the memory, then pick what comes next.'
-                  : getHeroFitLine(heroPlace, profileDogs)}</small>
+                  : hasGenericStarter
+                    ? 'Your own neighborhood. No curated destination required.'
+                    : getHeroFitLine(heroPlace, profileDogs)}</small>
             </div>
             <div className="home-adventure-stage-route" aria-hidden="true">
               {activeAdventure ? (
@@ -296,6 +310,11 @@ export function HomeScreen({
                 <>
                   <span>Journey memory</span>
                   {todayEntry.durationLabel ? <span>{todayEntry.durationLabel}</span> : null}
+                </>
+              ) : hasGenericStarter ? (
+                <>
+                  <span>Close to home</span>
+                  <span>Choose your route</span>
                 </>
               ) : (
                 <>
@@ -344,7 +363,7 @@ export function HomeScreen({
         >
           <span>
             <small>{activeAdventure ? activeAdventure.started ? 'Adventure in progress' : 'Adventure ready' : todayEntry ? 'Today’s memory' : 'Today’s adventure'}</small>
-            <strong>{activeAdventure ? `Continue ${activeAdventure.location}` : todayEntry ? `Relive ${todayEntry.place}` : 'Pick the next place'}</strong>
+            <strong>{activeAdventure ? `Continue ${activeAdventure.location}` : todayEntry ? `Relive ${todayEntry.place}` : hasGenericStarter ? 'Start a neighborhood walk' : 'Pick the next place'}</strong>
           </span>
           <i className={`ti ${!activeAdventure && todayEntry ? 'ti-book' : 'ti-arrow-right'}`} aria-hidden="true" />
         </button>
