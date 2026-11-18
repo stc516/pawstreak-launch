@@ -72,6 +72,10 @@ SOCIAL_BASE_URL=https://pawstreak-launch.vercel.app npm run social:capture
 - Machine-readable manifest: [`assets.json`](./assets.json) (updated each run).
 - The retired dotted Journey map and seeded `47 adventures / 22 places` statistics are excluded from the capture flow and must not be reintroduced.
 
+## Real-app product portfolio
+
+Open [`portfolio.html`](./portfolio.html) locally to view a responsive six-screen product gallery and the authentic preview recording. Every image is sourced from the existing `assets.json` manifest and retains its visible `DEMO` label. The portfolio is a review asset, **not** a public live site or evidence of native-device testing.
+
 ## Core message
 
 > Your dog's best days shouldn't disappear in your camera roll.
