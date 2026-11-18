@@ -2143,6 +2143,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             isDemoMode={isDemoMode}
             onSelectActivity={setSelectedActivity}
             onStartAdventure={startAdventure}
+            onResumeAdventure={focusActiveAdventure}
             onStartNeighborhoodWalk={() => startNeighborhoodWalk()}
             onOpenProfile={() => setActiveTab('profile')}
             onOpenChallenge={openChallengeDetail}

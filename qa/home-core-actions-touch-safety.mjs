@@ -30,6 +30,33 @@ async function openFreshHome() {
 
 try {
   await openFreshHome()
+  // Real iPhone screenshot evidence showed that three tiny badges truncated
+  // their descriptions. Keep the existing badges but make each legible in a
+  // contained swipe row rather than shrinking the text further.
+  const badgeRail = await page.evaluate(() => {
+    const rail = document.querySelector('.home-badge-banner')
+    if (!rail) throw new Error('Missing Home achievement badge rail')
+    const labels = [...rail.querySelectorAll('.home-badge-token')]
+    return {
+      count: labels.length,
+      visibleWidth: rail.clientWidth,
+      contentWidth: rail.scrollWidth,
+      widths: labels.map((badge) => badge.getBoundingClientRect().width),
+      labelWhiteSpace: labels.map((badge) => getComputedStyle(badge.querySelector('strong')).whiteSpace),
+      metaWhiteSpace: labels.map((badge) => getComputedStyle(badge.querySelector('small')).whiteSpace),
+      viewportWidth: window.innerWidth,
+      documentWidth: document.documentElement.scrollWidth,
+    }
+  })
+  assert.equal(badgeRail.count, 3, 'Home still shows up to three meaningful badges')
+  assert.ok(badgeRail.widths.every((width) => width >= 150), 'Each badge should have readable room')
+  assert.ok(badgeRail.labelWhiteSpace.every((value) => value === 'normal'), 'Badge headings should wrap instead of truncate')
+  assert.ok(badgeRail.metaWhiteSpace.every((value) => value === 'normal'), 'Badge explanations should wrap instead of truncate')
+  assert.ok(badgeRail.contentWidth > badgeRail.visibleWidth, 'Badge rail should reveal more cards with a small swipe')
+  assert.ok(badgeRail.documentWidth <= badgeRail.viewportWidth + 1, 'Badge rail must not create page-level horizontal overflow')
+  await page.screenshot({ path: path.join(out, 'home-badge-rail.png') })
+  report.checks.push({ name: 'Home badge row is readable and swipe-contained on iPhone', pass: true, badgeRail })
+
   const moreWays = page.getByRole('region', { name: 'More ways to make today count' })
   await moreWays.scrollIntoViewIfNeeded()
 
@@ -85,6 +112,47 @@ try {
   await openFreshHome()
   await page.getByRole('button', { name: 'Challenges', exact: true }).click()
   await page.getByRole('heading', { name: 'Active Challenges', exact: true }).waitFor()
+  // A dog parent outside the curated regions must never be sent to a
+  // San Diego/Orange County spotlight from the primary Home actions.
+  async function openUnsupportedHome() {
+    await openFreshHome()
+    await page.evaluate(() => {
+      const stored = JSON.parse(localStorage.getItem('pawstreak:demo') || '{}')
+      localStorage.setItem('pawstreak:demo', JSON.stringify({
+        ...stored,
+        locationSupported: false,
+        locationLabel: 'Portland, OR',
+        journeyEntries: [],
+        activeAdventure: null,
+      }))
+    })
+    await page.reload({ waitUntil: 'networkidle' })
+    await page.getByTestId('home-area-fallback').waitFor()
+  }
+
+  await openUnsupportedHome()
+  const genericStage = page.locator('.home-adventure-stage')
+  assert.match(await genericStage.innerText(), /Neighborhood Walk/)
+  assert.match(await page.locator('.today-primary-action').innerText(), /Start a neighborhood walk/)
+  assert.match(await page.locator('.home-adventure-stage-route').innerText(), /Choose your route/)
+  assert.doesNotMatch(await page.locator('.home-adventure-stage-route').innerText(), /miles|leash|beach/i)
+  await page.screenshot({ path: path.join(out, 'home-unsupported-region-starter.png') })
+  await genericStage.click()
+  await page.locator('.clock-bg--active').waitFor()
+  const heroSession = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem('pawstreak:demo') || '{}').activeAdventure,
+  )
+  assert.equal(heroSession?.placeId, 'neighborhood-walk', 'Hero should start a local neighborhood walk')
+
+  await openUnsupportedHome()
+  await page.locator('.today-primary-action').click()
+  await page.locator('.clock-bg--active').waitFor()
+  const primarySession = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem('pawstreak:demo') || '{}').activeAdventure,
+  )
+  assert.equal(primarySession?.placeId, 'neighborhood-walk', 'Primary CTA should start a local neighborhood walk')
+  report.checks.push({ name: 'unsupported-region Home starts a genuine local walk, never an unrelated curated place', pass: true })
+
   assert.equal(runtimeErrors.length, 0, `Home core actions emitted runtime errors: ${runtimeErrors.join('; ')}`)
 
   report.checks.push({ name: 'Home core actions open their real destinations', pass: true })

@@ -75,6 +75,30 @@ try {
   await page.screenshot({ path: path.join(out, 'active-adventure-banner.png') })
   report.checks.push({ name: 'minimized adventure banner is coherent and touch-safe', pass: true, geometry })
 
+  // A saved DEMO memory coexists with this minimized active walk. Both large Home
+  // actions must return to the same live session, not open a previous memory.
+  const sessionBefore = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem('pawstreak:demo') || '{}').activeAdventure?.id,
+  )
+  assert.ok(sessionBefore, 'The quick walk must have an active session id')
+  assert.match(await page.locator('.today-primary-action').innerText(), /Continue Neighborhood Walk/)
+  const routeLabels = await page.locator('.home-adventure-stage-route').innerText()
+  assert.match(routeLabels, /In progress/)
+  assert.match(routeLabels, /Open end/)
+  assert.doesNotMatch(routeLabels, /beach|leash|mile/i, 'Do not attribute a different place to the current walk')
+  await page.locator('.home-adventure-stage').click()
+  await page.locator('.clock-bg--active').waitFor()
+  await page.getByRole('button', { name: 'Minimize active adventure', exact: true }).click()
+  await page.screenshot({ path: path.join(out, 'home-active-adventure.png') })
+  await page.locator('.today-primary-action').click()
+  await page.locator('.clock-bg--active').waitFor()
+  await page.getByRole('button', { name: 'Minimize active adventure', exact: true }).click()
+  const sessionAfter = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem('pawstreak:demo') || '{}').activeAdventure?.id,
+  )
+  assert.equal(sessionAfter, sessionBefore, 'Home should resume instead of replacing the ongoing session')
+  report.checks.push({ name: 'both Home hero actions resume the same walk', pass: true })
+
   await page.getByRole('button', { name: 'Resume', exact: true }).click()
   await page.locator('.clock-bg--active').waitFor()
   await page.getByRole('button', { name: 'Minimize active adventure', exact: true }).click()
