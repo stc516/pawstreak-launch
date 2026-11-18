@@ -30,6 +30,33 @@ async function openFreshHome() {
 
 try {
   await openFreshHome()
+  // Real iPhone screenshot evidence showed that three tiny badges truncated
+  // their descriptions. Keep the existing badges but make each legible in a
+  // contained swipe row rather than shrinking the text further.
+  const badgeRail = await page.evaluate(() => {
+    const rail = document.querySelector('.home-badge-banner')
+    if (!rail) throw new Error('Missing Home achievement badge rail')
+    const labels = [...rail.querySelectorAll('.home-badge-token')]
+    return {
+      count: labels.length,
+      visibleWidth: rail.clientWidth,
+      contentWidth: rail.scrollWidth,
+      widths: labels.map((badge) => badge.getBoundingClientRect().width),
+      labelWhiteSpace: labels.map((badge) => getComputedStyle(badge.querySelector('strong')).whiteSpace),
+      metaWhiteSpace: labels.map((badge) => getComputedStyle(badge.querySelector('small')).whiteSpace),
+      viewportWidth: window.innerWidth,
+      documentWidth: document.documentElement.scrollWidth,
+    }
+  })
+  assert.equal(badgeRail.count, 3, 'Home still shows up to three meaningful badges')
+  assert.ok(badgeRail.widths.every((width) => width >= 150), 'Each badge should have readable room')
+  assert.ok(badgeRail.labelWhiteSpace.every((value) => value === 'normal'), 'Badge headings should wrap instead of truncate')
+  assert.ok(badgeRail.metaWhiteSpace.every((value) => value === 'normal'), 'Badge explanations should wrap instead of truncate')
+  assert.ok(badgeRail.contentWidth > badgeRail.visibleWidth, 'Badge rail should reveal more cards with a small swipe')
+  assert.ok(badgeRail.documentWidth <= badgeRail.viewportWidth + 1, 'Badge rail must not create page-level horizontal overflow')
+  await page.screenshot({ path: path.join(out, 'home-badge-rail.png') })
+  report.checks.push({ name: 'Home badge row is readable and swipe-contained on iPhone', pass: true, badgeRail })
+
   const moreWays = page.getByRole('region', { name: 'More ways to make today count' })
   await moreWays.scrollIntoViewIfNeeded()
 
