@@ -1,4 +1,4 @@
-# PawStreak rolling product-preview buffer — October 31–November 22, 2026
+# PawStreak rolling product-preview buffer — October 31–November 24, 2026
 
 Prepared October 30, 2026. All items are **Pending approval** and **Unpublished**. Every primary asset is a real 390 × 844 capture from the running PawStreak application at commit `02dd7f85`; the visible `DEMO` label is retained so the preview state is unambiguous.
 
@@ -23,6 +23,8 @@ Prepared October 30, 2026. All items are **Pending approval** and **Unpublished*
 | Nov 14 | PS-20261114-15 | `../../screenshots/05-adventure-ready.png` | Feed / Story checklist | Pending approval |
 | Nov 15 | PS-20261115-16 | `../../stories/07-journey-memory.png` | Story / Feed question | Pending approval |
 | Nov 22 | PS-20261122-23 | `../../screenshots/01-adventure-launch-home.png` + `../../screenshots/07-journey-memory.png` | Feed carousel / Story question | Pending approval |
+| Nov 23 | PS-20261123-24 | `../../screenshots/02-todays-pick-card.png` + `../../screenshots/03-discover-adventure-mode.png` | Two-frame Feed carousel / Story poll | Pending approval |
+| Nov 24 | PS-20261124-25 | `../../screenshots/06-save-memory-payoff.png` + `../../screenshots/07-journey-memory.png` | Feed carousel / Story reflection | Pending approval |
 
 ## PS-20261031-01 — A better dog day starts here
 
@@ -292,3 +294,16 @@ As of November 5, the **November 5–11** buffer contains seven consecutive entr
 - **Status:** Prepared concept only, pending approval; unpublished.
 
 **November 17–23:** seven consecutive dated concepts are prepared using genuine previously captured DEMO app assets. New development in other PRs is not shown or claimed in this content until authentic captures exist.
+
+## PS-20261124-25 — The route can be simple. The memory can be specific.
+
+- **Hook:** The route can be simple. The memory can be specific.
+- **Caption:** Product preview: These are two separate authentic October 31 PawStreak DEMO captures—one from the adventure finish screen and one from Journey. They show how the app can help you remember an outing detail. They do not document a real customer trip, a new feature release, or the same outing across both screens.
+- **CTA:** What tiny detail would make your dog’s next walk memorable?
+- **Hashtags:** `#PawStreak #DogMemories #DogAdventures #ProductPreview`
+- **Two-frame Feed carousel:** `../../screenshots/06-save-memory-payoff.png` then `../../screenshots/07-journey-memory.png`, captured from the actual running October 31 DEMO app with the original DEMO labels retained; the frames are separate sample views.
+- **Story companion:** `../../stories/07-journey-memory.png`; question “What tiny detail makes a dog day memorable?” Silly detour / Great sniff.
+- **Source:** `social-assets/assets.json`, original commit `02dd7f85`. No stock images, invented dog photos, new app feature claims, customer activity or live location facts.
+- **Status:** Prepared concept only, pending approval, unpublished.
+
+**November 18–24:** seven distinct consecutive dates are covered in the unpublished CSV approval buffer. These are editable concepts using existing genuine DEMO captures, not new renders, actual scheduled posts or newly visually inspected product changes.
