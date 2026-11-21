@@ -1723,9 +1723,9 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
 
   const handleDeleteAccount = async () => {
     if (isNativeAppRuntime()) await disablePushNotifications()
-    await deleteCurrentAccount()
+    const result = await deleteCurrentAccount()
     resetProductionAppState()
-    window.location.assign(ROUTES.landing)
+    window.location.assign(result.appleRevocation === 'manual_required' ? `${ROUTES.deleteAccount}?deleted=1&apple=manual` : ROUTES.landing)
   }
 
   const handleAppleAuth = async () => {

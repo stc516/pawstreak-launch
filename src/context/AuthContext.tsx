@@ -1,3 +1,4 @@
+import { startRemoteReminderRefresh } from '../lib/nativeRemotePush'
 import { signInWithApple } from '../lib/appleAuth'
 import type { Session, User } from '@supabase/supabase-js'
 import {
@@ -54,6 +55,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     return () => subscription.unsubscribe()
   }, [])
+
+  const signedInUserId = session?.user.id
+  useEffect(() => {
+    if (signedInUserId) return startRemoteReminderRefresh()
+  }, [signedInUserId])
 
   const value = useMemo<AuthContextValue>(
     () => ({

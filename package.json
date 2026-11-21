@@ -44,7 +44,8 @@
     "build:release": "npm run release:preflight && npm run build",
     "qa:launch-features-unit": "tsx qa/launch-features-unit.ts",
     "qa:launch-features": "node qa/launch-features.mjs",
-    "qa:database": "python3 qa/database-release.py"
+    "qa:database": "python3 qa/database-release.py",
+    "qa:native-lifecycle": "tsx qa/remote-push-lifecycle.test.ts"
   },
   "dependencies": {
     "@capacitor-community/apple-sign-in": "7.1.0",

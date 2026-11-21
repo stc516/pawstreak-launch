@@ -1,22 +1,8 @@
-import { createClient } from 'npm:@supabase/supabase-js@2'
+import { deleteOwnedStorage } from '../_shared/deleteOwnedStorage.ts'
+import { revokeAppleGrant } from '../_shared/appleRevocation.ts'
+import { createClient } from 'npm:@supabase/supabase-js@2.106.2'
 import { corsHeaders, jsonResponse } from '../_shared/cors.ts'
 
-async function collectStoragePaths(
-  supabase: ReturnType<typeof createClient>,
-  bucket: string,
-  prefix: string,
-): Promise<string[]> {
-  const { data, error } = await supabase.storage.from(bucket).list(prefix, { limit: 1000 })
-  if (error) throw error
-
-  const paths: string[] = []
-  for (const item of data ?? []) {
-    const path = `${prefix}/${item.name}`
-    if (item.id) paths.push(path)
-    else paths.push(...await collectStoragePaths(supabase, bucket, path))
-  }
-  return paths
-}
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
@@ -42,28 +28,23 @@ Deno.serve(async (req) => {
 
     const admin = createClient(supabaseUrl, serviceRoleKey)
     const userId = userData.user.id
+    const body = await req.json().catch(() => ({}))
+    const appleRevocation = await revokeAppleGrant(userData.user.identities ?? [], body?.apple ?? {})
     // Deploy alongside the private video bucket before enabling video uploads.
     const { data: buckets, error: bucketsError } = await admin.storage.listBuckets()
     if (bucketsError) throw bucketsError
     if (buckets?.some(bucket => bucket.id === 'memory-videos')) {
-      const videos = await collectStoragePaths(admin, 'memory-videos', userId)
-      if (videos.length) {
-        const { error } = await admin.storage.from('memory-videos').remove(videos)
-        if (error) throw error
-      }
+      await deleteOwnedStorage(admin, 'memory-videos', userId)
     }
-    const photoPaths = await collectStoragePaths(admin, 'memory-photos', userId)
-    if (photoPaths.length > 0) {
-      const { error: photoError } = await admin.storage.from('memory-photos').remove(photoPaths)
-      if (photoError) throw photoError
-    }
+    await deleteOwnedStorage(admin, 'memory-photos', userId)
 
+    const { error: signOutError } = await admin.auth.admin.signOut(authorization.replace(/^Bearer\s+/i, ''), 'global')
+    if (signOutError) throw signOutError
     const { error: deleteError } = await admin.auth.admin.deleteUser(userId)
     if (deleteError) throw deleteError
 
-    return jsonResponse({ deleted: true })
-  } catch (error) {
-    const message = error instanceof Error ? error.message : 'Could not delete account.'
-    return jsonResponse({ error: message }, { status: 500 })
+    return jsonResponse({ deleted: true, appleRevocation })
+  } catch {
+    return jsonResponse({ error: 'Could not finish deleting your account. Please try again or contact support.' }, { status: 500 })
   }
 })

@@ -33,6 +33,7 @@ async function main() {
   await run(['run', 'qa:native'])
   await run(['run', 'qa:release-preflight'])
   await run(['run', 'qa:launch-features-unit'])
+  await run(['run', 'qa:native-lifecycle'])
   const deterministicEnv = { ...process.env, VITE_MAPBOX_TOKEN: '' }
   await run(['run', 'build'], { env: deterministicEnv })
 

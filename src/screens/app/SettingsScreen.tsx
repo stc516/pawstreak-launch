@@ -381,6 +381,7 @@ export function SettingsScreen({
           ) : (
             <div className="settings-delete-confirm">
               <p>This cannot be undone. Delete your PawStreak account?</p>
+              <p>If you use Apple sign-in, an optional Apple verification may appear to disconnect it. Skipping that verification still deletes your PawStreak account; we’ll show manual disconnect instructions.</p>
               <div className="settings-delete-actions">
                 <button type="button" className="settings-delete-account tap-target" disabled={deleting} onClick={() => {
                   setDeleting(true)

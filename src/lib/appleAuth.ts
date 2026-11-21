@@ -27,3 +27,21 @@ export async function signInWithApple() {
   if (!data.url) throw new Error('Apple sign-in could not be started. Please try again.')
   window.location.assign(data.url)
 }
+
+
+// Reauthorization grants are used only in memory for the explicit deletion request.
+export async function appleDeletionProof() {
+  const client = getSupabaseClient()
+  if (!client) return {}
+  const { data: { user } } = await client.auth.getUser()
+  if (!user?.identities?.some(identity => identity.provider === 'apple')) return {}
+  if (getNativePlatform() === 'ios') {
+    try {
+      const nonce = await createAppleNonce()
+      const { response } = await SignInWithApple.authorize({ clientId: 'com.pawstreak.app', redirectURI: getAuthRedirectUrl(), scopes: 'email name', nonce: nonce.hashed, state: crypto.randomUUID() })
+      return { platform: 'ios', authorizationCode: response.authorizationCode }
+    } catch { return {} } // Account deletion still works with manual Apple disconnect guidance.
+  }
+  const { data: { session } } = await client.auth.getSession()
+  return { platform: 'web', refreshToken: session?.provider_refresh_token ?? undefined }
+}
