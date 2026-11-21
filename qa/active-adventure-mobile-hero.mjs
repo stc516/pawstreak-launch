@@ -26,8 +26,9 @@ try {
   })
   await page.reload({ waitUntil: 'networkidle' })
   await page.locator('.home-dog-pill').waitFor()
-  await page.getByRole('button', { name: 'Quick Walk', exact: true }).click()
-  await page.locator('.clock-bg--active').waitFor()
+  await page.getByRole('button', { name: 'Start a walk', exact: true }).click()
+  if (await page.getByRole('button', { name: 'Start adventure', exact: true }).isVisible()) await page.getByRole('button', { name: 'Start adventure', exact: true }).click()
+  await page.locator('.kinetic-timer-panel').waitFor()
 
   const geometry = await page.evaluate(() => {
     const rect = (selector) => {
@@ -41,13 +42,13 @@ try {
       return getComputedStyle(element).color
     }
     return {
-      hero: rect('.clock-bg--active'),
-      minimize: rect('.active-adventure-minimize'),
-      content: rect('.scroll--active'),
-      minimizeColor: color('.active-adventure-minimize'),
-      locationColor: color('.clk-sub'),
+      hero: rect('.kinetic-timer-panel'),
+      minimize: rect('.trail-browse'),
+      content: rect('.trail-actions'),
+      minimizeColor: color('.trail-browse'),
+      locationColor: color('.trail-header h1'),
       timerColor: color('.clk-time'),
-      dogsColor: color('.clk-dogs'),
+      dogsColor: color('.trail-dogs'),
       viewportWidth: window.innerWidth,
       documentWidth: document.documentElement.scrollWidth,
     }
@@ -58,8 +59,8 @@ try {
     `Browse app should be at least 44px tall; received ${geometry.minimize.height}px`,
   )
   assert.equal(geometry.timerColor, 'rgb(255, 255, 255)', 'The active timer should use high-contrast white')
-  assert.equal(geometry.locationColor, 'rgb(223, 255, 151)', 'The active location should use high-contrast lime')
-  assert.equal(geometry.dogsColor, 'rgb(239, 255, 230)', 'The active dog status should stay legible on forest green')
+  assert.equal(geometry.locationColor, 'rgb(250, 247, 244)', 'The active location should use high-contrast ivory')
+  assert.equal(geometry.dogsColor, 'rgb(250, 247, 244)', 'The active dog status should stay legible on charcoal')
   assert.ok(
     geometry.hero.bottom <= geometry.content.top + 1,
     `Active hero should not overlap the adventure content; hero bottom ${geometry.hero.bottom}, content top ${geometry.content.top}`,
@@ -75,7 +76,7 @@ try {
   await page.getByRole('button', { name: 'Minimize active adventure', exact: true }).click()
   await page.locator('[data-testid="active-adventure-banner"]').waitFor()
   await page.getByRole('button', { name: 'Resume', exact: true }).click()
-  await page.locator('.clock-bg--active').waitFor()
+  await page.locator('.kinetic-timer-panel').waitFor()
   assert.equal(runtimeErrors.length, 0, `Active adventure emitted runtime errors: ${runtimeErrors.join('; ')}`)
 
   report.checks.push({ name: 'Browse app and Resume preserve the active adventure', pass: true })

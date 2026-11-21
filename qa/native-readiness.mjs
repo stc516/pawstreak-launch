@@ -26,12 +26,16 @@ async function main() {
   const shareContent = await readFile('src/lib/shareContent.ts', 'utf8')
   const app = await readFile('src/App.tsx', 'utf8')
   const activeAdventure = await readFile('src/screens/app/ActiveAdventureScreen.tsx', 'utf8')
+  const privacyManifest = await readFile('ios/App/App/PrivacyInfo.xcprivacy', 'utf8')
+  const iosProject = await readFile('ios/App/App.xcodeproj/project.pbxproj', 'utf8')
   const iosInfoPlist = await readFile('ios/App/App/Info.plist', 'utf8').catch(() => '')
   const androidManifest = await readFile('android/app/src/main/AndroidManifest.xml', 'utf8').catch(() => '')
   const launchDocs = await readFile('docs/native-capacitor-launch.md', 'utf8')
   const appStoreDocs = await readFile('docs/native-app-store-metadata.md', 'utf8')
   const deviceQaDocs = await readFile('docs/native-device-qa.md', 'utf8')
   const runbookDocs = await readFile('docs/native-execution-runbook.md', 'utf8')
+
+  record('ios-required-api-reasons', includesAll(privacyManifest, ['NSPrivacyAccessedAPICategoryUserDefaults', 'CA92.1', 'NSPrivacyAccessedAPICategoryFileTimestamp', 'C617.1']) && iosProject.includes('PrivacyInfo.xcprivacy in Resources'), 'Preferences and local file API reasons are declared and bundled in the iOS Resources build phase.')
 
   record(
     'capacitor-packages-installed',

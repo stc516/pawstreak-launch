@@ -1,0 +1,20 @@
+{
+  "results": [
+    "375: home",
+    "375: explore",
+    "375: journey",
+    "375: pack",
+    "375: training",
+    "375: active",
+    "375: recap-no-photo",
+    "393: home",
+    "393: explore",
+    "393: journey",
+    "393: pack",
+    "393: training",
+    "393: active",
+    "393: recap-no-photo"
+  ],
+  "engine": "Chromium mobile emulation; not a physical iPhone",
+  "mode": "Seeded demo; no production account data"
+}

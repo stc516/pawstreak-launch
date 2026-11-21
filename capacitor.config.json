@@ -8,7 +8,7 @@
   "plugins": {
     "SplashScreen": {
       "launchAutoHide": true,
-      "backgroundColor": "#123B2C"
+      "backgroundColor": "#FFF8F5"
     },
     "PushNotifications": {
       "presentationOptions": ["badge", "sound", "alert"]

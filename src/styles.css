@@ -47,8 +47,8 @@ button:disabled {
   --on-surface-var: #424841;
   --outline: #737970;
   --outline-var: #c2c8be;
-  --serif: 'Literata', Georgia, serif;
-  --sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --serif: 'Literata Variable', Georgia, serif;
+  --sans: 'Plus Jakarta Sans Variable', system-ui, sans-serif;
 
   /* App palette — Heritage Adventure (Stitch) */
   --color-background-primary: #faf9f5;
@@ -74,7 +74,7 @@ button:disabled {
   --accent-primary-shadow: 0 4px 14px rgba(27, 48, 34, 0.14);
 
   /* Stitch semantic tokens */
-  --stitch-font: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --stitch-font: 'Hanken Grotesk Variable', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --stitch-primary: #1b3022;
   --stitch-primary-dark: #061b0e;
   --stitch-secondary: #9e421e;

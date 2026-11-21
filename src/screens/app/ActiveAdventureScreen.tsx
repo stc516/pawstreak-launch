@@ -140,6 +140,7 @@ export function ActiveAdventureScreen({
     try {
       const dataUrl = await readImageFileAsDataUrl(file)
       onAddPhoto(dataUrl)
+      setPhotoSaveMessage(null)
     } catch {
       setPhotoSaveMessage('That photo could not be added. Try another image or take a new one.')
       window.setTimeout(() => setPhotoSaveMessage(null), 4800)
@@ -218,8 +219,7 @@ export function ActiveAdventureScreen({
     setIsFinishing(true)
     try {
       await onFinish({
-        recapLabels:
-          selectedRecaps.length > 0 ? selectedRecaps : ['Loved every second'],
+        recapLabels: selectedRecaps,
       })
     } finally {
       setIsFinishing(false)
@@ -312,8 +312,12 @@ export function ActiveAdventureScreen({
             {onMinimize ? <button type="button" className="trail-browse tap-target" onClick={onMinimize} aria-label="Minimize active adventure">← Browse app</button> : null}
             <p className="field-kicker">Active adventure</p>
             <h1>{adventure.location}</h1>
-            <div className="trail-timer-label">{isPaused ? 'Elapsed · Paused' : 'Elapsed'}</div>
-            <div className="trail-timer clk-time">{formatTimer(elapsedSeconds)}</div>
+            <div className="kinetic-timer-panel">
+              <div className="trail-timer-label">{isPaused ? 'Elapsed · Paused' : 'Elapsed'}</div>
+              <div className="trail-timer clk-time">{formatTimer(elapsedSeconds)}</div>
+              <span className="kinetic-live-state">{isPaused ? 'Paused · take your time' : 'Out together'}</span>
+            </div>
+            <div className="kinetic-section-heading"><h2>Your Trail Pack</h2></div>
             <div className="trail-dogs">
               {getProfileDogs(state).filter(dog => !adventure.selectedDogIds?.length || adventure.selectedDogIds.includes(dog.id)).map(dog => (
                 <span key={dog.id}>{dog.photoUrl ? <img src={dog.photoUrl} alt="" /> : <span aria-hidden="true">{dog.initial}</span>} {dog.name}</span>

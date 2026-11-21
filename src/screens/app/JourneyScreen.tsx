@@ -63,13 +63,13 @@ export function JourneyScreen({
             )}
           </div>
           <div>
-            <span className="journey-hero-kicker">LOOK WHAT YOU TWO DID</span>
-            <div className="alogo">This Month With {dogLabel}</div>
+            <span className="journey-hero-kicker">YOUR SHARED STORY</span>
+            <div className="alogo">Days With {dogLabel}</div>
           </div>
         </div>
         <p className="journey-story-hero-copy">
           {hasMemories
-            ? 'Every card is proof that you got out there and made the day count.'
+            ? 'Your places, photos, and little moments. All here to revisit.'
             : 'One outing starts the story. The good days pile up from there.'}
         </p>
         {onCreateStory ? (

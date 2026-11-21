@@ -96,11 +96,14 @@ export function JourneyMemoryView({
           <div className="overlay-topbar"><button type="button" className="overlay-back tap-target" onClick={onBack}>← Journey</button>
             <button type="button" className="overlay-action tap-target" aria-label="Share memory" onClick={onCreateStory ?? (() => void handleShare())}>Share</button>
           </div>
-          <p className="field-kicker"><span className="field-saved-mark" aria-hidden="true">✓</span> Field notes · Saved</p>
+          <p className="field-kicker"><span className="field-saved-mark" aria-hidden="true">✓</span> Saved to Journey</p>
           <h1>{entry.place}</h1>
           <p className="field-date">{entry.date}</p>
           <div className="field-pack">{contentDogs.map(dog => <span key={dog.id}>{dog.photoUrl ? <img src={dog.photoUrl} alt="" /> : <span aria-hidden="true">{dog.profileEmoji}</span>}{dog.name}</span>)}</div>
-          <p className="field-recap-line">A little time outside, together.</p>
+          <div className={`kinetic-recap-hero${savedPhotos.length ? ' kinetic-recap-hero--photo' : ''}`}>
+            {savedPhotos[0] ? <img src={savedPhotos[0]} alt={`A moment from ${entry.place}`} /> : <i className="ti ti-route" aria-hidden="true" />}
+            <div><span className="field-kicker">A day worth keeping</span><p className="field-recap-line">A little time outside, together.</p></div>
+          </div>
           <div className="field-stats" aria-label="Walk summary">
             {entry.durationLabel && entry.durationLabel !== 'Open end' ? <div><span>Time out</span><strong>{entry.durationLabel}</strong></div> : null}
             <div><span>Adventure</span><strong>{memory.adventureType}</strong></div>

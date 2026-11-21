@@ -27,58 +27,24 @@ try {
   await page.reload({ waitUntil: 'networkidle' })
   await page.locator('.home-dog-pill').waitFor()
 
-  const memoryButton = page.locator('.home-adventure-stage')
-  const placeholder = page.locator('.home-adventure-stage-art.card-img--empty > .card-img-placeholder')
-  await placeholder.waitFor()
-  const geometry = await page.evaluate(() => {
-    const rect = (selector) => {
-      const box = document.querySelector(selector)?.getBoundingClientRect()
-      if (!box) throw new Error(`Missing ${selector}`)
-      return { top: box.top, bottom: box.bottom, left: box.left, right: box.right, height: box.height }
-    }
-    return {
-      art: rect('.home-adventure-stage-art'),
-      placeholder: rect('.home-adventure-stage-art > .card-img-placeholder'),
-      status: rect('.home-adventure-stage-copy span'),
-      detail: rect('.home-adventure-stage-copy small'),
-      pack: rect('.home-adventure-stage-pack'),
-      viewportWidth: window.innerWidth,
-      documentWidth: document.documentElement.scrollWidth,
-    }
-  })
-
-  assert.ok(
-    geometry.placeholder.top >= geometry.detail.bottom + 8,
-    `No-photo label should clear the memory copy; label top ${geometry.placeholder.top}, copy bottom ${geometry.detail.bottom}`,
-  )
-  assert.ok(
-    geometry.placeholder.right <= geometry.pack.left - 8,
-    `No-photo label should clear Pack status; label right ${geometry.placeholder.right}, pack left ${geometry.pack.left}`,
-  )
-  assert.ok(
-    geometry.placeholder.top >= geometry.art.top && geometry.placeholder.bottom <= geometry.art.bottom,
-    'No-photo label should stay inside the memory artwork',
-  )
-  assert.ok(
-    geometry.status.bottom < geometry.placeholder.top,
-    'Saved-today status and no-photo label should not overlap',
-  )
-  assert.ok(
-    geometry.documentWidth <= geometry.viewportWidth + 1,
-    `Home should not overflow horizontally; document ${geometry.documentWidth}px, viewport ${geometry.viewportWidth}px`,
-  )
-
+  assert.equal(await page.locator('.home-adventure-stage').count(), 0, 'Home does not present an old saved memory as today’s launch')
+  assert.equal(await page.getByRole('button', { name: 'Start a walk', exact: true }).count(), 1)
+  assert.equal(await page.locator('.home-nearby-pick img').count(), 0, 'No stock destination photo is substituted for a missing real image')
+  assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth))
   await page.screenshot({ path: path.join(out, 'home-memory-placeholder.png') })
-  report.checks.push({ name: 'no-photo label clears Home memory content', pass: true, geometry })
-
-  await memoryButton.click()
-  await page.getByText('That was a good day.', { exact: true }).waitFor()
-  await page.getByText('This adventure is saved even without photos.', { exact: true }).waitFor()
-  assert.equal(runtimeErrors.length, 0, `Home memory emitted runtime errors: ${runtimeErrors.join('; ')}`)
-
+  report.checks.push({ name: 'Home keeps launch separate from memories without fabricated artwork', pass: true })
+  await page.locator('.bnav').getByRole('button', { name: 'Journey', exact: true }).click()
+  const firstMemory = page.locator('.journey-memory-card:not([disabled])').first()
+  const place = await firstMemory.locator('.journey-memory-title').innerText()
+  await firstMemory.click()
+  await page.locator('.field-notes').waitFor()
+  assert.equal(await page.locator('.field-notes h1').innerText(), place, 'Journey opens the selected memory')
+  assert.equal(await page.locator('.field-gallery img').count(), 0)
+  assert.equal(await page.getByText(/no photo|without photos/i).count(), 0, 'No empty-photo warning')
+  assert.ok(await page.getByRole('button', { name: 'View in Journey', exact: false }).isVisible())
+  assert.equal(runtimeErrors.length, 0)
   await page.screenshot({ path: path.join(out, 'saved-memory.png') })
-  report.checks.push({ name: 'memory hero opens the truthful saved-memory detail', pass: true })
-  console.log('[PASS] Home no-photo label is clear and the saved-memory handoff remains truthful')
+  report.checks.push({ name: 'No-photo memory remains complete and opens from Journey', pass: true })
 } catch (error) {
   report.checks.push({ name: 'Home memory placeholder clarity', pass: false, error: error.message })
   await page.screenshot({ path: path.join(out, 'failure.png'), fullPage: true })

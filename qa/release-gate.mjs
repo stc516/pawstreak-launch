@@ -1,6 +1,8 @@
 import { spawn } from 'node:child_process'
 
 const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm'
+const previewPort = process.env.QA_PREVIEW_PORT || '4173'
+const previewUrl = `http://127.0.0.1:${previewPort}`
 const releaseEvidenceRoot = process.env.QA_EVIDENCE_ROOT || 'artifacts/qa/release-gate'
 
 function run(args, options = {}) {
@@ -32,10 +34,11 @@ async function main() {
   const deterministicEnv = { ...process.env, VITE_MAPBOX_TOKEN: '' }
   await run(['run', 'build'], { env: deterministicEnv })
 
-  const preview = spawn(npm, ['run', 'preview', '--', '--host', '127.0.0.1', '--port', '4173'], { stdio: 'inherit', env: deterministicEnv })
+  const preview = spawn(npm, ['run', 'preview', '--', '--host', '127.0.0.1', '--port', previewPort, '--strictPort'], { stdio: 'inherit', env: deterministicEnv })
   try {
-    await waitForServer('http://127.0.0.1:4173')
-    const env = { ...process.env, QA_BASE_URL: 'http://127.0.0.1:4173' }
+    await waitForServer(previewUrl)
+    const env = { ...process.env, QA_BASE_URL: previewUrl }
+    await run(['run', 'qa:kinetic'], { env: { ...env, QA_OUT_DIR: `${releaseEvidenceRoot}/kinetic-design` } })
     await run(['run', 'qa:trail-console'], { env: { ...env, QA_OUT_DIR: `${releaseEvidenceRoot}/trail-console` } })
     await run(['run', 'qa:shell-guard'], {
       env: { ...env, QA_OUT_DIR: `${releaseEvidenceRoot}/mobile-shell-guard` },

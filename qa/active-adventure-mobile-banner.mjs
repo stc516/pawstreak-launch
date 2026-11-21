@@ -26,7 +26,8 @@ try {
   })
   await page.reload({ waitUntil: 'networkidle' })
   await page.locator('.home-dog-pill').waitFor()
-  await page.getByRole('button', { name: 'Quick Walk', exact: true }).click()
+  await page.getByRole('button', { name: 'Start a walk', exact: true }).click()
+  if (await page.getByRole('button', { name: 'Start adventure', exact: true }).isVisible()) await page.getByRole('button', { name: 'Start adventure', exact: true }).click()
   await page.getByRole('button', { name: 'Minimize active adventure', exact: true }).click()
 
   const banner = page.locator('[data-testid="active-adventure-banner"]')
@@ -60,9 +61,9 @@ try {
     assert.ok(action.height >= 44, `Each banner action should be at least 44px tall; received ${action.height}px`)
   }
   assert.ok(geometry.main.height >= 52, `Banner summary should be easy to tap; received ${geometry.main.height}px`)
-  assert.equal(geometry.titleColor, 'rgb(255, 255, 255)', 'Adventure title should stay readable on the forest banner')
+  assert.equal(geometry.titleColor, 'rgb(255, 255, 255)', 'Adventure title should stay readable on the charcoal banner')
   assert.equal(geometry.actions[0].color, 'rgb(255, 255, 255)', 'Resume should use readable white text')
-  assert.equal(geometry.actions[1].color, 'rgb(23, 62, 44)', 'Review & finish should use dark text on lime')
+  assert.equal(geometry.actions[1].color, 'rgb(255, 255, 255)', 'Review & finish should use white text on coral')
   assert.ok(
     geometry.banner.left >= 0 && geometry.banner.right <= geometry.viewportWidth,
     `Banner should stay within the phone viewport; left ${geometry.banner.left}, right ${geometry.banner.right}`,
@@ -76,7 +77,7 @@ try {
   report.checks.push({ name: 'minimized adventure banner is coherent and touch-safe', pass: true, geometry })
 
   await page.getByRole('button', { name: 'Resume', exact: true }).click()
-  await page.locator('.clock-bg--active').waitFor()
+  await page.locator('.kinetic-timer-panel').waitFor()
   await page.getByRole('button', { name: 'Minimize active adventure', exact: true }).click()
   const beforeReview = await page.evaluate(() => {
     const state = JSON.parse(localStorage.getItem('pawstreak:demo') || '{}')

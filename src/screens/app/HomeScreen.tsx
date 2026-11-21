@@ -104,6 +104,7 @@ export function HomeScreen({
   onStartMonthlyPlanAdventure,
   onContinueTraining,
   onOpenAddAdventure,
+  onOpenTrainingProgramFlow,
   onGoToChallenges,
 }: HomeScreenProps) {
   const profileDogs = getProfileDogs(state)
@@ -157,18 +158,23 @@ export function HomeScreen({
         <i className="ti ti-map-pin" aria-hidden="true" /> {state.locationLabel}{state.zipCode ? ` · ${state.zipCode}` : ''}
         <i className="ti ti-chevron-down" aria-hidden="true" />
       </button>
-      <button type="button" className="home-pack home-dog-pill tap-target" onClick={onOpenProfile} aria-label={`Your pack: ${dogLabel}`}>
-        {profileDogs.map(dog => <span key={dog.id}>{dog.photoUrl ? <img src={dog.photoUrl} alt="" /> : <span className="pack-initial" aria-hidden="true">{dog.initial}</span>}{dog.name}</span>)}
-      </button>
       <section className="home-walk-intro" aria-label="Today's adventure">
         <p className="field-kicker">{welcomeGreeting}</p>
-        <h1>A little outside.<br />A better day.</h1>
-        <p>{state.activeAdventure ? `Your walk at ${state.activeAdventure.location} is waiting.` : `Time out together with ${dogLabel}.`}</p>
-        <button type="button" className="field-primary tap-target" onClick={handleQuickAdventure}>
-          {state.activeAdventure ? 'Resume walk' : 'Start a walk'} <i className="ti ti-arrow-right" aria-hidden="true" />
-        </button>
-        <button type="button" className="field-secondary tap-target" onClick={onGoToPlan}>Explore nearby</button>
+        <h1>Chase a better day.</h1>
+        <p>{state.activeAdventure ? `Your walk at ${state.activeAdventure.location} is waiting.` : `Fresh air, new sniffs. A little time outside with ${dogLabel}.`}</p>
       </section>
+      <section className="kinetic-pack" aria-label="Your trail pack">
+        <div className="kinetic-section-heading"><h2>Your Trail Pack</h2><span>{profileDogs.length} {profileDogs.length === 1 ? 'dog' : 'dogs'}</span></div>
+        <button type="button" className="home-pack home-dog-pill tap-target" onClick={onOpenProfile} aria-label={`Your pack: ${dogLabel}`}>
+          {profileDogs.map(dog => <span key={dog.id}>{dog.photoUrl ? <img src={dog.photoUrl} alt="" /> : <span className="pack-initial" aria-hidden="true">{dog.profileEmoji}</span>}<span className="kinetic-dog-name"><strong>{dog.name}</strong><small>Adventure companion</small></span></span>)}
+        </button>
+      </section>
+      <div className="kinetic-home-actions">
+        <button type="button" className="field-primary tap-target" onClick={handleQuickAdventure}>
+          <i className="ti ti-player-play-filled" aria-hidden="true" />{state.activeAdventure ? 'Resume walk' : 'Start a walk'}
+        </button>
+        <button type="button" className="field-secondary tap-target" onClick={onGoToPlan}><i className="ti ti-compass" aria-hidden="true" /> Explore nearby</button>
+      </div>
       {!heroPlace ? (
         <section className="home-neighborhood" data-testid="home-area-fallback">
           <p className="field-kicker">Start where you are</p>
@@ -184,6 +190,7 @@ export function HomeScreen({
         {heroImageUrl ? <CardImage className="home-pick-image" imageUrl={heroImageUrl} imageAlt={heroPlace.name} imageTone={heroPlace.imageTone} /> : null}
         <h2>{heroPlace.name}</h2><p>{getHeroFitLine(heroPlace, profileDogs)}</p>
         <p>{heroPlace.distanceLabel} · {heroPlace.leashInfo}</p>
+        <button type="button" className="kinetic-text-action tap-target" onClick={onGoToPlan}>Browse nearby places <i className="ti ti-compass" aria-hidden="true" /></button>
       </section> : null}
       <section className="home-progress-notes" aria-label="Adventure badges">
         <p className="field-kicker">Your days outside</p>
@@ -213,6 +220,7 @@ export function HomeScreen({
             <i className="ti ti-trophy" aria-hidden="true" />
             <span>Challenges</span>
           </button>
+          <button type="button" className="home-plan-action tap-target" onClick={onOpenTrainingProgramFlow}><i className="ti ti-school" aria-hidden="true" /><span>Training</span></button>
         </div>
       </section>
 
