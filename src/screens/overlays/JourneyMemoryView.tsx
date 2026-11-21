@@ -1,10 +1,9 @@
+import { readImageFileAsDataUrl } from '../../lib/imageUtils'
+import type { MemoryDetailInput } from '../../lib/memoryDetails'
 import { useEffect, useRef, useState } from 'react'
 import type { Dog, JourneyEntry, PackAccessMember } from '../../data/demo'
 import { getPackDisplayName } from '../../lib/dogLabels'
-import { CardImage } from '../../components/CardImage'
-import { LIVE_PRODUCT } from '../../lib/liveProductFeatures'
 import { getJourneyMemoryDetail } from '../../data/journeyMemories'
-import { getPlaceById, isNeighborhoodWalkPlace } from '../../data/places'
 import { buildMemoryShareText, shareContent } from '../../lib/shareContent'
 import { StatusBar } from '../../components/StatusBar'
 import { authenticPhotoUrls } from '../../lib/authenticImages'
@@ -14,6 +13,7 @@ interface JourneyMemoryViewProps {
   dogs: Dog[]
   hasUserDogProfile?: boolean
   packAccessMembers?: PackAccessMember[]
+  onSaveDetail: (input: MemoryDetailInput) => Promise<void>
   onBack: () => void
   onGoAgain: (placeId: string) => void
   onCreateStory?: () => void
@@ -23,30 +23,46 @@ export function JourneyMemoryView({
   entry,
   dogs,
   hasUserDogProfile = false,
-  packAccessMembers = [],
+  onSaveDetail,
   onBack,
   onGoAgain,
   onCreateStory,
 }: JourneyMemoryViewProps) {
+  const [note, setNote] = useState(entry.userNotes ?? '')
+  const [pendingPhoto, setPendingPhoto] = useState<string>()
+  const [savingDetail, setSavingDetail] = useState(false)
+  const [detailMessage, setDetailMessage] = useState('')
+  const photoInputRef = useRef<HTMLInputElement>(null)
+  const detailSaveRef = useRef(false)
   const scrollRef = useRef<HTMLElement | null>(null)
   const [shareNote, setShareNote] = useState<string | null>(null)
   const [shareIsError, setShareIsError] = useState(false)
-  const place = entry.placeId ? getPlaceById(entry.placeId) : undefined
-  const contentDogs = hasUserDogProfile ? dogs : []
+  const contentDogs = hasUserDogProfile ? dogs : dogs.filter(dog => entry.dogTags?.some(tag => tag.includes(dog.name)))
   const memory = getJourneyMemoryDetail(entry, contentDogs)
   const dogLabel =
     contentDogs.length > 0 ? getPackDisplayName(contentDogs) : 'your dog'
-  const familyMember = packAccessMembers.find((member) => member.name === 'Dog Mom')
   const savedPhotos = authenticPhotoUrls(entry.photoUrls)
-  const heroPhoto = savedPhotos[0]
-  const isQuickWalk = isNeighborhoodWalkPlace(entry.placeId)
-  const memoryKindLabel = isQuickWalk ? 'Everyday walk saved' : 'Adventure memory saved'
-  const photoCountLabel =
-    savedPhotos.length === 1 ? '1 photo saved' : `${savedPhotos.length} photos saved`
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: 0 })
   }, [entry.id])
+
+  const handleSaveDetail = async () => {
+    if (detailSaveRef.current) return
+    detailSaveRef.current = true
+    setSavingDetail(true)
+    setDetailMessage('')
+    try {
+      await onSaveDetail({ note, photoDataUrl: pendingPhoto })
+      setPendingPhoto(undefined)
+      setDetailMessage('Detail saved.')
+    } catch (error) {
+      setDetailMessage(error instanceof Error ? error.message : 'Could not save. Try again.')
+    } finally {
+      detailSaveRef.current = false
+      setSavingDetail(false)
+    }
+  }
 
   const handleShare = async () => {
     setShareNote(null)
@@ -73,229 +89,48 @@ export function JourneyMemoryView({
   }
 
   return (
-    <div className="app-viewport">
+    <div className="app-viewport field-notes">
       <div className="app-shell">
         <StatusBar />
-        <main ref={scrollRef} className="scroll scroll--overlay">
-          <div className="memory-cinema-burst" aria-hidden="true">
-            <span>✦</span><span>✦</span><span>✦</span><span>✦</span>
+        <main ref={scrollRef} className="scroll scroll--overlay field-notes-scroll">
+          <div className="overlay-topbar"><button type="button" className="overlay-back tap-target" onClick={onBack}>← Journey</button>
+            <button type="button" className="overlay-action tap-target" aria-label="Share memory" onClick={onCreateStory ?? (() => void handleShare())}>Share</button>
           </div>
-          <div className="overlay-topbar">
-            <button type="button" className="overlay-back tap-target" onClick={onBack}>
-              <i className="ti ti-arrow-left" aria-hidden="true" />
-              Back
-            </button>
-            <button
-              type="button"
-              className="overlay-action tap-target"
-              aria-label="Share memory"
-              onClick={onCreateStory ?? (() => void handleShare())}
-            >
-              <i className="ti ti-share" aria-hidden="true" />
-            </button>
+          <p className="field-kicker"><span className="field-saved-mark" aria-hidden="true">✓</span> Field notes · Saved</p>
+          <h1>{entry.place}</h1>
+          <p className="field-date">{entry.date}</p>
+          <div className="field-pack">{contentDogs.map(dog => <span key={dog.id}>{dog.photoUrl ? <img src={dog.photoUrl} alt="" /> : <span aria-hidden="true">{dog.profileEmoji}</span>}{dog.name}</span>)}</div>
+          <p className="field-recap-line">A little time outside, together.</p>
+          <div className="field-stats" aria-label="Walk summary">
+            {entry.durationLabel && entry.durationLabel !== 'Open end' ? <div><span>Time out</span><strong>{entry.durationLabel}</strong></div> : null}
+            <div><span>Adventure</span><strong>{memory.adventureType}</strong></div>
           </div>
-
-          {shareNote ? (
-            <div
-              className={`memory-toast${shareIsError ? ' memory-toast--error' : ''}`}
-              role={shareIsError ? 'alert' : 'status'}
-            >
-              {shareNote}
-            </div>
-          ) : null}
-
-          <div className="memory-story-saved">
-            <div className="memory-story-dog">
-              {contentDogs[0]?.photoUrl ? (
-                <img src={contentDogs[0].photoUrl} alt={contentDogs[0].name} />
-              ) : (
-                <span aria-hidden="true">{contentDogs[0]?.profileEmoji ?? '🐕'}</span>
-              )}
-            </div>
-            <div>
-              <span>YOU TWO ACTUALLY DID THAT</span>
-              <strong>That was a good day.</strong>
-            </div>
-            <i className="ti ti-check" aria-hidden="true" />
-          </div>
-
-          <button
-            type="button"
-            className="memory-instagram-cta tap-target"
-            onClick={onCreateStory ?? (() => void handleShare())}
-          >
-            <span className="memory-instagram-cta__icon" aria-hidden="true">
-              <i className="ti ti-brand-instagram" />
-            </span>
-            <span>
-              <strong>Share today’s adventure</strong>
-              <small>Image ready for Instagram or Photos</small>
-            </span>
-            <i className="ti ti-arrow-up-right" aria-hidden="true" />
-          </button>
-
-          <div className="memory-hero memory-hero--rich">
-            <div className="memory-film-mark" aria-hidden="true">PAWSTREAK REPLAY</div>
-            {heroPhoto ? (
-              <CardImage
-                className="memory-hero-img"
-                imageUrl={heroPhoto}
-                imageAlt={entry.place}
-                imageTone={place?.imageTone ?? 'warm'}
-              />
-            ) : (
-              <div className="memory-hero-empty">
-                <div className="memory-empty-world" aria-hidden="true">
-                  <i className="memory-empty-sun" />
-                  <i className="memory-empty-hill memory-empty-hill--back" />
-                  <i className="memory-empty-hill memory-empty-hill--front" />
-                  <span className="memory-empty-paws">🐾 🐾 🐾</span>
-                  <span className="memory-empty-dog">
-                    {contentDogs[0]?.photoUrl ? (
-                      <img src={contentDogs[0].photoUrl} alt="" />
-                    ) : (
-                      contentDogs[0]?.profileEmoji ?? '🐕'
-                    )}
-                  </span>
-                </div>
-                <strong>No camera. Still a story.</strong>
-                <p>
-                  {isQuickWalk
-                    ? 'The usual route still counts when you did it together.'
-                    : 'You went. You explored. PawStreak kept the day.'}
-                </p>
-              </div>
-            )}
-            <div className="memory-hero-badge">{memoryKindLabel}</div>
-            <div className="memory-hero-text">
-              <div className="memory-place">{entry.place}</div>
-              <div className="memory-date">{entry.date}</div>
-              <div className="memory-subtitle">{memory.memorySubtitle}</div>
-            </div>
-          </div>
-
-          <div className={`memory-save-confidence detail-card-warm${savedPhotos.length > 0 ? ' memory-save-confidence--photo' : ''}`}>
-            <i className={`ti ${savedPhotos.length > 0 ? 'ti-photo-check' : 'ti-check'}`} aria-hidden="true" />
-            <div>
-              <strong>
-                {savedPhotos.length > 0 ? photoCountLabel : 'This one stays with you'}
-              </strong>
-              <span>
-                {savedPhotos.length > 0
-                  ? 'Your photo is attached to this memory and will show on the adventure map.'
-                  : isQuickWalk
-                    ? 'This Quick Walk is saved under Everyday walks.'
-                    : 'This adventure is saved even without photos.'}
-              </span>
-            </div>
-          </div>
-
-          <div className="memory-context detail-card-warm">
-            <div className="memory-context-item">
-              <span className="memory-context-label">Saved</span>
-              <span>{entry.date}</span>
-            </div>
-            <div className="memory-context-item">
-              <span className="memory-context-label">Type</span>
-              <span>{memory.adventureType}</span>
-            </div>
-            <div className="memory-context-item">
-              <span className="memory-context-label">Photos</span>
-              <span>{savedPhotos.length}</span>
-            </div>
-          </div>
-
-          <div className="memory-dog-tags">
-            {memory.dogTags.map((tag) => (
-              <span key={tag} className="memory-dog-tag">
-                {tag}
-              </span>
-            ))}
-          </div>
-
-          {LIVE_PRODUCT.packAccess && familyMember ? (
-            <div className="memory-pack-reaction detail-card-warm">
-              {familyMember.name} loved this memory.
-            </div>
-          ) : null}
-
-          <div className="memory-section detail-quote-block">
-            <div className="memory-section-title">Emotional recap</div>
-            <div className="memory-recap">
-              {memory.emotionalRecaps.map((line) => (
-                <p key={line} className="detail-quote-text">
-                  {line}
-                </p>
-              ))}
-            </div>
-          </div>
-
-          <div className="memory-section detail-card-warm">
-            <div className="memory-section-title">Favorite moment</div>
-            <p className="memory-favorite">{memory.favoriteMoment}</p>
-          </div>
-
-          {memory.whatDogsLoved.length > 0 ? (
-            <div className="memory-section detail-card-warm">
-              <div className="memory-section-title">
-                What {dogLabel} loved
-              </div>
-              <ul className="memory-loved">
-                {memory.whatDogsLoved.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
-
-          <div className="memory-chips">
-            {memory.adventureChips.map((chip) => (
-              <span key={chip} className="rc on memory-chip">
-                {chip}
-              </span>
-            ))}
-          </div>
-
-          <div className="memory-section detail-card-warm">
-            <div className="memory-section-title">
-              {savedPhotos.length > 0 ? 'Saved photos' : 'Photo status'}
-            </div>
-            {savedPhotos.length > 0 ? (
-              <div className="memory-gallery">
-                {savedPhotos.map((url, index) => (
-                  <div key={`${url}-${index}`} className="memory-gallery-item">
-                    <img src={url} alt="" className="memory-gallery-img" />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="memory-gallery-empty">
-                {isQuickWalk
-                  ? 'Quick Walks stay lightweight. Photos are optional and only show here when you capture one.'
-                  : 'Photos you capture during adventures will show up here immediately after finishing.'}
-              </div>
-            )}
-          </div>
-
-          <div className="memory-actions">
-            {entry.placeId ? (
-              <button
-                type="button"
-                className="memory-btn memory-btn--primary tap-target"
-                onClick={() => onGoAgain(entry.placeId!)}
-              >
-                <i className="ti ti-refresh" aria-hidden="true" />
-                Go again
-              </button>
-            ) : null}
-            <button
-              type="button"
-              className="memory-btn memory-btn--ghost tap-target"
-              onClick={onCreateStory ?? (() => void handleShare())}
-            >
-              <i className="ti ti-share" aria-hidden="true" />
-              Share image
-            </button>
+          <button type="button" className="field-primary tap-target" onClick={onBack}>View in Journey <i className="ti ti-arrow-right" aria-hidden="true" /></button>
+          {entry.userNotes ? <section className="field-note"><h2>A detail to keep</h2><p>{entry.userNotes}</p></section> : null}
+          {entry.recapLabels?.length ? <section className="field-note" aria-label={`Details from ${dogLabel}'s walk`}><h2>Little details</h2><div className="field-tags">{entry.recapLabels.map(label => <span key={label}>{label}</span>)}</div></section> : null}
+          {savedPhotos.length > 0 ? <section className="field-photos">
+            <div className="field-gallery-heading"><h2>Photos</h2><span>{savedPhotos.length} {savedPhotos.length === 1 ? 'photo' : 'photos'}</span></div>
+            <div className="field-gallery">{savedPhotos.map((url,index) => <img key={`${url}-${index}`} src={url} alt={`Walk photo ${index + 1}`} />)}</div>
+          </section> : null}
+          <details className="field-add-detail"><summary className="tap-target">Add a detail · optional</summary>
+            <label htmlFor="memory-note">A note to remember</label>
+            <textarea id="memory-note" value={note} maxLength={2000} disabled={savingDetail} onChange={event => setNote(event.target.value)} placeholder="A favorite turn, a new friend…" />
+            <input ref={photoInputRef} className="cam-input" type="file" accept="image/*" disabled={savingDetail} onChange={async event => {
+              const file = event.target.files?.[0]
+              event.target.value = ''
+              if (!file) return
+              try { setPendingPhoto(await readImageFileAsDataUrl(file)); setDetailMessage('') }
+              catch { setDetailMessage('That photo could not be added. Choose another image.') }
+            }} />
+            {savedPhotos.length < 3 ? <button type="button" className="field-secondary tap-target" disabled={savingDetail} onClick={() => photoInputRef.current?.click()}>{pendingPhoto ? 'Choose another photo' : 'Add photo'}</button> : null}
+            {pendingPhoto ? <img className="field-pending-photo" src={pendingPhoto} alt="Photo ready to save" /> : null}
+            <button type="button" className="field-primary tap-target" disabled={savingDetail} onClick={() => void handleSaveDetail()}>{savingDetail ? 'Saving detail…' : 'Save detail'}</button>
+            {detailMessage ? <p role="status">{detailMessage}</p> : null}
+          </details>
+          {shareNote ? <p role={shareIsError ? 'alert' : 'status'}>{shareNote}</p> : null}
+          <div className="field-recap-actions">
+            <button type="button" className="field-secondary tap-target" onClick={onCreateStory ?? (() => void handleShare())}>Share this memory</button>
+            {entry.placeId ? <button type="button" className="field-secondary tap-target" onClick={() => onGoAgain(entry.placeId!)}>Go again</button> : null}
           </div>
         </main>
       </div>

@@ -1,3 +1,4 @@
+import { saveMemoryDetails, type MemoryDetailInput } from './lib/memoryDetails'
 import { useEffect, useRef, useState } from 'react'
 import type { AppState, CommunityPost, TabId } from './data/demo'
 import {
@@ -193,6 +194,31 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   const nativeAppMissingBackend =
     appMode === 'app' && isNativeAppRuntime() && !auth.configured
   const [state, setState] = useState<AppState>(() => loadAppState(appMode, demoRoute))
+  const pauseKey = `pawstreak:${appMode}:paused-walk`
+  const [pausedWalk, setPausedWalk] = useState<{ id: string; at: number } | null>(() => {
+    try {
+      const value = JSON.parse(sessionStorage.getItem(pauseKey) ?? 'null')
+      return typeof value?.id === 'string' && Number.isFinite(value?.at) ? value : null
+    } catch { return null }
+  })
+  useEffect(() => {
+    try {
+      if (pausedWalk && pausedWalk.id === state.activeAdventure?.id) sessionStorage.setItem(pauseKey, JSON.stringify(pausedWalk))
+      else sessionStorage.removeItem(pauseKey)
+    } catch { /* The live session still works when browser storage is unavailable. */ }
+  }, [pauseKey, pausedWalk, state.activeAdventure?.id])
+  const pauseForActiveWalk = pausedWalk?.id === state.activeAdventure?.id ? pausedWalk : null
+  const toggleWalkPause = () => {
+    const adventure = latestStateRef.current.activeAdventure
+    if (!adventure?.startedAt) return
+    if (pausedWalk?.id === adventure.id) {
+      const pauseDuration = Math.max(0, Date.now() - pausedWalk.at)
+      setState(current => current.activeAdventure?.id === adventure.id ? { ...current,
+        activeAdventure: { ...current.activeAdventure, startedAt: new Date(Date.parse(adventure.startedAt!) + pauseDuration).toISOString() },
+      } : current)
+      setPausedWalk(null)
+    } else setPausedWalk({ id: adventure.id, at: Date.now() })
+  }
   const [authError, setAuthError] = useState<string | null>(null)
   const [authLoading, setAuthLoading] = useState(false)
   const [dataHydrated, setDataHydrated] = useState(!useProductionBackend)
@@ -1320,6 +1346,16 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     }))
   }
 
+  const updateMemoryDetails = async (entryId: string, input: MemoryDetailInput) => {
+    const entry = latestStateRef.current.journeyEntries.find(item => item.id === entryId)
+    if (!entry) throw new Error('This memory could not be found.')
+    const updated = useProductionBackend && auth.user && /^[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(entryId)
+      ? await saveMemoryDetails(auth.user.id, entryId, input)
+      : { ...entry, userNotes: input.note.trim() || undefined,
+          photoUrls: input.photoDataUrl ? [...(entry.photoUrls ?? []).filter(Boolean), input.photoDataUrl].slice(0, 3) : entry.photoUrls }
+    setState(current => ({ ...current, journeyEntries: current.journeyEntries.map(item => item.id === entryId ? updated : item) }))
+  }
+
   const finishAdventure = async (payload: AdventureFinishPayload) => {
     if (finishingAdventureRef.current) return
     finishingAdventureRef.current = true
@@ -1333,9 +1369,12 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     const endLocationCapture = isCustomAdventure(liveState.activeAdventure)
       ? await captureCurrentLocation()
       : null
-    const activeAdventureForFinish = endLocationCapture
-      ? applyEndLocation(liveState.activeAdventure, endLocationCapture)
+    const activeAdventureAtFinish = pauseForActiveWalk && liveState.activeAdventure.startedAt
+      ? { ...liveState.activeAdventure, startedAt: new Date(Date.parse(liveState.activeAdventure.startedAt) + Math.max(0, Date.now() - pauseForActiveWalk.at)).toISOString() }
       : liveState.activeAdventure
+    const activeAdventureForFinish = endLocationCapture
+      ? applyEndLocation(activeAdventureAtFinish, endLocationCapture)
+      : activeAdventureAtFinish
     const place = getPlaceById(activeAdventureForFinish.placeId)
     const capturedPhotos = liveState.adventurePhotos.filter(Boolean)
     const activeDogId = liveState.activeDogId ?? liveState.dogs[0]?.id
@@ -1389,10 +1428,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
                 : current.monthlyPlanResult,
           }),
         )
-        setShareCardRequest({
-          kind: 'adventure-complete',
-          entryId: memory.id,
-        })
+        setShareCardRequest(null)
         finishingAdventureRef.current = false
         return
       } catch {
@@ -1482,7 +1518,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             : current.monthlyPlanResult,
       })
     })
-    setShareCardRequest({ kind: 'adventure-complete' })
+    setShareCardRequest(null)
     finishingAdventureRef.current = false
   }
 
@@ -1878,6 +1914,8 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   ) ? (
     <div className="active-adventure-overlay">
       <ActiveAdventureScreen
+        pausedAt={pauseForActiveWalk?.at}
+        onTogglePause={toggleWalkPause}
         state={state}
         onStart={startAdventureSession}
         onCancel={requestCancelAdventure}
@@ -2113,6 +2151,8 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       return (
         <>
           <JourneyMemoryView
+            key={entry.id}
+            onSaveDetail={(input) => updateMemoryDetails(entry.id, input)}
             entry={entry}
             dogs={state.dogs}
             hasUserDogProfile={personalize}
@@ -2141,6 +2181,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
           <HomeScreen
             state={state}
             isDemoMode={isDemoMode}
+            onResumeAdventure={focusActiveAdventure}
             onSelectActivity={setSelectedActivity}
             onStartAdventure={startAdventure}
             onStartNeighborhoodWalk={() => startNeighborhoodWalk()}

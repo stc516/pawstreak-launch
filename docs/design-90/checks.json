@@ -1,0 +1,30 @@
+{
+  "checks": [
+    "Both dog names visible",
+    "Start and Explore visible above navigation",
+    "Exactly one elapsed timer",
+    "Finish and Pause reachable without scrolling",
+    "No checkpoint or photo warning",
+    "Pause freezes elapsed time",
+    "Navigation preserves session and pause",
+    "Reload preserves paused timer",
+    "Resume excludes paused time",
+    "No-photo walk saved once to Journey",
+    "No empty-photo warning in recap",
+    "Optional recap photo and note persist after reload",
+    "Unsupported ZIP shown and no curated pick",
+    "Unsupported ZIP starts Neighborhood Walk",
+    "Cancel clears walk without creating a memory",
+    "Supported ZIP restores nearby choice",
+    "Invalid image recovers",
+    "Three photos attach through real image input",
+    "Gallery is not covered by a footer",
+    "Gallery count beside heading, photos saved once",
+    "No horizontal overflow",
+    "No runtime errors"
+  ],
+  "errors": [],
+  "viewport": "375 × 667",
+  "engine": "Chromium mobile emulation",
+  "fixture": "DEMO; uploaded PawStreak logo used only as media QA fixture"
+}

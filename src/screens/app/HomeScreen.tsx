@@ -7,10 +7,8 @@ import {
 } from '../../lib/homeCopy'
 import { resolveJoinedChallenges } from '../../lib/challengeEngine'
 import { getHomeProgressStats } from '../../lib/homeStats'
-import { getMapPreviewPlaces, getPlanNearbyPlaces } from '../../lib/planDiscovery'
-import { getPlanMagicMeta } from '../../data/places'
+import { getPlanNearbyPlaces } from '../../lib/planDiscovery'
 import { CardImage } from '../../components/CardImage'
-import { getHeroPlace } from '../../data/places'
 import { getRecommendationPrefs } from '../../lib/onboardingProfile'
 import {
   getAdventureDisplayImageUrl,
@@ -21,16 +19,15 @@ import {
 } from '../../lib/monthlyPlan'
 import { getCurrentTrainingSession } from '../../lib/trainingSchedule'
 import { getTrainingProgramById } from '../../data/training'
-import { GENERIC_ADVENTURE_TYPES } from '../../lib/genericAdventures'
 import { getHomeUpcomingItems } from '../../lib/homeUpcoming'
 import { BrandLogoCircle } from '../../components/BrandLogoCircle'
-import { DogAdventureSticker } from '../../components/DogAdventureSticker'
 
 interface HomeScreenProps {
   state: AppState
   isDemoMode?: boolean
   onSelectActivity: (activityId: string) => void
   onStartAdventure: (placeId: string, durationLabel: string) => void
+  onResumeAdventure: () => void
   onStartNeighborhoodWalk: () => void
   onOpenProfile: () => void
   onOpenChallenge: (challengeId: string) => void
@@ -98,10 +95,10 @@ export function HomeScreen({
   isDemoMode = false,
   onSelectActivity,
   onStartAdventure,
+  onResumeAdventure,
   onStartNeighborhoodWalk,
   onOpenProfile,
   onOpenChallenge,
-  onOpenMemory,
   onGoToPlan,
   onOpenBuildMyMonth,
   onStartMonthlyPlanAdventure,
@@ -113,22 +110,13 @@ export function HomeScreen({
   const dogLabel = getDisplayDogLabel(state)
   const heroActivityId = state.selectedActivityId || 'beach'
   const recommendationPrefs = getRecommendationPrefs(state)
-  const heroPlace = useMemo(
-    () =>
-      state.locationSupported
-        ? getPlanNearbyPlaces(heroActivityId, '15min', recommendationPrefs, state)[0] ??
-          getHeroPlace(heroActivityId, recommendationPrefs)
-        : getHeroPlace(heroActivityId, recommendationPrefs),
-    [heroActivityId, recommendationPrefs, state],
-  )
-  const heroImageUrl = getAdventureDisplayImageUrl(state.journeyEntries, heroPlace)
+  const heroPlace = useMemo(() => state.locationSupported
+    ? getPlanNearbyPlaces(heroActivityId, '15min', recommendationPrefs, state)[0]
+    : undefined, [heroActivityId, recommendationPrefs, state])
+  const heroImageUrl = heroPlace ? getAdventureDisplayImageUrl(state.journeyEntries, heroPlace) : undefined
   const progress = getHomeProgressStats(state)
   const joinedChallenges = useMemo(() => resolveJoinedChallenges(state), [state])
   const activeChallenge = joinedChallenges[0]
-  const suggestedPlaces = useMemo(
-    () => getMapPreviewPlaces(recommendationPrefs, state),
-    [recommendationPrefs, state],
-  )
   const upcomingItems = useMemo(() => getHomeUpcomingItems(state), [state])
   const welcomeGreeting = getHomeWelcomeGreeting()
   const activeMonthWeek = getActiveMonthlyPlanWeek(state.monthlyPlanResult)
@@ -136,49 +124,16 @@ export function HomeScreen({
   const trainingProgram = state.activeTrainingSchedule
     ? getTrainingProgramById(state.activeTrainingSchedule.programId)
     : null
-  const todayKey = new Date().toLocaleDateString('en-CA')
-  const todayEntry = state.journeyEntries.find((entry) => {
-    if (entry.date.trim().toLowerCase() === 'today') return true
-    if (!entry.occurredAt) return false
-    const occurred = new Date(entry.occurredAt)
-    return !Number.isNaN(occurred.getTime()) && occurred.toLocaleDateString('en-CA') === todayKey
-  })
-  const leadDog = profileDogs[0]
-  const todayPhoto = todayEntry?.photoUrls?.find(Boolean)
   const launchBadges = useMemo(() => getAdventureLaunchBadges(state, progress), [state, progress])
-  const launchTone = state.activeAdventure
-    ? 'Adventure in motion'
-    : todayEntry
-      ? 'Memory saved today'
-      : progress.streak > 1
-        ? `${progress.streak}-day adventure streak`
-        : 'Ready for a better day'
-  const launchHeadline = state.activeAdventure
-    ? `${dogLabel} is already out there.`
-    : todayEntry
-      ? `${dogLabel} had a better day.`
-      : `Give ${dogLabel} a better day.`
-  const launchCopy = state.activeAdventure
-    ? 'Finish strong, save the memory, then let the next adventure pull you forward.'
-    : todayEntry
-      ? 'Relive the good part, keep the streak honest, and pick the next place before the leash cools off.'
-      : 'Pick one nearby adventure, get out the door, and come back with a real memory — not another chore walk.'
-
   const handleQuickAdventure = () => {
+    if (state.activeAdventure) return onResumeAdventure()
+    if (!heroPlace) return onStartNeighborhoodWalk()
     onSelectActivity(heroActivityId)
     onStartAdventure(heroPlace.id, 'Open end')
   }
 
-  const handleSuggestedPlaceGo = (placeId: string) => {
-    if (placeId === 'neighborhood-walk') {
-      onStartNeighborhoodWalk()
-      return
-    }
-    onStartAdventure(placeId, 'Open end')
-  }
-
   return (
-    <div className="home-screen home-screen--stitch home-screen--adventure-launch">
+    <div className="home-screen home-screen--stitch home-screen--minimal">
       <header className="st-appbar home-screen-header">
         <div className="app-brand-lockup home-logo-lockup">
           <BrandLogoCircle size={32} />
@@ -193,161 +148,50 @@ export function HomeScreen({
             aria-label="Open profile and settings"
             onClick={onOpenProfile}
           >
-            <i className="ti ti-settings" aria-hidden="true" />
-          </button>
-          <button type="button" className="st-avatar-btn tap-target home-dog-pill" onClick={onOpenProfile}>
-            {profileDogs.length > 0 ? (
-              <span className="pack-mini-portrait pack-mini-portrait--header" aria-hidden="true">
-                {profileDogs.slice(0, 2).map((dog) => (
-                  <span key={dog.id} className={`pack-mini-portrait-dog ${dog.avatarClass}`}>
-                    {dog.photoUrl ? <img src={dog.photoUrl} alt="" /> : <span>{dog.profileEmoji}</span>}
-                  </span>
-                ))}
-                <span className="pack-mini-portrait-spark">✦</span>
-              </span>
-            ) : null}
-            {profileDogs.length > 0 ? (
-              <span className="dog-names">{dogLabel}</span>
-            ) : null}
+            <span aria-hidden="true">⚙</span>
           </button>
         </div>
       </header>
 
-      {!state.locationSupported ? (
-        <div className="home-area-fallback st-card st-card--elevated" data-testid="home-area-fallback">
-          We don&apos;t have curated local spots in {state.locationLabel} yet, but
-          PawStreak still works — start a walk or add your own adventures below.
-        </div>
-      ) : null}
-
-      <section className="home-adventure-launch-hero" aria-label="Today’s adventure launch">
-        <div className="home-adventure-launch-topline">
-          <span className="home-streak-banner">
-            <i className="ti ti-flame" aria-hidden="true" />
-            {launchTone}
-          </span>
-          <span className="home-launch-dog-chip" aria-label={`Adventure companion: ${dogLabel}`}>
-            {leadDog?.photoUrl ? <img src={leadDog.photoUrl} alt="" /> : <span>{leadDog?.profileEmoji ?? '🐶'}</span>}
-            <strong>{dogLabel}</strong>
-          </span>
-        </div>
-
-        <div className="home-adventure-launch-copy">
-          <span>{welcomeGreeting}</span>
-          <h1>{launchHeadline}</h1>
-          <p>{launchCopy}</p>
-        </div>
-
-        <button
-          type="button"
-          className="home-adventure-stage tap-target"
-          onClick={todayEntry && onOpenMemory ? () => onOpenMemory(todayEntry.id) : handleQuickAdventure}
-          aria-label={todayEntry ? `Open today's memory from ${todayEntry.place}` : `Start today's pick: ${heroPlace.name}`}
-        >
-          <CardImage
-            className="home-adventure-stage-art"
-            imageUrl={todayEntry ? todayPhoto : heroImageUrl}
-            imageAlt={todayEntry ? todayEntry.place : heroPlace.name}
-            imageTone={heroPlace.imageTone ?? 'warm'}
-          >
-            <div className="home-adventure-stage-scrim" aria-hidden="true" />
-            <div className="home-adventure-stage-copy">
-              <span>{todayEntry ? 'Saved today' : 'Today’s pull'}</span>
-              <strong>{todayEntry?.place ?? heroPlace.name}</strong>
-              <small>{todayEntry ? 'Open the memory, then pick what comes next.' : getHeroFitLine(heroPlace, profileDogs)}</small>
-            </div>
-            <div className="home-adventure-stage-route" aria-hidden="true">
-              <span>{heroPlace.distanceLabel}</span>
-              <span>{heroPlace.category}</span>
-              <span>{heroPlace.leashInfo}</span>
-            </div>
-            <div className="home-adventure-stage-pack" aria-hidden="true">
-              {profileDogs.slice(0, 2).map((dog) => (
-                <span key={dog.id} className={`home-adventure-stage-dog ${dog.avatarClass}`}>
-                  {dog.photoUrl ? <img src={dog.photoUrl} alt="" /> : dog.profileEmoji}
-                </span>
-              ))}
-              <strong>{profileDogs.length > 1 ? 'Pack is ready' : `${leadDog?.name ?? 'Dog'} is ready`}</strong>
-            </div>
-            <span className="home-adventure-stage-go" aria-hidden="true">
-              <i className={`ti ${todayEntry ? 'ti-book' : 'ti-arrow-right'}`} />
-            </span>
-          </CardImage>
+      <button type="button" className="home-area-chip tap-target" onClick={onGoToPlan} aria-label="Change current area or ZIP">
+        <i className="ti ti-map-pin" aria-hidden="true" /> {state.locationLabel}{state.zipCode ? ` · ${state.zipCode}` : ''}
+        <i className="ti ti-chevron-down" aria-hidden="true" />
+      </button>
+      <button type="button" className="home-pack home-dog-pill tap-target" onClick={onOpenProfile} aria-label={`Your pack: ${dogLabel}`}>
+        {profileDogs.map(dog => <span key={dog.id}>{dog.photoUrl ? <img src={dog.photoUrl} alt="" /> : <span className="pack-initial" aria-hidden="true">{dog.initial}</span>}{dog.name}</span>)}
+      </button>
+      <section className="home-walk-intro" aria-label="Today's adventure">
+        <p className="field-kicker">{welcomeGreeting}</p>
+        <h1>A little outside.<br />A better day.</h1>
+        <p>{state.activeAdventure ? `Your walk at ${state.activeAdventure.location} is waiting.` : `Time out together with ${dogLabel}.`}</p>
+        <button type="button" className="field-primary tap-target" onClick={handleQuickAdventure}>
+          {state.activeAdventure ? 'Resume walk' : 'Start a walk'} <i className="ti ti-arrow-right" aria-hidden="true" />
         </button>
-
-        <div className="home-badge-banner" aria-label="Adventure badges">
-          {launchBadges.map((badge) => (
-            <span key={`${badge.label}-${badge.meta}`} className={`home-badge-token${badge.pending ? ' home-badge-token--pending' : ''}`}>
-              <span aria-hidden="true">{badge.emoji}</span>
-              <span>
-                <strong>{badge.label}</strong>
-                <small>{badge.meta}</small>
-              </span>
-            </span>
-          ))}
-        </div>
+        <button type="button" className="field-secondary tap-target" onClick={onGoToPlan}>Explore nearby</button>
       </section>
-
-      <section className="today-actions today-actions--launch" aria-label="Today’s adventure">
-        <button
-          type="button"
-          className="today-primary-action today-primary-action--electric tap-target"
-          onClick={todayEntry && onOpenMemory ? () => onOpenMemory(todayEntry.id) : handleQuickAdventure}
-        >
-          <span>
-            <small>{todayEntry ? 'Today’s memory' : state.activeAdventure ? 'Adventure in progress' : 'Today’s adventure'}</small>
-            <strong>{todayEntry ? `Relive ${todayEntry.place}` : state.activeAdventure ? `Return to ${state.activeAdventure.location}` : 'Pick the next place'}</strong>
-          </span>
-          <i className={`ti ${todayEntry ? 'ti-book' : 'ti-arrow-right'}`} aria-hidden="true" />
-        </button>
-        <div className="today-secondary-actions today-secondary-actions--launch">
-          <button type="button" className="tap-target" onClick={onStartNeighborhoodWalk}>
-            <i className="ti ti-walk" aria-hidden="true" />
-            Quick Walk
-          </button>
-          <button type="button" className="tap-target" onClick={onOpenAddAdventure}>
-            <i className="ti ti-plus" aria-hidden="true" />
-            Add your own
-          </button>
-        </div>
-        {!isDemoMode && progress.adventuresCompleted > 0 ? (
-          <div className="today-real-progress" aria-label="Your real progress">
-            <span>{progress.adventuresCompleted} {progress.adventuresCompleted === 1 ? 'story' : 'stories'} saved</span>
-            {progress.places > 0 ? <span>{progress.places} {progress.places === 1 ? 'place' : 'places'} explored</span> : null}
-            {progress.streak > 1 ? <span>{progress.streak} active days</span> : null}
-          </div>
-        ) : null}
-      </section>
-
-      {!state.locationSupported ? (
-        <section
-          className="home-generic-adventures detail-card-warm"
-          aria-label="Adventure ideas"
-          data-testid="home-generic-adventures"
-        >
-          <div className="st-section-head">
-            <h2 className="st-headline-md">Adventure ideas</h2>
-          </div>
-          <div className="home-generic-adventure-grid">
-            {GENERIC_ADVENTURE_TYPES.slice(0, 6).map((type) => (
-              <button
-                key={type.id}
-                type="button"
-                className="home-generic-adventure-chip tap-target"
-                onClick={
-                  type.action === 'quick-walk'
-                    ? onStartNeighborhoodWalk
-                    : onOpenAddAdventure
-                }
-              >
-                <span aria-hidden="true">{type.emoji}</span>
-                <span className="home-generic-adventure-chip-label">{type.label}</span>
-              </button>
-            ))}
-          </div>
+      {!heroPlace ? (
+        <section className="home-neighborhood" data-testid="home-area-fallback">
+          <p className="field-kicker">Start where you are</p>
+          <h2>Neighborhood Walk</h2>
+          <p>Choose your own route. A familiar block or a new street is enough.</p>
+          <p>No curated spots nearby yet. Explore another area or add a place of your own.</p>
+          <button type="button" className="field-secondary tap-target" onClick={onOpenAddAdventure}>Add your own adventure</button>
         </section>
       ) : null}
 
+      {heroPlace ? <section className="home-nearby-pick">
+        <p className="field-kicker">One nearby idea</p>
+        {heroImageUrl ? <CardImage className="home-pick-image" imageUrl={heroImageUrl} imageAlt={heroPlace.name} imageTone={heroPlace.imageTone} /> : null}
+        <h2>{heroPlace.name}</h2><p>{getHeroFitLine(heroPlace, profileDogs)}</p>
+        <p>{heroPlace.distanceLabel} · {heroPlace.leashInfo}</p>
+      </section> : null}
+      <section className="home-progress-notes" aria-label="Adventure badges">
+        <p className="field-kicker">Your days outside</p>
+        <div className="home-badge-banner">{launchBadges.map((badge) => (
+          <span key={badge.label} className="home-badge-token"><span aria-hidden="true">{badge.emoji}</span><span><strong>{badge.label}</strong><small>{badge.meta}</small></span></span>
+        ))}</div>
+        {!isDemoMode && progress.adventuresCompleted > 0 ? <p>{progress.adventuresCompleted} stories saved</p> : null}
+      </section>
       <section className="home-plan-new" aria-label="More ways to make today count">
         <div className="st-section-head">
           <h2 className="st-headline-md">More ways to make today count</h2>
@@ -444,41 +288,6 @@ export function HomeScreen({
             >
               View
             </button>
-          </div>
-        </section>
-      ) : null}
-
-      {state.locationSupported && suggestedPlaces.length > 0 ? (
-        <section className="home-suggested-spots" aria-label="Dog-Friendly Spots Nearby">
-          <div className="st-section-head">
-            <h2 className="st-headline-md">Dog-Friendly Spots Nearby</h2>
-            <button type="button" className="st-link-btn tap-target" onClick={onGoToPlan}>
-              See all on Plan
-            </button>
-          </div>
-          <div className="st-suggested-spots-strip st-hide-scroll">
-            {suggestedPlaces.slice(0, 3).map((place) => {
-              const imageUrl = getAdventureDisplayImageUrl(state.journeyEntries, place)
-              return (
-                <button
-                  key={place.id}
-                  type="button"
-                  className="st-suggested-spots-tile tap-target"
-                  onClick={() => handleSuggestedPlaceGo(place.id)}
-                >
-                  <CardImage
-                    className="st-suggested-spots-tile-photo"
-                    imageUrl={imageUrl}
-                    imageAlt={place.imageAlt ?? place.name}
-                    imageTone={place.imageTone}
-                  >
-                    <DogAdventureSticker dog={leadDog} className="dog-adventure-sticker--compact" />
-                  </CardImage>
-                  <div className="st-suggested-spots-tile-name">{place.name.split(',')[0]}</div>
-                  <div className="st-suggested-spots-tile-meta">{getPlanMagicMeta(place)}</div>
-                </button>
-              )
-            })}
           </div>
         </section>
       ) : null}

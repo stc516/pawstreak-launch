@@ -36,6 +36,7 @@ async function main() {
   try {
     await waitForServer('http://127.0.0.1:4173')
     const env = { ...process.env, QA_BASE_URL: 'http://127.0.0.1:4173' }
+    await run(['run', 'qa:trail-console'], { env: { ...env, QA_OUT_DIR: `${releaseEvidenceRoot}/trail-console` } })
     await run(['run', 'qa:shell-guard'], {
       env: { ...env, QA_OUT_DIR: `${releaseEvidenceRoot}/mobile-shell-guard` },
     })
