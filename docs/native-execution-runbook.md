@@ -38,25 +38,24 @@ export PATH="$JAVA_HOME/bin:$PATH"
 npm install
 npm run qa:native
 npm run lint
-npm run build
+npm run build:release
 ```
 
-## Step 2 — generate native projects
+## Step 2 — sync the existing native project
 
 ```bash
-npx cap add ios
-npx cap add android
-npm run native:sync
+npm run build:release
+npx cap sync ios
 ```
 
-Commit generated `ios/` and `android/` directories only after they build locally.
+The repository already contains `ios/` and `android/`. Do not run `npx cap add ios` or `npx cap add android` again unless intentionally recovering a missing platform. On macOS, open the synced project with `npx cap open ios`. Syncing does not compile or sign it.
 
 ## Step 3 — configure iOS
 
 Open Xcode:
 
 ```bash
-npm run native:ios
+npx cap open ios
 ```
 
 Set:

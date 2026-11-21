@@ -1,0 +1,3 @@
+-- Superseded by the CLI-generated, locally tested migration:
+-- supabase/migrations/20261121204908_walk_routes_and_memory_video.sql
+-- Apply only through the reviewed release migration process; no hosted migration has been applied.

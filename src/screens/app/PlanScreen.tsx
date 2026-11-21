@@ -221,9 +221,9 @@ export function PlanScreen({
             <BrandLogoCircle size={28} />
             <span>PawStreak</span>
           </div>
-          <div className="alogo">What are we doing today?</div>
+          <div className="alogo">Find your next outside.</div>
           <p className="plan-screen-sub">
-            Pick something that makes {dogLabel} lose their mind—in a good way.
+            Discover somewhere worth exploring with {dogLabel}.
           </p>
         </div>
         {onCreateStory ? (

@@ -43,7 +43,7 @@ export function BuildMyMonthFlow({
   onSave,
   onStartFirstAdventure,
 }: BuildMyMonthFlowProps) {
-  const [calendarStatus, setCalendarStatus] = useState<'idle' | 'ready'>('idle')
+  const [calendarStatus, setCalendarStatus] = useState('')
   const dogLabel = getDisplayDogLabel(state)
   const canContinue =
     (step === 1 && draft.categoryIds.length > 0) ||
@@ -180,18 +180,15 @@ export function BuildMyMonthFlow({
               <button
                 type="button"
                 className="st-btn st-btn--ghost tap-target build-month-calendar"
-                onClick={() => {
-                  downloadMonthlyPlanCalendar(result)
-                  setCalendarStatus('ready')
+                onClick={async () => {
+                  try { await downloadMonthlyPlanCalendar(result); setCalendarStatus('Calendar file ready. Import it in your calendar app; alerts depend on your calendar settings.') } catch { setCalendarStatus('Calendar export was not completed. Try again.') }
                 }}
               >
                 <i className="ti ti-calendar-plus" aria-hidden="true" />
                 Add to Calendar
               </button>
               <p className="build-month-calendar-note">
-                {calendarStatus === 'ready'
-                  ? 'Calendar file ready. Open it to add these outings.'
-                  : 'Optional. Adds the plan to your device calendar.'}
+                {calendarStatus || 'Optional. Export suggested dates, then review and import them in your calendar app.'}
               </p>
               <button
                 type="button"

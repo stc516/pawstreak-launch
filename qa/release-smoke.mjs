@@ -137,10 +137,10 @@ async function main() {
       if (label === 'Journey') {
         await shot(page, '03-demo-journey')
         await page.locator('.journey-memory-card:not([disabled])').first().click()
-        await page.locator('.memory-hero').waitFor({ state: 'visible', timeout: 10000 })
+        await page.locator('.kinetic-recap-hero').waitFor({ state: 'visible', timeout: 10000 })
         await page.waitForTimeout(900)
         await shot(page, '03b-demo-memory')
-        await page.getByRole('button', { name: 'Back', exact: true }).click()
+        await page.getByRole('button', { name: '← Journey', exact: true }).click()
       }
     }
     await shot(page, '03-demo-pack')

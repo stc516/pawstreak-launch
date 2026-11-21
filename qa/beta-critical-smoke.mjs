@@ -98,13 +98,13 @@ async function runStaticChecks() {
       'captureNativeAdventurePhoto',
       'Saved to PawStreak and your phone photos.',
       'Save photo ${index + 1} to Photos',
-      'Tap a photo to save it to Photos too.',
+      'className="field-gallery"',
     ]),
     'Captured adventure photos expose native gallery save plus an image-only save-to-Photos fallback',
   )
   record(
     'active-adventure-ready-markup-clean',
-    (activeAdventureScreen.match(/className="adv-mini-quest-title"/g) ?? []).length === 2 &&
+    (activeAdventureScreen.match(/className="adv-mini-quest-title"/g) ?? []).length === 1 &&
       !activeAdventureScreen.includes('<div className="adv-mini-quest-title">\n              <div className="adv-mini-quest-title">'),
     'Active adventure ready/active mini-quest markup is not duplicated or nested',
   )
@@ -120,8 +120,8 @@ async function runStaticChecks() {
   const homeScreen = await readRepoFile('src/screens/app/HomeScreen.tsx')
   record(
     'home-single-adventure-launch-source',
-    homeScreen.includes('className="home-adventure-launch-hero"') &&
-      homeScreen.includes('data-testid="home-generic-adventures"') &&
+    homeScreen.includes('className="kinetic-home-actions"') &&
+      homeScreen.includes('data-testid="home-area-fallback"') &&
       !homeScreen.includes('home-quick-adventure--today-pick'),
     'Home keeps one supported-region launch hero while preserving unsupported-region adventure ideas',
   )
@@ -231,7 +231,7 @@ async function runBrowserChecks() {
       navVisible.every(Boolean) && !hasHorizontalOverflowHome,
       'Demo shell exposes the focused beta nav without horizontal overflow',
     )
-    const launchHeroCount = await page.locator('.home-adventure-launch-hero').count()
+    const launchHeroCount = await page.locator('.kinetic-home-actions').count()
     const redundantTodayPickCount = await page.locator('.home-quick-adventure--today-pick').count()
     record(
       'home-single-adventure-launch',
@@ -240,22 +240,24 @@ async function runBrowserChecks() {
     )
     await shot(page, '03-demo-home')
 
-    await page.getByRole('button', { name: 'Quick Walk', exact: true }).click()
+    await page.getByRole('button', { name: 'Start a walk', exact: true }).click()
+  if (await page.getByRole('button', { name: 'Start adventure', exact: true }).isVisible()) await page.getByRole('button', { name: 'Start adventure', exact: true }).click()
     await page.locator('.cbtn--save-memory').waitFor({ state: 'visible', timeout: 20000 })
     await page.locator('.cbtn--save-memory').click()
-    await page.locator('.memory-hero').waitFor({ state: 'visible', timeout: 20000 })
+    await page.locator('.kinetic-recap-hero').waitFor({ state: 'visible', timeout: 20000 })
+    await page.getByRole('button', { name: 'Share this memory', exact: true }).click()
     await page.locator('.share-preview-shell').waitFor({ state: 'visible', timeout: 20000 })
     const finishedMemoryText = await page.locator('body').innerText()
     record(
       'quick-walk-finish-save-loop',
-      finishedMemoryText.includes('Open end · Saved to the Journey') &&
+      Boolean(await page.evaluate(() => JSON.parse(localStorage.getItem('pawstreak:demo')).journeyEntries[0].id)) &&
         finishedMemoryText.includes('Share image') &&
-        finishedMemoryText.includes('Memory saved to Journey'),
+        !await page.evaluate(() => JSON.parse(localStorage.getItem('pawstreak:demo')).activeAdventure),
       'Quick Walk can start, finish, save to Journey, and open the share-card preview',
     )
     await shot(page, '04-quick-walk-finish-save')
     await page.locator('.share-preview-close').click()
-    await page.getByRole('button', { name: 'Back', exact: true }).click()
+    await page.getByRole('button', { name: '← Journey', exact: true }).click()
     await page.getByRole('button', { name: 'Today', exact: true }).click()
 
     await page.getByRole('button', { name: 'Explore', exact: true }).click()
@@ -268,12 +270,12 @@ async function runBrowserChecks() {
 
     await page.getByRole('button', { name: 'Journey', exact: true }).click()
     await page.locator('.journey-memory-card:not([disabled])').first().click()
-    await page.locator('.memory-hero').waitFor({ state: 'visible', timeout: 10000 })
+    await page.locator('.kinetic-recap-hero').waitFor({ state: 'visible', timeout: 10000 })
     const shareButtons = await page.getByRole('button', { name: /share|story|instagram/i }).count()
     record('journey-memory-share-surface', shareButtons > 0, 'Journey memory exposes a share/story action')
     await shot(page, '06-memory-share-surface')
 
-    await page.getByRole('button', { name: 'Back', exact: true }).click()
+    await page.getByRole('button', { name: '← Journey', exact: true }).click()
     await page.getByRole('button', { name: 'Today', exact: true }).click()
     await page.locator('.home-dog-pill').click()
     await page.getByRole('button', { name: 'Open settings' }).click()

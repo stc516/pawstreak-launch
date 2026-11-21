@@ -70,6 +70,7 @@ interface OnboardingFlowProps {
     mode: 'signup' | 'signin',
     input: { email: string; password: string; userName: string },
   ) => Promise<EmailAuthResult>
+  onAppleAuth?: () => Promise<void>
   onGoogleAuth?: () => Promise<void>
   onMagicLink?: (email: string) => Promise<void>
   onPasswordReset?: (email: string) => Promise<void>
@@ -85,6 +86,7 @@ export function OnboardingFlow({
   authError = null,
   onEmailAuth,
   onGoogleAuth,
+  onAppleAuth,
   onMagicLink,
   onPasswordReset,
 }: OnboardingFlowProps) {
@@ -358,9 +360,10 @@ export function OnboardingFlow({
             </p>
 
             {authConfigured ? (
+              <>{authConfigured && onAppleAuth && import.meta.env.VITE_APPLE_AUTH_ENABLED === 'true' ? <button type="button" className="btn-apple tap-target" disabled={authLoading} onClick={() => void onAppleAuth().catch(() => undefined)}><i className="ti ti-brand-apple" aria-hidden="true" /> Continue with Apple</button> : null}
               <button type="button" className="btn-google onboarding-google-gap" onClick={handleGoogleContinue}>
                 Continue with Google
-              </button>
+              </button></>
             ) : null}
 
             {authConfigured ? (

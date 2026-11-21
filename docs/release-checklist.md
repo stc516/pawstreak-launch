@@ -23,7 +23,7 @@ Status labels when reporting readiness:
 
 - [ ] Migrations 001–020 confirmed in production, including `020_push_notifications.sql`
 - [ ] Required Edge Functions deployed: `pack-invites`, `pack-invite-accept`, `delete-account`, `push-subscriptions`, and `send-push-reminders`
-- [ ] Push cron job `pawstreak-push-reminders` exists in production and calls the production `send-push-reminders` function URL
+- [ ] Keep `pawstreak-push-reminders` inactive under the current schedules-off instruction; do not enable cron during release preparation. Reminder-delivery tests require a separately authorized test.
 - [ ] Web Push VAPID env vars configured in Supabase: `WEB_PUSH_VAPID_PUBLIC_KEY`, `WEB_PUSH_VAPID_PRIVATE_KEY`, and `WEB_PUSH_VAPID_SUBJECT`
 - [ ] Web Push public key configured in the web app environment as `VITE_WEB_PUSH_PUBLIC_KEY`
 - [ ] Production web app has Supabase env vars configured; `/app` must not operate as a local-only product in production

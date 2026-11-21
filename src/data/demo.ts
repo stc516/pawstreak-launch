@@ -106,6 +106,8 @@ export interface ActiveAdventure {
   endLng?: number
   locationCapturedAt?: string
   gpsSummary?: string
+  routeRecording?: boolean
+  routeMessage?: string
   routePoints?: {
     lat: number
     lng: number
@@ -147,6 +149,7 @@ export interface JourneyFilter {
 }
 
 export interface JourneyEntry {
+  routePoints?: import('../lib/walkRoute').RoutePoint[]
   id: string
   placeId?: string
   place: string

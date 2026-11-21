@@ -1,3 +1,9 @@
+import { watchNativeRoute } from './lib/nativeWalkRoute'
+import { appendRoutePoint } from './lib/walkRoute'
+import { disablePushNotifications } from './lib/pushNotifications'
+import { saveDogAvatar } from './lib/db/dogs'
+import type { DogAvatarChoice } from './components/DogAvatarPicker'
+import { saveMemoryDetails, type MemoryDetailInput } from './lib/memoryDetails'
 import { useEffect, useRef, useState } from 'react'
 import type { AppState, CommunityPost, TabId } from './data/demo'
 import {
@@ -193,6 +199,31 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   const nativeAppMissingBackend =
     appMode === 'app' && isNativeAppRuntime() && !auth.configured
   const [state, setState] = useState<AppState>(() => loadAppState(appMode, demoRoute))
+  const pauseKey = `pawstreak:${appMode}:paused-walk`
+  const [pausedWalk, setPausedWalk] = useState<{ id: string; at: number } | null>(() => {
+    try {
+      const value = JSON.parse(sessionStorage.getItem(pauseKey) ?? 'null')
+      return typeof value?.id === 'string' && Number.isFinite(value?.at) ? value : null
+    } catch { return null }
+  })
+  useEffect(() => {
+    try {
+      if (pausedWalk && pausedWalk.id === state.activeAdventure?.id) sessionStorage.setItem(pauseKey, JSON.stringify(pausedWalk))
+      else sessionStorage.removeItem(pauseKey)
+    } catch { /* The live session still works when browser storage is unavailable. */ }
+  }, [pauseKey, pausedWalk, state.activeAdventure?.id])
+  const pauseForActiveWalk = pausedWalk?.id === state.activeAdventure?.id ? pausedWalk : null
+  const toggleWalkPause = () => {
+    const adventure = latestStateRef.current.activeAdventure
+    if (!adventure?.startedAt) return
+    if (pausedWalk?.id === adventure.id) {
+      const pauseDuration = Math.max(0, Date.now() - pausedWalk.at)
+      setState(current => current.activeAdventure?.id === adventure.id ? { ...current,
+        activeAdventure: { ...current.activeAdventure, startedAt: new Date(Date.parse(adventure.startedAt!) + pauseDuration).toISOString() },
+      } : current)
+      setPausedWalk(null)
+    } else setPausedWalk({ id: adventure.id, at: Date.now() })
+  }
   const [authError, setAuthError] = useState<string | null>(null)
   const [authLoading, setAuthLoading] = useState(false)
   const [dataHydrated, setDataHydrated] = useState(!useProductionBackend)
@@ -276,6 +307,37 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         }))
       })
   }, [auth.user, dataHydrated, useProductionBackend])
+
+  useEffect(() => {
+    const adventure = latestStateRef.current.activeAdventure
+    if (!adventure?.started || !adventure.routeRecording || pauseForActiveWalk) return
+    const id = adventure.id
+    if (isNativeAppRuntime()) {
+      const stop = watchNativeRoute(position => {
+        setState(current => current.activeAdventure?.id !== id ? current : { ...current, activeAdventure: { ...current.activeAdventure, routePoints: appendRoutePoint(current.activeAdventure.routePoints ?? [], position), routeMessage: 'Phone GPS recording is on. Pause or finish to stop.' } })
+      }, message => {
+        setState(current => current.activeAdventure?.id !== id ? current : { ...current, activeAdventure: { ...current.activeAdventure, routeRecording: false, routeMessage: message } })
+      })
+      return () => { void stop() }
+    }
+    let watch: number | undefined
+    const stop = () => { if (watch !== undefined) navigator.geolocation.clearWatch(watch); watch = undefined }
+    const start = () => {
+      stop()
+      if (document.visibilityState !== 'visible') return
+      if (!navigator.geolocation) {
+        setState(current => current.activeAdventure?.id !== id ? current : { ...current, activeAdventure: { ...current.activeAdventure, routeRecording: false, routeMessage: 'GPS is unavailable. Your walk can still be saved.' } })
+        return
+      }
+      watch = navigator.geolocation.watchPosition(position => {
+        setState(current => current.activeAdventure?.id !== id ? current : { ...current, activeAdventure: { ...current.activeAdventure, routePoints: appendRoutePoint(current.activeAdventure.routePoints ?? [], position), routeMessage: 'Recording while PawStreak is visible.' } })
+      }, error => {
+        setState(current => current.activeAdventure?.id !== id ? current : { ...current, activeAdventure: { ...current.activeAdventure, routeRecording: error.code !== 1, routeMessage: error.code === 1 ? 'Location permission denied. Your walk can still be saved.' : 'Waiting for a GPS signal.' } })
+      }, { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 })
+    }
+    start(); document.addEventListener('visibilitychange', start)
+    return () => { stop(); document.removeEventListener('visibilitychange', start) }
+  }, [state.activeAdventure?.id, state.activeAdventure?.started, state.activeAdventure?.routeRecording, pauseForActiveWalk])
 
   useEffect(() => {
     saveAppState(state, appMode)
@@ -1320,6 +1382,16 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     }))
   }
 
+  const updateMemoryDetails = async (entryId: string, input: MemoryDetailInput) => {
+    const entry = latestStateRef.current.journeyEntries.find(item => item.id === entryId)
+    if (!entry) throw new Error('This memory could not be found.')
+    const updated = useProductionBackend && auth.user && /^[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(entryId)
+      ? await saveMemoryDetails(auth.user.id, entryId, input)
+      : { ...entry, userNotes: input.note.trim() || undefined,
+          photoUrls: input.photoDataUrl ? [...(entry.photoUrls ?? []).filter(Boolean), input.photoDataUrl].slice(0, 3) : entry.photoUrls }
+    setState(current => ({ ...current, journeyEntries: current.journeyEntries.map(item => item.id === entryId ? updated : item) }))
+  }
+
   const finishAdventure = async (payload: AdventureFinishPayload) => {
     if (finishingAdventureRef.current) return
     finishingAdventureRef.current = true
@@ -1333,9 +1405,12 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     const endLocationCapture = isCustomAdventure(liveState.activeAdventure)
       ? await captureCurrentLocation()
       : null
-    const activeAdventureForFinish = endLocationCapture
-      ? applyEndLocation(liveState.activeAdventure, endLocationCapture)
+    const activeAdventureAtFinish = pauseForActiveWalk && liveState.activeAdventure.startedAt
+      ? { ...liveState.activeAdventure, startedAt: new Date(Date.parse(liveState.activeAdventure.startedAt) + Math.max(0, Date.now() - pauseForActiveWalk.at)).toISOString() }
       : liveState.activeAdventure
+    const activeAdventureForFinish = endLocationCapture
+      ? applyEndLocation(activeAdventureAtFinish, endLocationCapture)
+      : activeAdventureAtFinish
     const place = getPlaceById(activeAdventureForFinish.placeId)
     const capturedPhotos = liveState.adventurePhotos.filter(Boolean)
     const activeDogId = liveState.activeDogId ?? liveState.dogs[0]?.id
@@ -1389,10 +1464,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
                 : current.monthlyPlanResult,
           }),
         )
-        setShareCardRequest({
-          kind: 'adventure-complete',
-          entryId: memory.id,
-        })
+        setShareCardRequest(null)
         finishingAdventureRef.current = false
         return
       } catch {
@@ -1446,7 +1518,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             : null
 
       const journeyEntries = savedJourneyEntry
-        ? [savedJourneyEntry, ...current.journeyEntries]
+        ? [{ ...savedJourneyEntry, routePoints: currentAdventure.routePoints }, ...current.journeyEntries]
         : current.journeyEntries
 
       const adventureCount = journeyEntries.length
@@ -1482,7 +1554,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             : current.monthlyPlanResult,
       })
     })
-    setShareCardRequest({ kind: 'adventure-complete' })
+    setShareCardRequest(null)
     finishingAdventureRef.current = false
   }
 
@@ -1636,6 +1708,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     setAuthLoading(true)
     setAuthError(null)
     try {
+      if (isNativeAppRuntime()) await disablePushNotifications()
       await auth.signOut()
       const fresh = resetProductionAppState()
       setState(fresh)
@@ -1649,9 +1722,17 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   }
 
   const handleDeleteAccount = async () => {
-    await deleteCurrentAccount()
+    if (isNativeAppRuntime()) await disablePushNotifications()
+    const result = await deleteCurrentAccount()
     resetProductionAppState()
-    window.location.assign(ROUTES.landing)
+    window.location.assign(result.appleRevocation === 'manual_required' ? `${ROUTES.deleteAccount}?deleted=1&apple=manual` : ROUTES.landing)
+  }
+
+  const handleAppleAuth = async () => {
+    setAuthLoading(true); setAuthError(null)
+    try { await auth.signInWithApple() }
+    catch (error) { setAuthError(error instanceof Error ? error.message : 'Apple sign-in was not completed.'); throw error }
+    finally { setAuthLoading(false) }
   }
 
   const handleGoogleAuth = async () => {
@@ -1680,6 +1761,13 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         }))
       })
     }
+  }
+
+  const handleSaveDogAvatar = async (dogId: string, choice: DogAvatarChoice) => {
+    const patch = useProductionBackend && auth.user
+      ? await saveDogAvatar(auth.user.id, dogId, choice)
+      : { photoUrl: choice.photoDataUrl, ...(choice.emoji ? { profileEmoji: choice.emoji } : {}) }
+    setState(current => ({ ...current, dogs: current.dogs.map(dog => dog.id === dogId ? { ...dog, ...patch } : dog) }))
   }
 
   const handleUpdateDog = (
@@ -1854,6 +1942,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         authError={authError}
         onEmailAuth={handleEmailAuth}
         onGoogleAuth={handleGoogleAuth}
+        onAppleAuth={handleAppleAuth}
         onMagicLink={handleMagicLink}
         onPasswordReset={handlePasswordReset}
       />
@@ -1878,6 +1967,8 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   ) ? (
     <div className="active-adventure-overlay">
       <ActiveAdventureScreen
+        pausedAt={pauseForActiveWalk?.at}
+        onTogglePause={toggleWalkPause}
         state={state}
         onStart={startAdventureSession}
         onCancel={requestCancelAdventure}
@@ -1885,6 +1976,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         onMinimize={
           state.activeAdventure?.started ? minimizeActiveAdventure : undefined
         }
+        onToggleRoute={() => setState(current => !current.activeAdventure ? current : ({ ...current, activeAdventure: { ...current.activeAdventure, routeRecording: !current.activeAdventure.routeRecording, routeMessage: undefined } }))}
         onAddPhoto={addAdventurePhoto}
         finishReviewRequested={finishReviewRequested}
         onFinishReviewShown={() => setFinishReviewRequested(false)}
@@ -2113,6 +2205,9 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       return (
         <>
           <JourneyMemoryView
+            isDemoMode={isDemoMode}
+            key={entry.id}
+            onSaveDetail={(input) => updateMemoryDetails(entry.id, input)}
             entry={entry}
             dogs={state.dogs}
             hasUserDogProfile={personalize}
@@ -2141,6 +2236,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
           <HomeScreen
             state={state}
             isDemoMode={isDemoMode}
+            onResumeAdventure={focusActiveAdventure}
             onSelectActivity={setSelectedActivity}
             onStartAdventure={startAdventure}
             onStartNeighborhoodWalk={() => startNeighborhoodWalk()}
@@ -2223,6 +2319,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             accountEmail={auth.user?.email ?? null}
             onSetActiveDog={handleSetActiveDog}
             onUpdateDog={handleUpdateDog}
+            onSaveAvatar={handleSaveDogAvatar}
             onRemoveDog={handleRemoveDog}
             onOpenPackInvite={openPackInvite}
             onZipChange={setZipCode}

@@ -1,0 +1,3 @@
+-- Superseded by the CLI-generated, locally tested migration:
+-- supabase/migrations/20261121204854_harden_pack_function_permissions.sql
+-- Apply only through the reviewed release migration process; no hosted migration has been applied.

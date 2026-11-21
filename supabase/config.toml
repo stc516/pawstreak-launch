@@ -14,3 +14,6 @@ verify_jwt = true
 
 [functions.send-push-reminders]
 verify_jwt = false
+
+[functions.native-push-tokens]
+verify_jwt = true

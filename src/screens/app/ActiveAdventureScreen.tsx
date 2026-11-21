@@ -1,12 +1,12 @@
+import { isNativeAppRuntime } from '../../lib/nativeRuntime'
 import { useEffect, useRef, useState } from 'react'
 import type { AppState } from '../../data/demo'
 import {
-  formatTimerWithTarget,
+  formatTimer,
   getActiveAdventureElapsedSeconds,
 } from '../../data/demo'
 import {
   getDisplayDogLabelForIds,
-  getDisplayDogsAreOutLabel,
   getProfileDogs,
 } from '../../lib/profileDisplay'
 import type { AdventureFinishPayload } from '../../lib/adventureFinish'
@@ -20,10 +20,13 @@ import { subscribeToNativeRestoredPhotos } from '../../lib/nativePhotoRestore'
 
 interface ActiveAdventureScreenProps {
   state: AppState
+  pausedAt?: number
+  onTogglePause: () => void
   onStart: () => void
   onCancel: () => void
   onFinish: (payload: AdventureFinishPayload) => void | Promise<void>
   onMinimize?: () => void
+  onToggleRoute: () => void
   onAddPhoto: (photoDataUrl: string) => void
   finishReviewRequested?: boolean
   onFinishReviewShown?: () => void
@@ -31,24 +34,24 @@ interface ActiveAdventureScreenProps {
 
 export function ActiveAdventureScreen({
   state,
+  pausedAt,
+  onTogglePause,
   onStart,
   onCancel,
   onFinish,
   onMinimize,
   onAddPhoto,
+  onToggleRoute,
   finishReviewRequested = false,
   onFinishReviewShown,
 }: ActiveAdventureScreenProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const finishReviewRef = useRef<HTMLElement>(null)
   const [, setTick] = useState(0)
-  const [isPaused, setIsPaused] = useState(false)
+  const isPaused = pausedAt !== undefined
   const [isFinishing, setIsFinishing] = useState(false)
-  const [pausedElapsed, setPausedElapsed] = useState<number | null>(null)
   const [photoSaveMessage, setPhotoSaveMessage] = useState<string | null>(null)
-  const [selectedRecaps, setSelectedRecaps] = useState<string[]>([
-    'Loved every second',
-  ])
+  const [selectedRecaps, setSelectedRecaps] = useState<string[]>([])
 
   const adventure = state.activeAdventure
   const place = getPlaceById(adventure?.placeId ?? '')
@@ -63,8 +66,8 @@ export function ActiveAdventureScreen({
   const isStarted = adventure?.started ?? false
   const elapsedSeconds =
     adventure && isStarted
-      ? isPaused && pausedElapsed !== null
-        ? pausedElapsed
+      ? pausedAt !== undefined && adventure.startedAt
+        ? Math.max(0, Math.floor((pausedAt - Date.parse(adventure.startedAt)) / 1000))
         : getActiveAdventureElapsedSeconds(adventure)
       : 0
 
@@ -138,6 +141,7 @@ export function ActiveAdventureScreen({
     try {
       const dataUrl = await readImageFileAsDataUrl(file)
       onAddPhoto(dataUrl)
+      setPhotoSaveMessage(null)
     } catch {
       setPhotoSaveMessage('That photo could not be added. Try another image or take a new one.')
       window.setTimeout(() => setPhotoSaveMessage(null), 4800)
@@ -216,8 +220,7 @@ export function ActiveAdventureScreen({
     setIsFinishing(true)
     try {
       await onFinish({
-        recapLabels:
-          selectedRecaps.length > 0 ? selectedRecaps : ['Loved every second'],
+        recapLabels: selectedRecaps,
       })
     } finally {
       setIsFinishing(false)
@@ -302,228 +305,48 @@ export function ActiveAdventureScreen({
   }
 
   return (
-    <div className="app-viewport">
+    <div className="app-viewport trail-console">
       <div className="app-shell">
         <StatusBar />
-
-        <div className="clock-bg clock-bg--active detail-tint detail-tint--accent">
-          <div className="clk-top">
-            {onMinimize ? (
-              <button
-                type="button"
-                className="active-adventure-minimize tap-target"
-                onClick={onMinimize}
-                aria-label="Minimize active adventure"
-              >
-                <i className="ti ti-chevrons-down" aria-hidden="true" />
-                Browse app
-              </button>
-            ) : null}
-            <div className="clk-sub">{adventure.location}</div>
-            <div className="clk-time">
-              {formatTimerWithTarget(elapsedSeconds, adventure.durationLabel)}
+        <main className="trail-scroll">
+          <header className="trail-header">
+            {onMinimize ? <button type="button" className="trail-browse tap-target" onClick={onMinimize} aria-label="Minimize active adventure">← Browse app</button> : null}
+            <p className="field-kicker">Active adventure</p>
+            <h1>{adventure.location}</h1>
+            <div className="kinetic-timer-panel">
+              <div className="trail-timer-label">{isPaused ? 'Elapsed · Paused' : 'Elapsed'}</div>
+              <div className="trail-timer clk-time">{formatTimer(elapsedSeconds)}</div>
+              <span className="kinetic-live-state">{isPaused ? 'Paused · take your time' : 'Out together'}</span>
             </div>
-            <div className="clk-duration">{adventure.durationLabel}</div>
-            <div className="clk-where">
-              <i className="ti ti-map-pin" aria-hidden="true" />
-              Active adventure
-            </div>
-            <div className="clk-dogs">
-              {getProfileDogs(state).map((dog) => (
-                <div
-                  key={dog.id}
-                  className={`dog-av dog-av--sm ${dog.avatarClass}`}
-                >
-                  {dog.photoUrl ? (
-                    <img src={dog.photoUrl} alt="" className="dog-av-img" />
-                  ) : (
-                    dog.initial
-                  )}
-                </div>
-              ))}
-              <span>{getDisplayDogsAreOutLabel(state)}</span>
-            </div>
-          </div>
-        </div>
-
-        <main className="scroll scroll--active">
-          <div className="adv-mini-quest adv-mini-quest--active detail-card-warm">
-            <div className="adv-mini-quest-kicker">Optional adventure bonus</div>
-            <div className="adv-mini-quest-title">
-              <span aria-hidden="true">{miniQuest.emoji}</span> {miniQuest.title}
-            </div>
-            <p className="adv-mini-quest-task">{miniQuest.task}</p>
-          </div>
-
-          {place ? (
-            <div className="adv-place-context detail-card-warm">
-              <div className="adv-place-name">{place.name}</div>
-              <div className="adv-place-meta">{getPlanMagicMeta(place)}</div>
-            </div>
-          ) : null}
-
-          <div className="adv-capture-prompt detail-quote-block detail-quote-block--compact">
-            <p className="detail-quote-text">
-              Grab one tiny proof that today happened.
-            </p>
-          </div>
-
-          <input
-            ref={fileInputRef}
-            className="cam-input"
-            type="file"
-            accept="image/*"
-            capture="environment"
-            onChange={handlePhotoSelected}
-          />
-
-          <button type="button" className="cam-row cam-row--memory tap-target" onClick={handleCaptureClick}>
-            <i className="ti ti-camera" aria-hidden="true" />
-            <span>{hasPhotos ? 'Add another moment' : 'Capture the memory'}</span>
-          </button>
-
-          {!hasPhotos ? (
-            <div className="adv-photo-reminder">
-              No photo yet — that is okay. You can still finish and save the memory.
-            </div>
-          ) : (
-            <div className="adv-photo-reminder adv-photo-reminder--done">
-              {photoCount} moment{photoCount === 1 ? '' : 's'} saved to PawStreak. Tap a photo to save it to Photos too.
-            </div>
-          )}
-
-          <section
-            ref={finishReviewRef}
-            className="adventure-finish-payoff"
-            aria-label="Adventure payoff"
-            data-testid="adventure-finish-review"
-          >
-            <div className="adventure-finish-payoff-dogs" aria-hidden="true">
-              {getProfileDogs(state).slice(0, 2).map((dog) => (
-                <span key={dog.id} className={`adventure-finish-dog ${dog.avatarClass}`}>
-                  {dog.photoUrl ? <img src={dog.photoUrl} alt="" /> : <span>{dog.profileEmoji}</span>}
-                </span>
+            <div className="kinetic-section-heading"><h2>Your Trail Pack</h2></div>
+            <div className="trail-dogs">
+              {getProfileDogs(state).filter(dog => !adventure.selectedDogIds?.length || adventure.selectedDogIds.includes(dog.id)).map(dog => (
+                <span key={dog.id}>{dog.photoUrl ? <img src={dog.photoUrl} alt="" /> : <span aria-hidden="true">{dog.profileEmoji}</span>} {dog.name}</span>
               ))}
             </div>
-            <div className="adventure-finish-payoff-copy">
-              <span>Memory checkpoint</span>
-              <strong>You gave {getDisplayDogLabelForIds(state, adventure.selectedDogIds)} a better day.</strong>
-              <p>
-                Save the good part now — the place, the proof, and the little details you&apos;ll want back later.
-              </p>
-            </div>
-            <div className="adventure-finish-payoff-meta">
-              <span>{formatTimerWithTarget(elapsedSeconds, adventure.durationLabel)}</span>
-              <span>{photoCount > 0 ? `${photoCount} photo${photoCount === 1 ? '' : 's'}` : 'photo optional'}</span>
-            </div>
+          </header>
+          <section ref={finishReviewRef} className="trail-actions" data-testid="adventure-finish-review" aria-label="Walk controls">
+            <button type="button" className="field-primary cbtn--save-memory tap-target" disabled={isFinishing} aria-busy={isFinishing} onClick={() => void handleFinish()} aria-label="Finish walk">{isFinishing ? 'Saving…' : 'Finish walk'}</button>
+            <button type="button" className="field-secondary tap-target" onClick={onTogglePause}>{isPaused ? 'Resume' : 'Pause'}</button>
+            <button type="button" className="trail-cancel tap-target" onClick={onCancel}>Cancel adventure</button>
           </section>
-
-          <div className="rq rq--memory">What made today worth remembering?</div>
-          <div className="rchips rchips--memory">
-            {state.adventureRecapOptions.map((option) => (
-              <button
-                key={option.id}
-                type="button"
-                className={`rc tap-target${selectedRecaps.includes(option.label) ? ' on' : ''}`}
-                onClick={() => toggleRecap(option.label)}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="rq rq--memory">Photos from today</div>
-          <div className="rphotos rphotos--memory">
-            {state.adventurePhotos.map((photo, index) => (
-              <div key={index} className="rph" style={{ position: 'relative' }}>
-                {photo ? (
-                  <>
-                    <img src={photo} alt="" className="rph-img" />
-                    <button
-                      type="button"
-                      className="tap-target"
-                      style={{
-                        position: 'absolute',
-                        right: 5,
-                        bottom: 5,
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: 3,
-                        minHeight: 26,
-                        border: 0,
-                        borderRadius: 999,
-                        background: 'rgba(20, 53, 42, 0.88)',
-                        color: '#fff',
-                        padding: '0 8px',
-                        fontSize: 10,
-                        fontWeight: 900,
-                        boxShadow: '0 6px 16px rgba(13, 39, 29, 0.24)',
-                      }}
-                      onClick={() => void handleSavePhotoToPhone(photo, index)}
-                      aria-label={`Save photo ${index + 1} to Photos`}
-                    >
-                      <i className="ti ti-photo-plus" aria-hidden="true" style={{ color: 'inherit', fontSize: 13 }} />
-                      Save
-                    </button>
-                  </>
-                ) : (
-                  <i className="ti ti-photo" aria-hidden="true" />
-                )}
-              </div>
-            ))}
-          </div>
-          {photoSaveMessage ? (
-            <div
-              role="status"
-              style={{
-                margin: '8px 0 14px',
-                borderRadius: 14,
-                background: 'rgba(20, 53, 42, 0.1)',
-                border: '1px solid rgba(20, 53, 42, 0.14)',
-                color: 'var(--accent-deep)',
-                padding: '9px 11px',
-                fontSize: 11,
-                fontWeight: 800,
-              }}
-            >
-              {photoSaveMessage}
-            </div>
-          ) : null}
-
-          <div className="adv-action-footer adv-action-footer--memory">
-            <div className="clk-btns clk-btns--memory">
-              <button
-                type="button"
-                className="cbtn tap-target"
-                onClick={() => {
-                  if (!adventure) return
-                  setIsPaused((current) => {
-                    if (current) {
-                      setPausedElapsed(null)
-                      return false
-                    }
-                    setPausedElapsed(getActiveAdventureElapsedSeconds(adventure))
-                    return true
-                  })
-                }}
-              >
-                {isPaused ? 'Resume' : 'Pause'}
-              </button>
-              <button
-                type="button"
-                className="cbtn pri cbtn--save-memory tap-target"
-                onClick={() => void handleFinish()}
-                disabled={isFinishing}
-                aria-busy={isFinishing}
-                aria-label="Finish adventure and save memory"
-              >
-                {isFinishing ? 'Saving memory…' : 'Save this adventure'}
-              </button>
-            </div>
-            <button type="button" className="adv-cancel-btn tap-target" onClick={onCancel}>
-              Cancel adventure
-            </button>
-          </div>
+          {(window.location.pathname.startsWith('/demo') || import.meta.env.VITE_WALK_ROUTE_ENABLED === 'true') ? <section className="trail-route" aria-label="Walk route">
+            <button type="button" className="field-secondary tap-target" aria-pressed={adventure.routeRecording ?? false} onClick={onToggleRoute}>{adventure.routeRecording ? 'Stop route recording' : 'Record phone GPS route'}</button>
+            <p>{isNativeAppRuntime() ? 'Optional. Uses location during this walk, including with the screen locked. Pause, Stop or Finish ends recording. Force-quitting can interrupt it.' : 'Optional. Records while PawStreak is visible; pauses when locked, backgrounded or the walk is paused.'}</p>
+            <p role="status">{isPaused && adventure.routeRecording ? 'Route recording paused.' : adventure.routeMessage} {adventure.routePoints?.length ?? 0} GPS points saved.</p>
+          </section> : null}
+          <input ref={fileInputRef} className="cam-input" type="file" accept="image/*" capture="environment" onChange={handlePhotoSelected} />
+          <button type="button" className="trail-add-photo tap-target" onClick={handleCaptureClick}><i className="ti ti-camera" aria-hidden="true" /> Add photo</button>
+          {photoSaveMessage ? <p role="status">{photoSaveMessage}</p> : null}
+          {hasPhotos ? <section className="trail-gallery">
+            <div className="field-gallery-heading"><h2>Photos</h2><span>{photoCount} {photoCount === 1 ? 'photo' : 'photos'}</span></div>
+            <div className="field-gallery">{state.adventurePhotos.filter(Boolean).map((photo, index) => (
+              <button type="button" key={index} className="tap-target" onClick={() => void handleSavePhotoToPhone(photo, index)} aria-label={`Save photo ${index + 1} to Photos`}><img src={photo} alt={`Walk photo ${index + 1}`} /></button>
+            ))}</div>
+          </section> : null}
+          <details className="trail-detail"><summary className="tap-target">Add a detail · optional</summary>
+            <div className="rchips">{state.adventureRecapOptions.map(option => <button type="button" key={option.id} className={`rc tap-target${selectedRecaps.includes(option.label) ? ' on' : ''}`} aria-pressed={selectedRecaps.includes(option.label)} onClick={() => toggleRecap(option.label)}>{option.label}</button>)}</div>
+          </details>
         </main>
       </div>
     </div>

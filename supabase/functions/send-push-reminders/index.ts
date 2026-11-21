@@ -1,3 +1,4 @@
+import { sendNativeReminders } from '../_shared/nativePush.ts'
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import webpush from 'npm:web-push@3.6.7'
 
@@ -115,7 +116,7 @@ Deno.serve(async (req) => {
   const publicKey = Deno.env.get('WEB_PUSH_VAPID_PUBLIC_KEY') ?? ''
   const privateKey = Deno.env.get('WEB_PUSH_VAPID_PRIVATE_KEY') ?? ''
   const subject = Deno.env.get('WEB_PUSH_VAPID_SUBJECT') ?? 'mailto:hello@pawstreakapp.com'
-  if (!supabaseUrl || !serviceRoleKey || !publicKey || !privateKey) {
+  if (!supabaseUrl || !serviceRoleKey) {
     return Response.json({ error: 'Push sender is not configured.' }, { status: 503 })
   }
 
@@ -130,6 +131,8 @@ Deno.serve(async (req) => {
     .maybeSingle()
   if (!consumedToken) return Response.json({ error: 'Unauthorized' }, { status: 401 })
 
+  const native = await sendNativeReminders(admin, new Date()).catch(() => ({ error: 'Native delivery failed; inspect sender configuration.' }))
+  if (!publicKey || !privateKey) return Response.json({ native, web: 'not configured' })
   webpush.setVapidDetails(subject, publicKey, privateKey)
   const { data, error } = await admin
     .from('push_subscriptions')
@@ -188,5 +191,5 @@ Deno.serve(async (req) => {
     }
   }
 
-  return Response.json({ checked: data?.length ?? 0, sent, removed, failures })
+  return Response.json({ native, checked: data?.length ?? 0, sent, removed, failures })
 })

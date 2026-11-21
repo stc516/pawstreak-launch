@@ -1,3 +1,4 @@
+import { DogAvatarPicker, type DogAvatarChoice } from '../../components/DogAvatarPicker'
 import { useRef, useState } from 'react'
 import type { AppState, Dog } from '../../data/demo'
 import {
@@ -21,6 +22,7 @@ interface ProfileScreenProps {
     dogId: string,
     patch: { name?: string; breed?: string; age?: string; profileEmoji?: string },
   ) => void
+  onSaveAvatar?: (dogId: string, choice: DogAvatarChoice) => Promise<void>
   onRemoveDog?: (dogId: string) => void
   onOpenAchievement?: (achievementId: string) => void
   onOpenPackInvite?: () => void
@@ -45,6 +47,7 @@ interface DogCardProps {
   onSaveEdit: () => void
   onRequestRemove: () => void
   onSetActive?: () => void
+  onSaveAvatar?: (choice: DogAvatarChoice) => Promise<void>
   compact?: boolean
 }
 
@@ -63,6 +66,7 @@ function DogCard({
   onSaveEdit,
   onRequestRemove,
   onSetActive,
+  onSaveAvatar,
   compact = false,
 }: DogCardProps) {
   const breed = getDogBreedLabel(dog)
@@ -84,6 +88,7 @@ function DogCard({
           </div>
         </div>
 
+        {onSaveAvatar ? <DogAvatarPicker name={dog.name} onSave={onSaveAvatar} /> : null}
         <div className="profile-dog-edit-fields">
           <label className="profile-dog-field">
             <span className="profile-dog-field-label">Name</span>
@@ -243,6 +248,7 @@ export function ProfileScreen({
   onApplyLocation,
   onSignOut,
   onDeleteAccount,
+  onSaveAvatar,
 }: ProfileScreenProps) {
   const profileDogs = getProfileDogs(state)
   const dogListRef = useRef<HTMLDivElement | null>(null)
@@ -390,6 +396,7 @@ export function ProfileScreen({
           <DogCard
             key={editingDog.id}
             dog={editingDog}
+            onSaveAvatar={onSaveAvatar ? choice => onSaveAvatar(editingDog.id, choice) : undefined}
             isActive={
               state.activeDogId === editingDog.id ||
               (profileDogs.length === 1 && !state.activeDogId)

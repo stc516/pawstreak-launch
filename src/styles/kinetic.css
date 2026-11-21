@@ -1,0 +1,216 @@
+/* Stephen's selected Kinetic Stitch direction. Existing data and actions remain authoritative. */
+html.app-route, .app-viewport {
+  --sans: 'Outfit Variable', 'Outfit', system-ui, sans-serif;
+  --serif: var(--sans);
+  --stitch-font: var(--sans);
+  --bg: #fff8f5; --surface: #fff; --surface-low: #fff1eb; --surface-mid: #f5eeea;
+  --primary: #d83220; --primary-light: #ffe3db; --primary-dim: #ffc5b6;
+  --secondary: #d83220; --secondary-light: #ffe3db; --secondary-mid: #ff4d36;
+  --on-surface: #1a1715; --on-surface-var: #635b54;
+  --accent: #e03925; --accent-deep: #bd2819; --accent-brown: #a53220;
+  --accent-light: #ffe3db; --accent-soft: #fff2ec; --accent-border: #f4cfc2;
+  --accent-chip: #ff4d36; --accent-warm: #ffb703; --accent-pill: #fff0e7;
+  --accent-rgb: 255,77,54; --accent-primary-gradient: linear-gradient(135deg,#ed402a,#d83220);
+  --accent-primary-shadow: 0 5px 14px #ff4d361f;
+  --color-background-primary: #fff8f5; --color-background-secondary: #fff;
+  --color-border-secondary: #f0eae1; --color-border-tertiary: #ded5cf;
+  --color-text-primary: #1a1715; --color-text-secondary: #635b54; --color-text-tertiary: #70665e;
+  --color-app-surface-nav: #fff; --stitch-primary: #1a1715; --stitch-primary-dark: #121110;
+  --stitch-secondary: #d83220; --stitch-secondary-container: #ff4d36;
+  --stitch-surface: #fff8f5; --stitch-surface-muted: #fff1eb; --stitch-surface-container: #f5eeea;
+  --stitch-outline-variant: #f0eae1; --stitch-radius-card: 20px;
+  --stitch-shadow-ambient: 0 2px 12px #1a17150a; --stitch-shadow-soft: 0 2px 12px #1a17150a;
+  font-family: var(--sans); color: #1a1715;
+}
+html.app-route .app-shell { background: #fff8f5; color: #1a1715; }
+html.app-route :is(.alogo,.st-display,.st-headline-lg,.st-headline-md,.sec,h1,h2,h3,h4) { font-family: var(--sans); letter-spacing: -.025em; }
+html.app-route .scroll--energy { background: #fff8f5 !important; }
+html.app-route .screen-energy-stage { background: transparent; }
+html.app-route .scroll--energy::before, html.app-route .screen-energy-stage::before { display: none; }
+html.app-route :is(.aheader,.st-appbar) { background: transparent; box-shadow: none; }
+html.app-route :is(.aheader .alogo,.st-headline-lg) { font-size: 25px; font-weight: 800; line-height: 1.15; }
+html.app-route :is(.detail-card-warm,.pcard,.profile-dog-card,.pack-access-panel,.pack-access-member,.training-flow-program,.training-flow-step,.build-month-option,.plan-discovery-panel,.plan-area-fallback,.journey-first-run) { background: #fff; border: 1px solid #f0eae1; border-radius: 20px; box-shadow: 0 2px 12px #1a17150a; }
+html.app-route :is(.st-btn--forest,.field-primary,.adv-ready-start,.curated-spotlight-start,.plan-place-detail-start,.pack-access-primary,.profile-dog-btn--primary) { background: #dc3522 !important; color: white !important; border: 0; border-radius: 16px; box-shadow: 0 4px 12px #ff4d3620 !important; font-weight: 750; }
+html.app-route button:focus-visible, html.app-route summary:focus-visible { outline: 3px solid #a34a00; outline-offset: 3px; }
+html.app-route input, html.app-route textarea, html.app-route select { font-family: var(--sans); font-size: max(16px,1em); }
+html.app-route .bnav { background: #fff !important; border-top: 1px solid #f0eae1; box-shadow: 0 -3px 15px #1a171506; }
+html.app-route .bnav .ni { color: #70665e; min-height: 48px; }
+html.app-route .bnav .ni.on { color: #d83220 !important; background: #fff1eb; border-radius: 14px; }
+html.app-route .bnav .ni.on::before { background: #ff4d36; }
+html.app-route .bnav .ni span { font-weight: 700; font-size: 11px; }
+html.app-route .demo-mode-bar { background: #fff1eb; border-color: #f0eae1; }
+html.app-route .demo-pill { color: #a53220; }
+/* Compact Today composition: headline, duo, one action, one destination, earned progress. */
+html.app-route .home-screen--minimal { padding: 0 16px 24px; color: #1a1715; gap: 12px; }
+html.app-route .home-screen--minimal .home-screen-header { margin: 0; min-height: 48px; padding: 8px 0; }
+html.app-route .home-screen--minimal .home-logo { font-size: 25px; font-weight: 850; }
+html.app-route .home-area-chip { margin: 0 0 8px; padding: 8px 12px; min-height: 44px; border: 1px solid #f0eae1; background: white; border-radius: 12px; font-size: 13px; color: #635b54; width: 100%; }
+html.app-route .home-walk-intro { margin: 0 0 14px; padding: 16px; background: linear-gradient(130deg,#fff0cc,#fff4ed 65%,#fff8f5); border: 1px solid #f4dfb0; border-radius: 22px; }
+html.app-route .field-kicker { font-size: 11px; font-weight: 750; letter-spacing: .06em; color: #9d4c00; }
+html.app-route .home-walk-intro h1 { font-size: 27px; line-height: 1.08; font-weight: 850; margin: 7px 0; letter-spacing: -.035em; }
+html.app-route .home-walk-intro > p:not(.field-kicker) { margin: 0; color: #635b54; font-size: 13px; line-height: 1.45; }
+.kinetic-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.kinetic-section-heading h2 { font-size: 14px; font-weight: 800; margin: 0; }
+.kinetic-section-heading > span { font-size: 11px; padding: 4px 9px; background: #e0f7b7; color: #35540a; border-radius: 20px; font-weight: 700; }
+html.app-route .home-screen--minimal .home-pack.home-dog-pill { display: grid !important; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; padding: 0; margin: 0 0 14px; width: 100%; }
+html.app-route .home-pack > span { display: flex; gap: 8px; padding: 12px 8px; background: white; border: 1px solid #f0eae1; border-radius: 16px; min-width: 0; text-align: left; }
+html.app-route .home-pack img, html.app-route .home-pack .pack-initial { width: 36px; height: 36px; flex-shrink: 0; background: #fff0d7; color: #635b54; }
+.kinetic-dog-name { display: grid; gap: 3px; min-width: 0; }
+.kinetic-dog-name strong { font-size: 13px; color: #1a1715; overflow-wrap: anywhere; }
+.kinetic-dog-name small { font-size: 10px; color: #70665e; }
+.kinetic-home-actions { display: grid; gap: 8px; margin-bottom: 16px; }
+html.app-route .kinetic-home-actions .field-primary { min-height: 54px; }
+html.app-route .field-secondary { border: 1px solid #e8ded8; background: #f6eeea; color: #38302b; border-radius: 14px; min-height: 44px; font-weight: 650; }
+html.app-route :is(.home-nearby-pick,.home-neighborhood) { background: white; border: 1px solid #f0eae1; border-radius: 22px; padding: 16px; margin: 0 0 16px; overflow: hidden; }
+html.app-route :is(.home-nearby-pick,.home-neighborhood) h2 { color: #1a1715; font-size: 21px; font-weight: 800; margin: 8px 0; }
+html.app-route :is(.home-nearby-pick,.home-neighborhood) p:not(.field-kicker) { color: #635b54; font-size: 13px; }
+html.app-route .home-pick-image { height: 170px; margin: 12px -16px 14px; border-radius: 0; }
+.kinetic-text-action { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-top: 12px; border: 0; border-radius: 12px; background: #f6eeea; font-size: 13px; font-weight: 700; min-height: 44px; }
+html.app-route .home-progress-notes { background: white; border: 1px solid #f0eae1; border-radius: 20px; padding: 16px; margin: 0 0 16px; }
+html.app-route .home-screen--minimal .home-badge-token { background: #fff6e9; border: 1px solid #f4e3c6; flex-basis: 145px; color: #635b54; }
+html.app-route .home-plan-new { margin-top: 16px; }
+html.app-route .home-plan-new h2 { font-size: 18px; }
+html.app-route .home-plan-action { background: white !important; color: #1a1715; border: 1px solid #f0eae1; border-radius: 16px; min-height: 64px; }
+html.app-route .home-plan-action .ti { color: #dc3522; }
+/* Dark live console from the supplied seven-screen export; no simulated telemetry. */
+html.app-route .trail-console .app-shell { background: #121110; color: #faf7f4; }
+html.app-route .trail-scroll { padding: 0 20px calc(24px + env(safe-area-inset-bottom,0px)); }
+html.app-route .trail-header { padding-bottom: 14px; }
+html.app-route .trail-browse { color: #ded5cf; min-height: 44px; }
+html.app-route .trail-header .field-kicker { color: #ffce6b; margin: 10px 0 6px; }
+html.app-route .trail-header h1 { font-weight: 800; font-size: 24px; margin: 0 0 14px; }
+.kinetic-timer-panel { background: #24211e; border: 1px solid #39332f; border-radius: 24px; text-align: center; padding: 16px 12px; margin-bottom: 16px; }
+html.app-route .trail-timer-label { color: #c7bdb4; font-size: 11px; text-transform: uppercase; letter-spacing: .09em; font-weight: 700; }
+html.app-route .trail-console .trail-timer { font-size: clamp(48px,15vw,64px); font-weight: 800; letter-spacing: -.045em; line-height: 1.15; margin: 6px 0 8px; color: white; }
+.kinetic-live-state { color: #b8eb78; font-size: 12px; }
+html.app-route .trail-dogs { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+html.app-route .trail-dogs > span { background: #24211e; padding: 10px; border: 1px solid #39332f; border-radius: 14px; font-size: 13px; min-width: 0; }
+html.app-route .trail-dogs > span > span { border-color: #70665e; }
+html.app-route .trail-actions { grid-template-columns: minmax(0,1fr) minmax(0,2fr); }
+html.app-route .trail-actions .cbtn--save-memory { grid-column: 2; grid-row: 1; background: #dc3522 !important; color: white !important; min-height: 52px; }
+html.app-route .trail-actions .field-secondary { grid-column: 1; grid-row: 1; border: 1px solid #4e443b; background: #292420; color: white; }
+html.app-route .trail-cancel { color: #c7bdb4; min-height: 44px; }
+html.app-route .trail-add-photo { background: #24211e; border: 1px solid #39332f; border-radius: 16px; min-height: 48px; color: #fff; }
+html.app-route .trail-detail { border-color: #39332f; }
+html.app-route .trail-detail summary { color: #c7bdb4; }
+/* White editorial recap, photo or no photo: one stats row, optional details. */
+html.app-route .field-notes .app-shell { background: #fff8f5; color: #1a1715; }
+html.app-route .field-notes-scroll { padding: 0 20px calc(28px + env(safe-area-inset-bottom,0px)); }
+html.app-route .field-notes h1 { font-family: var(--sans); font-size: 28px; font-weight: 850; letter-spacing: -.035em; margin: 12px 0 8px; }
+html.app-route .field-date { color: #70665e; margin-bottom: 12px; }
+html.app-route .field-saved-mark { background: #daf5ad; color: #35540a; }
+html.app-route .field-pack { gap: 8px; margin-bottom: 16px; }
+html.app-route .field-pack > span { background: white; padding: 5px 10px; border: 1px solid #f0eae1; border-radius: 20px; font-weight: 650; }
+html.app-route .field-pack img { width: 24px; height: 24px; }
+.kinetic-recap-hero { position: relative; overflow: hidden; display: flex; align-items: center; gap: 16px; padding: 20px; border-radius: 22px; background: linear-gradient(125deg,#fff0ce,#ffe4da); min-height: 132px; }
+.kinetic-recap-hero > .ti { font-size: 40px; color: #d83220; }
+.kinetic-recap-hero--photo { padding: 0; height: 220px; align-items: end; }
+.kinetic-recap-hero > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.kinetic-recap-hero--photo > div { position: relative; width: 100%; padding: 36px 16px 16px; background: linear-gradient(transparent,#000b); color: white; }
+html.app-route .kinetic-recap-hero--photo .field-kicker { color: #ffe0a0; }
+html.app-route .field-recap-line { font-family: var(--sans); font-weight: 750; font-size: 22px; line-height: 1.2; margin: 6px 0 0; }
+html.app-route .field-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0 16px; padding: 16px; background: white; border: 1px solid #f0eae1; border-radius: 16px; }
+html.app-route .field-stats span { font-size: 11px; color: #70665e; }
+html.app-route .field-stats strong { font-size: 18px; font-weight: 800; }
+html.app-route .field-stats > div:first-child strong { color: #d83220; }
+html.app-route :is(.field-note,.field-add-detail) { background: white; border: 1px solid #f0eae1; border-radius: 18px; padding: 14px; margin-top: 14px; }
+html.app-route .field-note h2 { margin: 0 0 10px; font-weight: 750; }
+html.app-route .field-tags > span { background: #fff1eb; color: #635b54; }
+html.app-route .field-add-detail textarea { background: #fff8f5; border-color: #ded5cf; color: #1a1715; }
+/* Existing Explore / Training / Journey / Pack surfaces, same Kinetic hierarchy. */
+html.app-route .plan-screen-header { padding-bottom: 8px; }
+html.app-route .plan-screen-sub { color: #635b54; font-size: 13px; }
+html.app-route .explore-hype { min-height: auto; padding: 12px; background: #fff0db; border: 1px solid #f4dfb0; border-radius: 18px; }
+html.app-route :is(.explore-hype-words,.explore-hype-paws,.explore-hype-bandana,.journey-hero-burst,.training-flow-dog-orbit,.training-flow-dog-zap) { display: none; }
+html.app-route .explore-hype-dog { width: 48px; height: 48px; }
+html.app-route .explore-hype-copy strong { font-size: 16px; color: #1a1715; }
+html.app-route .curated-spotlight { border-radius: 22px; box-shadow: 0 2px 12px #1a17150a; border: 1px solid #f0eae1; background: white; }
+html.app-route .curated-spotlight-panel { background: white; }
+html.app-route .plan-place-detail { padding: 0; overflow: hidden; }
+html.app-route .plan-place-detail-body { padding: 16px; }
+html.app-route .plan-hub-action { background: white; border-color: #f0eae1; border-radius: 16px; }
+html.app-route .journey-story-hero { background: white !important; border: 1px solid #f0eae1; border-radius: 22px; padding: 16px; min-height: auto; box-shadow: 0 2px 12px #1a17150a; }
+html.app-route .journey-story-hero .alogo { font-size: 23px; }
+html.app-route .journey-story-hero-copy { font-size: 13px; color: #635b54; }
+html.app-route .journey-hero-kicker { color: #b04b00; font-size: 10px; letter-spacing: .07em; }
+html.app-route .journey-dog-avatar { border: 2px solid #ffb703; width: 48px; height: 48px; }
+html.app-route .journey-memory-path { background: transparent; border: 0; padding: 0; box-shadow: none; }
+html.app-route .journey-memory-track { display: grid; gap: 16px; padding: 0; }
+html.app-route .journey-memory-spine { display: none; }
+html.app-route .journey-memory-node { width: 100%; padding: 0; margin: 0; transform: none; }
+html.app-route .journey-memory-card { display: block; width: 100%; border: 1px solid #f0eae1; border-radius: 20px; background: white; box-shadow: 0 2px 12px #1a17150a; transform: none; padding: 0; overflow: hidden; }
+html.app-route .journey-memory-dot { display: none; }
+html.app-route .journey-memory-photo { width: 100%; height: 180px; border-radius: 0; }
+html.app-route .journey-memory-copy { padding: 16px; }
+html.app-route .journey-memory-title { font-size: 19px; font-weight: 800; color: #1a1715; }
+html.app-route .journey-memory-date { color: #a53220; }
+html.app-route .journey-memory-no-photo { min-height: 70px; background: linear-gradient(130deg,#fff0ce,#ffe4da); color: #a53220; }
+html.app-route .profile-dog-card--compact { background: #fff; padding: 16px; border: 1px solid #f0eae1; border-radius: 20px; }
+html.app-route .profile-dog-card--compact .profile-dog-avatar { width: 72px; height: 72px; border-radius: 18px; flex-shrink: 0; }
+html.app-route .profile-dog-card-name { font-size: 22px; font-weight: 800; }
+html.app-route .profile-dog-active-badge { background: #e0f7b7; color: #35540a; }
+html.app-route .profile-stat-card--stitch { background: #fff; border: 1px solid #f0eae1; border-radius: 16px; }
+html.app-route .profile-stat-value { color: #d83220; font-size: 27px; font-weight: 800; }
+html.app-route .training-flow-hero { background: linear-gradient(130deg,#fff0cc,#fff1eb); border: 1px solid #f4dfb0; border-radius: 22px; padding: 16px; min-height: auto; }
+html.app-route .training-flow-hero h1 { font-size: 26px; font-weight: 800; }
+html.app-route .training-flow-program.on, html.app-route .build-month-option.on { border: 2px solid #e03925; background: #fff2ec; }
+html.app-route .training-flow-program-title { color: #1a1715; font-size: 18px; }
+html.app-route .training-flow-program-pick { color: #a53220; }
+html.app-route .training-flow-program-emoji { background: #fff0d7; }
+@media (prefers-reduced-motion: reduce) { html.app-route *,html.app-route *::before,html.app-route *::after { animation: none !important; scroll-behavior: auto !important; } }
+@media (max-width: 360px) { html.app-route .home-screen--minimal { padding-inline: 12px; } .kinetic-dog-name small { font-size: 9px; } html.app-route .trail-scroll { padding-inline: 16px; } }
+/* Supersede the retired electric-green campaign styles, which used !important. */
+html.app-route .plan-screen-header { border: 0 !important; background: transparent !important; padding: 8px 0 !important; }
+html.app-route .explore-hype { display: flex !important; align-items: center; gap: 12px; min-height: 76px; padding: 12px !important; border: 1px solid #f4dfb0 !important; background: #fff0db !important; box-shadow: none !important; }
+html.app-route .explore-hype::before,html.app-route .pack-hype::before { display: none; }
+html.app-route .explore-hype-dog { position: static !important; width: 42px !important; height: 42px !important; flex-shrink: 0; border: 0 !important; box-shadow: none !important; background: #ffdf8a !important; transform: none; }
+html.app-route .explore-hype-copy { max-width: none; }
+html.app-route .explore-hype-copy span { color: #9d4c00 !important; font-size: 10px; }
+html.app-route .explore-hype-copy strong { font-family: var(--sans); color: #1a1715 !important; font-size: 16px !important; line-height: 1.3 !important; max-width: none !important; }
+html.app-route .curated-spotlight-art.card-img { min-height: 180px; background: #292420; }
+html.app-route .curated-spotlight-art.card-img::before { background: linear-gradient(180deg,#29242000,#121110b3); }
+html.app-route .curated-spotlight-copy { left: 16px; right: 16px; bottom: 16px; }
+html.app-route .curated-spotlight-copy h2 { font-size: 24px; line-height: 1.1; }
+html.app-route .curated-spotlight-copy p { font-size: 12px; line-height: 1.35; }
+html.app-route .curated-spotlight-copy > span { color: #ffdc8a; }
+html.app-route .curated-spotlight .curated-spotlight-top > span { background: #e0f7b7; color: #35540a; }
+html.app-route .curated-spotlight .curated-spotlight-top > strong { background: #fff2; color: white; }
+html.app-route .curated-spotlight-meta > span { background: #fff8f5; color: #635b54; border: 1px solid #f0eae1; border-radius: 12px; padding: 10px; }
+html.app-route .curated-spotlight-meta { gap: 6px; }
+html.app-route .curated-spotlight-actions { grid-template-columns: minmax(0,2fr) minmax(0,1fr); }
+html.app-route .curated-spotlight-map { font-size: 12px; border-radius: 14px; color: #38302b; }
+html.app-route .pack-hype { display: none; } /* Redundant slogan; the real dog cards lead Pack. */
+html.app-route .pack-mini-portrait { background: #fff0db !important; border-color: #ffb703 !important; box-shadow: none !important; }
+html.app-route .pack-mini-portrait::after { display: none; }
+html.app-route .profile-dog-avatar { background: #fff0db !important; box-shadow: none !important; border: 1px solid #f4dfb0; }
+html.app-route .pack-access-panel h3, html.app-route .pack-access-copy strong { color: #1a1715; }
+html.app-route .pack-access-panel p, html.app-route .pack-access-copy p { color: #635b54; }
+html.app-route .training-flow-hero--electric { box-shadow: none; }
+html.app-route .training-flow-hero--electric::before { display: none; }
+html.app-route .training-flow-hero--electric .training-flow-title { color: #1a1715; font-family: var(--sans); font-size: 26px; line-height: 1.15; }
+html.app-route .training-flow-hero--electric .training-flow-kicker { color: #9d4c00; }
+html.app-route .training-flow-hero--electric .training-flow-copy { color: #635b54; font-size: 13px; }
+html.app-route .training-flow-program-pick { color: #a53220; background: #fff1eb; }
+html.app-route .training-flow-program.on .training-flow-program-pick { color: white; background: #d83220; }
+html.app-route .training-flow-step-head strong { color: #1a1715; font-size: 18px; }
+html.app-route .journey-story-header-top { display: flex; align-items: center; justify-content: space-between; }
+html.app-route .journey-story-rank { display: flex; width: auto; gap: 8px; padding: 6px 12px; border-radius: 20px; background: #fff1eb; }
+html.app-route .journey-memory-node .journey-memory-no-photo { height: 76px; min-height: 76px; }
+html.app-route .active-adventure-banner { background: #24211e; border-color: #4e443b; box-shadow: 0 4px 12px #1a17151a; }
+html.app-route .active-adventure-banner::after { display: none; }
+html.app-route .active-adventure-banner-kicker, html.app-route .active-adventure-banner-timer { color: #ffce6b; }
+html.app-route .active-adventure-banner-meta { color: #ded5cf; }
+html.app-route .active-adventure-banner-btn--primary { background: #dc3522; border-color: #dc3522; color: white; box-shadow: none; }
+.dog-avatar-picker { border: 1px solid var(--border); border-radius: 16px; margin: 14px 0; padding: 12px; min-width: 0; }
+.dog-avatar-picker legend { font-weight: 700; }
+.dog-avatar-picker input { display: block; max-width: 100%; font-size: 12px; }
+.dog-avatar-picker p { font-size: 12px; margin: 8px 0; }
+.dog-avatar-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.dog-avatar-options button { font-size: 26px; border-radius: 12px; background: #fff; border: 1px solid #eadfd8; }
+html.app-route .trail-route { padding: 12px; border: 1px solid #403a34; border-radius: 16px; margin: 12px 0; }
+html.app-route .trail-route p { font-size: 12px; line-height: 1.4; color: #ded5cf; margin: 8px 0 0; }
+html.app-route .trail-route .field-secondary { width: 100%; background: #28231f; border-color: #534b42; color: white; }
+.memory-video input { display: block; max-width: 100%; font-size: 12px; margin-top: 8px; }
+.memory-video p { font-size: 13px; line-height: 1.5; }
+
+.btn-apple { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 48px; border-radius: 12px; border: 1px solid #000; background: #000; color: #fff; font-size: 16px; font-weight: 600; margin: 12px 0; }
