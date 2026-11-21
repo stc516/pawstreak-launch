@@ -37,3 +37,5 @@ These are local Chromium mobile-emulation screenshots of the running **DEMO app*
 Release tests were updated to use the approved UI's controls, explicit share action and photo-optional recap. Save integrity, share file payloads, mobile touch targets, authentic imagery, account gating and navigation checks remain. The release runner now accepts `QA_PREVIEW_PORT` and requires that port, avoiding Vite's silent port fallback.
 
 See [release handoff](release-handoff.md) for native and production blockers. Nothing merged, deployed, submitted, scheduled, or purchased.
+
+Updated launch review: [ordered to-do list with owners and directions](launch-todo.md).

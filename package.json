@@ -38,7 +38,10 @@
     "native:ios": "npm run native:sync && npx cap open ios",
     "native:android": "npm run native:sync && npx cap open android",
     "qa:native": "node qa/native-readiness.mjs",
-    "qa:kinetic": "node qa/kinetic-design.mjs"
+    "qa:kinetic": "node qa/kinetic-design.mjs",
+    "release:preflight": "node scripts/release-preflight.mjs",
+    "qa:release-preflight": "node qa/release-preflight.test.mjs",
+    "build:release": "npm run release:preflight && npm run build"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",

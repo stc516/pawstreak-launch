@@ -1,5 +1,7 @@
 # Kinetic release handoff
 
+See the newer [ordered launch to-do and live backend review](launch-todo.md) for current blockers, directions and completed follow-up work. Backend presence has now been checked; authenticated acceptance remains outstanding.
+
 ## Release scope
 
 Source changes are on draft PR #91, branch `design/trail-console-90`, based on main `62e443c`. No deployment or App Store submission has occurred. The first visual pass is recoverable at `55c4895`.

@@ -25,7 +25,7 @@ Alternates:
 
 ## Short promotional text
 
-> Find dog-friendly places, turn walks into adventures, and save the memories that prove your dog had a great day.
+> Find dog-friendly places, turn walks into adventures, and save photos and notes from your days together.
 
 ## Full description
 
@@ -39,16 +39,15 @@ Use PawStreak to:
 - Start a quick walk when you just need to get moving
 - Save photos and notes from the day
 - Build a Journey of the places you and your dog have explored
-- Get optional reminders so better dog days do not slip away
 - Share clean adventure cards with friends or Instagram
 
 PawStreak is not a hardcore GPS tracker or a pet-care dashboard. It is a simple way to make your dog’s life feel a little bigger than the same old walk.
 
 Your dog deserves more than the same old walk.
 
-## Keywords draft
+## Keywords draft (within 100 characters)
 
-Dog walking, dog friendly, dog parks, dog beach, dog adventure, pet parents, dog places, dog trails, dog memories, dog photos, dog routine, local adventures, puppy socialization
+dog,walking,parks,beach,trails,adventure,pet,photos,memories,nearby,puppy,outdoors
 
 ## TestFlight beta description
 
@@ -89,7 +88,7 @@ Use real app screens, no fake social metrics and no fake user activity:
 5. Save memory: photo and recap payoff
 6. Journey: saved memory/path
 7. Share card: clean Instagram-ready card
-8. Reminders/settings: optional daily adventure nudges
+8. Pack: your real dog profiles (only include features enabled in the submitted build)
 
 ## Privacy labels draft for review
 
@@ -105,6 +104,6 @@ Use this as a draft only. Final App Store privacy answers must match the product
 
 ## App Review notes draft
 
-PawStreak helps dog owners discover dog-friendly places, complete walks/adventures, save memories, and enable optional reminders.
+PawStreak helps dog owners discover dog-friendly places, complete walks/adventures, save photos and optional notes in Journey.
 
-If testing location features, allow location permission when prompted. If testing notifications, enable reminders from Settings. Account deletion is available in app settings/support surfaces.
+Location and photos are optional. Test a Neighborhood Walk if curated nearby places are unavailable. Finish the walk, open Journey, and confirm the saved memory. Account deletion is available in Pack → Settings → Delete account. Provide a dedicated reviewer account through App Store Connect; do not put credentials in this file. Native push delivery is not verified and is not advertised in this draft.
