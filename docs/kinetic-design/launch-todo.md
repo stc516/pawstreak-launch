@@ -1,3 +1,5 @@
+> Current native/backend implementation and ordered acceptance checklist: [native release handoff](native-release-handoff.md). Source completion is separate from signed-device acceptance.
+
 # PawStreak launch to-do — reviewed November 21, 2026
 
 Status: **not ready to deploy or submit yet**. The seven-screen redesign is implemented on draft PR #91. This list separates verified source work from live-service and physical-device acceptance. No merge, deployment, submission, spending or schedule activation is authorized by this checklist.

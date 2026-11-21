@@ -1,5 +1,6 @@
+import { watchNativeRoute } from './lib/nativeWalkRoute'
 import { appendRoutePoint } from './lib/walkRoute'
-import { disableNativeReminders } from './lib/nativeReminders'
+import { disablePushNotifications } from './lib/pushNotifications'
 import { saveDogAvatar } from './lib/db/dogs'
 import type { DogAvatarChoice } from './components/DogAvatarPicker'
 import { saveMemoryDetails, type MemoryDetailInput } from './lib/memoryDetails'
@@ -311,6 +312,14 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     const adventure = latestStateRef.current.activeAdventure
     if (!adventure?.started || !adventure.routeRecording || pauseForActiveWalk) return
     const id = adventure.id
+    if (isNativeAppRuntime()) {
+      const stop = watchNativeRoute(position => {
+        setState(current => current.activeAdventure?.id !== id ? current : { ...current, activeAdventure: { ...current.activeAdventure, routePoints: appendRoutePoint(current.activeAdventure.routePoints ?? [], position), routeMessage: 'Phone GPS recording is on. Pause or finish to stop.' } })
+      }, message => {
+        setState(current => current.activeAdventure?.id !== id ? current : { ...current, activeAdventure: { ...current.activeAdventure, routeRecording: false, routeMessage: message } })
+      })
+      return () => { void stop() }
+    }
     let watch: number | undefined
     const stop = () => { if (watch !== undefined) navigator.geolocation.clearWatch(watch); watch = undefined }
     const start = () => {
@@ -1699,7 +1708,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     setAuthLoading(true)
     setAuthError(null)
     try {
-      if (isNativeAppRuntime()) await disableNativeReminders()
+      if (isNativeAppRuntime()) await disablePushNotifications()
       await auth.signOut()
       const fresh = resetProductionAppState()
       setState(fresh)
@@ -1713,10 +1722,17 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   }
 
   const handleDeleteAccount = async () => {
-    if (isNativeAppRuntime()) await disableNativeReminders()
+    if (isNativeAppRuntime()) await disablePushNotifications()
     await deleteCurrentAccount()
     resetProductionAppState()
     window.location.assign(ROUTES.landing)
+  }
+
+  const handleAppleAuth = async () => {
+    setAuthLoading(true); setAuthError(null)
+    try { await auth.signInWithApple() }
+    catch (error) { setAuthError(error instanceof Error ? error.message : 'Apple sign-in was not completed.'); throw error }
+    finally { setAuthLoading(false) }
   }
 
   const handleGoogleAuth = async () => {
@@ -1926,6 +1942,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         authError={authError}
         onEmailAuth={handleEmailAuth}
         onGoogleAuth={handleGoogleAuth}
+        onAppleAuth={handleAppleAuth}
         onMagicLink={handleMagicLink}
         onPasswordReset={handlePasswordReset}
       />

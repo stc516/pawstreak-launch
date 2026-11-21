@@ -212,3 +212,5 @@ html.app-route .trail-route p { font-size: 12px; line-height: 1.4; color: #ded5c
 html.app-route .trail-route .field-secondary { width: 100%; background: #28231f; border-color: #534b42; color: white; }
 .memory-video input { display: block; max-width: 100%; font-size: 12px; margin-top: 8px; }
 .memory-video p { font-size: 13px; line-height: 1.5; }
+
+.btn-apple { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 48px; border-radius: 12px; border: 1px solid #000; background: #000; color: #fff; font-size: 16px; font-weight: 600; margin: 12px 0; }

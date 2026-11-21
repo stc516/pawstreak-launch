@@ -1,3 +1,4 @@
+import { signInWithApple } from '../lib/appleAuth'
 import type { Session, User } from '@supabase/supabase-js'
 import {
   createContext,
@@ -24,6 +25,7 @@ interface AuthContextValue {
   signUpWithEmail: typeof signUpWithEmail
   signInWithEmail: typeof signInWithEmail
   sendMagicLink: typeof sendMagicLink
+  signInWithApple: typeof signInWithApple
   signInWithGoogle: typeof signInWithGoogle
   signOut: () => Promise<void>
 }
@@ -63,6 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       signInWithEmail,
       sendMagicLink,
       signInWithGoogle,
+      signInWithApple,
       signOut: async () => {
         await signOut()
         setSession(null)

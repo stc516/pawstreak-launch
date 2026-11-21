@@ -36,3 +36,29 @@ assert.deepEqual(calls, [])
 await setNativeReminders({ ...prefs, morningEnabled: false }, api, preferencesApi)
 assert.deepEqual(calls, ['cancel', 'persist'])
 console.log('PASS native reminder permission denial leaves existing schedule unchanged; opt-out cancels without prompting')
+
+const { watchNativeRoute } = await import('../src/lib/nativeWalkRoute')
+let resolveWatcher!: (id: string) => void
+let removed = 0
+const pendingWatcher = new Promise<string>(resolve => { resolveWatcher = resolve })
+const stop = watchNativeRoute(() => assert.fail('No fix after stop'), () => assert.fail('Unexpected GPS error'), {
+  addWatcher: () => pendingWatcher,
+  removeWatcher: async ({ id }) => { assert.equal(id, 'test'); removed++ },
+})
+const stopping = stop()
+resolveWatcher('test')
+await stopping
+await stop()
+assert.equal(removed, 1)
+let errors = 0
+const stopRetry = watchNativeRoute(() => {}, () => { errors++ }, {
+  addWatcher: async () => 'retry', removeWatcher: async () => { throw new Error('native failure') },
+})
+await stopRetry()
+assert.equal(errors, 1)
+const { createAppleNonce } = await import('../src/lib/appleAuth')
+const nonce = await createAppleNonce()
+assert.match(nonce.raw, /^[a-f0-9]{64}$/)
+assert.equal(nonce.hashed, Buffer.from(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(nonce.raw))).toString('hex'))
+assert.notEqual((await createAppleNonce()).raw, nonce.raw)
+console.log('PASS delayed native GPS cleanup, stop failure reporting, Apple nonce entropy/hash')

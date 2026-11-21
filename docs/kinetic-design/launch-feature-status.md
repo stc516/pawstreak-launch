@@ -1,5 +1,7 @@
 # Requested launch additions — implementation status
 
+**Update 2026-11-21:** See [native/backend handoff](native-release-handoff.md) for the current implementation and release gates. The earlier snapshot below describes the prior commit; its foreground-only native GPS, proposed-only migrations and unimplemented Apple/APNs notes are superseded. No hosted changes were applied.
+
 Requested: camera-roll video, notifications, calendar export, phone GPS routes, and uploaded/chosen dog avatars. Excluded: social feed/comments/likes/messages, readiness/calorie scores and fictional data. Collar integration is explicitly deferred at Stephen’s request. No collar or health-tracking integration is included.
 
 ## Implemented on the draft branch

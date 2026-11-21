@@ -1,3 +1,4 @@
+import { usesRemotePush, getRemoteReminderState, setRemoteReminders, disableRemoteReminders } from './nativeRemotePush'
 import { isNativeAppRuntime } from './nativeRuntime'
 import { getNativeReminderState, setNativeReminders, disableNativeReminders } from './nativeReminders'
 import { getSupabaseClient } from './supabase'
@@ -77,6 +78,7 @@ async function saveSubscription(
 }
 
 export async function getPushNotificationState(): Promise<PushNotificationState> {
+  if (usesRemotePush()) return getRemoteReminderState()
   if (isNativeAppRuntime()) return getNativeReminderState()
   const supported = isSupported()
   const subscription = supported ? await currentSubscription() : null
@@ -115,6 +117,7 @@ export async function getPushNotificationState(): Promise<PushNotificationState>
 export async function enablePushNotifications(
   preferences: PushPreferences = DEFAULT_PUSH_PREFERENCES,
 ): Promise<void> {
+  if (usesRemotePush()) return setRemoteReminders(preferences)
   if (isNativeAppRuntime()) return setNativeReminders(preferences)
   if (!isSupported()) throw new Error('Push notifications are not supported on this browser.')
   if (isIosDevice() && !isInstalledApp()) {
@@ -140,6 +143,7 @@ export async function enablePushNotifications(
 }
 
 export async function updatePushPreferences(preferences: PushPreferences): Promise<void> {
+  if (usesRemotePush()) return setRemoteReminders(preferences)
   if (isNativeAppRuntime()) return setNativeReminders(preferences)
   const subscription = await currentSubscription()
   if (!subscription) {
@@ -150,6 +154,7 @@ export async function updatePushPreferences(preferences: PushPreferences): Promi
 }
 
 export async function disablePushNotifications(): Promise<void> {
+  if (usesRemotePush()) return disableRemoteReminders()
   if (isNativeAppRuntime()) return disableNativeReminders()
   const subscription = await currentSubscription()
   if (!subscription) return

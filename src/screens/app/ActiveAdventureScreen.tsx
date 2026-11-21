@@ -1,3 +1,4 @@
+import { isNativeAppRuntime } from '../../lib/nativeRuntime'
 import { useEffect, useRef, useState } from 'react'
 import type { AppState } from '../../data/demo'
 import {
@@ -331,7 +332,7 @@ export function ActiveAdventureScreen({
           </section>
           {(window.location.pathname.startsWith('/demo') || import.meta.env.VITE_WALK_ROUTE_ENABLED === 'true') ? <section className="trail-route" aria-label="Walk route">
             <button type="button" className="field-secondary tap-target" aria-pressed={adventure.routeRecording ?? false} onClick={onToggleRoute}>{adventure.routeRecording ? 'Stop route recording' : 'Record phone GPS route'}</button>
-            <p>Optional. Records while PawStreak is visible; pauses when locked, backgrounded or the walk is paused.</p>
+            <p>{isNativeAppRuntime() ? 'Optional. Uses location during this walk, including with the screen locked. Pause, Stop or Finish ends recording. Force-quitting can interrupt it.' : 'Optional. Records while PawStreak is visible; pauses when locked, backgrounded or the walk is paused.'}</p>
             <p role="status">{isPaused && adventure.routeRecording ? 'Route recording paused.' : adventure.routeMessage} {adventure.routePoints?.length ?? 0} GPS points saved.</p>
           </section> : null}
           <input ref={fileInputRef} className="cam-input" type="file" accept="image/*" capture="environment" onChange={handlePhotoSelected} />
