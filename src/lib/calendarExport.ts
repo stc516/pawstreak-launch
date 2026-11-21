@@ -1,3 +1,6 @@
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem'
+import { Share } from '@capacitor/share'
+import { isNativeAppRuntime } from './nativeRuntime'
 import type { Challenge } from '../data/challenges'
 import type { MonthlyPlanResult } from './monthlyPlan'
 import type { ResolvedChallengeNode } from './challengeEngine'
@@ -36,7 +39,7 @@ function pad(value: number): string {
 function escapeIcsText(value: string): string {
   return value
     .replace(/\\/g, '\\\\')
-    .replace(/\n/g, '\\n')
+    .replace(/\r\n|\r|\n/g, '\\n')
     .replace(/,/g, '\\,')
     .replace(/;/g, '\\;')
 }
@@ -86,7 +89,17 @@ function nextDateForTiming(label: string, offsetWeeks: number): Date {
   return date
 }
 
-function buildIcs(events: CalendarEventDraft[], calendarName: string): string {
+function foldIcsLine(line: string): string {
+  let result = ''; let length = 0
+  for (const char of line) {
+    const bytes = new TextEncoder().encode(char).length
+    if (length + bytes > 75) { result += '\r\n '; length = 1 }
+    result += char; length += bytes
+  }
+  return result
+}
+
+export function buildIcs(events: CalendarEventDraft[], calendarName: string): string {
   const now = formatIcsDate(new Date())
   const lines = [
     'BEGIN:VCALENDAR',
@@ -127,17 +140,17 @@ function buildIcs(events: CalendarEventDraft[], calendarName: string): string {
   })
 
   lines.push('END:VCALENDAR')
-  return `${lines.join('\r\n')}\r\n`
+  return `${lines.map(foldIcsLine).join('\r\n')}\r\n`
 }
 
-export function downloadScheduledAdventureCalendar(
+export async function downloadScheduledAdventureCalendar(
   adventure: ScheduledAdventure,
   packLabel: string,
 ) {
   if (!adventure.scheduledFor) return false
   const start = new Date(adventure.scheduledFor)
   if (Number.isNaN(start.getTime())) return false
-  downloadIcs('pawstreak-planned-adventure.ics', 'PawStreak Adventures', [
+  await downloadIcs('pawstreak-planned-adventure.ics', 'PawStreak Adventures', [
     {
       title: `PawStreak: ${adventure.title}`,
       description: [
@@ -153,7 +166,7 @@ export function downloadScheduledAdventureCalendar(
   return true
 }
 
-export function downloadTrainingScheduleCalendar(
+export async function downloadTrainingScheduleCalendar(
   schedule: ActiveTrainingSchedule,
   programTitle: string,
   packLabel: string,
@@ -170,12 +183,19 @@ export function downloadTrainingScheduleCalendar(
     }]
   })
   if (events.length === 0) return false
-  downloadIcs('pawstreak-training-adventure.ics', `PawStreak ${programTitle}`, events)
+  await downloadIcs('pawstreak-training-adventure.ics', `PawStreak ${programTitle}`, events)
   return true
 }
 
-function downloadIcs(filename: string, calendarName: string, events: CalendarEventDraft[]) {
-  const blob = new Blob([buildIcs(events, calendarName)], {
+async function downloadIcs(filename: string, calendarName: string, events: CalendarEventDraft[]) {
+  if (!events.length) throw new Error('Choose dates before exporting a calendar.')
+  const data = buildIcs(events, calendarName)
+  if (isNativeAppRuntime()) {
+    const file = await Filesystem.writeFile({ path: filename, data, directory: Directory.Cache, encoding: Encoding.UTF8 })
+    await Share.share({ title: calendarName, files: [file.uri] })
+    return
+  }
+  const blob = new Blob([data], {
     type: 'text/calendar;charset=utf-8',
   })
   const url = URL.createObjectURL(blob)
@@ -188,7 +208,7 @@ function downloadIcs(filename: string, calendarName: string, events: CalendarEve
   window.setTimeout(() => URL.revokeObjectURL(url), 1000)
 }
 
-export function downloadMonthlyPlanCalendar(result: MonthlyPlanResult) {
+export async function downloadMonthlyPlanCalendar(result: MonthlyPlanResult) {
   const events = result.weeks.map((week, index) => ({
     title: `PawStreak: ${week.placeName}`,
     description: [
@@ -200,10 +220,10 @@ export function downloadMonthlyPlanCalendar(result: MonthlyPlanResult) {
     start: nextDateForTiming(week.timingLabel, index),
     durationMinutes: 60,
   }))
-  downloadIcs('pawstreak-adventure-month.ics', 'PawStreak Adventure Month', events)
+  await downloadIcs('pawstreak-adventure-month.ics', 'PawStreak Adventure Month', events)
 }
 
-export function downloadChallengeCalendar(
+export async function downloadChallengeCalendar(
   challenge: Challenge,
   nodes: ResolvedChallengeNode[],
 ) {
@@ -216,5 +236,5 @@ export function downloadChallengeCalendar(
     start: nextDateForTiming(index === 0 ? 'Saturday morning' : `Saturday morning ${index}`, index),
     durationMinutes: node.title.toLowerCase().includes('10-minute') ? 10 : 60,
   }))
-  downloadIcs('pawstreak-challenge-plan.ics', `PawStreak ${challenge.title}`, events)
+  await downloadIcs('pawstreak-challenge-plan.ics', `PawStreak ${challenge.title}`, events)
 }

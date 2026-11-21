@@ -201,3 +201,14 @@ html.app-route .active-adventure-banner::after { display: none; }
 html.app-route .active-adventure-banner-kicker, html.app-route .active-adventure-banner-timer { color: #ffce6b; }
 html.app-route .active-adventure-banner-meta { color: #ded5cf; }
 html.app-route .active-adventure-banner-btn--primary { background: #dc3522; border-color: #dc3522; color: white; box-shadow: none; }
+.dog-avatar-picker { border: 1px solid var(--border); border-radius: 16px; margin: 14px 0; padding: 12px; min-width: 0; }
+.dog-avatar-picker legend { font-weight: 700; }
+.dog-avatar-picker input { display: block; max-width: 100%; font-size: 12px; }
+.dog-avatar-picker p { font-size: 12px; margin: 8px 0; }
+.dog-avatar-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.dog-avatar-options button { font-size: 26px; border-radius: 12px; background: #fff; border: 1px solid #eadfd8; }
+html.app-route .trail-route { padding: 12px; border: 1px solid #403a34; border-radius: 16px; margin: 12px 0; }
+html.app-route .trail-route p { font-size: 12px; line-height: 1.4; color: #ded5cf; margin: 8px 0 0; }
+html.app-route .trail-route .field-secondary { width: 100%; background: #28231f; border-color: #534b42; color: white; }
+.memory-video input { display: block; max-width: 100%; font-size: 12px; margin-top: 8px; }
+.memory-video p { font-size: 13px; line-height: 1.5; }

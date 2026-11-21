@@ -1,3 +1,7 @@
+import { appendRoutePoint } from './lib/walkRoute'
+import { disableNativeReminders } from './lib/nativeReminders'
+import { saveDogAvatar } from './lib/db/dogs'
+import type { DogAvatarChoice } from './components/DogAvatarPicker'
 import { saveMemoryDetails, type MemoryDetailInput } from './lib/memoryDetails'
 import { useEffect, useRef, useState } from 'react'
 import type { AppState, CommunityPost, TabId } from './data/demo'
@@ -302,6 +306,29 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         }))
       })
   }, [auth.user, dataHydrated, useProductionBackend])
+
+  useEffect(() => {
+    const adventure = latestStateRef.current.activeAdventure
+    if (!adventure?.started || !adventure.routeRecording || pauseForActiveWalk) return
+    const id = adventure.id
+    let watch: number | undefined
+    const stop = () => { if (watch !== undefined) navigator.geolocation.clearWatch(watch); watch = undefined }
+    const start = () => {
+      stop()
+      if (document.visibilityState !== 'visible') return
+      if (!navigator.geolocation) {
+        setState(current => current.activeAdventure?.id !== id ? current : { ...current, activeAdventure: { ...current.activeAdventure, routeRecording: false, routeMessage: 'GPS is unavailable. Your walk can still be saved.' } })
+        return
+      }
+      watch = navigator.geolocation.watchPosition(position => {
+        setState(current => current.activeAdventure?.id !== id ? current : { ...current, activeAdventure: { ...current.activeAdventure, routePoints: appendRoutePoint(current.activeAdventure.routePoints ?? [], position), routeMessage: 'Recording while PawStreak is visible.' } })
+      }, error => {
+        setState(current => current.activeAdventure?.id !== id ? current : { ...current, activeAdventure: { ...current.activeAdventure, routeRecording: error.code !== 1, routeMessage: error.code === 1 ? 'Location permission denied. Your walk can still be saved.' : 'Waiting for a GPS signal.' } })
+      }, { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 })
+    }
+    start(); document.addEventListener('visibilitychange', start)
+    return () => { stop(); document.removeEventListener('visibilitychange', start) }
+  }, [state.activeAdventure?.id, state.activeAdventure?.started, state.activeAdventure?.routeRecording, pauseForActiveWalk])
 
   useEffect(() => {
     saveAppState(state, appMode)
@@ -1482,7 +1509,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             : null
 
       const journeyEntries = savedJourneyEntry
-        ? [savedJourneyEntry, ...current.journeyEntries]
+        ? [{ ...savedJourneyEntry, routePoints: currentAdventure.routePoints }, ...current.journeyEntries]
         : current.journeyEntries
 
       const adventureCount = journeyEntries.length
@@ -1672,6 +1699,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
     setAuthLoading(true)
     setAuthError(null)
     try {
+      if (isNativeAppRuntime()) await disableNativeReminders()
       await auth.signOut()
       const fresh = resetProductionAppState()
       setState(fresh)
@@ -1685,6 +1713,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
   }
 
   const handleDeleteAccount = async () => {
+    if (isNativeAppRuntime()) await disableNativeReminders()
     await deleteCurrentAccount()
     resetProductionAppState()
     window.location.assign(ROUTES.landing)
@@ -1716,6 +1745,13 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         }))
       })
     }
+  }
+
+  const handleSaveDogAvatar = async (dogId: string, choice: DogAvatarChoice) => {
+    const patch = useProductionBackend && auth.user
+      ? await saveDogAvatar(auth.user.id, dogId, choice)
+      : { photoUrl: choice.photoDataUrl, ...(choice.emoji ? { profileEmoji: choice.emoji } : {}) }
+    setState(current => ({ ...current, dogs: current.dogs.map(dog => dog.id === dogId ? { ...dog, ...patch } : dog) }))
   }
 
   const handleUpdateDog = (
@@ -1923,6 +1959,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
         onMinimize={
           state.activeAdventure?.started ? minimizeActiveAdventure : undefined
         }
+        onToggleRoute={() => setState(current => !current.activeAdventure ? current : ({ ...current, activeAdventure: { ...current.activeAdventure, routeRecording: !current.activeAdventure.routeRecording, routeMessage: undefined } }))}
         onAddPhoto={addAdventurePhoto}
         finishReviewRequested={finishReviewRequested}
         onFinishReviewShown={() => setFinishReviewRequested(false)}
@@ -2151,6 +2188,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
       return (
         <>
           <JourneyMemoryView
+            isDemoMode={isDemoMode}
             key={entry.id}
             onSaveDetail={(input) => updateMemoryDetails(entry.id, input)}
             entry={entry}
@@ -2264,6 +2302,7 @@ function AppExperience({ demoRoute }: { demoRoute: DemoRoute | null }) {
             accountEmail={auth.user?.email ?? null}
             onSetActiveDog={handleSetActiveDog}
             onUpdateDog={handleUpdateDog}
+            onSaveAvatar={handleSaveDogAvatar}
             onRemoveDog={handleRemoveDog}
             onOpenPackInvite={openPackInvite}
             onZipChange={setZipCode}

@@ -2,6 +2,8 @@
 
 Status: **not ready to deploy or submit yet**. The seven-screen redesign is implemented on draft PR #91. This list separates verified source work from live-service and physical-device acceptance. No merge, deployment, submission, spending or schedule activation is authorized by this checklist.
 
+New additions requested after this review: see [feature implementation status and remaining activation steps](launch-feature-status.md). That document supersedes the earlier video/calendar/notification scope below.
+
 ## Completed
 
 - [x] Implement selected seven-screen Kinetic theme and capture the actual demo app at 375 × 667 and 393 × 852. See [screens](README.md).

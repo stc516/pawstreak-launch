@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { AppState } from '../../data/demo'
 import type { Challenge } from '../../data/challenges'
 import { ChallengePathExperience } from '../../components/ChallengePathExperience'
@@ -36,9 +37,11 @@ export function ChallengePathDetailView({
   const { progress } = resolved
   const nodes = resolveChallengeNodes(challenge, state)
 
+  const [calendarMessage, setCalendarMessage] = useState('')
   return (
     <>
       <div className="overlay-topbar">
+        {calendarMessage ? <p role="status">{calendarMessage}</p> : null}
         <button type="button" className="overlay-back tap-target" onClick={onBack}>
           <i className="ti ti-arrow-left" aria-hidden="true" />
           Back
@@ -96,7 +99,7 @@ export function ChallengePathDetailView({
               <button
                 type="button"
                 className="challenge-path-detail-calendar tap-target"
-                onClick={() => downloadChallengeCalendar(challenge, nodes)}
+                onClick={async () => { try { await downloadChallengeCalendar(challenge, nodes); setCalendarMessage('Suggested dates exported. Review and import them in your calendar app.') } catch { setCalendarMessage('Calendar export was not completed. Try again.') } }}
               >
                 <i className="ti ti-calendar-plus" aria-hidden="true" />
                 Add to Calendar

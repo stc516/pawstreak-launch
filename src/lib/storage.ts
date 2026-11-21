@@ -72,6 +72,8 @@ function normalizeActiveAdventure(
         locationCapturedAt?: string
         gpsSummary?: string
         routePoints?: ActiveAdventure['routePoints']
+        routeRecording?: boolean
+        routeMessage?: string
       }
     | null,
 ): ActiveAdventure | null {
@@ -127,6 +129,8 @@ function normalizeActiveAdventure(
       locationCapturedAt:
         'locationCapturedAt' in adventure ? adventure.locationCapturedAt : undefined,
       gpsSummary: 'gpsSummary' in adventure ? adventure.gpsSummary : undefined,
+      routeRecording: 'routeRecording' in adventure && adventure.routeRecording === true,
+      routeMessage: 'routeMessage' in adventure ? adventure.routeMessage : undefined,
       routePoints:
         'routePoints' in adventure && Array.isArray(adventure.routePoints)
           ? adventure.routePoints
@@ -151,6 +155,9 @@ function normalizeActiveAdventure(
       startedAt,
       status: 'active',
       source: 'neighborhood',
+      routePoints: adventure.routePoints ?? [],
+      routeRecording: adventure.routeRecording === true,
+      routeMessage: adventure.routeMessage,
     }
   }
 
@@ -171,6 +178,9 @@ function normalizeActiveAdventure(
     startedAt,
     status: 'active',
     source: 'catalog',
+    routePoints: adventure.routePoints ?? [],
+    routeRecording: adventure.routeRecording === true,
+    routeMessage: adventure.routeMessage,
   }
 }
 
@@ -414,6 +424,7 @@ function demoBaseState(state: AppState, demoRoute?: DemoRoute | null): AppState 
 
 export function clearDemoState(): void {
   localStorage.removeItem(DEMO_STORAGE_KEY)
+  if (typeof indexedDB !== 'undefined') indexedDB.deleteDatabase('pawstreak-demo-media')
 }
 
 export function clearProductionAppState(): void {

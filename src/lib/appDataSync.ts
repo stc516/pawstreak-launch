@@ -240,6 +240,7 @@ export async function finishAdventureOnServer(input: {
       : undefined,
     customLocationLabel: input.activeAdventure.customLocationLabel,
     userNotes: input.activeAdventure.userNotes,
+    routePoints: input.activeAdventure.routePoints,
   })
 
   if (!memory) throw new Error('Could not save memory')

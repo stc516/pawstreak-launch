@@ -65,14 +65,16 @@ export function JourneyPlannedSection({
                 <button
                   type="button"
                   className="journey-planned-calendar tap-target"
-                  onClick={() => {
-                    const ok = downloadScheduledAdventureCalendar(
+                  onClick={async () => {
+                    try {
+                    const ok = await downloadScheduledAdventureCalendar(
                       planned,
                       getPackLabelForDogIds(state.dogs, planned.selectedDogIds),
                     )
                     setStatus(ok
-                      ? `${planned.title} calendar file ready with alerts.`
+                      ? `${planned.title} calendar file ready. Import it in your calendar app.`
                       : 'Could not create that calendar event.')
+                    } catch { setStatus('Calendar export was not completed. Try again.') }
                   }}
                 >
                   <i className="ti ti-calendar-plus" aria-hidden="true" />

@@ -16,7 +16,7 @@ function Layout({ title, children }: { title: string; children: ReactNode }) {
       <main className="legal-card">
         <p className="legal-kicker">PawStreak</p>
         <h1>{title}</h1>
-        <p className="legal-updated">Last updated July 13, 2026</p>
+        <p className="legal-updated">Last updated {title === 'Privacy Policy' ? 'November 21, 2026' : 'July 13, 2026'}</p>
         {children}
       </main>
     </div>
@@ -28,13 +28,13 @@ export function PrivacyPage() {
     <Layout title="Privacy Policy">
       <p>PawStreak helps dog parents plan adventures and save memories. This policy explains the information we handle and the choices available to you.</p>
       <h2>Information we collect</h2>
-      <p>When you create an account, we receive your email address and the profile details you provide. PawStreak may store dog profiles, approximate location or ZIP code, adventures, notes, photos, saved memories, Pack Access membership, feedback, and basic product-use events.</p>
+      <p>When you create an account, we receive your email address and the profile details you provide. PawStreak may store dog profiles, approximate location or ZIP code, adventures, notes, photos, optional short video clips and recorded walk routes, saved memories, Pack Access membership, feedback, and basic product-use events.</p>
       <h2>How we use information</h2>
       <p>We use this information to operate and personalize PawStreak, keep your data synchronized, show nearby suggestions, support shared packs, improve reliability, prevent abuse, and respond to support requests. We do not sell personal information.</p>
       <h2>Location and photos</h2>
-      <p>Location access is optional. When used during an adventure, location details help describe the outing. Photos you upload are stored privately and accessed with time-limited links. You can deny device permissions and continue using other features.</p>
+      <p>Location access is optional. If you choose route recording, PawStreak records precise GPS points while the app is visible and saves them with your walk. Recording pauses when the app is hidden or your walk is paused. Photos and supported video uploads are stored privately and accessed with time-limited links. Video attachments are owner-only. You can deny device permissions and continue using other features.</p>
       <h2>Notifications</h2>
-      <p>Push notifications are optional. If you enable them, we store a device push endpoint, delivery keys, timezone, and your chosen reminder schedule so we can send the reminders you request. You can pause reminders in PawStreak Settings or withdraw notification permission in your device settings.</p>
+      <p>Notifications are optional. Native daily reminders use your chosen times stored on your device and are scheduled locally after permission. Web push uses a stored push endpoint, delivery keys, timezone, and reminder preferences to deliver requested reminders when delivery is enabled. You can pause reminders in PawStreak Settings or withdraw notification permission in your device settings.</p>
       <h2>Service providers</h2>
       <p>We use service providers including Supabase for authentication and data storage, Vercel for hosting, Mapbox for maps and geocoding, and Resend for transactional email. They process information only to provide their services to PawStreak.</p>
       <h2>Retention and deletion</h2>

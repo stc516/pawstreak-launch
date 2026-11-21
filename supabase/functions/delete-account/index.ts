@@ -42,6 +42,16 @@ Deno.serve(async (req) => {
 
     const admin = createClient(supabaseUrl, serviceRoleKey)
     const userId = userData.user.id
+    // Deploy alongside the private video bucket before enabling video uploads.
+    const { data: buckets, error: bucketsError } = await admin.storage.listBuckets()
+    if (bucketsError) throw bucketsError
+    if (buckets?.some(bucket => bucket.id === 'memory-videos')) {
+      const videos = await collectStoragePaths(admin, 'memory-videos', userId)
+      if (videos.length) {
+        const { error } = await admin.storage.from('memory-videos').remove(videos)
+        if (error) throw error
+      }
+    }
     const photoPaths = await collectStoragePaths(admin, 'memory-photos', userId)
     if (photoPaths.length > 0) {
       const { error: photoError } = await admin.storage.from('memory-photos').remove(photoPaths)

@@ -220,7 +220,7 @@ export function SettingsScreen({
             <SettingsIconRow
               icon="ti-bell"
               title="Daily reminders"
-              detail="Sign in to turn on morning and evening push notifications."
+              detail="Sign in to choose morning and evening reminders."
               disabled
             />
           ) : pushState?.isIos && !pushState.installed ? (

@@ -150,6 +150,7 @@ export async function createMemory(input: {
   displayPlaceName?: string
   customLocationLabel?: string
   userNotes?: string
+  routePoints?: import('../walkRoute').RoutePoint[]
 }): Promise<MemoryRow | null> {
   const supabase = getSupabaseClient()
   if (!supabase) return null
@@ -171,6 +172,7 @@ export async function createMemory(input: {
   const { data, error } = await supabase
     .from('memories')
     .insert({
+      ...(input.routePoints?.length ? { route_points: input.routePoints.slice(0, 2000) } : {}),
       user_id: input.userId,
       dog_id: input.dogId,
       adventure_id: input.adventureId,
@@ -220,6 +222,7 @@ export async function memoryRowToJourneyEntry(row: MemoryRow): Promise<JourneyEn
 
   return {
     id: row.id,
+    routePoints: row.route_points ?? [],
     placeId: row.place_id,
     place: row.place_name,
     date: formatMemoryDate(row.occurred_at),

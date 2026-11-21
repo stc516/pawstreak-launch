@@ -198,21 +198,23 @@ export function TrainingProgramFlow({
                 <button
                   type="button"
                   className="st-btn st-btn--primary tap-target"
-                  onClick={() => {
+                  onClick={async () => {
                     const hasScheduledSessions = schedule.sessions.some((session) => session.scheduledFor)
                     if (!hasScheduledSessions) {
                       onBack()
                       return
                     }
                     const program = getTrainingProgramById(schedule.programId)
-                    const downloaded = downloadTrainingScheduleCalendar(
+                    try {
+                    const downloaded = await downloadTrainingScheduleCalendar(
                       schedule,
                       program?.title ?? 'Training adventure',
                       dogLabel,
                     )
                     setScheduleStatus(downloaded
-                      ? 'Calendar ready with alerts for every session.'
+                      ? 'Calendar file ready. Import it in your calendar app to enable alerts.'
                       : 'Choose real dates and times before exporting.')
+                    } catch { setScheduleStatus('Calendar export was not completed. Try again.') }
                   }}
                 >
                   <i className="ti ti-calendar-plus" aria-hidden="true" />

@@ -90,6 +90,7 @@ export interface AdventureRow {
 }
 
 export interface MemoryRow {
+  route_points?: import('../walkRoute').RoutePoint[]
   id: string
   user_id: string
   dog_id: string

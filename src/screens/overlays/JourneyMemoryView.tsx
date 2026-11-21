@@ -1,3 +1,5 @@
+import { MemoryVideo } from '../../components/MemoryVideo'
+import { WalkRoutePreview } from '../../components/WalkRoutePreview'
 import { readImageFileAsDataUrl } from '../../lib/imageUtils'
 import type { MemoryDetailInput } from '../../lib/memoryDetails'
 import { useEffect, useRef, useState } from 'react'
@@ -9,6 +11,7 @@ import { StatusBar } from '../../components/StatusBar'
 import { authenticPhotoUrls } from '../../lib/authenticImages'
 
 interface JourneyMemoryViewProps {
+  isDemoMode?: boolean
   entry: JourneyEntry
   dogs: Dog[]
   hasUserDogProfile?: boolean
@@ -21,6 +24,7 @@ interface JourneyMemoryViewProps {
 
 export function JourneyMemoryView({
   entry,
+  isDemoMode = false,
   dogs,
   hasUserDogProfile = false,
   onSaveDetail,
@@ -135,6 +139,8 @@ export function JourneyMemoryView({
             <button type="button" className="field-secondary tap-target" onClick={onCreateStory ?? (() => void handleShare())}>Share this memory</button>
             {entry.placeId ? <button type="button" className="field-secondary tap-target" onClick={() => onGoAgain(entry.placeId!)}>Go again</button> : null}
           </div>
+          {entry.routePoints?.length ? <WalkRoutePreview points={entry.routePoints} /> : null}
+          {isDemoMode || import.meta.env.VITE_MEMORY_VIDEO_ENABLED === 'true' ? <MemoryVideo key={entry.id} memoryId={entry.id} demo={isDemoMode} /> : null}
         </main>
       </div>
     </div>

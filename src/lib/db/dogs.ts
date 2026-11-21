@@ -143,3 +143,20 @@ export function getActiveDog(dogs: Dog[], activeDogId: string | null | undefined
   }
   return dogs[0]
 }
+
+export async function saveDogAvatar(userId: string, dogId: string, choice: { photoDataUrl?: string; emoji?: string }): Promise<Pick<Dog, 'photoUrl' | 'profileEmoji'>> {
+  const client = getSupabaseClient()
+  if (!client) throw new Error('Connect to save your dog’s avatar.')
+  let path: string | null = null
+  if (choice.photoDataUrl) {
+    if (!choice.photoDataUrl.startsWith('data:image/jpeg;')) throw new Error('Choose another photo.')
+    path = `${userId}/dogs/${dogId}-${crypto.randomUUID()}.jpg`
+    const blob = await dataUrlToBlob(choice.photoDataUrl)
+    const { error } = await client.storage.from('memory-photos').upload(path, blob, { contentType: 'image/jpeg', upsert: false })
+    if (error) throw new Error('Could not upload this avatar. Try again.')
+  }
+  const { data, error } = await client.from('dogs').update({ photo_path: path, ...(choice.emoji ? { profile_emoji: choice.emoji } : {}) }).eq('id', dogId).eq('user_id', userId).select('*').single()
+  // Do not remove an upload after an ambiguous network failure; the update may have succeeded.
+  if (error || !data) throw new Error('Could not confirm the avatar save. Reopen your dog profile and try again.')
+  return { photoUrl: choice.photoDataUrl, profileEmoji: data.profile_emoji }
+}

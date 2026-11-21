@@ -25,6 +25,7 @@ interface ActiveAdventureScreenProps {
   onCancel: () => void
   onFinish: (payload: AdventureFinishPayload) => void | Promise<void>
   onMinimize?: () => void
+  onToggleRoute: () => void
   onAddPhoto: (photoDataUrl: string) => void
   finishReviewRequested?: boolean
   onFinishReviewShown?: () => void
@@ -39,6 +40,7 @@ export function ActiveAdventureScreen({
   onFinish,
   onMinimize,
   onAddPhoto,
+  onToggleRoute,
   finishReviewRequested = false,
   onFinishReviewShown,
 }: ActiveAdventureScreenProps) {
@@ -48,9 +50,7 @@ export function ActiveAdventureScreen({
   const isPaused = pausedAt !== undefined
   const [isFinishing, setIsFinishing] = useState(false)
   const [photoSaveMessage, setPhotoSaveMessage] = useState<string | null>(null)
-  const [selectedRecaps, setSelectedRecaps] = useState<string[]>([
-    'Loved every second',
-  ])
+  const [selectedRecaps, setSelectedRecaps] = useState<string[]>([])
 
   const adventure = state.activeAdventure
   const place = getPlaceById(adventure?.placeId ?? '')
@@ -320,7 +320,7 @@ export function ActiveAdventureScreen({
             <div className="kinetic-section-heading"><h2>Your Trail Pack</h2></div>
             <div className="trail-dogs">
               {getProfileDogs(state).filter(dog => !adventure.selectedDogIds?.length || adventure.selectedDogIds.includes(dog.id)).map(dog => (
-                <span key={dog.id}>{dog.photoUrl ? <img src={dog.photoUrl} alt="" /> : <span aria-hidden="true">{dog.initial}</span>} {dog.name}</span>
+                <span key={dog.id}>{dog.photoUrl ? <img src={dog.photoUrl} alt="" /> : <span aria-hidden="true">{dog.profileEmoji}</span>} {dog.name}</span>
               ))}
             </div>
           </header>
@@ -329,6 +329,11 @@ export function ActiveAdventureScreen({
             <button type="button" className="field-secondary tap-target" onClick={onTogglePause}>{isPaused ? 'Resume' : 'Pause'}</button>
             <button type="button" className="trail-cancel tap-target" onClick={onCancel}>Cancel adventure</button>
           </section>
+          {(window.location.pathname.startsWith('/demo') || import.meta.env.VITE_WALK_ROUTE_ENABLED === 'true') ? <section className="trail-route" aria-label="Walk route">
+            <button type="button" className="field-secondary tap-target" aria-pressed={adventure.routeRecording ?? false} onClick={onToggleRoute}>{adventure.routeRecording ? 'Stop route recording' : 'Record phone GPS route'}</button>
+            <p>Optional. Records while PawStreak is visible; pauses when locked, backgrounded or the walk is paused.</p>
+            <p role="status">{isPaused && adventure.routeRecording ? 'Route recording paused.' : adventure.routeMessage} {adventure.routePoints?.length ?? 0} GPS points saved.</p>
+          </section> : null}
           <input ref={fileInputRef} className="cam-input" type="file" accept="image/*" capture="environment" onChange={handlePhotoSelected} />
           <button type="button" className="trail-add-photo tap-target" onClick={handleCaptureClick}><i className="ti ti-camera" aria-hidden="true" /> Add photo</button>
           {photoSaveMessage ? <p role="status">{photoSaveMessage}</p> : null}

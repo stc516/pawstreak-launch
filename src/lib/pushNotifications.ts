@@ -1,3 +1,5 @@
+import { isNativeAppRuntime } from './nativeRuntime'
+import { getNativeReminderState, setNativeReminders, disableNativeReminders } from './nativeReminders'
 import { getSupabaseClient } from './supabase'
 
 export interface PushPreferences {
@@ -75,6 +77,7 @@ async function saveSubscription(
 }
 
 export async function getPushNotificationState(): Promise<PushNotificationState> {
+  if (isNativeAppRuntime()) return getNativeReminderState()
   const supported = isSupported()
   const subscription = supported ? await currentSubscription() : null
   let preferences = DEFAULT_PUSH_PREFERENCES
@@ -112,6 +115,7 @@ export async function getPushNotificationState(): Promise<PushNotificationState>
 export async function enablePushNotifications(
   preferences: PushPreferences = DEFAULT_PUSH_PREFERENCES,
 ): Promise<void> {
+  if (isNativeAppRuntime()) return setNativeReminders(preferences)
   if (!isSupported()) throw new Error('Push notifications are not supported on this browser.')
   if (isIosDevice() && !isInstalledApp()) {
     throw new Error('On iPhone, add PawStreak to your Home Screen before enabling notifications.')
@@ -136,6 +140,7 @@ export async function enablePushNotifications(
 }
 
 export async function updatePushPreferences(preferences: PushPreferences): Promise<void> {
+  if (isNativeAppRuntime()) return setNativeReminders(preferences)
   const subscription = await currentSubscription()
   if (!subscription) {
     await enablePushNotifications(preferences)
@@ -145,6 +150,7 @@ export async function updatePushPreferences(preferences: PushPreferences): Promi
 }
 
 export async function disablePushNotifications(): Promise<void> {
+  if (isNativeAppRuntime()) return disableNativeReminders()
   const subscription = await currentSubscription()
   if (!subscription) return
   const supabase = getSupabaseClient()

@@ -105,6 +105,7 @@ export function JourneyStoryPath({
                 <button
                   type="button"
                   className="journey-memory-card tap-target"
+                  data-memory-id={entry.id}
                   onClick={() => onOpenMemory?.(entry.id)}
                   disabled={!onOpenMemory}
                 >
@@ -199,7 +200,8 @@ export function JourneyStoryPath({
                 key={entry.id}
                 type="button"
                 className="journey-everyday-row tap-target"
-                onClick={() => onOpenMemory?.(entry.id)}
+                data-memory-id={entry.id}
+                  onClick={() => onOpenMemory?.(entry.id)}
                 disabled={!onOpenMemory}
               >
                 <span className="journey-everyday-icon" aria-hidden="true">
