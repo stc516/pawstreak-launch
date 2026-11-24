@@ -47,7 +47,7 @@ try {
       }
     }
     return {
-      quickActions: [...document.querySelectorAll('.today-secondary-actions button')].map(box),
+      quickActions: [...document.querySelectorAll('.kinetic-home-actions button')].map(box),
       moreWays: [...document.querySelectorAll('.home-plan-action')].map(box),
       viewportWidth: window.innerWidth,
       documentWidth: document.documentElement.scrollWidth,
@@ -56,7 +56,7 @@ try {
 
   await page.screenshot({ path: path.join(out, 'home-core-actions.png') })
   assert.equal(geometry.quickActions.length, 2, 'Home should expose two immediate adventure actions')
-  assert.equal(geometry.moreWays.length, 4, 'Home should expose four more-way actions')
+  assert.equal(geometry.moreWays.length, 5, 'Home should expose five more-way actions')
   for (const action of [...geometry.quickActions, ...geometry.moreWays]) {
     assert.ok(action.height >= 44, `Home core actions should be at least 44px tall; received ${action.height}px`)
     assert.ok(action.width >= 44, `Home core actions should be at least 44px wide; received ${action.width}px`)
@@ -67,15 +67,16 @@ try {
   )
   report.checks.push({ name: 'Home core actions are touch-safe and contained', pass: true, geometry })
 
-  await page.getByRole('button', { name: 'Quick Walk', exact: true }).click()
-  await page.locator('.clock-bg--active').waitFor()
+  await page.getByRole('button', { name: 'Start a walk', exact: true }).click()
+  if (await page.getByRole('button', { name: 'Start adventure', exact: true }).isVisible()) await page.getByRole('button', { name: 'Start adventure', exact: true }).click()
+  await page.locator('.kinetic-timer-panel').waitFor()
 
   await openFreshHome()
   await page.getByRole('button', { name: 'Find Spots', exact: true }).click()
   await page.locator('.plan-screen-header').waitFor()
 
   await openFreshHome()
-  await page.getByRole('button', { name: 'Add your own', exact: true }).click()
+  await page.getByRole('button', { name: 'Add Your Own', exact: true }).click()
   await page.getByTestId('add-adventure-flow').waitFor()
 
   await openFreshHome()

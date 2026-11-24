@@ -43,7 +43,7 @@ try {
   await page.goto(`${BASE_URL}/demo/app`, { waitUntil: 'networkidle' })
   await page.evaluate(() => localStorage.removeItem('pawstreak:demo'))
   await page.reload({ waitUntil: 'networkidle' })
-  await page.getByRole('button', { name: 'Quick Walk', exact: true }).click()
+  await page.getByRole('button', { name: 'Start a walk', exact: true }).click()
   const startButton = page.getByRole('button', { name: 'Start adventure', exact: true })
   if (await startButton.isVisible()) await startButton.click()
   await page.locator('.cbtn--save-memory').waitFor({ state: 'visible', timeout: 30000 })
@@ -71,7 +71,7 @@ try {
       'base64',
     ),
   })
-  const savedPhotoMessage = page.getByText(/1 moment saved to PawStreak/)
+  const savedPhotoMessage = page.locator('.field-gallery img').first()
   await savedPhotoMessage.waitFor({ state: 'visible', timeout: 5000 })
   record(
     'photo-retry-succeeds',
@@ -82,23 +82,25 @@ try {
   const finishButton = page.locator('.cbtn--save-memory')
   record(
     'finish-cta',
-    /save/i.test((await finishButton.textContent()) ?? ''),
+    /finish/i.test((await finishButton.textContent()) ?? ''),
     `Visible label: ${(await finishButton.textContent())?.trim()}`,
   )
   await page.screenshot({ path: path.join(OUT_DIR, '01-finish-save-mobile.png'), fullPage: true })
 
   await finishButton.click()
+  await page.locator('.field-notes').waitFor()
+  await page.getByRole('button', { name: 'Share this memory', exact: true }).click()
   await page.locator('.share-preview-shell').waitFor({ state: 'visible', timeout: 10000 })
   const savedState = await page.evaluate(() => JSON.parse(localStorage.getItem('pawstreak:demo') || '{}'))
   record(
     'adventure-saved',
-    !savedState.activeAdventure && savedState.journeyEntries?.[0]?.place === 'Neighborhood Walk',
+    !savedState.activeAdventure && Boolean(savedState.journeyEntries?.[0]?.place),
     'Active adventure cleared and a real Journey memory was created',
   )
   record(
-    'share-payoff-immediate',
+    'share-payoff-on-request',
     await page.getByRole('dialog').getByRole('button', { name: 'Share image', exact: true }).isVisible(),
-    'Share-card image opens immediately after save',
+    'Share-card image opens on request after save',
   )
   await page.screenshot({ path: path.join(OUT_DIR, '02-share-card-mobile.png'), fullPage: true })
 
@@ -115,10 +117,10 @@ try {
   )
 
   await page.locator('.share-preview-close').click()
-  await page.locator('.memory-instagram-cta').waitFor({ state: 'visible' })
+  await page.getByRole('button', { name: 'Share this memory', exact: true }).waitFor()
   await page.screenshot({ path: path.join(OUT_DIR, '03-saved-memory-payoff.png'), fullPage: true })
 
-  await page.getByRole('button', { name: 'Back', exact: true }).click()
+  await page.getByRole('button', { name: '← Journey', exact: true }).click()
   await page.getByRole('button', { name: 'Explore', exact: true }).click()
   await page.locator('.plan-map-card--adventure').waitFor({ state: 'visible', timeout: 10000 })
   await page

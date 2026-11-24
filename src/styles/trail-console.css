@@ -1,0 +1,81 @@
+/* Issue #90: restrained mobile surfaces; controls occupy real document space. */
+.home-screen--minimal { color: #203c33; padding-bottom: 28px; }
+.home-screen--minimal .home-screen-header { background: transparent; box-shadow: none; }
+.home-screen--minimal .home-dog-pill { background: #eeeee4; border: 0; box-shadow: none; }
+.home-area-chip { display: flex; align-items: center; gap: 7px; background: transparent; color: #486254; border: 0; padding: 8px 0; font-size: 12px; text-align: left; }
+.field-kicker { font-size: 11px; line-height: 1.5; font-weight: 700; text-transform: uppercase; letter-spacing: .14em; }
+.home-walk-intro { padding: 20px 0 24px; }
+.home-walk-intro h1 { font-size: clamp(30px, 9vw, 39px); line-height: 1.13; letter-spacing: -.045em; font-weight: 650; margin: 10px 0 14px; }
+.home-walk-intro > p:not(.field-kicker) { color: #586a60; font-size: 14px; line-height: 1.6; margin-bottom: 24px; }
+.field-primary { min-height: 52px; display: flex; align-items: center; justify-content: center; gap: 14px; width: 100%; border: 0; border-radius: 14px; background: #284e3e; color: #fffdf5; font-size: 16px; font-weight: 650; padding: 13px 18px; box-shadow: none; }
+.field-primary:disabled { opacity: .65; }
+.field-secondary { min-height: 48px; padding: 12px 16px; background: transparent; color: inherit; border: 1px solid #cbd3c9; border-radius: 14px; font-size: 14px; font-weight: 600; }
+.home-walk-intro > .field-secondary { width: 100%; margin-top: 10px; }
+.home-neighborhood, .home-nearby-pick { padding: 22px 0; border-top: 1px solid #dce0d6; }
+.home-neighborhood h2, .home-nearby-pick h2 { font-size: 22px; letter-spacing: -.025em; margin: 10px 0; }
+.home-neighborhood p:not(.field-kicker), .home-nearby-pick p:not(.field-kicker) { font-size: 13px; line-height: 1.6; color: #596b61; }
+.home-pick-image { height: 145px; border-radius: 14px; overflow: hidden; margin: 12px 0; }
+.home-progress-notes { border-top: 1px solid #dce0d6; padding: 24px 0; }
+.home-screen--minimal .home-badge-banner { display: flex; overflow-x: auto; gap: 10px; padding: 10px 0; }
+.home-screen--minimal .home-badge-token { flex: 0 0 155px; background: #efefe5; border: 0; min-height: 76px; padding: 12px; border-radius: 12px; }
+.home-screen--minimal .home-badge-token strong { font-size: 12px; white-space: normal; }
+.home-screen--minimal .home-badge-token small { font-size: 11px; line-height: 1.45; white-space: normal; }
+.trail-console .app-shell { background: #173e33; color: #f5f1e6; }
+.trail-scroll { overflow-y: auto; flex: 1; min-height: 0; padding: 0 24px calc(24px + env(safe-area-inset-bottom, 0px)); }
+.trail-header { padding: 0 0 24px; }
+.trail-browse { color: #c6d5ca; border: 0; background: transparent; padding: 8px 0; font-size: 13px; }
+.trail-header .field-kicker { margin: 20px 0 8px; color: #b6c9b9; }
+.trail-header h1 { font-size: 23px; line-height: 1.2; font-weight: 500; letter-spacing: -.025em; margin: 0 0 24px; }
+.trail-timer-label { color: #b6c9b9; font-size: 12px; }
+.trail-console .trail-timer { color: #fbf7e9; font-size: clamp(54px, 17vw, 72px); letter-spacing: -.05em; font-weight: 500; line-height: 1.25; font-variant-numeric: tabular-nums; margin: 0 0 20px; text-shadow: none; }
+.trail-dogs, .field-pack { display: flex; flex-wrap: wrap; gap: 18px; }
+.trail-dogs > span, .field-pack > span { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; }
+.trail-dogs img, .field-pack img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; }
+.trail-actions { display: grid; grid-template-columns: 1fr 100px; gap: 10px; scroll-margin-top: 16px; }
+.trail-actions .field-primary { background: #e6edc7; color: #173e33; }
+.trail-actions .field-secondary { color: #f5f1e6; border-color: #6c8577; }
+.trail-cancel { grid-column: 1 / -1; background: transparent; border: 0; color: #bfcfc3; font-size: 12px; }
+.trail-add-photo { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: transparent; color: #d9e3d6; border: 0; font-size: 13px; }
+.trail-detail { margin-top: 12px; border-top: 1px solid #476556; padding-top: 8px; }
+.trail-detail summary { cursor: pointer; font-size: 12px; color: #bfcfc3; padding: 12px 0; }
+.trail-detail .rc { color: #173e33; }
+.field-gallery-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin: 20px 0 12px; }
+.field-gallery-heading h2 { font-size: 17px; font-weight: 600; margin: 0; }
+.field-gallery-heading > span { font-size: 12px; opacity: .8; }
+.field-gallery { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }
+.field-gallery > button { padding: 0; border: 0; border-radius: 10px; overflow: hidden; background: transparent; }
+.field-gallery img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; }
+.field-notes .app-shell { background: #f7f4e9; color: #253d32; }
+.field-notes-scroll { padding: 0 24px calc(32px + env(safe-area-inset-bottom,0px)); }
+.field-notes h1 { font-family: Georgia, serif; font-size: 36px; line-height: 1.12; letter-spacing: -.04em; font-weight: 400; margin: 14px 0; }
+.field-date { color: #687467; font-size: 13px; margin-bottom: 20px; }
+.field-recap-line { font-family: Georgia, serif; font-size: 20px; line-height: 1.45; margin: 24px 0; }
+.field-stats { display: flex; gap: 28px; border-top: 1px solid #d8dacc; border-bottom: 1px solid #d8dacc; padding: 18px 0; margin-bottom: 24px; }
+.field-stats > div { display: grid; gap: 8px; }
+.field-stats span { font-size: 11px; color: #637363; }
+.field-stats strong { font-size: 16px; font-weight: 550; }
+.field-note h2 { font-size: 15px; margin: 24px 0 12px; }
+.field-note p { font-size: 14px; line-height: 1.6; }
+.field-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.field-tags > span { font-size: 12px; padding: 8px 10px; border-radius: 8px; background: #eaece0; }
+.field-recap-actions { display: flex; gap: 10px; margin-top: 24px; }
+.trail-console button:focus-visible, .home-screen--minimal button:focus-visible, .field-notes button:focus-visible { outline: 3px solid #b6b57c; outline-offset: 3px; }
+.trail-console .trail-actions .cbtn--save-memory { background: #e6edc7 !important; color: #173e33 !important; box-shadow: none !important; }
+.home-pack { display: flex; flex-wrap: wrap; gap: 20px; padding: 12px 0; border: 0; background: transparent; color: #203c33; }
+.home-pack > span { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; }
+.home-pack img, .pack-initial { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; object-fit: cover; background: #e3e9d9; color: #385543; }
+.home-screen--minimal .home-screen-header { min-height: 58px; margin-bottom: 8px; }
+.home-walk-intro { padding-top: 12px; }
+.trail-dogs > span > span { display: grid; place-items: center; width: 32px; height: 32px; border: 1px solid #6c8577; border-radius: 50%; font-size: 12px; }
+.field-add-detail { margin-top: 24px; border-top: 1px solid #d8dacc; padding-top: 12px; }
+.field-add-detail summary { padding: 12px 0; cursor: pointer; font-size: 14px; }
+.field-add-detail label { display: block; font-size: 13px; margin: 10px 0; }
+.field-add-detail textarea { display: block; width: 100%; min-height: 90px; resize: vertical; border: 1px solid #cbd3c9; border-radius: 10px; background: #fffdf6; color: #253d32; padding: 12px; font: inherit; font-size: 16px; }
+.field-add-detail button { margin-top: 12px; }
+.field-pending-photo { width: 80px; height: 80px; object-fit: cover; border-radius: 10px; display: block; margin-top: 12px; }
+.field-saved-mark { display: inline-grid; place-items: center; width: 24px; height: 24px; margin-right: 6px; background: #e2e9cf; border-radius: 50%; color: #294b37; }
+@media (prefers-reduced-motion: no-preference) { .field-saved-mark { animation: field-arrive .45s ease-out; } }
+@keyframes field-arrive { from { transform: scale(.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.home-screen--minimal .home-pack.home-dog-pill { display: flex !important; width: auto; max-width: none; border-radius: 0; background: transparent !important; box-shadow: none !important; }
+.field-notes .overlay-action { width: auto; min-width: 56px; border: 0; font-size: 13px; background: transparent; }
+.home-screen--minimal .home-pack.home-dog-pill { border: 0 !important; }

@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "qa:trail-console": "node qa/trail-console-mobile.mjs",
     "qa:shell-guard": "node qa/mobile-shell-guard.mjs",
     "qa:release-smoke": "node qa/release-smoke.mjs",
     "qa:beta-critical": "node qa/beta-critical-smoke.mjs",
@@ -36,7 +37,8 @@
     "native:sync": "npm run build && npx cap sync",
     "native:ios": "npm run native:sync && npx cap open ios",
     "native:android": "npm run native:sync && npx cap open android",
-    "qa:native": "node qa/native-readiness.mjs"
+    "qa:native": "node qa/native-readiness.mjs",
+    "qa:kinetic": "node qa/kinetic-design.mjs"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.1",
@@ -46,7 +48,12 @@
     "@capacitor/preferences": "^8.0.1",
     "@capacitor/push-notifications": "^8.1.2",
     "@capacitor/share": "^8.0.1",
+    "@fontsource-variable/hanken-grotesk": "^5.3.0",
+    "@fontsource-variable/literata": "^5.3.0",
+    "@fontsource-variable/outfit": "^5.3.0",
+    "@fontsource-variable/plus-jakarta-sans": "^5.3.0",
     "@supabase/supabase-js": "^2.106.2",
+    "@tabler/icons-webfont": "^3.52.0",
     "html-to-image": "^1.11.13",
     "mapbox-gl": "^3.24.0",
     "react": "^19.2.6",
