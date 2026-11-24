@@ -200,11 +200,11 @@ async function captureScreenshots(browser) {
     await loadDemoApp(page)
 
     await clickNav(page, 'Home')
-    await page.locator('.home-adventure-launch-hero').waitFor({ timeout: 15000 })
-    await safeScroll(page, '.home-adventure-launch-hero')
+    await page.locator('.kinetic-home-actions').waitFor({ timeout: 15000 })
+    await safeScroll(page, '.kinetic-home-actions')
     await capturePair(page, '01-adventure-launch-home', generated)
 
-    await safeScroll(page, '.home-quick-adventure--today-pick')
+    await safeScroll(page, '.home-nearby-pick')
     await capturePair(page, '02-todays-pick-card', generated)
 
     await clickNav(page, 'Plan')
@@ -222,18 +222,18 @@ async function captureScreenshots(browser) {
     await capturePair(page, '05-adventure-ready', generated)
 
     await page.getByRole('button', { name: 'Start adventure', exact: true }).click()
-    await page.locator('.clock-bg--active').waitFor({ timeout: 15000 })
-    await safeScroll(page, '.adventure-finish-payoff')
+    await page.locator('.trail-timer').waitFor({ timeout: 15000 })
+    await safeScroll(page, '.trail-actions')
     await capturePair(page, '06-save-memory-payoff', generated)
 
-    await page.getByRole('button', { name: 'Finish adventure and save memory', exact: true }).click()
+    await page.getByRole('button', { name: 'Finish walk', exact: true }).click()
     await wait(900)
-    if (!(await page.locator('.memory-hero').isVisible())) {
+    if (!(await page.locator('.field-notes').isVisible())) {
       await clickNav(page, 'Journey')
       await page.locator('.journey-grid .mcard--grid').first().click()
       await wait(600)
     }
-    if (!(await page.locator('.memory-hero').isVisible())) {
+    if (!(await page.locator('.field-notes').isVisible())) {
       fail('Journey memory view did not open after saving')
     }
     await capturePair(page, '07-journey-memory', generated)
@@ -256,10 +256,10 @@ async function captureVideo(browser) {
     await loadDemoApp(page)
 
     await clickNav(page, 'Home')
-    await safeScroll(page, '.home-adventure-launch-hero')
+    await safeScroll(page, '.kinetic-home-actions')
     await wait(1200)
 
-    await safeScroll(page, '.home-quick-adventure--today-pick')
+    await safeScroll(page, '.home-nearby-pick')
     await wait(900)
 
     await clickNav(page, 'Plan')
@@ -271,12 +271,12 @@ async function captureVideo(browser) {
     await wait(900)
     await page.getByRole('button', { name: 'Start adventure', exact: true }).click()
     await wait(900)
-    await safeScroll(page, '.adventure-finish-payoff')
+    await safeScroll(page, '.trail-actions')
     await wait(1300)
 
-    await page.getByRole('button', { name: 'Finish adventure and save memory', exact: true }).click()
+    await page.getByRole('button', { name: 'Finish walk', exact: true }).click()
     await wait(900)
-    if (!(await page.locator('.memory-hero').isVisible())) {
+    if (!(await page.locator('.field-notes').isVisible())) {
       await clickNav(page, 'Journey')
     }
     await wait(1200)

@@ -117,7 +117,7 @@ export function JourneyStoryPath({
                       {photoCount}
                     </span>
                   ) : null}
-                  {imageUrl ? <img src={imageUrl} alt="" className="journey-memory-photo" /> : <span className="journey-memory-no-photo"><i className="ti ti-notebook" aria-hidden="true" />Memory saved · no photo added</span>}
+                  {imageUrl ? <img src={imageUrl} alt="" className="journey-memory-photo" /> : <span className="journey-memory-no-photo"><i className="ti ti-notebook" aria-hidden="true" />A day worth remembering</span>}
                   <span className="journey-memory-copy">
                     <span className="journey-memory-date">{formatMemoryDate(entry)}</span>
                     <span className="journey-memory-title">{entry.place}</span>

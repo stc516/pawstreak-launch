@@ -30,8 +30,9 @@ try {
   })
   await page.reload({ waitUntil: 'networkidle' })
 
-  await page.getByRole('button', { name: 'Quick Walk', exact: true }).click()
-  await page.locator('.active-adventure-minimize').click()
+  await page.getByRole('button', { name: 'Start a walk', exact: true }).click()
+  if (await page.getByRole('button', { name: 'Start adventure', exact: true }).isVisible()) await page.getByRole('button', { name: 'Start adventure', exact: true }).click()
+  await page.locator('.trail-browse').click()
   const banner = page.getByTestId('active-adventure-banner')
   await banner.waitFor({ state: 'visible' })
 
@@ -62,13 +63,13 @@ try {
   )
   record(
     'memory-review-is-visible',
-    await page.getByText('What made today worth remembering?', { exact: true }).isVisible() &&
-      await page.getByText('Photos from today', { exact: true }).isVisible(),
-    'Recap choices and photo review are visible before the final save',
+    await page.getByText('Add a detail · optional', { exact: true }).isVisible() &&
+      await page.getByRole('button', { name: 'Add photo', exact: true }).isVisible(),
+    'Optional recap and photo controls are available before explicit save',
   )
 
-  await page.getByRole('button', { name: 'Finish adventure and save memory', exact: true }).click()
-  await page.locator('.share-preview-shell').waitFor({ state: 'visible' })
+  await page.getByRole('button', { name: 'Finish walk', exact: true }).click()
+  await page.locator('.field-notes').waitFor({ state: 'visible' })
   const afterSave = await page.evaluate(() => {
     const state = JSON.parse(localStorage.getItem('pawstreak:demo') || '{}')
     return {

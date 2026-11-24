@@ -69,8 +69,8 @@ export function TrainingProgramFlow({
           <div className="training-flow-hero training-flow-hero--electric">
             <div className="training-flow-hero-copy">
               <div className="training-flow-kicker">Training adventure</div>
-              <h1 className="training-flow-title">Turn {dogLabel}&apos;s chaos into a superpower.</h1>
-              <p className="training-flow-copy">Tiny real sessions. Big adventure energy.</p>
+              <h1 className="training-flow-title">Mind &amp; Trail Mastery</h1>
+              <p className="training-flow-copy">Short sessions. Real-world skills with {dogLabel}.</p>
             </div>
             {leadDog ? (
               <div className="training-flow-dog" aria-label={`${leadDog.name} is ready to train`}>
@@ -87,7 +87,7 @@ export function TrainingProgramFlow({
             <section className="training-flow-step">
               <div className="training-flow-step-head">
                 <span>1 of 3</span>
-                <strong>Choose your next superpower</strong>
+                <strong>Choose a training adventure</strong>
               </div>
               <div className="training-flow-programs">
                 {programs.map((program) => (
